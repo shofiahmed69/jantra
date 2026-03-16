@@ -49,28 +49,30 @@ export default function ContactPage() {
         setStatus("idle");
         setErrorMessage("");
 
+        let hasError = false;
+
         try {
-            console.log('1. Submit started');
-            console.log('2. API call made');
             const response = await api.post("/leads", formData);
-            console.log('3. Response:', response);
-            console.log('4. Setting success');
+            console.log('Success:', response.status);
         } catch (error: any) {
-            console.log('Error status:', error.response?.status);
-            console.log('Error data:', error.response?.data);
-
             const statusCode = error.response?.status;
+            console.log('Error status:', statusCode);
 
-            // Only set error message if it's a real failure (not 422 which means it was saved)
-            if (statusCode !== 422 && statusCode !== 201 && statusCode !== 200) {
+            if (statusCode === 422) {
+                // 422 means validation but data IS saved
+                // treat as success - do nothing
+            } else {
+                hasError = true;
                 const serverError = error.response?.data;
-                setErrorMessage(serverError?.error || "Signal transmission failed. Please try again.");
+                setErrorMessage(
+                    serverError?.error ||
+                    "Signal transmission failed. Please try again."
+                );
                 setStatus("error");
             }
         } finally {
-            // THIS ALWAYS RUNS no matter what
             setLoading(false);
-            if (status !== "error") {
+            if (!hasError) {
                 setStatus("success");
                 setFormData({
                     name: "",
