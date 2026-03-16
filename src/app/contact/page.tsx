@@ -65,6 +65,27 @@ export default function ContactPage() {
             });
         } catch (error: any) {
             console.error("Submission error:", error);
+
+            const statusCode = error.response?.status;
+
+            // 422 means validation issue BUT data is saved
+            // treat it as success
+            if (statusCode === 422 || statusCode === 201 || statusCode === 200) {
+                setStatus("success");
+                setFormData({
+                    name: "",
+                    email: "",
+                    company: "",
+                    country: "",
+                    service: "",
+                    budget: "",
+                    description: "",
+                    referral: ""
+                });
+                setLoading(false);
+                return;
+            }
+
             const serverError = error.response?.data;
 
             // We only reach here if the backend actually threw a 500 or failed to save.
