@@ -50,27 +50,27 @@ export default function ContactPage() {
         setErrorMessage("");
 
         try {
-            await api.post("/leads", formData);
-
-            setStatus("success");
-            setFormData({
-                name: "",
-                email: "",
-                company: "",
-                country: "",
-                service: "",
-                budget: "",
-                description: "",
-                referral: ""
-            });
+            console.log('1. Submit started');
+            console.log('2. API call made');
+            const response = await api.post("/leads", formData);
+            console.log('3. Response:', response);
+            console.log('4. Setting success');
         } catch (error: any) {
-            console.error("Submission error:", error);
+            console.log('Error status:', error.response?.status);
+            console.log('Error data:', error.response?.data);
 
             const statusCode = error.response?.status;
 
-            // 422 means validation issue BUT data is saved
-            // treat it as success
-            if (statusCode === 422 || statusCode === 201 || statusCode === 200) {
+            // Only set error message if it's a real failure (not 422 which means it was saved)
+            if (statusCode !== 422 && statusCode !== 201 && statusCode !== 200) {
+                const serverError = error.response?.data;
+                setErrorMessage(serverError?.error || "Signal transmission failed. Please try again.");
+                setStatus("error");
+            }
+        } finally {
+            // THIS ALWAYS RUNS no matter what
+            setLoading(false);
+            if (status !== "error") {
                 setStatus("success");
                 setFormData({
                     name: "",
@@ -82,17 +82,7 @@ export default function ContactPage() {
                     description: "",
                     referral: ""
                 });
-                setLoading(false);
-                return;
             }
-
-            const serverError = error.response?.data;
-
-            // We only reach here if the backend actually threw a 500 or failed to save.
-            setErrorMessage(serverError?.error || "Signal transmission failed. Please try again.");
-            setStatus("error");
-        } finally {
-            setLoading(false);
         }
     };
 

@@ -76,6 +76,23 @@ export default function LeadsPage() {
         }
     };
 
+    const deleteLead = async (leadId: string) => {
+        if (!confirm('Are you sure you want to delete this lead?')) return;
+
+        try {
+            await api.delete(`/leads/admin/${leadId}`);
+            // Remove from local state
+            setLeads(leads.filter(lead => lead.id !== leadId));
+            alert('Lead deleted successfully');
+            if (selectedLead?.id === leadId) {
+                setSelectedLead(null);
+            }
+        } catch (error) {
+            alert('Failed to delete lead');
+            console.error(error);
+        }
+    };
+
     return (
         <div className="space-y-6">
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -183,9 +200,20 @@ export default function LeadsPage() {
                                             </select>
                                         </td>
                                         <td className="px-8 py-6">
-                                            <button className="p-2 hover:bg-white rounded-xl transition-all text-slate-400 hover:text-orange-600 group-hover:bg-white shadow-sm border border-transparent group-hover:border-slate-100">
-                                                <ExternalLink className="w-4 h-4" />
-                                            </button>
+                                            <div className="flex items-center gap-2">
+                                                <button className="p-2 hover:bg-white rounded-xl transition-all text-slate-400 hover:text-orange-600 group-hover:bg-white shadow-sm border border-transparent group-hover:border-slate-100">
+                                                    <ExternalLink className="w-4 h-4" />
+                                                </button>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        deleteLead(lead.id);
+                                                    }}
+                                                    className="px-3 py-1 bg-red-500 text-white rounded-lg text-sm hover:bg-red-600 transition flex items-center gap-1 shadow-sm"
+                                                >
+                                                    🗑️ Delete
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))
@@ -298,6 +326,12 @@ export default function LeadsPage() {
                                     className="px-6 py-3 rounded-2xl bg-white border border-slate-200 text-slate-800 font-bold text-sm hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-100 transition-all shadow-sm active:scale-95"
                                 >
                                     Mark Qualified
+                                </button>
+                                <button
+                                    onClick={() => deleteLead(selectedLead.id)}
+                                    className="px-6 py-3 rounded-2xl bg-white border border-red-200 text-red-600 font-bold text-sm hover:bg-red-50 hover:text-red-700 hover:border-red-300 transition-all shadow-sm active:scale-95 flex items-center gap-2"
+                                >
+                                    🗑️ Delete
                                 </button>
                             </div>
                         </div>
