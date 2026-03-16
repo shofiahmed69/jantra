@@ -1,6 +1,16 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+const getBaseUrl = () => {
+    if (process.env.NEXT_PUBLIC_API_URL) return process.env.NEXT_PUBLIC_API_URL;
+    if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+        return 'https://jontro-backend.onrender.com/api';
+    }
+    return 'http://localhost:4000/api';
+};
+
+const API_BASE_URL = getBaseUrl();
+
+console.log(`[API] Base URL: ${API_BASE_URL}`);
 
 const api = axios.create({
     baseURL: API_BASE_URL,

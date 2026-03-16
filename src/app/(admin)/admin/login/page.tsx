@@ -22,7 +22,8 @@ export default function LoginPage() {
             const response = await api.post("/auth/login", { email, password });
             login(response.data.token, response.data.user);
         } catch (err: any) {
-            setError(err.response?.data?.message || "Invalid credentials. Please try again.");
+            const errorMessage = err.response?.data?.error || err.response?.data?.message || "Invalid credentials. Please try again.";
+            setError(errorMessage);
         } finally {
             setLoading(false);
         }
