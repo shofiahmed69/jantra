@@ -10,8 +10,8 @@ export default function Navbar() {
     const [mobileOpen, setMobileOpen] = useState(false);
 
     return (
-        <nav className="fixed top-0 left-0 right-0 z-50 px-4 pt-4 md:pt-6">
-            <div className="mx-auto max-w-5xl glass-panel rounded-full px-4 sm:px-8 py-3 md:py-4 flex items-center justify-between">
+        <nav className="fixed top-0 left-0 right-0 z-[100] px-4 pt-4 md:pt-6">
+            <div className="mx-auto max-w-5xl glass-panel rounded-full px-4 sm:px-8 py-3 md:py-4 flex items-center justify-between relative">
                 {/* Logo */}
                 <div className="flex items-center gap-2">
                     <div className="w-7 h-7 md:w-8 md:h-8 bg-gradient-to-tr from-orange-500 to-orange-400 rounded-lg flex-shrink-0" />
@@ -59,7 +59,7 @@ export default function Navbar() {
 
             {/* Mobile dropdown */}
             {mobileOpen && (
-                <div className="md:hidden mt-2 mx-auto max-w-5xl glass-panel rounded-3xl px-6 py-6 space-y-4">
+                <div className="md:hidden absolute top-full left-4 right-4 mt-2 bg-white rounded-3xl p-6 shadow-2xl border border-slate-100 space-y-4 z-50">
                     {navItems.map((item) => (
                         <Link
                             key={item.href}

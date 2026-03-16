@@ -51,6 +51,7 @@ export default function ContactPage() {
 
         try {
             await api.post("/leads", formData);
+
             setStatus("success");
             setFormData({
                 name: "",
@@ -64,18 +65,11 @@ export default function ContactPage() {
             });
         } catch (error: any) {
             console.error("Submission error:", error);
-            setStatus("error");
-
             const serverError = error.response?.data;
-            if (serverError?.errors) {
-                // Flatten field errors into a readable string
-                const fieldErrors = Object.entries(serverError.errors)
-                    .map(([field, msgs]: any) => `${field}: ${msgs.join(", ")}`)
-                    .join(" | ");
-                setErrorMessage(fieldErrors);
-            } else {
-                setErrorMessage(serverError?.error || "Signal transmission failed. Please try again.");
-            }
+
+            // We only reach here if the backend actually threw a 500 or failed to save.
+            setErrorMessage(serverError?.error || "Signal transmission failed. Please try again.");
+            setStatus("error");
         } finally {
             setLoading(false);
         }
