@@ -1,11 +1,18 @@
 import axios from 'axios';
 
 const getBaseUrl = () => {
-    if (process.env.NEXT_PUBLIC_API_URL) return process.env.NEXT_PUBLIC_API_URL;
-    if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
-        return 'https://jontro-backend.onrender.com/api';
+    let url = process.env.NEXT_PUBLIC_API_URL;
+
+    if (!url) {
+        if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+            url = 'https://jontro-backend.onrender.com';
+        } else {
+            url = 'http://localhost:4000';
+        }
     }
-    return 'http://localhost:4000/api';
+
+    // Ensure /api suffix
+    return url.endsWith('/api') ? url : `${url}/api`;
 };
 
 const API_BASE_URL = getBaseUrl();
