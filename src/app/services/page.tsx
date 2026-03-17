@@ -8,17 +8,17 @@ import {
 const services = [
     {
         title: "Custom Software Development",
-        slug: "custom-software-development",
+        slug: "custom-software",
         description: "End-to-end bespoke software solutions built for scale and performance.",
         icon: Code,
-        lottieSrc: "/lottie/cloud.json",
+        lottieSrc: "/lottie/software-development-green.json",
         bgGradient: "bg-gradient-to-br from-orange-100 to-orange-200",
         features: ["Full-stack development", "Scalable architecture design", "Comprehensive QA & testing"],
         industries: ["Finance", "Healthcare", "E-commerce"]
     },
     {
         title: "Mobile App Development",
-        slug: "mobile-app-development",
+        slug: "mobile-app",
         description: "High-performance native and cross-platform mobile applications that users love.",
         icon: Smartphone,
         lottieSrc: "/lottie/app-development.json",
@@ -28,7 +28,7 @@ const services = [
     },
     {
         title: "AI Agent Development",
-        slug: "ai-agent-development",
+        slug: "ai-agent",
         description: "Deploy autonomous AI agents that think, act, and execute complex business tasks 24/7.",
         icon: Bot,
         lottieSrc: "/lottie/assistant-bot.json",
@@ -38,7 +38,7 @@ const services = [
     },
     {
         title: "AI Chatbots & Virtual Assistants",
-        slug: "ai-chatbots-virtual-assistants",
+        slug: "ai-chatbot",
         description: "Intelligent conversational interfaces that support customers and drive sales.",
         icon: MessageSquare,
         lottieSrc: "/lottie/live-chatbot.json",
@@ -48,7 +48,7 @@ const services = [
     },
     {
         title: "Agentic Workflow Automation",
-        slug: "agentic-workflow-automation",
+        slug: "workflow-automation",
         description: "Eliminate manual operational bottlenecks with intelligent, end-to-end automated workflows.",
         icon: Workflow,
         lottieSrc: "/lottie/automatic.json",
@@ -58,7 +58,7 @@ const services = [
     },
     {
         title: "SaaS Product Development",
-        slug: "saas-product-development",
+        slug: "saas",
         description: "From architecture to deployment, we build scalable Software-as-a-Service platforms.",
         icon: Cloud,
         lottieSrc: "/lottie/saas.json",
@@ -68,7 +68,7 @@ const services = [
     },
     {
         title: "API & Microservices Development",
-        slug: "api-microservices-development",
+        slug: "api-microservices",
         description: "Robust backend systems and APIs to connect and power your digital ecosystem.",
         icon: Network,
         lottieSrc: "/lottie/3d-web.json",
@@ -78,7 +78,7 @@ const services = [
     },
     {
         title: "Business Intelligence Dashboards",
-        slug: "business-intelligence-dashboards",
+        slug: "business-intelligence",
         description: "Actionable insights through beautiful, real-time data visualization platforms.",
         icon: BarChart,
         lottieSrc: "/lottie/bpo-3d.json",
@@ -98,7 +98,7 @@ const services = [
     },
     {
         title: "Cloud Migration & Management",
-        slug: "cloud-migration-management",
+        slug: "cloud-migration",
         description: "Secure, efficient transition to cloud infrastructure with ongoing optimization.",
         icon: Server,
         lottieSrc: "/lottie/cloud-animation.json",

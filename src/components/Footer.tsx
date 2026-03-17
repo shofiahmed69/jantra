@@ -72,12 +72,12 @@ export default function Footer() {
                         </h3>
                         <ul className="space-y-3">
                             {[
-                                { label: "Custom Software", href: "/services/custom-software-development" },
-                                { label: "AI Agents", href: "/services/ai-agent-development" },
-                                { label: "Workflow Automation", href: "/services/agentic-workflow-automation" },
+                                { label: "Custom Software", href: "/services/custom-software" },
+                                { label: "AI Agents", href: "/services/ai-agent" },
+                                { label: "Workflow Automation", href: "/services/workflow-automation" },
                                 { label: "SaaS Development", href: "/services/saas" },
-                                { label: "Mobile Apps", href: "/services/mobile-app-development" },
-                                { label: "UI/UX Design", href: "/services/design" },
+                                { label: "Mobile Apps", href: "/services/mobile-app" },
+                                { label: "UI/UX Design", href: "/services/ui-ux-design" },
                             ].map(link => (
                                 <li key={link.href}>
                                     <Link href={link.href}
@@ -146,6 +146,6 @@ export default function Footer() {
                     </div>
                 </div>
             </div>
-        </footer>
+        </footer >
     );
 }
