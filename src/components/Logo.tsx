@@ -18,7 +18,7 @@ export default function Logo({
                 <path d="M25,65 H45 V85 H25 Z" />
             </g>
             {/* Signal Arrow Cut (White) */}
-            <polygon points="30,90 75,35 55,75 40,90" fill="white" />
+            <polygon points="30,90 75,35 55,75 40,90" fill="black" />
         </svg>
     )
 }
