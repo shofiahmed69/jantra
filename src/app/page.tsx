@@ -16,13 +16,13 @@ import {
 import LottiePlayer from "@/components/LottiePlayer";
 import {
   homeDifferentiators,
-  homePortfolioHighlights,
   homeProcess,
   homeServicePreview,
   homeStats,
   homeTechStack,
   homeTestimonials,
 } from "@/content/site";
+import { getFeaturedProjects } from "@/data/projects";
 
 function Icon({ name }: { name: string }) {
   const common = "h-5 w-5";
@@ -62,6 +62,7 @@ function Icon({ name }: { name: string }) {
 }
 
 export default function HomePage() {
+  const featuredProjects = getFeaturedProjects();
   const techStackLoop = [...homeTechStack, ...homeTechStack];
   const processIcons = [SearchCheck, PencilRuler, Blocks, Rocket];
   const techIcons: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -97,12 +98,15 @@ export default function HomePage() {
                     JANTRA converts visitors into leads through premium Custom Software, AI Agents, and Agentic Workflow Automation.
                   </p>
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-center pt-2">
-                    <Link
-                      href="#work-section"
-                      className="inline-flex items-center justify-center rounded-full bg-slate-900 px-8 py-4 text-base font-bold text-white shadow-xl transition-all hover:bg-slate-800 hover:scale-[1.02] active:scale-95"
+                    <button
+                      onClick={() => {
+                        document.getElementById('portfolio-section')
+                          ?.scrollIntoView({ behavior: 'smooth' })
+                      }}
+                      className="inline-flex items-center justify-center rounded-full bg-slate-900 px-8 py-4 text-base font-bold text-white shadow-xl transition-all hover:bg-slate-800 hover:scale-[1.02] active:scale-95 cursor-pointer"
                     >
                       View Our Work
-                    </Link>
+                    </button>
                     <Link
                       href="/services"
                       className="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white/50 px-8 py-4 text-base font-semibold text-slate-800 transition-all hover:bg-white hover:border-orange-200"
@@ -337,7 +341,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="work-section" className="py-10 lg:py-14 px-6 scroll-mt-32">
+      <section id="portfolio-section" className="py-10 lg:py-14 px-6 scroll-mt-32">
         <div className="mx-auto max-w-[1400px]">
           <div className="mb-12 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div className="max-w-2xl">
@@ -351,9 +355,9 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="grid gap-8 lg:grid-cols-3">
-            {homePortfolioHighlights.map((project, index) => (
+            {featuredProjects.map((project, index) => (
               <Link
-                key={project.name}
+                key={project.title}
                 href={`/work/${project.slug}`}
                 className="group flex flex-col fade-up"
                 style={{ animationDelay: `${200 + index * 100}ms` }}
@@ -361,7 +365,7 @@ export default function HomePage() {
                 <div className="relative aspect-[16/10] overflow-hidden rounded-3xl border border-slate-200 bg-slate-100 shadow-sm transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-orange-500/10 group-hover:-translate-y-2">
                   <Image
                     src={project.thumbnail}
-                    alt={project.name}
+                    alt={project.title}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-110"
                   />
@@ -375,7 +379,7 @@ export default function HomePage() {
                 <div className="mt-6 px-2">
                   <div className="flex items-center gap-2 mb-3">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-orange-600 bg-orange-50 px-2 py-1 rounded-md border border-orange-100">
-                      {project.category}
+                      {project.category[0]}
                     </span>
                     <div className="flex gap-1">
                       {project.tags.map(tag => (
@@ -386,10 +390,10 @@ export default function HomePage() {
                     </div>
                   </div>
                   <h3 className="text-2xl font-bold text-slate-900 group-hover:text-orange-600 transition-colors">
-                    {project.name}
+                    {project.title}
                   </h3>
                   <p className="mt-3 text-sm leading-relaxed text-slate-600 line-clamp-2">
-                    {project.summary}
+                    {project.description}
                   </p>
                 </div>
               </Link>

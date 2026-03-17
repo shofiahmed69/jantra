@@ -1,65 +1,19 @@
-import Link from "next/link";
-import { ArrowLeft, ArrowRight, ExternalLink } from "lucide-react";
+"use client";
 
-const projects = [
-    {
-        title: "FinEdge Analytics",
-        slug: "finedge-analytics",
-        category: "Web",
-        description: "A high-performance financial dashboard handling millions of transactions in real-time.",
-        bgColor: "bg-slate-200",
-        logo: "F",
-        tags: ["React", "Node.js", "WebSockets"]
-    },
-    {
-        title: "HealthSync Mobile",
-        slug: "healthsync-mobile",
-        category: "Mobile",
-        description: "Patient management and telemedicine app with end-to-end encryption.",
-        bgColor: "bg-orange-100",
-        logo: "H",
-        tags: ["React Native", "WebRTC", "HIPAA"]
-    },
-    {
-        title: "AutoServe Support Agent",
-        slug: "autoserve-agent",
-        category: "AI",
-        description: "Autonomous customer service LLM agent resolving 80% of tier 1 tickets.",
-        bgColor: "bg-slate-800",
-        logo: "A",
-        textWhite: true,
-        tags: ["OpenAI", "Python", "Vector DB"]
-    },
-    {
-        title: "RetailFlow Platform",
-        slug: "retailflow-platform",
-        category: "SaaS",
-        description: "Multi-tenant inventory management system for global retail chains.",
-        bgColor: "bg-blue-100",
-        logo: "R",
-        tags: ["Next.js", "PostgreSQL", "AWS"]
-    },
-    {
-        title: "LogiChain Automation",
-        slug: "logichain-automation",
-        category: "Automation",
-        description: "Agentic workflow automating entire supply chain logistics from warehouse to delivery.",
-        bgColor: "bg-emerald-100",
-        logo: "L",
-        tags: ["Zapier", "Custom Microservices", "IoT"]
-    },
-    {
-        title: "Nexus 3D Engine",
-        slug: "nexus-3d-engine",
-        category: "Web",
-        description: "In-browser spatial computing environment for architectural rendering.",
-        bgColor: "bg-purple-100",
-        logo: "N",
-        tags: ["Three.js", "WebGL", "Rust"]
-    }
-];
+import { useState } from "react";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { getAllProjects } from "@/data/projects";
 
 export default function PortfolioPage() {
+    const allProjects = getAllProjects();
+    const categories = ["All", "Web", "Mobile", "AI", "SaaS", "Automation"];
+    const [activeFilter, setActiveFilter] = useState("All");
+
+    const filteredProjects = activeFilter === "All"
+        ? allProjects
+        : allProjects.filter(p => p.category.includes(activeFilter));
+
     return (
         <main className="relative w-full min-h-screen pt-32 pb-24 overflow-hidden">
             <div className="max-w-7xl mx-auto px-6">
@@ -77,11 +31,14 @@ export default function PortfolioPage() {
 
                 {/* Category Filters */}
                 <div className="flex flex-wrap justify-center gap-2 md:gap-4 mb-16">
-                    {["All Work", "Web", "Mobile", "AI", "SaaS", "Automation"].map((cat, i) => (
-                        <button key={i} className={`px-5 py-2.5 rounded-full text-sm font-bold transition-all ${i === 0
-                            ? "bg-slate-900 text-white shadow-md hover:bg-orange-600"
-                            : "bg-white border border-slate-200 text-slate-600 hover:border-orange-500 hover:text-orange-600 shadow-sm"
-                            }`}>
+                    {categories.map((cat) => (
+                        <button
+                            key={cat}
+                            onClick={() => setActiveFilter(cat)}
+                            className={`px-5 py-2.5 rounded-full text-sm font-bold transition-all cursor-pointer ${activeFilter === cat
+                                ? "bg-slate-900 text-white shadow-md"
+                                : "bg-white border border-slate-200 text-slate-600 hover:border-orange-500 hover:text-orange-600 shadow-sm"
+                                }`}>
                             {cat}
                         </button>
                     ))}
@@ -89,16 +46,31 @@ export default function PortfolioPage() {
 
                 {/* Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {projects.map((project, i) => (
+                    {filteredProjects.map((project, i) => (
                         <Link key={i} href={`/work/${project.slug}`} className="group block focus:outline-none">
-                            <div className={`w-full aspect-[4/3] ${project.bgColor} rounded-3xl mb-6 flex items-center justify-center relative overflow-hidden group-hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)] transition-all duration-500`}>
-                                <div className={`text-8xl font-black ${project.textWhite ? 'text-white/20' : 'text-slate-900/10'} group-hover:scale-110 transition-transform duration-700`}>
-                                    {project.logo}
+                            <div className="relative w-full h-64 bg-slate-100 rounded-3xl mb-6 overflow-hidden group-hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)] transition-all duration-500">
+                                {project.thumbnail ? (
+                                    <img
+                                        src={project.thumbnail}
+                                        alt={project.title}
+                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                        onError={(e) => {
+                                            const target = e.currentTarget;
+                                            target.style.display = 'none';
+                                            const fallback = target.nextElementSibling;
+                                            if (fallback) fallback.classList.remove('hidden');
+                                        }}
+                                    />
+                                ) : null}
+                                <div className={`${project.thumbnail ? 'hidden' : ''} w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-50 to-slate-100`}>
+                                    <span className="text-8xl font-black text-slate-900/10 group-hover:scale-110 transition-transform duration-700">
+                                        {project.title.charAt(0)}
+                                    </span>
                                 </div>
 
                                 {/* Overlay hover */}
                                 <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden md:flex items-center justify-center">
-                                    <div className="bg-white text-slate-900 px-6 py-3 rounded-full font-bold flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                                    <div className="bg-white text-slate-900 px-6 py-3 rounded-full font-bold flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 text-sm">
                                         View Case Study <ArrowRight className="w-4 h-4" />
                                     </div>
                                 </div>
@@ -110,7 +82,7 @@ export default function PortfolioPage() {
 
                             <div className="px-2">
                                 <div className="flex items-center justify-between mb-2 mt-4">
-                                    <span className="text-orange-600 text-xs font-bold uppercase tracking-wider">{project.category}</span>
+                                    <span className="text-orange-600 text-xs font-bold uppercase tracking-wider">{project.category[0]}</span>
                                     <div className="flex gap-2">
                                         {project.tags.slice(0, 2).map((tag, t) => (
                                             <span key={t} className="text-[10px] font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">
@@ -119,10 +91,10 @@ export default function PortfolioPage() {
                                         ))}
                                     </div>
                                 </div>
-                                <h3 className="text-xl md:text-2xl font-bold text-slate-900 mb-2 group-hover:text-orange-600 transition-colors flex items-center justify-between">
+                                <h3 className="text-xl md:text-2xl font-bold text-slate-900 mb-2 group-hover:text-orange-600 transition-colors">
                                     {project.title}
                                 </h3>
-                                <p className="text-slate-600 text-sm md:text-base leading-relaxed">
+                                <p className="text-slate-600 text-sm md:text-base leading-relaxed line-clamp-2">
                                     {project.description}
                                 </p>
                             </div>

@@ -53,7 +53,7 @@ export default function Navbar() {
                 {/* Desktop CTA */}
                 <div className="hidden md:flex items-center pr-2">
                     <Link
-                        href="/#work-section"
+                        href="/#portfolio-section"
                         className="bg-slate-900 text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-slate-800 transition-all active:scale-95 whitespace-nowrap"
                     >
                         View Our Work
@@ -89,7 +89,7 @@ export default function Navbar() {
                         </Link>
                     ))}
                     <Link
-                        href="/checkout"
+                        href="/#portfolio-section"
                         onClick={() => setMobileOpen(false)}
                         className="block w-full text-center bg-slate-900 text-white px-6 py-3 rounded-full text-sm font-semibold hover:bg-slate-800 transition-all"
                     >
