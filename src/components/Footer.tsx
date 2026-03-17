@@ -1,104 +1,148 @@
-import Link from "next/link";
-import { Linkedin, Twitter, Github, Dribbble, ArrowRight } from "lucide-react";
+"use client";
+
+import Link from 'next/link';
+import Logo from '@/components/Logo';
 
 export default function Footer() {
-    const currentYear = new Date().getFullYear();
-
     return (
-        <footer className="relative z-10 pt-20 pb-10 px-6 mt-auto bg-white/5 border-t border-slate-200 backdrop-blur-md">
-            <div className="container mx-auto max-w-7xl">
-                {/* Top Section: Newsletter & Intro */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 mb-16">
-                    <div>
-                        <Link href="/" className="inline-block mb-6">
-                            <span className="text-xl md:text-2xl font-bold tracking-widest uppercase text-slate-900 flex items-center gap-2">
-                                <div className="w-8 h-8 rounded-lg bg-orange-600 flex items-center justify-center text-white font-black text-sm">
-                                    J
-                                </div>
+        <footer className="bg-slate-900 text-white pt-16 pb-8 px-6 md:px-12">
+            <div className="max-w-6xl mx-auto">
+                {/* Top section */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-white/10">
+                    {/* Brand column */}
+                    <div className="lg:col-span-2">
+                        <Link href="/" className="flex items-center gap-2 mb-4">
+                            <Logo className="w-8 h-8" />
+                            <span className="text-xl font-bold tracking-wide">
                                 JANTRA
                             </span>
                         </Link>
-                        <p className="text-slate-600 mb-8 max-w-md text-sm md:text-base leading-relaxed">
-                            We design and build bespoke software solutions, autonomous agents, and scalable platforms for modern enterprises.
+                        <p className="text-slate-400 text-sm leading-relaxed max-w-xs">
+                            Building digital excellence through custom software, AI agents, and workflow automation.
                         </p>
-
-                        {/* Newsletter Mini */}
-                        <div className="space-y-3 max-w-md">
-                            <h4 className="text-sm font-bold text-slate-900">Subscribe for insights</h4>
-                            <div className="flex items-center gap-2">
-                                <input
-                                    type="email"
-                                    placeholder="your@email.com"
-                                    className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500/50 text-sm"
-                                />
-                                <button className="p-2.5 bg-slate-900 text-white rounded-xl hover:bg-orange-600 transition-colors shadow-md">
-                                    <ArrowRight className="w-5 h-5" />
-                                </button>
-                            </div>
+                        <p className="text-slate-500 text-xs mt-4">
+                            Dhaka, Bangladesh 🇧🇩<br />
+                            Mon–Fri, 9AM–6PM (GMT+6)
+                        </p>
+                        {/* Social links */}
+                        <div className="flex gap-3 mt-6">
+                            <a href="https://linkedin.com" target="_blank" rel="noreferrer"
+                                className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center hover:bg-orange-500 transition text-sm">
+                                in
+                            </a>
+                            <a href="https://twitter.com" target="_blank" rel="noreferrer"
+                                className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center hover:bg-orange-500 transition text-sm">
+                                𝕏
+                            </a>
+                            <a href="https://github.com" target="_blank" rel="noreferrer"
+                                className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center hover:bg-orange-500 transition text-sm">
+                                gh
+                            </a>
                         </div>
                     </div>
 
-                    {/* Navigation Columns */}
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-8">
-                        {/* Column 1 */}
-                        <div>
-                            <h4 className="font-bold text-slate-900 mb-4 text-sm uppercase tracking-wider">Services</h4>
-                            <ul className="space-y-3">
-                                <li><Link href="/services/custom-software-development" className="text-slate-500 hover:text-orange-600 text-sm transition-colors">Custom Software</Link></li>
-                                <li><Link href="/services/ai-agent-development" className="text-slate-500 hover:text-orange-600 text-sm transition-colors">AI Agents</Link></li>
-                                <li><Link href="/services/mobile-app-development" className="text-slate-500 hover:text-orange-600 text-sm transition-colors">Mobile Apps</Link></li>
-                                <li><Link href="/services/agentic-workflow-automation" className="text-slate-500 hover:text-orange-600 text-sm transition-colors">Workflow Automation</Link></li>
-                                <li><Link href="/services" className="text-orange-600 font-medium hover:text-orange-700 text-sm transition-colors flex items-center gap-1 mt-2">View all <ArrowRight className="w-3 h-3" /></Link></li>
-                            </ul>
-                        </div>
+                    {/* Company links */}
+                    <div>
+                        <h3 className="text-xs uppercase tracking-widest text-orange-500 font-bold mb-5">
+                            Company
+                        </h3>
+                        <ul className="space-y-3">
+                            {[
+                                { label: "About Us", href: "/about" },
+                                { label: "Our Work", href: "/work" },
+                                { label: "Blog", href: "/blog" },
+                                { label: "Careers", href: "/careers" },
+                                { label: "Pricing", href: "/pricing" },
+                                { label: "Contact", href: "/contact" },
+                            ].map(link => (
+                                <li key={link.href}>
+                                    <Link href={link.href}
+                                        className="text-slate-400 text-sm hover:text-orange-400 transition">
+                                        {link.label}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
 
-                        {/* Column 2 */}
-                        <div>
-                            <h4 className="font-bold text-slate-900 mb-4 text-sm uppercase tracking-wider">Company</h4>
-                            <ul className="space-y-3">
-                                <li><Link href="/about" className="text-slate-500 hover:text-orange-600 text-sm transition-colors">About Us</Link></li>
-                                <li><Link href="/work" className="text-slate-500 hover:text-orange-600 text-sm transition-colors">Portfolio</Link></li>
-                                <li><Link href="/pricing" className="text-slate-500 hover:text-orange-600 text-sm transition-colors">Pricing</Link></li>
-                                <li><Link href="/careers" className="text-slate-500 hover:text-orange-600 text-sm transition-colors flex items-center gap-2">Careers <span className="bg-orange-100 text-orange-600 text-[10px] px-1.5 py-0.5 rounded font-bold">HIRING</span></Link></li>
-                                <li><Link href="/blog" className="text-slate-500 hover:text-orange-600 text-sm transition-colors">Blog</Link></li>
-                            </ul>
-                        </div>
+                    {/* Services links */}
+                    <div>
+                        <h3 className="text-xs uppercase tracking-widest text-orange-500 font-bold mb-5">
+                            Services
+                        </h3>
+                        <ul className="space-y-3">
+                            {[
+                                { label: "Custom Software", href: "/services/custom-software-development" },
+                                { label: "AI Agents", href: "/services/ai-agent-development" },
+                                { label: "Workflow Automation", href: "/services/agentic-workflow-automation" },
+                                { label: "SaaS Development", href: "/services/saas" },
+                                { label: "Mobile Apps", href: "/services/mobile-app-development" },
+                                { label: "UI/UX Design", href: "/services/design" },
+                            ].map(link => (
+                                <li key={link.href}>
+                                    <Link href={link.href}
+                                        className="text-slate-400 text-sm hover:text-orange-400 transition">
+                                        {link.label}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
 
-                        {/* Column 3 */}
-                        <div className="col-span-2 sm:col-span-1">
-                            <h4 className="font-bold text-slate-900 mb-4 text-sm uppercase tracking-wider">Connect</h4>
-                            <ul className="space-y-3 mb-6">
-                                <li><Link href="/contact" className="text-slate-500 hover:text-orange-600 text-sm transition-colors">Contact Us</Link></li>
-                                <li><a href="mailto:hello@jantra.agency" className="text-slate-500 hover:text-orange-600 text-sm transition-colors">hello@jantra.agency</a></li>
-                            </ul>
+                    {/* Legal links */}
+                    <div>
+                        <h3 className="text-xs uppercase tracking-widest text-orange-500 font-bold mb-5">
+                            Legal
+                        </h3>
+                        <ul className="space-y-3">
+                            {[
+                                { label: "Privacy Policy", href: "/privacy" },
+                                { label: "Terms of Service", href: "/terms" },
+                            ].map(link => (
+                                <li key={link.href}>
+                                    <Link href={link.href}
+                                        className="text-slate-400 text-sm hover:text-orange-400 transition">
+                                        {link.label}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
 
-                            <h4 className="font-bold text-slate-900 mb-4 text-sm uppercase tracking-wider">Socials</h4>
-                            <div className="flex items-center gap-3">
-                                <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-100 text-slate-600 hover:bg-orange-100 hover:text-orange-600 transition-colors">
-                                    <Linkedin className="w-4 h-4" />
-                                </a>
-                                <a href="https://twitter.com" target="_blank" rel="noreferrer" className="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-100 text-slate-600 hover:bg-orange-100 hover:text-orange-600 transition-colors">
-                                    <Twitter className="w-4 h-4" />
-                                </a>
-                                <a href="https://github.com" target="_blank" rel="noreferrer" className="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-100 text-slate-600 hover:bg-orange-100 hover:text-orange-600 transition-colors">
-                                    <Github className="w-4 h-4" />
-                                </a>
-                                <a href="https://dribbble.com" target="_blank" rel="noreferrer" className="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-100 text-slate-600 hover:bg-orange-100 hover:text-orange-600 transition-colors">
-                                    <Dribbble className="w-4 h-4" />
-                                </a>
+                        {/* Newsletter */}
+                        <div className="mt-8">
+                            <h3 className="text-xs uppercase tracking-widest text-orange-500 font-bold mb-4">
+                                Stay Updated
+                            </h3>
+                            <div className="flex gap-2">
+                                <input
+                                    type="email"
+                                    placeholder="your@email.com"
+                                    className="flex-1 bg-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-orange-500 min-w-0"
+                                />
+                                <button className="bg-orange-500 text-white px-3 py-2 rounded-xl text-sm font-medium hover:bg-orange-600 transition whitespace-nowrap">
+                                    →
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Bottom Bar */}
-                <div className="pt-8 border-t border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <p className="text-slate-500 text-xs font-medium">
-                        &copy; {currentYear} JANTRA. ALL RIGHTS RESERVED.
+                {/* Bottom bar */}
+                <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <p className="text-slate-500 text-xs">
+                        © {new Date().getFullYear()} JANTRA. All rights reserved.
                     </p>
-                    <div className="flex items-center gap-6">
-                        <Link href="/privacy" className="text-slate-500 hover:text-slate-900 text-xs font-medium transition-colors">Privacy Policy</Link>
-                        <Link href="/terms" className="text-slate-500 hover:text-slate-900 text-xs font-medium transition-colors">Terms of Service</Link>
+                    <p className="text-slate-500 text-xs text-center md:text-right">
+                        Built with ❤️ in Dhaka, Bangladesh
+                    </p>
+                    <div className="flex items-center gap-2">
+                        <span className="relative flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
+                        </span>
+                        <span className="text-slate-500 text-xs">
+                            All systems operational
+                        </span>
                     </div>
                 </div>
             </div>

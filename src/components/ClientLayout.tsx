@@ -1,6 +1,7 @@
 'use client'
 import { usePathname } from 'next/navigation'
 import Navbar from './Navbar'
+import Footer from './Footer'
 
 export default function ClientLayout({
     children
@@ -14,6 +15,7 @@ export default function ClientLayout({
         <>
             {!isAdmin && <Navbar />}
             {children}
+            {!isAdmin && <Footer />}
         </>
     )
 }
