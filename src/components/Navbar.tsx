@@ -24,7 +24,7 @@ export default function Navbar() {
             className={`fixed top-0 left-0 right-0 z-[100] px-4 pt-4 md:pt-6 transition-all duration-300 ${scrolled ? "bg-white/95 backdrop-blur-md shadow-sm pb-4" : "bg-transparent"
                 }`}
         >
-            <div className={`mx-auto max-w-5xl glass-panel rounded-full px-4 sm:px-8 py-3 md:py-4 flex items-center justify-between relative transition-all duration-300 ${scrolled ? "border-transparent bg-transparent shadow-none" : ""}`}>
+            <div className={`mx-auto max-w-6xl glass-panel rounded-full px-4 sm:px-8 py-3 md:py-4 flex items-center justify-between relative transition-all duration-300 ${scrolled ? "border-transparent bg-transparent shadow-none" : ""}`}>
                 {/* Logo */}
                 <div className="flex items-center gap-2">
                     <Logo className="w-9 h-9" />
@@ -51,12 +51,14 @@ export default function Navbar() {
                 </div>
 
                 {/* Desktop CTA */}
-                <Link
-                    href="/checkout"
-                    className="hidden md:inline-block bg-slate-900 text-white px-6 py-2 rounded-full text-sm font-semibold hover:bg-slate-800 transition-all active:scale-95"
-                >
-                    View Our Work
-                </Link>
+                <div className="hidden md:flex items-center pr-2">
+                    <Link
+                        href="/#work-section"
+                        className="bg-slate-900 text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-slate-800 transition-all active:scale-95 whitespace-nowrap"
+                    >
+                        View Our Work
+                    </Link>
+                </div>
 
                 {/* Mobile hamburger */}
                 <button

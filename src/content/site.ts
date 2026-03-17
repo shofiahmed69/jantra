@@ -47,6 +47,9 @@ export interface PortfolioItem {
   category: string;
   summary: string;
   icon: string;
+  slug: string;
+  tags: string[];
+  thumbnail: string;
 }
 
 export interface TestimonialItem {
@@ -251,18 +254,27 @@ export const homePortfolioHighlights: PortfolioItem[] = [
     category: "Sales Platform",
     summary: "A workflow-heavy CRM that unified pipeline tracking, reporting, and AI-assisted follow-up.",
     icon: "chart",
+    slug: "finedge-analytics",
+    tags: ["React", "Node.js"],
+    thumbnail: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80",
   },
   {
     name: "PulseAI Assistant",
     category: "AI Operations",
     summary: "An internal assistant that reduced response time and automated team knowledge retrieval.",
     icon: "spark",
+    slug: "autoserve-agent",
+    tags: ["OpenAI", "Python"],
+    thumbnail: "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=800&q=80",
   },
   {
     name: "AutomateX Platform",
     category: "Workflow Automation",
     summary: "A process orchestration product connecting approvals, notifications, and business data sources.",
     icon: "flow",
+    slug: "logichain-automation",
+    tags: ["PostgreSQL", "AWS"],
+    thumbnail: "https://images.unsplash.com/photo-1518433278993-0a7fb1a494c3?auto=format&fit=crop&w=800&q=80",
   },
 ];
 

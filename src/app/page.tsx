@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Blocks, Globe2, PencilRuler, Rocket, SearchCheck } from "lucide-react";
+import { ArrowRight, Blocks, Globe2, PencilRuler, Rocket, SearchCheck } from "lucide-react";
 import { FaAws } from "react-icons/fa";
 import {
   SiDocker,
@@ -98,7 +98,7 @@ export default function HomePage() {
                   </p>
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-center pt-2">
                     <Link
-                      href="/checkout"
+                      href="#work-section"
                       className="inline-flex items-center justify-center rounded-full bg-slate-900 px-8 py-4 text-base font-bold text-white shadow-xl transition-all hover:bg-slate-800 hover:scale-[1.02] active:scale-95"
                     >
                       View Our Work
@@ -337,30 +337,72 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-10 lg:py-14 px-6">
+      <section id="work-section" className="py-10 lg:py-14 px-6 scroll-mt-32">
         <div className="mx-auto max-w-[1400px]">
-          <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div className="mb-12 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div className="max-w-2xl">
               <p className="text-xs font-bold uppercase tracking-[0.35em] text-orange-600">Portfolio Highlights</p>
               <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 md:text-5xl">
                 Selected product and automation work
               </h2>
             </div>
-            <Link href="/checkout" className="text-sm font-semibold text-orange-600 underline underline-offset-4">
-              View pricing and engagement models
+            <Link href="/checkout" className="group flex items-center gap-2 text-sm font-semibold text-slate-600 hover:text-orange-600 transition-colors">
+              View engagement models <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
-          <div className="grid gap-5 lg:grid-cols-3">
-            {homePortfolioHighlights.map((project) => (
-              <article key={project.name} className="glass-panel fade-up rounded-[1.75rem] p-6 transition-transform duration-300 hover:-translate-y-1" style={{ animationDelay: "220ms" }}>
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-slate-900 to-slate-700 text-white shadow-lg">
-                  <Icon name={project.icon} />
+          <div className="grid gap-8 lg:grid-cols-3">
+            {homePortfolioHighlights.map((project, index) => (
+              <Link
+                key={project.name}
+                href={`/work/${project.slug}`}
+                className="group flex flex-col fade-up"
+                style={{ animationDelay: `${200 + index * 100}ms` }}
+              >
+                <div className="relative aspect-[16/10] overflow-hidden rounded-3xl border border-slate-200 bg-slate-100 shadow-sm transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-orange-500/10 group-hover:-translate-y-2">
+                  <Image
+                    src={project.thumbnail}
+                    alt={project.name}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                    <div className="bg-white/90 backdrop-blur-md text-slate-900 px-5 py-2.5 rounded-full text-xs font-bold flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                      View Case Study <ArrowRight className="w-3.5 h-3.5" />
+                    </div>
+                  </div>
                 </div>
-                <p className="mt-4 text-xs font-bold uppercase tracking-[0.3em] text-orange-600">{project.category}</p>
-                <h3 className="mt-3 text-2xl font-bold text-slate-900">{project.name}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-slate-600">{project.summary}</p>
-              </article>
+
+                <div className="mt-6 px-2">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-orange-600 bg-orange-50 px-2 py-1 rounded-md border border-orange-100">
+                      {project.category}
+                    </span>
+                    <div className="flex gap-1">
+                      {project.tags.map(tag => (
+                        <span key={tag} className="text-[10px] font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded-md">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <h3 className="text-2xl font-bold text-slate-900 group-hover:text-orange-600 transition-colors">
+                    {project.name}
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed text-slate-600 line-clamp-2">
+                    {project.summary}
+                  </p>
+                </div>
+              </Link>
             ))}
+          </div>
+
+          <div className="mt-16 text-center">
+            <Link
+              href="/work"
+              className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-8 py-4 text-base font-bold text-slate-900 shadow-sm transition-all hover:border-orange-200 hover:bg-orange-50 active:scale-95"
+            >
+              View All Projects <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
         </div>
       </section>
