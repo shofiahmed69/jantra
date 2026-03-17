@@ -37,7 +37,7 @@ import {
   homeTechStack,
   homeTestimonials,
 } from "@/content/site";
-import { getFeaturedProjects } from "@/data/projects";
+import { getFeaturedProjects, getProjectGradient } from "@/data/projects";
 import api from "@/lib/api";
 
 function Icon({ name }: { name: string }) {
@@ -79,20 +79,8 @@ export default function HomePage() {
   };
 
   useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const res = await api.get("/work/featured");
-        if (res.data.success && res.data.data.length > 0) {
-          setFeaturedProjects(res.data.data);
-        } else {
-          setFeaturedProjects(getFeaturedProjects());
-        }
-      } catch (error) {
-        console.error("API failed, using fallback", error);
-        setFeaturedProjects(getFeaturedProjects());
-      }
-    };
-    fetchProjects();
+    // We prioritize local projects as requested for consistency
+    setFeaturedProjects(getFeaturedProjects());
   }, []);
 
   return (
@@ -371,6 +359,7 @@ export default function HomePage() {
               View engagement models <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
+
           <div className="grid gap-8 lg:grid-cols-3">
             {featuredProjects.map((project, index) => (
               <Link
@@ -379,19 +368,12 @@ export default function HomePage() {
                 className="group flex flex-col fade-up"
                 style={{ animationDelay: `${200 + index * 100}ms` }}
               >
-                <div className="relative aspect-[16/10] overflow-hidden rounded-3xl border border-slate-200 bg-slate-100 shadow-sm transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-orange-500/10 group-hover:-translate-y-2">
-                  {project.thumbnail ? (
-                    <Image
-                      src={project.thumbnail}
-                      alt={project.title}
-                      fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-50 to-slate-100">
-                      <span className="text-8xl font-black text-slate-900/10">{project.title.charAt(0)}</span>
-                    </div>
-                  )}
+                <div className="relative aspect-[16/10] overflow-hidden rounded-3xl border border-slate-200 shadow-sm transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-orange-500/10 group-hover:-translate-y-2">
+                  <div className={`w-full h-full bg-gradient-to-br ${getProjectGradient(index)} flex items-center justify-center overflow-hidden relative`}>
+                    <span className="text-white font-black opacity-20 select-none" style={{ fontSize: '8rem', lineHeight: 1 }}>
+                      {project.title.charAt(0)}
+                    </span>
+                  </div>
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
                     <div className="bg-white/90 backdrop-blur-md text-slate-900 px-5 py-2.5 rounded-full text-xs font-bold flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                       View Case Study <ArrowRight className="w-3.5 h-3.5" />

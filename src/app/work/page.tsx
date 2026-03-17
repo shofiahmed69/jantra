@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { ArrowRight, Loader2 } from "lucide-react";
 import api from "@/lib/api";
+import { getAllProjects, getProjectGradient } from "@/data/projects";
 
 export default function PortfolioPage() {
     const [allProjects, setAllProjects] = useState<any[]>([]);
@@ -12,17 +13,9 @@ export default function PortfolioPage() {
     const [activeFilter, setActiveFilter] = useState("All");
 
     useEffect(() => {
-        const fetchProjects = async () => {
-            try {
-                const res = await api.get("/work");
-                setAllProjects(res.data.data || []);
-            } catch (error) {
-                console.error("Failed to fetch projects", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchProjects();
+        // We prioritize local projects as requested for consistency
+        setAllProjects(getAllProjects());
+        setLoading(false);
     }, []);
 
     const filteredProjects = activeFilter === "All"
@@ -67,27 +60,13 @@ export default function PortfolioPage() {
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
                         {filteredProjects.map((project, i) => (
                             <Link key={i} href={`/work/${project.slug}`} className="group block focus:outline-none">
-                                <div className="relative w-full h-64 bg-slate-100 rounded-3xl mb-6 overflow-hidden group-hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)] transition-all duration-500">
-                                    {project.thumbnail ? (
-                                        <img
-                                            src={project.thumbnail}
-                                            alt={project.title}
-                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                            onError={(e) => {
-                                                const target = e.currentTarget;
-                                                target.style.display = 'none';
-                                                const fallback = target.nextElementSibling;
-                                                if (fallback) fallback.classList.remove('hidden');
-                                            }}
-                                        />
-                                    ) : null}
-                                    <div className={`${project.thumbnail ? 'hidden' : ''} w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-50 to-slate-100`}>
-                                        <span className="text-8xl font-black text-slate-900/10 group-hover:scale-110 transition-transform duration-700">
-                                            {project.title.charAt(0)}
-                                        </span>
-                                    </div>
+                                <div className={`w-full h-52 rounded-xl bg-gradient-to-br ${getProjectGradient(i)} flex items-center justify-center overflow-hidden relative mb-6 group-hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)] transition-all duration-500`}>
+                                    <span className="text-white font-black opacity-20 select-none" style={{ fontSize: '8rem', lineHeight: 1 }}>
+                                        {project.title.charAt(0)}
+                                    </span>
 
                                     {/* Overlay hover */}
                                     <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden md:flex items-center justify-center">
