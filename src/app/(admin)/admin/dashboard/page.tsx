@@ -146,7 +146,7 @@ export default function DashboardPage() {
 
                     <div className="mt-10 p-5 rounded-[1.5rem] bg-slate-900 text-white shadow-xl shadow-slate-200">
                         <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-2">Build Version</p>
-                        <h4 className="font-bold text-lg leading-tight">JONTRO <br /> Dashboard v1.0</h4>
+                        <h4 className="font-bold text-lg leading-tight">JANTRA <br /> Dashboard v1.0</h4>
                         <p className="text-xs text-slate-400 mt-4 leading-relaxed">Enterprise management interface for real-time operations.</p>
                     </div>
                 </div>

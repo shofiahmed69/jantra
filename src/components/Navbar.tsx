@@ -2,16 +2,28 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { navItems } from "@/content/site";
 
 export default function Navbar() {
     const pathname = usePathname();
     const [mobileOpen, setMobileOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 10);
+        };
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
 
     return (
-        <nav className="fixed top-0 left-0 right-0 z-[100] px-4 pt-4 md:pt-6">
-            <div className="mx-auto max-w-5xl glass-panel rounded-full px-4 sm:px-8 py-3 md:py-4 flex items-center justify-between relative">
+        <nav
+            className={`fixed top-0 left-0 right-0 z-[100] px-4 pt-4 md:pt-6 transition-all duration-300 ${scrolled ? "bg-white/95 backdrop-blur-md shadow-sm pb-4" : "bg-transparent"
+                }`}
+        >
+            <div className={`mx-auto max-w-5xl glass-panel rounded-full px-4 sm:px-8 py-3 md:py-4 flex items-center justify-between relative transition-all duration-300 ${scrolled ? "border-transparent bg-transparent shadow-none" : ""}`}>
                 {/* Logo */}
                 <div className="flex items-center gap-2">
                     <div className="w-7 h-7 md:w-8 md:h-8 bg-gradient-to-tr from-orange-500 to-orange-400 rounded-lg flex-shrink-0" />

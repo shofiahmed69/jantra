@@ -51,7 +51,7 @@ export default function CareersPage() {
                     </a>
                 </header>
 
-                {/* Why JONTRO */}
+                {/* Why JANTRA */}
                 <section className="mb-24">
                     <div className="text-center mb-16">
                         <h2 className="text-3xl md:text-5xl font-bold text-slate-900">Why build with us?</h2>

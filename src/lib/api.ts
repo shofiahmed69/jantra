@@ -28,7 +28,7 @@ const api = axios.create({
 
 // Request interceptor to add JWT token
 api.interceptors.request.use((config) => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('jontro_admin_token') : null;
+    const token = typeof window !== 'undefined' ? localStorage.getItem('jantra_admin_token') : null;
     if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
     }

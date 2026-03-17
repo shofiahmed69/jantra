@@ -149,7 +149,7 @@ export default function BlogManagementPage() {
                                     <tr key={post.id} className="hover:bg-white/40 transition-colors group">
                                         <td className="px-8 py-6 max-w-xs text-sm">
                                             <p className="font-bold text-slate-800 truncate">{post.title}</p>
-                                            <p className="text-[10px] text-slate-400 font-medium">By {post.author?.name || "JONTRO Team"}</p>
+                                            <p className="text-[10px] text-slate-400 font-medium">By {post.author?.name || "JANTRA Team"}</p>
                                         </td>
                                         <td className="px-8 py-6">
                                             <span className="flex items-center gap-1.5 text-xs text-slate-600 bg-slate-100/50 px-3 py-1.5 rounded-full font-medium">

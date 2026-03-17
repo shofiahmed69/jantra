@@ -4,7 +4,7 @@ import { pricingTiers } from "@/content/site";
 
 export default function CheckoutPage() {
     return (
-        <main className="relative w-full min-h-screen overflow-hidden pt-24 md:pt-0">
+        <main className="relative w-full min-h-screen overflow-hidden pt-24">
 
             {/* Pricing Interface */}
             <section className="relative mx-auto px-4 sm:px-6 z-20 w-full max-w-6xl mt-12 lg:mt-32 mb-24">

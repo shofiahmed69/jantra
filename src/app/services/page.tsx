@@ -110,7 +110,7 @@ const services = [
 
 export default function ServicesPage() {
     return (
-        <main className="relative w-full overflow-x-hidden">
+        <main className="relative w-full overflow-x-hidden pt-24">
             {/* Hero Section */}
             <header className="pt-32 md:pt-48 pb-10 md:pb-16 text-center px-6">
                 <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold tracking-tight text-slate-900 mb-4 md:mb-6">

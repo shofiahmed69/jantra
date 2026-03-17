@@ -51,7 +51,7 @@ export default function SubmitBlogPage() {
                 <div className="bg-white rounded-[2.5rem] shadow-xl border border-slate-200 overflow-hidden">
                     <div className="bg-slate-900 p-10 text-white">
                         <h1 className="text-3xl font-bold mb-4">Submit a Guest Post</h1>
-                        <p className="text-slate-400">Share your expertise with the JONTRO community. All submissions are reviewed by our editorial team before publishing.</p>
+                        <p className="text-slate-400">Share your expertise with the JANTRA community. All submissions are reviewed by our editorial team before publishing.</p>
                     </div>
 
                     <div className="p-10">

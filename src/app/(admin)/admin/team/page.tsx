@@ -74,7 +74,7 @@ export default function TeamManagementPage() {
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h2 className="text-2xl font-bold text-slate-800 tracking-tight">Architectural Team</h2>
-                    <p className="text-sm text-slate-500">Manage the senior engineers and researchers representing JONTRO.</p>
+                    <p className="text-sm text-slate-500">Manage the senior engineers and researchers representing JANTRA.</p>
                 </div>
 
                 <button

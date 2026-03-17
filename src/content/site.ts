@@ -268,7 +268,7 @@ export const homePortfolioHighlights: PortfolioItem[] = [
 
 export const homeTestimonials: TestimonialItem[] = [
   {
-    quote: "JONTRO felt like an embedded product team. They moved fast, documented decisions well, and delivered without drama.",
+    quote: "JANTRA felt like an embedded product team. They moved fast, documented decisions well, and delivered without drama.",
     author: "Amina Rahman",
     role: "Operations Director, Fintech Client",
     avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&q=80",

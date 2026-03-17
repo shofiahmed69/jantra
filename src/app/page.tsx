@@ -78,7 +78,7 @@ export default function HomePage() {
   };
 
   return (
-    <main className="relative overflow-hidden pt-16">
+    <main className="relative overflow-hidden pt-24">
       <section className="relative px-6 py-6 lg:py-10">
         <div className="mx-auto max-w-[1600px]">
           <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-orange-100/40 via-white/40 to-amber-50/40 p-1 shadow-[0_20px_50px_-20px_rgba(249,115,22,0.3)]">
@@ -227,7 +227,7 @@ export default function HomePage() {
           <div className="overflow-hidden rounded-[2rem] border border-orange-100 bg-gradient-to-br from-white via-orange-50/55 to-amber-50/70 shadow-[0_24px_60px_-36px_rgba(249,115,22,0.3)]">
             <div className="h-full p-8 text-slate-900 md:p-10">
               <div className="inline-flex items-center rounded-full border border-orange-200 bg-white/80 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.35em] text-orange-600">
-                Why JONTRO
+                Why JANTRA
               </div>
               <h2 className="mt-5 text-3xl font-bold tracking-tight md:text-5xl">
                 A delivery model built to create trust before launch day
