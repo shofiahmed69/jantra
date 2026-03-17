@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { navItems } from "@/content/site";
+import Logo from "@/components/Logo";
 
 export default function Navbar() {
     const pathname = usePathname();
@@ -26,7 +27,7 @@ export default function Navbar() {
             <div className={`mx-auto max-w-5xl glass-panel rounded-full px-4 sm:px-8 py-3 md:py-4 flex items-center justify-between relative transition-all duration-300 ${scrolled ? "border-transparent bg-transparent shadow-none" : ""}`}>
                 {/* Logo */}
                 <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 md:w-8 md:h-8 bg-gradient-to-tr from-orange-500 to-orange-400 rounded-lg flex-shrink-0" />
+                    <Logo className="w-9 h-9" />
                     <Link href="/" className="text-lg md:text-xl font-bold tracking-tight text-slate-900">
                         JANTRA
                     </Link>

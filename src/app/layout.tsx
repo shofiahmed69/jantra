@@ -17,6 +17,9 @@ const headingFont = Space_Grotesk({
 export const metadata: Metadata = {
   title: "JANTRA - Enterprise Software, Reimagined",
   description: "Experience the next generation of spatial computing for business. Modular, intuitive, and designed for the visionaries of tomorrow.",
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
