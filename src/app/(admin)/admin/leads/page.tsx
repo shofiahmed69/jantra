@@ -129,8 +129,8 @@ export default function LeadsPage() {
                 </div>
             </header>
 
-            {/* Table Section */}
-            <div className="glass-panel overflow-hidden border-white/60 shadow-xl rounded-[2.5rem]">
+            {/* Desktop Table View */}
+            <div className="hidden md:block glass-panel overflow-hidden border-white/60 shadow-xl rounded-[2.5rem]">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
                         <thead>
@@ -221,125 +221,179 @@ export default function LeadsPage() {
                         </tbody>
                     </table>
                 </div>
-
-                {/* Pagination */}
-                <div className="px-8 py-6 bg-slate-900/5 flex items-center justify-between border-t border-white/20">
-                    <p className="text-xs text-slate-500 font-medium">
-                        Showing page <span className="text-slate-900">{page}</span> of <span className="text-slate-900">{totalPages}</span>
-                    </p>
-                    <div className="flex items-center gap-2">
-                        <button
-                            onClick={() => setPage(prev => Math.max(1, prev - 1))}
-                            disabled={page === 1}
-                            className="p-2 rounded-xl bg-white border border-slate-200 disabled:opacity-50 hover:bg-orange-50 transition-all"
-                        >
-                            <ChevronLeft className="w-4 h-4" />
-                        </button>
-                        <button
-                            onClick={() => setPage(prev => Math.min(totalPages, prev + 1))}
-                            disabled={page === totalPages}
-                            className="p-2 rounded-xl bg-white border border-slate-200 disabled:opacity-50 hover:bg-orange-50 transition-all"
-                        >
-                            <ChevronRight className="w-4 h-4" />
-                        </button>
-                    </div>
-                </div>
             </div>
 
-            {/* Lead Detail Modal */}
-            {selectedLead && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300">
-                    <div
-                        className="glass-panel w-full max-w-2xl rounded-[3rem] p-8 md:p-12 shadow-2xl relative animate-in zoom-in-95 duration-300"
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        <button
-                            onClick={() => setSelectedLead(null)}
-                            className="absolute right-8 top-8 p-3 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-slate-600"
-                        >
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-
-                        <div className="flex flex-col md:flex-row gap-8 mb-10">
-                            <div className="w-20 h-20 rounded-3xl bg-orange-100 flex items-center justify-center text-3xl font-bold text-orange-600 shadow-inner">
-                                {selectedLead.name[0]}
-                            </div>
-                            <div>
-                                <div className="flex items-center gap-3 mb-2">
-                                    <h2 className="text-3xl font-bold text-slate-800 tracking-tight">{selectedLead.name}</h2>
-                                    <span className={cn(
-                                        "text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest",
-                                        selectedLead.status === 'NEW' ? 'bg-orange-500 text-white' : 'bg-slate-900 text-white'
-                                    )}>
-                                        {selectedLead.status}
-                                    </span>
+            {/* Mobile Card View */}
+            <div className="block md:hidden space-y-4">
+                {loading && !leads.length ? (
+                    <div className="flex justify-center py-10">
+                        <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+                    </div>
+                ) : leads.length === 0 ? (
+                    <p className="text-center text-slate-500 py-10">No leads found.</p>
+                ) : (
+                    leads.map(lead => (
+                        <div key={lead.id} className="glass-panel p-6 rounded-3xl border-white/60 shadow-lg" onClick={() => setSelectedLead(lead)}>
+                            <div className="flex justify-between items-start mb-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-2xl bg-orange-100 flex items-center justify-center text-orange-600 font-bold uppercase text-xs">
+                                        {lead.name[0]}
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-slate-800">{lead.name}</h3>
+                                        <p className="text-xs text-slate-500">{lead.email}</p>
+                                    </div>
                                 </div>
-                                <p className="text-slate-500 flex items-center gap-2 font-medium">
-                                    <Mail className="w-4 h-4 text-orange-500" /> {selectedLead.email}
-                                </p>
+                                <span className={cn(
+                                    "text-[10px] font-bold px-3 py-1 rounded-full",
+                                    lead.status === 'NEW' ? 'bg-orange-100 text-orange-600' : 'bg-slate-100 text-slate-500'
+                                )}>
+                                    {lead.status}
+                                </span>
+                            </div>
+                            <div className="space-y-2 mb-4">
+                                <p className="text-sm text-slate-600 font-medium">Service: {lead.service}</p>
+                                <p className="text-xs text-slate-400">Date: {new Date(lead.createdAt).toLocaleDateString()}</p>
+                            </div>
+                            <div className="flex gap-2">
+                                <button className="flex-1 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-bold shadow-lg shadow-slate-200">
+                                    View Details
+                                </button>
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        deleteLead(lead.id);
+                                    }}
+                                    className="flex-1 py-2.5 bg-red-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-red-100"
+                                >
+                                    Delete
+                                </button>
                             </div>
                         </div>
+                    ))
+                )}
+            </div>
+            {/* Pagination */}
+            <div className="px-8 py-6 bg-slate-900/5 flex items-center justify-between border-t border-white/20">
+                <p className="text-xs text-slate-500 font-medium">
+                    Showing page <span className="text-slate-900">{page}</span> of <span className="text-slate-900">{totalPages}</span>
+                </p>
+                <div className="flex items-center gap-2">
+                    <button
+                        onClick={() => setPage(prev => Math.max(1, prev - 1))}
+                        disabled={page === 1}
+                        className="p-2 rounded-xl bg-white border border-slate-200 disabled:opacity-50 hover:bg-orange-50 transition-all"
+                    >
+                        <ChevronLeft className="w-4 h-4" />
+                    </button>
+                    <button
+                        onClick={() => setPage(prev => Math.min(totalPages, prev + 1))}
+                        disabled={page === totalPages}
+                        className="p-2 rounded-xl bg-white border border-slate-200 disabled:opacity-50 hover:bg-orange-50 transition-all"
+                    >
+                        <ChevronRight className="w-4 h-4" />
+                    </button>
+                </div>
+            </div>
+        </div>
 
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-10">
-                            <div className="p-4 rounded-3xl bg-white/40 border border-white/60">
-                                <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-1">Company</p>
-                                <p className="text-sm font-bold text-slate-800">{selectedLead.company || 'N/A'}</p>
-                            </div>
-                            <div className="p-4 rounded-3xl bg-white/40 border border-white/60">
-                                <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-1">Country</p>
-                                <p className="text-sm font-bold text-slate-800">{selectedLead.country || 'N/A'}</p>
-                            </div>
-                            <div className="p-4 rounded-3xl bg-white/40 border border-white/60">
-                                <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-1">Budget</p>
-                                <p className="text-sm font-bold text-orange-600">{selectedLead.budget || 'N/A'}</p>
-                            </div>
+            {/* Lead Detail Modal */ }
+    {
+        selectedLead && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300">
+                <div
+                    className="glass-panel w-full max-w-2xl rounded-[3rem] p-8 md:p-12 shadow-2xl relative animate-in zoom-in-95 duration-300"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <button
+                        onClick={() => setSelectedLead(null)}
+                        className="absolute right-8 top-8 p-3 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-slate-600"
+                    >
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+
+                    <div className="flex flex-col md:flex-row gap-8 mb-10">
+                        <div className="w-20 h-20 rounded-3xl bg-orange-100 flex items-center justify-center text-3xl font-bold text-orange-600 shadow-inner">
+                            {selectedLead.name[0]}
                         </div>
-
-                        <div className="mb-10">
-                            <div className="flex items-center gap-2 mb-4">
-                                <MessageSquare className="w-4 h-4 text-orange-500" />
-                                <h3 className="text-sm font-bold text-slate-800 uppercase tracking-widest">Project Description</h3>
+                        <div>
+                            <div className="flex items-center gap-3 mb-2">
+                                <h2 className="text-3xl font-bold text-slate-800 tracking-tight">{selectedLead.name}</h2>
+                                <span className={cn(
+                                    "text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest",
+                                    selectedLead.status === 'NEW' ? 'bg-orange-500 text-white' : 'bg-slate-900 text-white'
+                                )}>
+                                    {selectedLead.status}
+                                </span>
                             </div>
-                            <div className="p-6 rounded-[2rem] bg-white/60 border border-white shadow-inner min-h-[120px]">
-                                <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-wrap">
-                                    {selectedLead.description}
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="flex items-center justify-between pt-6 border-t border-white/30">
-                            <p className="text-xs text-slate-400 font-medium italic">
-                                Signal received on {new Date(selectedLead.createdAt).toLocaleString()}
-                                {selectedLead.referral && ` via ${selectedLead.referral}`}
+                            <p className="text-slate-500 flex items-center gap-2 font-medium">
+                                <Mail className="w-4 h-4 text-orange-500" /> {selectedLead.email}
                             </p>
-                            <div className="flex gap-3">
-                                <a
-                                    href={`mailto:${selectedLead.email}`}
-                                    className="px-6 py-3 rounded-2xl bg-slate-900 text-white font-bold text-sm hover:bg-orange-600 transition-all shadow-lg active:scale-95 flex items-center justify-center"
-                                >
-                                    Send Email
-                                </a>
-                                <button
-                                    onClick={() => updateStatus(selectedLead.id, 'QUALIFIED')}
-                                    className="px-6 py-3 rounded-2xl bg-white border border-slate-200 text-slate-800 font-bold text-sm hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-100 transition-all shadow-sm active:scale-95"
-                                >
-                                    Mark Qualified
-                                </button>
-                                <button
-                                    onClick={() => deleteLead(selectedLead.id)}
-                                    className="px-6 py-3 rounded-2xl bg-white border border-red-200 text-red-600 font-bold text-sm hover:bg-red-50 hover:text-red-700 hover:border-red-300 transition-all shadow-sm active:scale-95 flex items-center gap-2"
-                                >
-                                    🗑️ Delete
-                                </button>
-                            </div>
                         </div>
                     </div>
-                    {/* Backgrop Close Area */}
-                    <div className="absolute inset-0 z-[-1]" onClick={() => setSelectedLead(null)} />
+
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-10">
+                        <div className="p-4 rounded-3xl bg-white/40 border border-white/60">
+                            <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-1">Company</p>
+                            <p className="text-sm font-bold text-slate-800">{selectedLead.company || 'N/A'}</p>
+                        </div>
+                        <div className="p-4 rounded-3xl bg-white/40 border border-white/60">
+                            <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-1">Country</p>
+                            <p className="text-sm font-bold text-slate-800">{selectedLead.country || 'N/A'}</p>
+                        </div>
+                        <div className="p-4 rounded-3xl bg-white/40 border border-white/60">
+                            <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-1">Budget</p>
+                            <p className="text-sm font-bold text-orange-600">{selectedLead.budget || 'N/A'}</p>
+                        </div>
+                    </div>
+
+                    <div className="mb-10">
+                        <div className="flex items-center gap-2 mb-4">
+                            <MessageSquare className="w-4 h-4 text-orange-500" />
+                            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-widest">Project Description</h3>
+                        </div>
+                        <div className="p-6 rounded-[2rem] bg-white/60 border border-white shadow-inner min-h-[120px]">
+                            <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-wrap">
+                                {selectedLead.description}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-6 border-t border-white/30">
+                        <p className="text-xs text-slate-400 font-medium italic">
+                            Signal received on {new Date(selectedLead.createdAt).toLocaleString()}
+                            {selectedLead.referral && ` via ${selectedLead.referral}`}
+                        </p>
+                        <div className="flex gap-3">
+                            <a
+                                href={`mailto:${selectedLead.email}`}
+                                className="px-6 py-3 rounded-2xl bg-slate-900 text-white font-bold text-sm hover:bg-orange-600 transition-all shadow-lg active:scale-95 flex items-center justify-center"
+                            >
+                                Send Email
+                            </a>
+                            <button
+                                onClick={() => updateStatus(selectedLead.id, 'QUALIFIED')}
+                                className="px-6 py-3 rounded-2xl bg-white border border-slate-200 text-slate-800 font-bold text-sm hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-100 transition-all shadow-sm active:scale-95"
+                            >
+                                Mark Qualified
+                            </button>
+                            <button
+                                onClick={() => deleteLead(selectedLead.id)}
+                                className="px-6 py-3 rounded-2xl bg-white border border-red-200 text-red-600 font-bold text-sm hover:bg-red-50 hover:text-red-700 hover:border-red-300 transition-all shadow-sm active:scale-95 flex items-center gap-2"
+                            >
+                                🗑️ Delete
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            )}
-        </div>
+                {/* Backgrop Close Area */}
+                <div className="absolute inset-0 z-[-1]" onClick={() => setSelectedLead(null)} />
+            </div>
+        )
+    }
+        </div >
     );
 }
+

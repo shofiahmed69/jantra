@@ -11,7 +11,8 @@ import {
     LogOut,
     LayoutDashboard,
     Bell,
-    User
+    User,
+    Server
 } from "lucide-react";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
@@ -46,6 +47,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
     const menuItems = [
         { label: "Overview", href: "/admin/dashboard", icon: LayoutDashboard },
         { label: "Leads", href: "/admin/leads", icon: Bell },
+        { label: "Architecture", href: "/admin/architecture", icon: Server },
         { label: "Team Management", href: "/admin/team", icon: User },
         { label: "Applications", href: "/admin/careers", icon: Users },
         { label: "Blog Posts", href: "/admin/blog", icon: FileText },
@@ -93,8 +95,37 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
                 </div>
             </aside>
 
+            {/* Mobile Header */}
+            <header className="flex lg:hidden items-center justify-between p-4 bg-white border-b sticky top-0 z-40">
+                <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 bg-orange-500 rounded-lg shadow-sm" />
+                    <span className="font-bold text-slate-800">JANTRA Admin</span>
+                </div>
+                <span className="text-sm text-slate-500 font-medium">Dashboard</span>
+            </header>
+
+            {/* Mobile Bottom Navigation */}
+            <nav className="fixed bottom-0 left-0 right-0 bg-white border-t z-50 flex lg:hidden shadow-[0_-4px_10px_rgba(0,0,0,0.05)]">
+                {menuItems.slice(0, 5).map((item) => {
+                    const isActive = pathname === item.href;
+                    return (
+                        <Link
+                            key={item.href}
+                            href={item.href}
+                            className={cn(
+                                "flex-1 flex flex-col items-center py-3 text-[10px] font-bold transition-colors",
+                                isActive ? "text-orange-600" : "text-gray-400 hover:text-orange-500"
+                            )}
+                        >
+                            <item.icon className="w-5 h-5 mb-1" />
+                            <span>{item.label.split(' ')[0]}</span>
+                        </Link>
+                    );
+                })}
+            </nav>
+
             {/* Main Content */}
-            <main className="flex-1 lg:ml-72 p-4 md:p-8">
+            <main className="flex-1 lg:ml-72 p-4 md:p-8 pb-24 lg:pb-8">
                 <header className="flex items-center justify-between mb-8 pb-4 border-b border-slate-200">
                     <div>
                         <h1 className="text-2xl font-bold text-slate-800">Welcome Back</h1>
