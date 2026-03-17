@@ -89,6 +89,30 @@ export const projects: Project[] = [
         featured: true,
         published: true,
         order: 3
+    },
+    {
+        id: "4",
+        title: "LogiChain Automation",
+        slug: "logichain-automation",
+        client: "LogiChain Global",
+        category: ["Automation", "AI"],
+        tags: ["Node.js", "OpenAI", "PostgreSQL"],
+        description: "Reduced manual processing errors by 98% using custom LLM agents and agentic workflow automation for a global logistics firm.",
+        challenge: "A global logistics firm had 98% manual processing errors causing major delays in routing and shipment tracking.",
+        approach: "Built custom LLM agents with OpenAI to automate decision-making and parallel routing optimization with Node.js backend.",
+        features: [
+            "Custom LLM decision agents",
+            "Parallel routing optimization",
+            "Real-time shipment tracking",
+            "Error detection and correction",
+            "Automated reporting"
+        ],
+        techStack: ["Node.js", "OpenAI", "PostgreSQL", "Redis", "AWS Lambda"],
+        results: "98% reduction in processing errors and 40% increase in routing efficiency.",
+        duration: "5 Months",
+        featured: false,
+        published: true,
+        order: 4
     }
 ]
 

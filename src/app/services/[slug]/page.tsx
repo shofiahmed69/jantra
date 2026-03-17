@@ -161,9 +161,12 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
 
                 {/* 8. Case Study Teaser */}
                 <section className="mb-24 bg-orange-50 border border-orange-100 rounded-[3rem] p-8 md:p-12 lg:p-16 flex flex-col md:flex-row items-center gap-10">
-                    <div className="w-full md:w-1/3 aspect-square bg-orange-500 rounded-[2.5rem] flex items-center justify-center text-7xl font-black text-white/20 relative overflow-hidden shadow-xl">
-                        <div className="absolute inset-0 bg-[url('/img/placeholder-abstract.jpg')] opacity-20 bg-cover bg-center mix-blend-overlay"></div>
-                        C
+                    <div className="w-full md:w-1/3 aspect-square rounded-[2.5rem] relative overflow-hidden shadow-xl">
+                        <div className="w-full h-full bg-gradient-to-br from-orange-400 via-orange-500 to-red-600 flex items-center justify-center">
+                            <span className="text-white font-black opacity-20 select-none" style={{ fontSize: '8rem', lineHeight: 1 }}>
+                                L
+                            </span>
+                        </div>
                     </div>
                     <div className="w-full md:w-2/3 text-center md:text-left">
                         <span className="text-orange-600 font-bold tracking-widest text-[10px] md:text-xs uppercase mb-3 block">Featured Case Study</span>
