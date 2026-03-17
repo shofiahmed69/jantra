@@ -57,7 +57,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
     return (
         <div className="flex min-h-screen bg-slate-50">
             {/* Sidebar */}
-            <aside className="fixed left-0 top-0 bottom-0 w-64 glass-panel m-4 rounded-[2.5rem] border-white/40 shadow-xl hidden lg:flex flex-col z-50">
+            <aside className="fixed left-0 top-0 bottom-0 w-64 glass-panel m-4 rounded-[2.5rem] border-white/40 shadow-xl hidden md:flex md:flex-col z-50">
                 <div className="p-8 flex items-center gap-3">
                     <div className="w-8 h-8 bg-gradient-to-tr from-orange-500 to-orange-400 rounded-lg shadow-lg" />
                     <h2 className="text-xl font-bold tracking-tight text-slate-800">Admin</h2>
@@ -95,37 +95,86 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
                 </div>
             </aside>
 
-            {/* Mobile Header */}
-            <header className="flex lg:hidden items-center justify-between p-4 bg-white border-b sticky top-0 z-40">
-                <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-orange-500 rounded-lg shadow-sm" />
-                    <span className="font-bold text-slate-800">JANTRA Admin</span>
-                </div>
-                <span className="text-sm text-slate-500 font-medium">Dashboard</span>
-            </header>
-
-            {/* Mobile Bottom Navigation */}
-            <nav className="fixed bottom-0 left-0 right-0 bg-white border-t z-50 flex lg:hidden shadow-[0_-4px_10px_rgba(0,0,0,0.05)]">
-                {menuItems.slice(0, 5).map((item) => {
-                    const isActive = pathname === item.href;
-                    return (
-                        <Link
-                            key={item.href}
-                            href={item.href}
-                            className={cn(
-                                "flex-1 flex flex-col items-center py-3 text-[10px] font-bold transition-colors",
-                                isActive ? "text-orange-600" : "text-gray-400 hover:text-orange-500"
-                            )}
-                        >
-                            <item.icon className="w-5 h-5 mb-1" />
-                            <span>{item.label.split(' ')[0]}</span>
-                        </Link>
-                    );
-                })}
+            <nav className="fixed bottom-0 left-0 right-0 
+  bg-white border-t border-gray-200 
+  flex md:hidden z-50">
+                <a href="/admin/dashboard"
+                    className="flex-1 flex flex-col items-center 
+    justify-center py-3 text-xs text-gray-500 
+    hover:text-orange-500">
+                    <svg className="w-5 h-5 mb-1" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    <span>Home</span>
+                </a>
+                <a href="/admin/leads"
+                    className="flex-1 flex flex-col items-center 
+    justify-center py-3 text-xs text-gray-500 
+    hover:text-orange-500">
+                    <svg className="w-5 h-5 mb-1" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span>Leads</span>
+                </a>
+                <a href="/admin/applications"
+                    className="flex-1 flex flex-col items-center 
+    justify-center py-3 text-xs text-gray-500 
+    hover:text-orange-500">
+                    <svg className="w-5 h-5 mb-1" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span>Apps</span>
+                </a>
+                <a href="/admin/blog"
+                    className="flex-1 flex flex-col items-center 
+    justify-center py-3 text-xs text-gray-500 
+    hover:text-orange-500">
+                    <svg className="w-5 h-5 mb-1" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                    <span>Blog</span>
+                </a>
+                <a href="/admin/team"
+                    className="flex-1 flex flex-col items-center 
+    justify-center py-3 text-xs text-gray-500 
+    hover:text-orange-500">
+                    <svg className="w-5 h-5 mb-1" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    <span>Team</span>
+                </a>
             </nav>
 
+
             {/* Main Content */}
-            <main className="flex-1 lg:ml-72 p-4 md:p-8 pb-24 lg:pb-8">
+            <main className="flex-1 md:ml-72 p-4 md:p-8 pb-20 md:pb-0">
+                <header className="flex md:hidden items-center 
+  justify-between px-4 py-3 bg-white 
+  border-b sticky top-0 z-40">
+                    <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 bg-orange-500 rounded-lg" />
+                        <span className="font-bold text-sm">JANTRA Admin</span>
+                    </div>
+                    <a href="/admin/dashboard"
+                        className="text-xs text-gray-500">
+                        Dashboard
+                    </a>
+                </header>
                 <header className="flex items-center justify-between mb-8 pb-4 border-b border-slate-200">
                     <div>
                         <h1 className="text-2xl font-bold text-slate-800">Welcome Back</h1>

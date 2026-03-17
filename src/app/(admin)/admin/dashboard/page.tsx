@@ -64,7 +64,7 @@ export default function DashboardPage() {
     return (
         <div className="space-y-8">
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {statCards.map((stat, i) => (
                     <div key={i} className="glass-panel p-6 rounded-[2rem] border-white/60 shadow-lg hover:translate-y-[-4px] transition-all duration-300">
                         <div className="flex items-center justify-between mb-4">
