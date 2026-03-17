@@ -1,6 +1,21 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Blocks, Globe2, PencilRuler, Rocket, SearchCheck } from "lucide-react";
+import {
+  ArrowRight,
+  Blocks,
+  ChevronRight,
+  PencilRuler,
+  Rocket,
+  SearchCheck,
+  Users,
+  Zap,
+  Shield,
+  Globe,
+  Star
+} from "lucide-react";
 import { FaAws } from "react-icons/fa";
 import {
   SiDocker,
@@ -23,46 +38,31 @@ import {
   homeTestimonials,
 } from "@/content/site";
 import { getFeaturedProjects } from "@/data/projects";
+import api from "@/lib/api";
 
 function Icon({ name }: { name: string }) {
   const common = "h-5 w-5";
 
   switch (name) {
     case "rocket":
-      return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={common}><path d="M5 19c2.5-1 4-2.5 5-5m4-9c2.2.6 4.4 2.8 5 5-1.3 4-4 7.3-8 10-2-.5-3.5-2-4-4 2.7-4 6-6.7 10-8Z" /><path d="M8 16 5 19l-1 4 4-1 3-3" /><circle cx="15" cy="9" r="1.5" /></svg>;
+      return <Rocket className={common} />;
     case "globe":
-      return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={common}><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" /></svg>;
+      return <Globe className={common} />;
     case "star":
-      return <svg viewBox="0 0 24 24" fill="currentColor" className={common}><path d="m12 3.8 2.6 5.3 5.9.8-4.2 4.1 1 5.8L12 17l-5.3 2.8 1-5.8L3.5 10l5.9-.8L12 3.8Z" /></svg>;
+      return <Star className={common} />;
     case "users":
-      return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={common}><path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2" /><circle cx="9.5" cy="7" r="3" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 4.13a3 3 0 0 1 0 5.74" /></svg>;
-    case "code":
-      return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={common}><path d="m8 16-4-4 4-4M16 8l4 4-4 4M14 4l-4 16" /></svg>;
-    case "spark":
-      return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={common}><path d="m12 3 1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9L12 3ZM19 16l.9 2.1L22 19l-2.1.9L19 22l-.9-2.1L16 19l2.1-.9L19 16ZM5 16l.9 2.1L8 19l-2.1.9L5 22l-.9-2.1L2 19l2.1-.9L5 16Z" /></svg>;
-    case "flow":
-      return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={common}><rect x="3" y="4" width="7" height="6" rx="2" /><rect x="14" y="4" width="7" height="6" rx="2" /><rect x="9" y="14" width="7" height="6" rx="2" /><path d="M6.5 10v2a2 2 0 0 0 2 2H12m5.5-4v2a2 2 0 0 1-2 2H12" /></svg>;
-    case "stack":
-      return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={common}><path d="m12 4 8 4-8 4-8-4 8-4Z" /><path d="m4 12 8 4 8-4" /><path d="m4 16 8 4 8-4" /></svg>;
-    case "mobile":
-      return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={common}><rect x="7" y="2.5" width="10" height="19" rx="2.5" /><path d="M11 18.5h2" /></svg>;
-    case "cloud":
-      return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={common}><path d="M7 18a4 4 0 1 1 .7-7.9A5.5 5.5 0 0 1 18 12a3.5 3.5 0 1 1 0 7H7Z" /></svg>;
-    case "eye":
-      return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={common}><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6-10-6-10-6Z" /><circle cx="12" cy="12" r="2.5" /></svg>;
-    case "search":
-      return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={common}><circle cx="11" cy="11" r="6" /><path d="m20 20-4.35-4.35" /></svg>;
-    case "pen":
-      return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={common}><path d="M12 20h9" /><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z" /></svg>;
-    case "chart":
-      return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className={common}><path d="M3 3v18h18" /><path d="m7 14 3-3 3 2 4-5" /></svg>;
+      return <Users className={common} />;
+    case "zap":
+      return <Zap className={common} />;
+    case "shield":
+      return <Shield className={common} />;
     default:
-      return <span className={common} />;
+      return <Zap className={common} />;
   }
 }
 
 export default function HomePage() {
-  const featuredProjects = getFeaturedProjects();
+  const [featuredProjects, setFeaturedProjects] = useState<any[]>([]);
   const techStackLoop = [...homeTechStack, ...homeTechStack];
   const processIcons = [SearchCheck, PencilRuler, Blocks, Rocket];
   const techIcons: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -77,6 +77,23 @@ export default function HomePage() {
     Python: SiPython,
     AWS: FaAws,
   };
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const res = await api.get("/work/featured");
+        if (res.data.success && res.data.data.length > 0) {
+          setFeaturedProjects(res.data.data);
+        } else {
+          setFeaturedProjects(getFeaturedProjects());
+        }
+      } catch (error) {
+        console.error("API failed, using fallback", error);
+        setFeaturedProjects(getFeaturedProjects());
+      }
+    };
+    fetchProjects();
+  }, []);
 
   return (
     <main className="relative overflow-hidden pt-24">
@@ -357,18 +374,24 @@ export default function HomePage() {
           <div className="grid gap-8 lg:grid-cols-3">
             {featuredProjects.map((project, index) => (
               <Link
-                key={project.title}
+                key={project.id || project.title}
                 href={`/work/${project.slug}`}
                 className="group flex flex-col fade-up"
                 style={{ animationDelay: `${200 + index * 100}ms` }}
               >
                 <div className="relative aspect-[16/10] overflow-hidden rounded-3xl border border-slate-200 bg-slate-100 shadow-sm transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-orange-500/10 group-hover:-translate-y-2">
-                  <Image
-                    src={project.thumbnail}
-                    alt={project.title}
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
+                  {project.thumbnail ? (
+                    <Image
+                      src={project.thumbnail}
+                      alt={project.title}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-50 to-slate-100">
+                      <span className="text-8xl font-black text-slate-900/10">{project.title.charAt(0)}</span>
+                    </div>
+                  )}
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
                     <div className="bg-white/90 backdrop-blur-md text-slate-900 px-5 py-2.5 rounded-full text-xs font-bold flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                       View Case Study <ArrowRight className="w-3.5 h-3.5" />
@@ -379,10 +402,10 @@ export default function HomePage() {
                 <div className="mt-6 px-2">
                   <div className="flex items-center gap-2 mb-3">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-orange-600 bg-orange-50 px-2 py-1 rounded-md border border-orange-100">
-                      {project.category[0]}
+                      {project.category?.[0] || 'Web'}
                     </span>
                     <div className="flex gap-1">
-                      {project.tags.map(tag => (
+                      {(project.techStack || []).slice(0, 3).map((tag: string) => (
                         <span key={tag} className="text-[10px] font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded-md">
                           {tag}
                         </span>
@@ -393,7 +416,7 @@ export default function HomePage() {
                     {project.title}
                   </h3>
                   <p className="mt-3 text-sm leading-relaxed text-slate-600 line-clamp-2">
-                    {project.description}
+                    {project.description || project.challenge}
                   </p>
                 </div>
               </Link>
