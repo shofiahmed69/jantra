@@ -310,16 +310,18 @@ export default function ContactPage() {
                   text-slate-700 text-sm appearance-none"
                             >
                                 <option value="">Select Budget</option>
-                                <option value="10k-20k">
-                                    10K - 20K BDT
+                                <option value="5k">
+                                    $5,000 USD
                                 </option>
-                                <option value="20k-30k">
-                                    20K - 30K BDT
+                                <option value="15k">
+                                    $15,000 USD
                                 </option>
-                                <option value="30k-50k">
-                                    30K - 50K BDT
+                                <option value="30k">
+                                    $30,000 USD
                                 </option>
-                                <option value="50k+">50K+ BDT</option>
+                                <option value="50k+">
+                                    $50,000+ USD
+                                </option>
                             </select>
                         </div>
                     </div>

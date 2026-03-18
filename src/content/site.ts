@@ -112,23 +112,23 @@ export const pricingTiers: PricingTier[] = [
   {
     name: "Starter",
     description: "Ideal for MVP and initial phase builds.",
-    price: "10,000",
-    suffix: "- 20,000 BDT",
+    price: "$5,000",
+    suffix: "USD",
     ctaLabel: "Start Small",
   },
   {
     name: "Growth",
     description: "Scaling operations and advanced AI integrations.",
-    price: "20,000",
-    suffix: "- 30,000 BDT",
+    price: "$15,000",
+    suffix: "USD",
     ctaLabel: "Scale Now",
     featured: true,
   },
   {
     name: "Enterprise",
     description: "Complete digital transformation and custom microservices.",
-    price: "30,000 - 50,000",
-    suffix: "BDT",
+    price: "$30,000",
+    suffix: "USD",
     ctaLabel: "Let's Talk",
   },
 ];
@@ -141,9 +141,9 @@ export const contactServiceOptions: SelectOption[] = [
 ];
 
 export const contactBudgetOptions: SelectOption[] = [
-  { value: "10k - 20k BDT", label: "10K BDT - 20K BDT" },
-  { value: "20k - 30k BDT", label: "20K BDT - 30K BDT" },
-  { value: "30k - 50k BDT", label: "30K BDT - 50K BDT" },
+  { value: "5k", label: "$5,000 USD" },
+  { value: "15k", label: "$15,000 USD" },
+  { value: "30k", label: "$30,000 USD" },
 ];
 
 export const homeHeroBadges: string[] = [

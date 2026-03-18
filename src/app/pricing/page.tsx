@@ -5,7 +5,7 @@ export default function PricingPage() {
     const tiers = [
         {
             name: "Starter",
-            price: "10K - 20K BDT",
+            price: "$5,000 USD",
             desc: "Perfect for MVPs and early-stage startups needing robust technical foundations.",
             features: [
                 "UI/UX Design & Prototyping",
@@ -18,7 +18,7 @@ export default function PricingPage() {
         },
         {
             name: "Growth",
-            price: "20K - 30K BDT",
+            price: "$15,000 USD",
             desc: "For scaling businesses requiring advanced functionality, AI, and complex infrastructure.",
             features: [
                 "Complex Multi-platform App",
@@ -32,7 +32,7 @@ export default function PricingPage() {
         },
         {
             name: "Enterprise",
-            price: "30K - 50K BDT",
+            price: "$30,000 USD",
             desc: "Mission-critical systems designed for massive scale and compliance.",
             features: [
                 "Full-stack Enterprise Rebuilds",
@@ -48,7 +48,7 @@ export default function PricingPage() {
 
     const faqs = [
         { q: "How do you estimate software costs?", a: "We conduct a deep-dive discovery phase to outline requirements, architectures, and timelines. The complexity and hours required dictate the final fixed-price or time-and-materials contract." },
-        { q: "Do you offer monthly retainers?", a: "Yes, beyond project-based work, we offer dedicated engineering retainers for continuous development and maintenance, starting at 5,000 BDT/month." },
+        { q: "Do you offer monthly retainers?", a: "Yes, beyond project-based work, we offer dedicated engineering retainers for continuous development and maintenance, starting at $2,500 USD/month." },
         { q: "What is your payment structure?", a: "Typically, we divide payments into milestones: 30% upfront, and the remainder distributed across designated delivery phases." },
     ];
 
@@ -86,7 +86,7 @@ export default function PricingPage() {
 
                             <div className="mb-8 pb-8 border-b border-slate-200/20">
                                 <span className="text-4xl md:text-5xl font-black tracking-tight">{tier.price}</span>
-                                <span className={`text-sm font-medium ml-2 ${tier.highlighted ? 'text-slate-400' : 'text-slate-500'}`}>/ project avg</span>
+                                <span className={`text-sm font-medium ml-2 ${tier.highlighted ? 'text-slate-400' : 'text-slate-500'}`}>starting from</span>
                             </div>
 
                             <ul className="space-y-4 mb-10">

@@ -143,9 +143,9 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-lg md:max-w-none mx-auto">
                         {[
-                            { name: "Starter", price: "10K - 20K BDT", desc: "For straightforward MVPs and core foundational setups." },
-                            { name: "Growth", price: "20K - 30K BDT", desc: "For scaling platforms requiring complex integrations.", highlighted: true },
-                            { name: "Enterprise", price: "30K - 50K BDT", desc: "Mission-critical architectures with SLAs and dedicated teams." }
+                            { name: "Starter", price: "$5,000 USD", desc: "For straightforward MVPs and core foundational setups." },
+                            { name: "Growth", price: "$15,000 USD", desc: "For scaling platforms requiring complex integrations.", highlighted: true },
+                            { name: "Enterprise", price: "$30,000 USD", desc: "Mission-critical architectures with SLAs and dedicated teams." }
                         ].map((tier, i) => (
                             <div key={i} className={`p-8 rounded-[2rem] border ${tier.highlighted ? "bg-slate-900 text-white border-slate-800 shadow-xl transform md:-translate-y-2" : "bg-white border-slate-200 text-slate-900 shadow-sm"}`}>
                                 <h3 className={`text-xl font-bold mb-2 ${tier.highlighted ? "text-white" : "text-slate-900"}`}>{tier.name}</h3>
