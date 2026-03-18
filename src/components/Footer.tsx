@@ -28,7 +28,7 @@ export default function Footer() {
                         <div className="flex gap-3 mt-6">
                             {/* LinkedIn */}
                             <a
-                                href="https://linkedin.com"
+                                href="https://www.linkedin.com/company/jantra-soft/"
                                 target="_blank"
                                 rel="noreferrer"
                                 className="w-9 h-9 rounded-lg bg-white/10 

@@ -456,7 +456,7 @@ export default function ContactPage() {
                             Connect
                         </h2>
                         <div className="flex items-center gap-3">
-                            <a href="https://linkedin.com"
+                            <a href="https://www.linkedin.com/company/jantra-soft/"
                                 target="_blank" rel="noreferrer"
                                 className="w-8 h-8 flex items-center 
                 justify-center rounded-lg bg-white/40 
