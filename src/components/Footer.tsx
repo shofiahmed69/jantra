@@ -108,24 +108,9 @@ export default function Footer() {
                             ))}
                         </ul>
 
-                        {/* Newsletter */}
-                        <div className="mt-8">
-                            <h3 className="text-xs uppercase tracking-widest text-orange-500 font-bold mb-4">
-                                Stay Updated
-                            </h3>
-                            <div className="flex gap-2">
-                                <input
-                                    type="email"
-                                    placeholder="your@email.com"
-                                    className="flex-1 bg-white/10 rounded-xl px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:ring-1 focus:ring-orange-500 min-w-0"
-                                />
-                                <button className="bg-orange-500 text-white px-3 py-2 rounded-xl text-sm font-medium hover:bg-orange-600 transition whitespace-nowrap">
-                                    →
-                                </button>
-                            </div>
-                        </div>
                     </div>
                 </div>
+
 
                 {/* Bottom bar */}
                 <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
