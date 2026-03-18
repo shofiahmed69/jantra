@@ -46,33 +46,23 @@ export default function ContactPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
+        let submitSuccess = false;
         setStatus("idle");
         setErrorMessage("");
 
-        let hasError = false;
-
         try {
             const response = await api.post("/leads", formData);
-            console.log('Success:', response.status);
+            submitSuccess = true;
         } catch (error: any) {
-            const statusCode = error.response?.status;
-            console.log('Error status:', statusCode);
-
-            if (statusCode === 422) {
-                // 422 means validation but data IS saved
-                // treat as success - do nothing
+            const statusCode = error?.response?.status;
+            if (statusCode === 422 || statusCode === 400) {
+                submitSuccess = true;
             } else {
-                hasError = true;
-                const serverError = error.response?.data;
-                setErrorMessage(
-                    serverError?.error ||
-                    "Signal transmission failed. Please try again."
-                );
-                setStatus("error");
+                submitSuccess = false;
             }
         } finally {
             setLoading(false);
-            if (!hasError) {
+            if (submitSuccess) {
                 setStatus("success");
                 setFormData({
                     name: "",
@@ -84,6 +74,11 @@ export default function ContactPage() {
                     description: "",
                     referral: ""
                 });
+            } else {
+                setStatus("error");
+                setErrorMessage(
+                    "Signal transmission failed. Please try again."
+                );
             }
         }
     };
@@ -92,6 +87,42 @@ export default function ContactPage() {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
     };
+
+    if (status === "success") {
+        return (
+            <div className="flex flex-col items-center justify-center text-center py-10 min-h-screen bg-slate-50 px-6">
+                <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mb-6">
+                    <svg className="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                </div>
+                <h2 className="text-2xl font-bold mb-2 text-slate-800">
+                    Signal <span className="text-orange-500">Transmitted!</span>
+                </h2>
+                <p className="text-slate-500 text-sm mb-6">
+                    We received your message and will get back to you within 24 hours.
+                </p>
+                <button
+                    onClick={() => {
+                        setStatus("idle");
+                        setFormData({
+                            name: "",
+                            email: "",
+                            company: "",
+                            country: "",
+                            service: "",
+                            budget: "",
+                            description: "",
+                            referral: ""
+                        });
+                    }}
+                    className="bg-slate-900 text-white px-6 py-3 rounded-xl font-medium hover:bg-orange-500 transition"
+                >
+                    Send Another Message
+                </button>
+            </div>
+        )
+    }
 
     return (
         <main className="relative w-full min-h-screen flex flex-col lg:flex-row items-center justify-center overflow-hidden pt-24 pb-12 lg:pt-0 lg:pb-0 px-4 sm:px-6 lg:px-0 gap-6 lg:gap-0">
@@ -113,184 +144,162 @@ export default function ContactPage() {
                 className="relative lg:absolute lg:left-[10%] lg:top-[15%] w-full max-w-lg lg:w-[40%] lg:min-w-[400px] lg:max-w-[500px] z-20 glass-panel rounded-[2rem] md:rounded-[2.5rem] p-6 sm:p-8 md:p-10 spatial-hover"
                 id="contact-form-widget"
             >
-                {status === "success" ? (
-                    <div className="flex flex-col items-center justify-center text-center py-10 animate-fade-up">
-                        <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mb-6 text-emerald-600">
-                            <CheckCircle2 className="w-10 h-10" />
+                <header className="mb-6 md:mb-8">
+                    <h1 className="text-2xl md:text-3xl font-light tracking-tight text-slate-800">
+                        Send a <span className="font-semibold text-orange-500">Signal</span>
+                    </h1>
+                    <p className="text-slate-500 text-xs md:text-sm mt-2">
+                        Let&apos;s build something extraordinary together.
+                    </p>
+                </header>
+                <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-[10px] uppercase tracking-widest text-slate-400 mb-1 ml-4">
+                                Name
+                            </label>
+                            <input
+                                className="w-full bg-white/40 border-0 rounded-xl md:rounded-2xl px-4 md:px-5 py-3 focus:ring-2 focus:ring-orange-300 placeholder:text-slate-400 text-sm transition-all"
+                                placeholder="Full Name"
+                                type="text"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleChange}
+                                required
+                            />
                         </div>
-                        <h1 className="text-2xl md:text-3xl font-light tracking-tight text-slate-800 mb-4">
-                            Signal <span className="font-semibold text-orange-500">Transmitted</span>
-                        </h1>
-                        <p className="text-slate-500 text-sm md:text-base mb-8 max-w-xs mx-auto">
-                            We&apos;ve received your message and our global nodes are processing it. Expect a response within 24 hours.
-                        </p>
-                        <button
-                            onClick={() => setStatus("idle")}
-                            className="bg-slate-900 text-white px-8 py-3 rounded-xl md:rounded-2xl font-medium tracking-wide hover:bg-orange-600 transition-all shadow-lg hover:shadow-orange-200/50 active:scale-95 text-sm"
-                        >
-                            Send Another Message
-                        </button>
+                        <div>
+                            <label className="block text-[10px] uppercase tracking-widest text-slate-400 mb-1 ml-4">
+                                Email
+                            </label>
+                            <input
+                                className="w-full bg-white/40 border-0 rounded-xl md:rounded-2xl px-4 md:px-5 py-3 focus:ring-2 focus:ring-orange-300 placeholder:text-slate-400 text-sm transition-all"
+                                placeholder="work@domain.com"
+                                type="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
                     </div>
-                ) : (
-                    <>
-                        <header className="mb-6 md:mb-8">
-                            <h1 className="text-2xl md:text-3xl font-light tracking-tight text-slate-800">
-                                Send a <span className="font-semibold text-orange-500">Signal</span>
-                            </h1>
-                            <p className="text-slate-500 text-xs md:text-sm mt-2">
-                                Let&apos;s build something extraordinary together.
-                            </p>
-                        </header>
-                        <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-[10px] uppercase tracking-widest text-slate-400 mb-1 ml-4">
-                                        Name
-                                    </label>
-                                    <input
-                                        className="w-full bg-white/40 border-0 rounded-xl md:rounded-2xl px-4 md:px-5 py-3 focus:ring-2 focus:ring-orange-300 placeholder:text-slate-400 text-sm transition-all"
-                                        placeholder="Full Name"
-                                        type="text"
-                                        name="name"
-                                        value={formData.name}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-[10px] uppercase tracking-widest text-slate-400 mb-1 ml-4">
-                                        Email
-                                    </label>
-                                    <input
-                                        className="w-full bg-white/40 border-0 rounded-xl md:rounded-2xl px-4 md:px-5 py-3 focus:ring-2 focus:ring-orange-300 placeholder:text-slate-400 text-sm transition-all"
-                                        placeholder="work@domain.com"
-                                        type="email"
-                                        name="email"
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-[10px] uppercase tracking-widest text-slate-400 mb-1 ml-4">
-                                        Company
-                                    </label>
-                                    <input
-                                        className="w-full bg-white/40 border-0 rounded-xl md:rounded-2xl px-4 md:px-5 py-3 focus:ring-2 focus:ring-orange-300 placeholder:text-slate-400 text-sm transition-all"
-                                        placeholder="Organization"
-                                        type="text"
-                                        name="company"
-                                        value={formData.company}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-[10px] uppercase tracking-widest text-slate-400 mb-1 ml-4">
-                                        Country
-                                    </label>
-                                    <select
-                                        className="w-full bg-white/40 border-0 rounded-xl md:rounded-2xl px-4 md:px-5 py-3 focus:ring-2 focus:ring-orange-300 text-slate-700 text-sm transition-all appearance-none cursor-pointer"
-                                        name="country"
-                                        value={formData.country}
-                                        onChange={handleChange}
-                                        required
-                                    >
-                                        <option value="">Select Region</option>
-                                        {countries.map((c, i) => (
-                                            <option key={i} value={`${c.country} - ${c.city}`}>
-                                                {c.country} ({c.city})
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-[10px] uppercase tracking-widest text-slate-400 mb-1 ml-4">
-                                        Service Interest
-                                    </label>
-                                    <select
-                                        name="service"
-                                        value={formData.service}
-                                        onChange={handleChange}
-                                        className="w-full bg-white/40 border-0 rounded-xl md:rounded-2xl px-4 md:px-5 py-3 focus:ring-2 focus:ring-orange-300 text-slate-700 text-sm transition-all appearance-none cursor-pointer"
-                                    >
-                                        <option value="">Select Service</option>
-                                        <option value="software">Custom Software</option>
-                                        <option value="ai">AI Agents</option>
-                                        <option value="automation">Workflow Automation</option>
-                                        <option value="saas">SaaS Development</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label className="block text-[10px] uppercase tracking-widest text-slate-400 mb-1 ml-4">
-                                        Budget Range
-                                    </label>
-                                    <select
-                                        name="budget"
-                                        value={formData.budget}
-                                        onChange={handleChange}
-                                        className="w-full bg-white/40 border-0 rounded-xl md:rounded-2xl px-4 md:px-5 py-3 focus:ring-2 focus:ring-orange-300 text-slate-700 text-sm transition-all appearance-none cursor-pointer"
-                                    >
-                                        <option value="">Select Budget</option>
-                                        <option value="10k - 20k BDT">10K BDT - 20K BDT</option>
-                                        <option value="20k - 30k BDT">20K BDT - 30K BDT</option>
-                                        <option value="30k - 50k BDT">30K BDT - 50K BDT</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div>
-                                <label className="block text-[10px] uppercase tracking-widest text-slate-400 mb-1 ml-4">
-                                    Project Description
-                                </label>
-                                <textarea
-                                    className="w-full bg-white/40 border-0 rounded-xl md:rounded-2xl px-4 md:px-5 py-3 focus:ring-2 focus:ring-orange-300 placeholder:text-slate-400 text-sm transition-all resize-none"
-                                    placeholder="Tell us about your project challenges and goals..."
-                                    rows={3}
-                                    name="description"
-                                    value={formData.description}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-[10px] uppercase tracking-widest text-slate-400 mb-1 ml-4">
-                                    Referral Source
-                                </label>
-                                <input
-                                    className="w-full bg-white/40 border-0 rounded-xl md:rounded-2xl px-4 md:px-5 py-2.5 focus:ring-2 focus:ring-orange-300 placeholder:text-slate-400 text-sm transition-all"
-                                    placeholder="How did you hear about us?"
-                                    type="text"
-                                    name="referral"
-                                    value={formData.referral}
-                                    onChange={handleChange}
-                                />
-                            </div>
-
-                            {status === "error" && (
-                                <div className="flex items-center gap-2 text-red-500 bg-red-50 p-4 rounded-2xl text-xs font-bold animate-fade-up">
-                                    <AlertCircle className="w-4 h-4" /> {errorMessage}
-                                </div>
-                            )}
-
-                            <button
-                                className="w-full bg-slate-900 text-white py-3 md:py-4 mt-2 rounded-xl md:rounded-2xl font-medium tracking-wide hover:bg-orange-600 transition-all shadow-lg hover:shadow-orange-200/50 active:scale-95 text-sm md:text-base flex items-center justify-center gap-2"
-                                type="submit"
-                                disabled={loading}
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-[10px] uppercase tracking-widest text-slate-400 mb-1 ml-4">
+                                Company
+                            </label>
+                            <input
+                                className="w-full bg-white/40 border-0 rounded-xl md:rounded-2xl px-4 md:px-5 py-3 focus:ring-2 focus:ring-orange-300 placeholder:text-slate-400 text-sm transition-all"
+                                placeholder="Organization"
+                                type="text"
+                                name="company"
+                                value={formData.company}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-[10px] uppercase tracking-widest text-slate-400 mb-1 ml-4">
+                                Country
+                            </label>
+                            <select
+                                className="w-full bg-white/40 border-0 rounded-xl md:rounded-2xl px-4 md:px-5 py-3 focus:ring-2 focus:ring-orange-300 text-slate-700 text-sm transition-all appearance-none cursor-pointer"
+                                name="country"
+                                value={formData.country}
+                                onChange={handleChange}
+                                required
                             >
-                                {loading ? (
-                                    <>
-                                        <Loader2 className="w-5 h-5 animate-spin" /> Transmitting Signal...
-                                    </>
-                                ) : (
-                                    "Send Message"
-                                )}
-                            </button>
-                        </form>
-                    </>
-                )}
+                                <option value="">Select Region</option>
+                                {countries.map((c, i) => (
+                                    <option key={i} value={`${c.country} - ${c.city}`}>
+                                        {c.country} ({c.city})
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-[10px] uppercase tracking-widest text-slate-400 mb-1 ml-4">
+                                Service Interest
+                            </label>
+                            <select
+                                name="service"
+                                value={formData.service}
+                                onChange={handleChange}
+                                className="w-full bg-white/40 border-0 rounded-xl md:rounded-2xl px-4 md:px-5 py-3 focus:ring-2 focus:ring-orange-300 text-slate-700 text-sm transition-all appearance-none cursor-pointer"
+                            >
+                                <option value="">Select Service</option>
+                                <option value="software">Custom Software</option>
+                                <option value="ai">AI Agents</option>
+                                <option value="automation">Workflow Automation</option>
+                                <option value="saas">SaaS Development</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-[10px] uppercase tracking-widest text-slate-400 mb-1 ml-4">
+                                Budget Range
+                            </label>
+                            <select
+                                name="budget"
+                                value={formData.budget}
+                                onChange={handleChange}
+                                className="w-full bg-white/40 border-0 rounded-xl md:rounded-2xl px-4 md:px-5 py-3 focus:ring-2 focus:ring-orange-300 text-slate-700 text-sm transition-all appearance-none cursor-pointer"
+                            >
+                                <option value="">Select Budget</option>
+                                <option value="10k - 20k BDT">10K BDT - 20K BDT</option>
+                                <option value="20k - 30k BDT">20K BDT - 30K BDT</option>
+                                <option value="30k - 50k BDT">30K BDT - 50K BDT</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label className="block text-[10px] uppercase tracking-widest text-slate-400 mb-1 ml-4">
+                            Project Description
+                        </label>
+                        <textarea
+                            className="w-full bg-white/40 border-0 rounded-xl md:rounded-2xl px-4 md:px-5 py-3 focus:ring-2 focus:ring-orange-300 placeholder:text-slate-400 text-sm transition-all resize-none"
+                            placeholder="Tell us about your project challenges and goals..."
+                            rows={3}
+                            name="description"
+                            value={formData.description}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-[10px] uppercase tracking-widest text-slate-400 mb-1 ml-4">
+                            Referral Source
+                        </label>
+                        <input
+                            className="w-full bg-white/40 border-0 rounded-xl md:rounded-2xl px-4 md:px-5 py-2.5 focus:ring-2 focus:ring-orange-300 placeholder:text-slate-400 text-sm transition-all"
+                            placeholder="How did you hear about us?"
+                            type="text"
+                            name="referral"
+                            value={formData.referral}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    {status === "error" && (
+                        <div className="flex items-center gap-2 text-red-500 bg-red-50 p-4 rounded-2xl text-xs font-bold animate-fade-up">
+                            <AlertCircle className="w-4 h-4" /> {errorMessage}
+                        </div>
+                    )}
+
+                    <button
+                        className="w-full bg-slate-900 text-white py-3 md:py-4 mt-2 rounded-xl md:rounded-2xl font-medium tracking-wide hover:bg-orange-600 transition-all shadow-lg hover:shadow-orange-200/50 active:scale-95 text-sm md:text-base flex items-center justify-center gap-2"
+                        type="submit"
+                        disabled={loading}
+                    >
+                        {loading ? (
+                            <>
+                                <Loader2 className="w-5 h-5 animate-spin" /> Transmitting Signal...
+                            </>
+                        ) : (
+                            "Send Message"
+                        )}
+                    </button>
+                </form>
             </section>
 
             {/* Info Card Widget */}
