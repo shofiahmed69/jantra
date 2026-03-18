@@ -26,17 +26,27 @@ export default function Footer() {
                         </p>
                         {/* Social links */}
                         <div className="flex gap-3 mt-6">
-                            <a href="https://linkedin.com" target="_blank" rel="noreferrer"
-                                className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center hover:bg-orange-500 transition text-sm">
+                            {/* LinkedIn */}
+                            <a
+                                href="https://linkedin.com"
+                                target="_blank"
+                                rel="noreferrer"
+                                className="w-9 h-9 rounded-lg bg-white/10 
+                                flex items-center justify-center 
+                                hover:bg-orange-500 transition text-white 
+                                text-xs font-bold">
                                 in
                             </a>
-                            <a href="https://twitter.com" target="_blank" rel="noreferrer"
-                                className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center hover:bg-orange-500 transition text-sm">
-                                𝕏
-                            </a>
-                            <a href="https://github.com" target="_blank" rel="noreferrer"
-                                className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center hover:bg-orange-500 transition text-sm">
-                                gh
+                            {/* Facebook */}
+                            <a
+                                href="https://www.facebook.com/profile.php?id=61578641909784"
+                                target="_blank"
+                                rel="noreferrer"
+                                className="w-9 h-9 rounded-lg bg-white/10 
+                                flex items-center justify-center 
+                                hover:bg-orange-500 transition text-white 
+                                text-xs font-bold">
+                                f
                             </a>
                         </div>
                     </div>

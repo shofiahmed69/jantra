@@ -122,24 +122,6 @@ export default function BlogPage() {
                     ))}
                 </div>
 
-                {/* Newsletter CTA */}
-                <section className="mt-32 max-w-4xl mx-auto bg-orange-50 rounded-[3rem] p-8 md:p-12 lg:p-16 text-center border border-orange-100/50">
-                    <h2 className="text-3xl font-bold text-slate-900 mb-4">Never miss an insight.</h2>
-                    <p className="text-slate-600 mb-8">
-                        Join 10,000+ engineers and product leaders receiving our monthly deep-dives. No fluff, just pure engineering.
-                    </p>
-                    <div className="flex flex-col sm:flex-row justify-center gap-3 max-w-lg mx-auto">
-                        <input
-                            type="email"
-                            placeholder="Enter your work email"
-                            className="px-6 py-4 rounded-full border border-slate-200 bg-white focus:ring-2 focus:ring-orange-500 focus:border-orange-500 w-full outline-none shadow-sm transition-all"
-                        />
-                        <button className="bg-slate-900 text-white px-8 py-4 rounded-full font-bold hover:bg-orange-600 transition-all shadow-md active:scale-95 whitespace-nowrap">
-                            Subscribe
-                        </button>
-                    </div>
-                </section>
-
             </div>
         </main>
     );
