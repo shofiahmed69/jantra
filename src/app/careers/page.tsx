@@ -128,17 +128,6 @@ export default function CareersPage() {
                     )}
                 </section>
 
-                {/* Open Application */}
-                <section className="bg-slate-900 rounded-[3rem] p-10 md:p-20 text-center relative overflow-hidden text-white">
-                    <h2 className="text-3xl md:text-5xl font-bold mb-6">Don't see a fit?</h2>
-                    <p className="text-slate-400 text-lg max-w-2xl mx-auto mb-10">
-                        We are always on the lookout for brilliant minds. If you think you'd be a great addition to JANTRA, send us your resume and portfolio anyway.
-                    </p>
-                    <a href="mailto:careers@jantra.agency" className="inline-flex items-center justify-center bg-orange-500 hover:bg-orange-400 text-white px-8 py-4 rounded-full font-bold transition-all text-lg shadow-lg">
-                        Submit Open Application
-                    </a>
-                </section>
-
             </div>
 
             {/* Apply Modal */}
