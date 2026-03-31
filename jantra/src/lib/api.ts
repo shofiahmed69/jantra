@@ -1,58 +1,52 @@
 import axios from 'axios';
 
-const getBaseUrl = () => {
-    let url = process.env.NEXT_PUBLIC_API_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ||
+    'https://jontro-backend.onrender.com/api';
 
-    if (!url) {
-        if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
-            url = 'https://jontro-backend.onrender.com';
-        } else {
-            url = 'http://localhost:4000';
-        }
-    }
-
-    // Ensure /api suffix
-    return url.endsWith('/api') ? url : `${url}/api`;
-};
-
-const API_BASE_URL = getBaseUrl();
-
-console.log(`[API] Base URL: ${API_BASE_URL}`);
+console.log('[API] Base URL:', BASE_URL);
 
 const api = axios.create({
-    baseURL: API_BASE_URL,
-    headers: {
-        'Content-Type': 'application/json',
-    },
+    baseURL: BASE_URL,
+    timeout: 30000,
 });
 
-// Request interceptor to add JWT token
-api.interceptors.request.use((config) => {
-    if (typeof window !== 'undefined') {
-        const token =
-            localStorage.getItem('token') ||
-            localStorage.getItem('adminToken');
+api.interceptors.request.use(
+    (config) => {
+        if (typeof window !== 'undefined') {
+            const token =
+                localStorage.getItem('token') ||
+                localStorage.getItem('adminToken') ||
+                localStorage.getItem('auth_token');
 
-        if (token && config.headers) {
-            config.headers.Authorization = `Bearer ${token}`;
+            if (token) {
+                config.headers.Authorization = `Bearer ${token}`;
+                console.log('[API] Token attached:',
+                    token.substring(0, 20) + '...');
+            } else {
+                console.warn('[API] No token found in storage!');
+            }
         }
-    }
-    return config;
-}, (error) => {
-    return Promise.reject(error);
-});
+        return config;
+    },
+    (error) => Promise.reject(error)
+);
 
-// Response interceptor to handle 401/403
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response?.status === 403 ||
-            error.response?.status === 401) {
-            if (typeof window !== 'undefined' &&
-                !window.location.pathname.includes('/admin/login')) {
+        console.error('[API] Error:',
+            error.response?.status,
+            error.config?.url);
+
+        if (typeof window !== 'undefined') {
+            if (error.response?.status === 401 ||
+                error.response?.status === 403) {
+                console.log('[API] Auth failed, clearing storage');
                 localStorage.clear();
                 sessionStorage.clear();
-                window.location.href = '/admin/login';
+                if (!window.location.pathname.includes('/login')) {
+                    window.location.href = '/admin/login';
+                }
             }
         }
         return Promise.reject(error);
@@ -60,4 +54,3 @@ api.interceptors.response.use(
 );
 
 export default api;
-

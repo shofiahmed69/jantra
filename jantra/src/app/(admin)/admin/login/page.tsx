@@ -15,11 +15,12 @@ export default function LoginPage() {
 
     // Clear any stale tokens on login page load
     useEffect(() => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('adminToken');
-        localStorage.removeItem('adminUser');
+        if (typeof window !== 'undefined') {
+            localStorage.clear();
+            sessionStorage.clear();
+            console.log('Login page: cleared all storage');
+        }
     }, []);
-
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -27,8 +28,23 @@ export default function LoginPage() {
         setError("");
 
         try {
-            const response = await api.post("/auth/login", { email, password });
-            login(response.data.token, response.data.user);
+            const response = await api.post("/auth/login", {
+                email,
+                password
+            });
+
+            const token = response.data.token;
+            const user = response.data.user;
+
+            console.log('Login success, token:',
+                token.substring(0, 20) + '...');
+
+            localStorage.setItem('token', token);
+            localStorage.setItem('adminToken', token);
+            localStorage.setItem('auth_token', token);
+            localStorage.setItem('adminUser', JSON.stringify(user));
+
+            login(token, user);
         } catch (err: any) {
             const errorMessage = err.response?.data?.error || err.response?.data?.message || "Invalid credentials. Please try again.";
             setError(errorMessage);
