@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import api from "@/lib/api";
 import { Lock, Mail, Loader2, ArrowRight } from "lucide-react";
@@ -12,6 +12,17 @@ export default function LoginPage() {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+
+    // Clear any stale tokens on login page load
+    useEffect(() => {
+        localStorage.removeItem('jantra_admin_token');
+        localStorage.removeItem('jantra_admin_user');
+        localStorage.removeItem('token');
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('adminUser');
+        sessionStorage.clear();
+        console.log('[Login] Cleared stale tokens');
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

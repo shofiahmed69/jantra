@@ -39,87 +39,22 @@ export default function LeadsPage() {
     const [status, setStatus] = useState("");
     const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
 
-    // Helper function to get cookie
-    function getCookie(name: string): string | null {
-        if (typeof document === 'undefined') return null;
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${name}=`);
-        if (parts.length === 2) {
-            return parts.pop()?.split(';').shift() || null;
-        }
-        return null;
-    }
-
     const fetchLeads = async () => {
         try {
             setLoading(true);
+            console.log('[Leads] Fetching leads...');
 
-            // Get token from all possible storage locations
-            const token =
-                localStorage.getItem('token') ||
-                localStorage.getItem('adminToken') ||
-                localStorage.getItem('authToken') ||
-                localStorage.getItem('jantra_admin_token') ||
-                sessionStorage.getItem('token') ||
-                sessionStorage.getItem('adminToken') ||
-                getCookie('token') ||
-                getCookie('adminToken');
+            const response = await api.get("/leads/admin", {
+                params: { page, limit: 10, search: search || undefined, status: status || undefined }
+            });
 
-            console.log('Using token:', token ? 'found' : 'NOT FOUND');
-            console.log('API URL:', process.env.NEXT_PUBLIC_API_URL);
+            console.log('[Leads] Response:', response.data);
 
-            if (!token) {
-                console.error('No auth token found!');
-                setLeads([]);
-                setLoading(false);
-                return;
-            }
-
-            // Try multiple possible endpoint formats
-            const urls = [
-                `${process.env.NEXT_PUBLIC_API_URL}/admin/leads`,
-                `${process.env.NEXT_PUBLIC_API_URL}/leads/admin`,
-                `${process.env.NEXT_PUBLIC_API_URL || ''}/api/leads/admin`,
-                `${process.env.NEXT_PUBLIC_API_URL || ''}/api/admin/leads`,
-            ];
-
-            let leadsData = [];
-            let successfulUrl = '';
-
-            for (const url of urls) {
-                if (!url || url.includes('undefined')) continue;
-                try {
-                    console.log('Trying URL:', url);
-                    const response = await fetch(url, {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                            'Content-Type': 'application/json',
-                        }
-                    });
-
-                    console.log('Response status from', url, ':', response.status);
-
-                    if (response.ok) {
-                        const data = await response.json();
-                        console.log('Data received:', data);
-                        leadsData = data.data || data.leads || data.result || data || [];
-                        if (Array.isArray(leadsData)) {
-                            console.log('Leads found:', leadsData.length);
-                            successfulUrl = url;
-                            break;
-                        }
-                    }
-                } catch (err: any) {
-                    console.log('URL failed:', url, err.message);
-                }
-            }
-
-            setLeads(leadsData);
-            // Optionally update total pages if available in the successful response
-            // This would require capturing the full data object from the successful fetch
-        } catch (error) {
-            console.error('fetchLeads error:', error);
+            const leadsData = response.data.data || response.data.leads || response.data || [];
+            setLeads(Array.isArray(leadsData) ? leadsData : []);
+            setTotalPages(response.data.totalPages || 1);
+        } catch (error: any) {
+            console.error('[Leads] Failed to fetch leads:', error.response?.status, error.message);
             setLeads([]);
         } finally {
             setLoading(false);

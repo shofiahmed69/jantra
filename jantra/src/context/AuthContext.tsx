@@ -42,6 +42,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(newUser);
         localStorage.setItem("jantra_admin_token", newToken);
         localStorage.setItem("jantra_admin_user", JSON.stringify(newUser));
+        // Also store under common alternative keys for compatibility
+        localStorage.setItem("token", newToken);
+        localStorage.setItem("adminToken", newToken);
+        console.log('[Auth] Token stored under jantra_admin_token, token, adminToken');
         router.push("/admin/dashboard");
     };
 
