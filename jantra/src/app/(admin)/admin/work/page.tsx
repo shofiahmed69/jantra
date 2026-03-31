@@ -34,6 +34,7 @@ export default function WorkManagementPage() {
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState("");
     const [uploading, setUploading] = useState(false);
+    const [editingId, setEditingId] = useState<string | null>(null);
 
     const [formData, setFormData] = useState({
         title: "",
@@ -103,6 +104,58 @@ export default function WorkManagementPage() {
         }
     };
 
+    const resetForm = () => {
+        setFormData({
+            title: "", client: "", categories: "", challenge: "",
+            approach: "", features: "", techStack: "", results: "",
+            liveUrl: "", githubUrl: "", thumbnail: "",
+            featured: false, published: true,
+        });
+        setImageFile(null);
+        setImagePreview("");
+        setEditingId(null);
+    };
+
+    const handleEdit = async (project: Project) => {
+        try {
+            const response = await api.get(`/work/${project.slug}`);
+            const p = response.data.data || project;
+            setFormData({
+                title: p.title || "",
+                client: p.client || "",
+                categories: (p.category || []).join(", "),
+                challenge: p.challenge || "",
+                approach: p.approach || "",
+                features: (p.features || []).join("\n"),
+                techStack: (p.techStack || []).join(", "),
+                results: p.results || "",
+                liveUrl: p.liveUrl || "",
+                githubUrl: p.githubUrl || "",
+                thumbnail: p.thumbnail || "",
+                featured: p.featured || false,
+                published: p.published || false,
+            });
+            if (p.thumbnail) setImagePreview(p.thumbnail);
+            setEditingId(p.id);
+            setModalOpen(true);
+        } catch {
+            setFormData({
+                title: project.title || "",
+                client: project.client || "",
+                categories: (project.category || []).join(", "),
+                challenge: "", approach: "", features: "", techStack: "", results: "",
+                liveUrl: project.liveUrl || "",
+                githubUrl: project.githubUrl || "",
+                thumbnail: project.thumbnail || "",
+                featured: project.featured || false,
+                published: project.published || false,
+            });
+            if (project.thumbnail) setImagePreview(project.thumbnail);
+            setEditingId(project.id);
+            setModalOpen(true);
+        }
+    };
+
     const handleSaveProject = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
@@ -113,7 +166,7 @@ export default function WorkManagementPage() {
                 if (uploadedUrl) thumbnailUrl = uploadedUrl;
             }
 
-            const response = await api.post("/admin/work", {
+            const payload = {
                 ...formData,
                 thumbnail: thumbnailUrl,
                 category: formData.categories
@@ -125,19 +178,19 @@ export default function WorkManagementPage() {
                     .split(",")
                     .map((t) => t.trim())
                     .filter(Boolean),
-            });
+            };
+
+            let response;
+            if (editingId) {
+                response = await api.put(`/admin/work/${editingId}`, payload);
+            } else {
+                response = await api.post("/admin/work", payload);
+            }
 
             if (response.data.success) {
                 setModalOpen(false);
                 fetchProjects();
-                setFormData({
-                    title: "", client: "", categories: "", challenge: "",
-                    approach: "", features: "", techStack: "", results: "",
-                    liveUrl: "", githubUrl: "", thumbnail: "",
-                    featured: false, published: true,
-                });
-                setImageFile(null);
-                setImagePreview("");
+                resetForm();
             }
         } catch (error) {
             console.error("Save project error:", error);
@@ -176,7 +229,7 @@ export default function WorkManagementPage() {
                 </div>
 
                 <button
-                    onClick={() => setModalOpen(true)}
+                    onClick={() => { resetForm(); setModalOpen(true); }}
                     className="inline-flex items-center gap-2 bg-slate-900 text-white px-6 py-3 rounded-2xl font-bold hover:bg-orange-600 transition-all shadow-lg active:scale-95 text-sm"
                 >
                     <Plus className="w-4 h-4" /> Add New Project
@@ -262,7 +315,10 @@ export default function WorkManagementPage() {
                                         </td>
                                         <td className="px-8 py-6">
                                             <div className="flex items-center gap-2">
-                                                <button className="p-2 hover:bg-white rounded-xl transition-all text-slate-400 hover:text-blue-600 shadow-sm border border-transparent hover:border-blue-100">
+                                                <button
+                                                    onClick={() => handleEdit(project)}
+                                                    className="p-2 hover:bg-white rounded-xl transition-all text-slate-400 hover:text-blue-600 shadow-sm border border-transparent hover:border-blue-100"
+                                                >
                                                     <Edit3 className="w-4 h-4" />
                                                 </button>
                                                 <button
@@ -287,11 +343,11 @@ export default function WorkManagementPage() {
                     <div className="w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh]">
                         <div className="flex items-center justify-between px-8 py-6 bg-slate-50 border-b border-slate-100">
                             <div>
-                                <h3 className="text-xl font-bold text-slate-900">Add New Project</h3>
-                                <p className="text-xs text-slate-500">Fill in the details to showcase your work.</p>
+                                <h3 className="text-xl font-bold text-slate-900">{editingId ? "Edit Project" : "Add New Project"}</h3>
+                                <p className="text-xs text-slate-500">{editingId ? "Update the project details." : "Fill in the details to showcase your work."}</p>
                             </div>
                             <button
-                                onClick={() => setModalOpen(false)}
+                                onClick={() => { setModalOpen(false); resetForm(); }}
                                 className="p-2 hover:bg-white rounded-full transition-colors text-slate-400 hover:text-slate-600"
                             >
                                 <X className="w-5 h-5" />
@@ -495,7 +551,7 @@ export default function WorkManagementPage() {
 
                         <div className="px-8 py-6 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-3">
                             <button
-                                onClick={() => setModalOpen(false)}
+                                onClick={() => { setModalOpen(false); resetForm(); }}
                                 className="px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 hover:bg-white transition-all border border-transparent hover:border-slate-200"
                             >
                                 Cancel
@@ -509,10 +565,10 @@ export default function WorkManagementPage() {
                                 {isSubmitting || uploading ? (
                                     <>
                                         <Loader2 className="w-4 h-4 animate-spin" />
-                                        {uploading ? "Uploading..." : "Saving..."}
+                                        {uploading ? "Uploading..." : (editingId ? "Updating..." : "Saving...")}
                                     </>
                                 ) : (
-                                    "Save Project"
+                                    editingId ? "Update Project" : "Save Project"
                                 )}
                             </button>
                         </div>
