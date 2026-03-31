@@ -30,16 +30,12 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
     if (typeof window !== 'undefined') {
         const token =
-            localStorage.getItem('jantra_admin_token') ||
             localStorage.getItem('token') ||
             localStorage.getItem('adminToken');
 
         if (token && config.headers) {
             config.headers.Authorization = `Bearer ${token}`;
         }
-
-        console.log('[API Request]', config.method?.toUpperCase(), config.url,
-            'Token:', token ? 'present' : 'MISSING');
     }
     return config;
 }, (error) => {
@@ -50,19 +46,12 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response?.status === 401 || error.response?.status === 403) {
-            console.error('[API Auth Error]', error.response.status,
-                error.response.data?.error || 'Auth failed');
-
-            // Only redirect if we're on an admin page (not login page)
+        if (error.response?.status === 403 ||
+            error.response?.status === 401) {
             if (typeof window !== 'undefined' &&
-                window.location.pathname.includes('/admin') &&
                 !window.location.pathname.includes('/admin/login')) {
-                console.error('[API] Clearing tokens and redirecting to login...');
-                localStorage.removeItem('jantra_admin_token');
-                localStorage.removeItem('jantra_admin_user');
-                localStorage.removeItem('token');
-                localStorage.removeItem('adminToken');
+                localStorage.clear();
+                sessionStorage.clear();
                 window.location.href = '/admin/login';
             }
         }
@@ -71,3 +60,4 @@ api.interceptors.response.use(
 );
 
 export default api;
+

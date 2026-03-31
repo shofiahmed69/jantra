@@ -15,56 +15,75 @@ const loginSchema = z.object({
     password: z.string().min(8)
 });
 
-router.post('/login', authLimiter, validate(loginSchema), async (req, res, next) => {
+router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        // Check if environment variables match
-        if (email === env.ADMIN_EMAIL && password === env.ADMIN_PASSWORD) {
+        if (!email || !password) {
+            return res.status(400).json({ error: 'Email and password required' });
+        }
+
+        // Check if environment variables match (env-admin fallback)
+        if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
             const token = jwt.sign(
-                { id: 'env-admin', email: env.ADMIN_EMAIL, role: 'admin' },
-                env.JWT_SECRET,
-                { expiresIn: env.JWT_EXPIRES_IN }
+                { id: 'env-admin', email: process.env.ADMIN_EMAIL, role: 'admin' },
+                process.env.JWT_SECRET,
+                { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
             );
 
+            console.log('Login successful (env-admin):', email);
+
             return res.json({
+                success: true,
                 token,
                 user: {
                     id: 'env-admin',
-                    email: env.ADMIN_EMAIL,
+                    email: process.env.ADMIN_EMAIL,
                     name: 'System Admin',
                     role: 'admin'
                 }
             });
         }
 
-        const user = await prisma.adminUser.findUnique({
+        // Check database
+        const admin = await prisma.adminUser.findUnique({
             where: { email }
         });
 
-        if (!user || !(await bcrypt.compare(password, user.password))) {
-            return res.status(401).json({ error: 'Invalid email or password' });
+        if (!admin) {
+            return res.status(401).json({ error: 'Invalid credentials' });
+        }
+
+        const validPassword = await bcrypt.compare(password, admin.password);
+
+        if (!validPassword) {
+            return res.status(401).json({ error: 'Invalid credentials' });
         }
 
         const token = jwt.sign(
-            { id: user.id, email: user.email, role: user.role },
-            env.JWT_SECRET,
-            { expiresIn: env.JWT_EXPIRES_IN }
+            { id: admin.id, email: admin.email, role: admin.role },
+            process.env.JWT_SECRET,
+            { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
         );
 
+        console.log('Login successful:', admin.email);
+
         res.json({
+            success: true,
             token,
             user: {
-                id: user.id,
-                email: user.email,
-                name: user.name,
-                role: user.role
+                id: admin.id,
+                email: admin.email,
+                name: admin.name,
+                role: admin.role
             }
         });
     } catch (error) {
-        next(error);
+        console.error('Login error:', error);
+        res.status(500).json({ error: error.message });
     }
 });
+
 
 router.get('/me', auth, async (req, res, next) => {
     try {

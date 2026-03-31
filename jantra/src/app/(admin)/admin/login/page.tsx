@@ -15,14 +15,11 @@ export default function LoginPage() {
 
     // Clear any stale tokens on login page load
     useEffect(() => {
-        localStorage.removeItem('jantra_admin_token');
-        localStorage.removeItem('jantra_admin_user');
         localStorage.removeItem('token');
         localStorage.removeItem('adminToken');
         localStorage.removeItem('adminUser');
-        sessionStorage.clear();
-        console.log('[Login] Cleared stale tokens');
     }, []);
+
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

@@ -27,8 +27,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const router = useRouter();
 
     useEffect(() => {
-        const storedToken = localStorage.getItem("jantra_admin_token");
-        const storedUser = localStorage.getItem("jantra_admin_user");
+        const storedToken = localStorage.getItem("token") || localStorage.getItem("adminToken");
+        const storedUser = localStorage.getItem("adminUser");
 
         if (storedToken && storedUser) {
             setToken(storedToken);
@@ -40,20 +40,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const login = (newToken: string, newUser: User) => {
         setToken(newToken);
         setUser(newUser);
-        localStorage.setItem("jantra_admin_token", newToken);
-        localStorage.setItem("jantra_admin_user", JSON.stringify(newUser));
-        // Also store under common alternative keys for compatibility
         localStorage.setItem("token", newToken);
         localStorage.setItem("adminToken", newToken);
-        console.log('[Auth] Token stored under jantra_admin_token, token, adminToken');
+        localStorage.setItem("adminUser", JSON.stringify(newUser));
         router.push("/admin/dashboard");
     };
 
     const logout = useCallback(() => {
         setToken(null);
         setUser(null);
-        localStorage.removeItem("jantra_admin_token");
-        localStorage.removeItem("jantra_admin_user");
+        localStorage.clear();
+        sessionStorage.clear();
         router.push("/admin/login");
     }, [router]);
 
