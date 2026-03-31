@@ -69,16 +69,18 @@ router.post('/', leadLimiter, async (req, res) => {
     }
 });
 
-// Admin: List leads
+// Admin: List leads (Old path /admin, still supported)
 router.get('/admin', auth, async (req, res, next) => {
     try {
-        const { status, search, page = 1, limit = 20, sortBy = 'createdAt', order = 'desc' } = req.query;
+        const { status, search, page = 1, limit = 20 } = req.query;
 
         const skip = (Number(page) - 1) * Number(limit);
         const take = Number(limit);
 
         const where = {};
-        if (status) where.status = status;
+        if (status && status !== 'all' && status !== '') {
+            where.status = status;
+        }
         if (search) {
             where.OR = [
                 { name: { contains: search, mode: 'insensitive' } },
@@ -92,19 +94,72 @@ router.get('/admin', auth, async (req, res, next) => {
                 where,
                 skip,
                 take,
-                orderBy: { [sortBy]: order }
+                orderBy: { createdAt: 'desc' }
             }),
             prisma.lead.count({ where })
         ]);
 
+        console.log('Admin leads fetched (via /admin):', leads.length);
+
         res.json({
-            leads,
-            totalPages: Math.ceil(total / take),
-            currentPage: Number(page),
-            total
+            success: true,
+            data: leads,
+            leads, // Supporting both data.leads and data.data
+            total,
+            page: Number(page),
+            totalPages: Math.ceil(total / take)
         });
     } catch (error) {
         next(error);
+    }
+});
+
+// Admin: List leads (New path /, used by /api/admin/leads mount)
+router.get('/', auth, async (req, res, next) => {
+    try {
+        const { status, search, page = 1, limit = 20 } = req.query;
+
+        const skip = (Number(page) - 1) * Number(limit);
+        const take = Number(limit);
+
+        const where = {};
+        if (status && status !== 'all' && status !== '') {
+            where.status = status;
+        }
+        if (search) {
+            where.OR = [
+                { name: { contains: search, mode: 'insensitive' } },
+                { email: { contains: search, mode: 'insensitive' } },
+                { company: { contains: search, mode: 'insensitive' } },
+            ];
+        }
+
+        const [leads, total] = await Promise.all([
+            prisma.lead.findMany({
+                where,
+                skip,
+                take,
+                orderBy: { createdAt: 'desc' }
+            }),
+            prisma.lead.count({ where })
+        ]);
+
+        console.log('Admin leads fetched (via root):', leads.length);
+
+        res.json({
+            success: true,
+            data: leads,
+            leads, // Supporting both data.leads and data.data
+            total,
+            page: Number(page),
+            totalPages: Math.ceil(total / take)
+        });
+    } catch (error) {
+        console.error('Get admin leads error:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
     }
 });
 

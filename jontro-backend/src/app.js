@@ -73,6 +73,8 @@ const uploadRoutes = require('./routes/upload');
 // Route Registration
 app.use('/api/auth', authRoutes);
 app.use('/api/leads', leadRoutes);
+const auth = require('./middleware/auth');
+app.use('/api/admin/leads', auth, leadRoutes);
 app.use('/api/blog', blogRoutes);
 app.use('/api/work', portfolioRoutes);
 app.use('/api/admin/work', portfolioRoutes);
