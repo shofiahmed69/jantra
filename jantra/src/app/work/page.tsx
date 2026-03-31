@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowRight, Loader2 } from "lucide-react";
+import { ArrowRight, Loader2, ExternalLink } from "lucide-react";
 import api from "@/lib/api";
 import { getAllProjects, getProjectGradient } from "@/data/projects";
 
@@ -13,9 +13,23 @@ export default function PortfolioPage() {
     const [activeFilter, setActiveFilter] = useState("All");
 
     useEffect(() => {
-        // We prioritize local projects as requested for consistency
-        setAllProjects(getAllProjects());
-        setLoading(false);
+        const fetchProjects = async () => {
+            try {
+                const response = await api.get("/work");
+                const apiProjects = response.data.data || [];
+                if (apiProjects.length > 0) {
+                    setAllProjects(apiProjects);
+                } else {
+                    setAllProjects(getAllProjects());
+                }
+            } catch (error) {
+                console.error("Failed to fetch projects from API, using local:", error);
+                setAllProjects(getAllProjects());
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchProjects();
     }, []);
 
     const filteredProjects = activeFilter === "All"
@@ -62,11 +76,24 @@ export default function PortfolioPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
 
                         {filteredProjects.map((project, i) => (
-                            <Link key={i} href={`/work/${project.slug}`} className="group block focus:outline-none">
-                                <div className={`w-full h-52 rounded-xl bg-gradient-to-br ${getProjectGradient(i)} flex items-center justify-center overflow-hidden relative mb-6 group-hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)] transition-all duration-500`}>
-                                    <span className="text-white font-black opacity-20 select-none" style={{ fontSize: '8rem', lineHeight: 1 }}>
-                                        {project.title.charAt(0)}
-                                    </span>
+                            <Link key={project.id || i} href={`/work/${project.slug}`} className="group block focus:outline-none">
+                                <div className="w-full h-52 rounded-xl overflow-hidden relative mb-6 group-hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.15)] transition-all duration-500">
+                                    {project.thumbnail ? (
+                                        <img
+                                            src={project.thumbnail}
+                                            alt={project.title}
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => {
+                                                (e.currentTarget as HTMLImageElement).style.display = 'none';
+                                                (e.currentTarget.nextElementSibling as HTMLElement)?.classList.remove('hidden');
+                                            }}
+                                        />
+                                    ) : null}
+                                    <div className={`${project.thumbnail ? 'hidden' : ''} w-full h-full bg-gradient-to-br ${getProjectGradient(i)} flex items-center justify-center`}>
+                                        <span className="text-white font-black opacity-20 select-none" style={{ fontSize: '8rem', lineHeight: 1 }}>
+                                            {project.title.charAt(0)}
+                                        </span>
+                                    </div>
 
                                     {/* Overlay hover */}
                                     <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 hidden md:flex items-center justify-center">
@@ -97,6 +124,11 @@ export default function PortfolioPage() {
                                     <p className="text-slate-600 text-sm md:text-base leading-relaxed line-clamp-2">
                                         {project.description || project.challenge}
                                     </p>
+                                    {project.liveUrl && (
+                                        <span className="inline-flex items-center gap-1 text-xs text-blue-500 font-medium mt-2">
+                                            <ExternalLink className="w-3 h-3" /> Live Project
+                                        </span>
+                                    )}
                                 </div>
                             </Link>
                         ))}
@@ -107,7 +139,7 @@ export default function PortfolioPage() {
                 <div className="mt-24 bg-orange-50 rounded-[2.5rem] p-8 md:p-12 lg:p-16 text-center border border-orange-100/50">
                     <h2 className="text-2xl md:text-4xl font-bold text-slate-900 mb-4">Have a project in mind?</h2>
                     <p className="text-slate-600 mb-8 max-w-lg mx-auto">
-                        Let's collaborate to build your next big digital product. Our team is ready to deliver.
+                        Let&apos;s collaborate to build your next big digital product. Our team is ready to deliver.
                     </p>
                     <Link href="/contact" className="inline-flex items-center gap-2 bg-slate-900 text-white px-8 py-4 rounded-full font-bold hover:bg-orange-600 transition-colors shadow-lg active:scale-95">
                         Start a Conversation <ArrowRight className="w-4 h-4" />
