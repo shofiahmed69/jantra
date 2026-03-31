@@ -1,0 +1,116 @@
+import Link from "next/link";
+import { ArrowLeft, CheckCircle2, ChevronRight, BarChart } from "lucide-react";
+import { getProjectBySlug, getProjectGradient, projects } from "@/data/projects";
+import { notFound } from "next/navigation";
+
+export default async function CaseStudyPage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
+    const project = getProjectBySlug(slug);
+
+    if (!project) {
+        return notFound();
+    }
+
+    return (
+        <main className="relative w-full min-h-screen pt-24 pb-20 overflow-x-hidden">
+            <div className="max-w-4xl mx-auto px-6">
+
+                <Link href="/work" className="inline-flex items-center gap-2 text-slate-500 hover:text-orange-600 font-medium text-sm transition-colors mb-8">
+                    <ArrowLeft className="w-4 h-4" /> Back to Portfolio
+                </Link>
+
+                {/* Hero Section */}
+                <header className="mb-12">
+                    <div className="flex items-center gap-3 mb-4">
+                        <span className="text-orange-600 font-bold tracking-widest text-[10px] md:text-xs uppercase bg-orange-100/50 px-3 py-1.5 rounded-full inline-block">
+                            {project.category[0]}
+                        </span>
+                        <span className="text-slate-400 text-sm font-medium">{project.duration}</span>
+                    </div>
+                    <h1 className="text-4xl md:text-6xl font-bold text-slate-900 tracking-tight leading-tight mb-6">
+                        {project.title}
+                    </h1>
+                </header>
+
+                <div className={`w-full h-64 md:h-80 rounded-2xl bg-gradient-to-br ${getProjectGradient(projects.findIndex(p => p.slug === project.slug))} flex items-center justify-center overflow-hidden relative mb-10`}>
+                    <span className="text-white font-black opacity-10 select-none" style={{ fontSize: '14rem', lineHeight: 1 }}>
+                        {project.title.charAt(0)}
+                    </span>
+                </div>
+
+                {/* Content Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16">
+
+                    {/* Main Content (Left) */}
+                    <div className="lg:col-span-2 space-y-12">
+                        <section>
+                            <h2 className="text-2xl font-bold text-slate-900 mb-4">Project Overview</h2>
+                            <p className="text-slate-600 leading-relaxed text-lg">{project.description}</p>
+                        </section>
+
+                        <section>
+                            <h2 className="text-2xl font-bold text-slate-900 mb-4">The Challenge</h2>
+                            <p className="text-slate-600 leading-relaxed">{project.challenge}</p>
+                        </section>
+
+                        <section>
+                            <h2 className="text-2xl font-bold text-slate-900 mb-4">Our Approach</h2>
+                            <p className="text-slate-600 leading-relaxed">{project.approach}</p>
+                        </section>
+
+                        <section className="bg-slate-50 rounded-[2rem] p-8 md:p-10 border border-slate-100">
+                            <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                                <CheckCircle2 className="w-6 h-6 text-orange-500" /> Features Built
+                            </h2>
+                            <ul className="space-y-4">
+                                {project.features.map((feature, i) => (
+                                    <li key={i} className="flex items-start gap-3">
+                                        <div className="w-2 h-2 rounded-full bg-orange-500 mt-2 shrink-0"></div>
+                                        <span className="text-slate-700 font-medium">{feature}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </section>
+                    </div>
+
+                    {/* Sidebar (Right) */}
+                    <div className="space-y-10">
+                        <div className="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.05)]">
+                            <h3 className="font-bold text-slate-900 mb-6 uppercase tracking-wider text-xs block">Technology Stack</h3>
+                            <div className="flex flex-wrap gap-2">
+                                {project.techStack.map((tech, i) => (
+                                    <span key={i} className="bg-slate-100 text-slate-600 px-3 py-1.5 rounded-lg text-sm font-medium border border-slate-200/50">
+                                        {tech}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 className="font-bold text-slate-900 mb-6 uppercase tracking-wider text-xs block flex items-center gap-2">
+                                <BarChart className="w-4 h-4 text-orange-500" /> Key Metrics
+                            </h3>
+                            <div className="space-y-4 p-6 bg-orange-50/50 rounded-2xl border border-orange-100">
+                                <p className="text-slate-700 font-medium leading-relaxed italic">
+                                    {project.results}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Next Project Nav */}
+                <div className="mt-10 border-t border-slate-200 pt-8 flex justify-between items-center">
+                    <Link href="/work" className="text-slate-500 hover:text-slate-900 font-medium transition-colors text-sm md:text-base">
+                        View All Projects
+                    </Link>
+                    {projects.findIndex(p => p.slug === slug) < projects.length - 1 && (
+                        <Link href={`/work/${projects[projects.findIndex(p => p.slug === slug) + 1].slug}`} className="flex items-center gap-2 font-bold text-orange-600 hover:text-orange-700 transition-colors text-sm md:text-base group">
+                            Next Case Study <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                    )}
+                </div>
+            </div>
+        </main>
+    );
+}
