@@ -18,19 +18,16 @@ export default function PortfolioPage() {
                 const response = await api.get("/work");
                 const data = response.data?.data || response.data || [];
                 if (Array.isArray(data) && data.length > 0) {
-                    // Merge API data with local enriched fields (tags, description, duration)
-                    const local = getAllProjects();
-                    const merged = data.map((apiProject: any) => {
-                        const localMatch = local.find(l => l.slug === apiProject.slug);
-                        return { ...localMatch, ...apiProject, tags: localMatch?.tags || apiProject.techStack || [] };
-                    });
-                    setAllProjects(merged);
+                    const mapped = data.map((apiProject: any) => ({
+                        ...apiProject,
+                        tags: apiProject.techStack || []
+                    }));
+                    setAllProjects(mapped);
                 } else {
-                    setAllProjects(getAllProjects());
+                    setAllProjects([]);
                 }
             } catch {
-                // Fallback to static data
-                setAllProjects(getAllProjects());
+                setAllProjects([]);
             } finally {
                 setLoading(false);
             }

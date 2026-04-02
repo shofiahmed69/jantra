@@ -33,13 +33,8 @@ function ProjectCarousel({ projects }: { projects: any[] }) {
 
   const project = projects[index];
   if (!project) return null;
-  
-  const images = [
-    "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1639322537228-f710d846310a?q=80&w=2078&auto=format&fit=crop"
-  ];
+  const defaultImage = "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop";
+  const projectImage = project.thumbnail || defaultImage;
 
   return (
     <div className="relative group w-full max-w-[1200px] mx-auto">
@@ -59,7 +54,7 @@ function ProjectCarousel({ projects }: { projects: any[] }) {
               initial={{ scale: 1.1, filter: "grayscale(1) brightness(0.6)" }}
               animate={{ scale: 1, filter: "grayscale(0) brightness(0.85)" }}
               transition={{ duration: 7 }}
-              src={images[index % images.length]}
+              src={projectImage}
               className="absolute inset-0 w-full h-full object-cover"
               alt={project.title}
             />
@@ -510,17 +505,16 @@ export default function HomePage() {
         const data = response.data?.data || response.data || [];
         if (Array.isArray(data) && data.length > 0) {
           const featured = data.filter((p: any) => p.featured).sort((a: any, b: any) => a.order - b.order);
-          const local = getFeaturedProjects();
-          const merged = featured.map((apiProject: any) => {
-             const localMatch = local.find(l => l.slug === apiProject.slug);
-             return { ...localMatch, ...apiProject, tags: localMatch?.tags || apiProject.techStack || [] };
-          });
-          setFeaturedProjects(merged.length > 0 ? merged : local);
+          const formatted = featured.map((apiProject: any) => ({
+             ...apiProject,
+             tags: apiProject.techStack || []
+          }));
+          setFeaturedProjects(formatted);
         } else {
-          setFeaturedProjects(getFeaturedProjects());
+          setFeaturedProjects([]);
         }
       } catch {
-        setFeaturedProjects(getFeaturedProjects());
+        setFeaturedProjects([]);
       }
     };
     fetchProjects();

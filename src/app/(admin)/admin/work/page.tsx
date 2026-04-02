@@ -102,6 +102,15 @@ export default function WorkManagementPage() {
         }
     };
 
+    const handleToggleFeatured = async (id: string) => {
+        try {
+            await api.patch(`/admin/work/${id}/featured`);
+            fetchProjects();
+        } catch (error) {
+            console.error("Toggle featured error:", error);
+        }
+    };
+
     return (
         <div className="space-y-6">
             <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -169,12 +178,20 @@ export default function WorkManagementPage() {
                                             </div>
                                         </td>
                                         <td className="px-8 py-6">
-                                            <button
-                                                onClick={() => handleTogglePublish(project.id)}
-                                                className={`text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest transition-colors ${project.published ? 'bg-emerald-100 text-emerald-600' : 'bg-orange-100 text-orange-600'
-                                                    }`}>
-                                                {project.published ? 'Live' : 'Draft'}
-                                            </button>
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    onClick={() => handleTogglePublish(project.id)}
+                                                    className={`text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest transition-colors ${project.published ? 'bg-emerald-100 text-emerald-600' : 'bg-orange-100 text-orange-600'
+                                                        }`}>
+                                                    {project.published ? 'Live' : 'Draft'}
+                                                </button>
+                                                <button
+                                                    onClick={() => handleToggleFeatured(project.id)}
+                                                    className={`text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest transition-colors ${project.featured ? 'bg-purple-100 text-purple-600' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                                                        }`}>
+                                                    {project.featured ? 'Featured' : 'Not Featured'}
+                                                </button>
+                                            </div>
                                         </td>
                                         <td className="px-8 py-6">
                                             <div className="flex items-center gap-2">
