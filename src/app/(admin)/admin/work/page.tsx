@@ -287,8 +287,8 @@ export default function WorkManagementPage() {
             {/* Add Project Modal */}
             {modalOpen && (
                 <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
-                    <div className="w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[85vh] my-4">
-                        <div className="flex items-center justify-between px-8 py-6 bg-slate-50 border-b border-slate-100">
+                    <div className="w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[calc(100vh-2rem)] sm:max-h-[calc(100vh-4rem)]">
+                        <div className="flex items-center justify-between px-8 py-6 bg-slate-50 border-b border-slate-100 shrink-0">
                             <div>
                                 <h3 className="text-xl font-bold text-slate-900">{editingId ? "Edit Project" : "Add New Project"}</h3>
                                 <p className="text-xs text-slate-500">Fill in the details to showcase your work.</p>
@@ -434,7 +434,7 @@ export default function WorkManagementPage() {
                             </form>
                         </div>
 
-                        <div className="px-8 py-6 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-3">
+                        <div className="px-8 py-6 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-3 shrink-0">
                             <button
                                 onClick={() => setModalOpen(false)}
                                 className="px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 hover:bg-white transition-all border border-transparent hover:border-slate-200"
