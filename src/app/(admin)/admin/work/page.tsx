@@ -8,8 +8,8 @@ import {
     Trash2,
     Loader2,
     X,
-    CheckCircle2,
-    AlertCircle
+    UploadCloud,
+    Image as ImageIcon
 } from "lucide-react";
 
 interface Project {
@@ -39,6 +39,7 @@ export default function WorkManagementPage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const [editingId, setEditingId] = useState<string | null>(null);
+    const [uploadingImage, setUploadingImage] = useState(false);
 
     // Form state
     const [formData, setFormData] = useState({
@@ -72,6 +73,29 @@ export default function WorkManagementPage() {
     useEffect(() => {
         fetchProjects();
     }, []);
+
+    const handleThumbnailUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const data = new FormData();
+        data.append('image', file);
+
+        setUploadingImage(true);
+        try {
+            const res = await api.post('/upload/image', data, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            if (res.data.url) {
+                setFormData(prev => ({ ...prev, thumbnail: res.data.url }));
+            }
+        } catch (error) {
+            console.error('Image upload failed:', error);
+            alert('Failed to upload image banner. Please try again.');
+        } finally {
+            setUploadingImage(false);
+        }
+    };
 
     const handleAddProject = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -288,6 +312,41 @@ export default function WorkManagementPage() {
                                         className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all"
                                         placeholder="e.g. NexaFlow CRM"
                                     />
+                                </div>
+                                <div className="space-y-2 md:col-span-2">
+                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Project Banner (Thumbnail)</label>
+                                    <div className="flex items-center gap-4">
+                                        {formData.thumbnail ? (
+                                            <div className="relative w-32 h-20 rounded-xl overflow-hidden border border-slate-200">
+                                                <img src={formData.thumbnail} alt="Banner Preview" className="object-cover w-full h-full" />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setFormData({ ...formData, thumbnail: "" })}
+                                                    className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors"
+                                                >
+                                                    <X className="w-3 h-3" />
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <div className="w-32 h-20 rounded-xl bg-slate-50 border border-slate-200 border-dashed flex items-center justify-center text-slate-400">
+                                                <ImageIcon className="w-6 h-6 opacity-50" />
+                                            </div>
+                                        )}
+                                        <div className="flex-1">
+                                            <label className={`cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold shadow-sm transition-all ${uploadingImage ? 'opacity-50 cursor-not-allowed' : 'hover:border-orange-500 hover:text-orange-600'}`}>
+                                                {uploadingImage ? <Loader2 className="w-4 h-4 animate-spin" /> : <UploadCloud className="w-4 h-4" />}
+                                                <span>{uploadingImage ? 'Uploading...' : 'Upload Banner'}</span>
+                                                <input
+                                                    type="file"
+                                                    accept="image/*"
+                                                    className="hidden"
+                                                    onChange={handleThumbnailUpload}
+                                                    disabled={uploadingImage}
+                                                />
+                                            </label>
+                                            <p className="text-[10px] text-slate-400 font-medium mt-2 max-w-[200px]">Optimal ratio is 16:9. Max 2MB.</p>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div className="space-y-1">
                                     <label className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Client*</label>
