@@ -258,7 +258,7 @@ export default function WorkManagementPage() {
             {/* Add Project Modal */}
             {modalOpen && (
                 <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
-                    <div className="w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh]">
+                    <div className="w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[85vh] my-4">
                         <div className="flex items-center justify-between px-8 py-6 bg-slate-50 border-b border-slate-100">
                             <div>
                                 <h3 className="text-xl font-bold text-slate-900">{editingId ? "Edit Project" : "Add New Project"}</h3>
@@ -272,8 +272,8 @@ export default function WorkManagementPage() {
                             </button>
                         </div>
 
-                        <div className="flex-1 overflow-y-auto p-8 space-y-6">
-                            <form id="project-form" onSubmit={handleAddProject} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6 custom-scrollbar">
+                            <form id="project-form" onSubmit={handleAddProject} className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                 <div className="space-y-1 md:col-span-2">
                                     <label className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Project Title*</label>
                                     <input
@@ -320,7 +320,7 @@ export default function WorkManagementPage() {
                                 <div className="space-y-1 md:col-span-2">
                                     <label className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Challenge</label>
                                     <textarea
-                                        rows={3}
+                                        rows={2}
                                         value={formData.challenge}
                                         onChange={(e) => setFormData({ ...formData, challenge: e.target.value })}
                                         className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all"
@@ -330,7 +330,7 @@ export default function WorkManagementPage() {
                                 <div className="space-y-1 md:col-span-2">
                                     <label className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Approach</label>
                                     <textarea
-                                        rows={3}
+                                        rows={2}
                                         value={formData.approach}
                                         onChange={(e) => setFormData({ ...formData, approach: e.target.value })}
                                         className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all"
