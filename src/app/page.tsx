@@ -12,6 +12,7 @@ import {
   homeServicePreview,
 } from "@/content/site";
 import { getFeaturedProjects } from "@/data/projects";
+import api from "@/lib/api";
 
 const JANTRA_ORANGE_GLOW = "rgba(249, 115, 22, 0.5)";
 
@@ -502,7 +503,28 @@ function DesktopHero() {
 export default function HomePage() {
   const [featuredProjects, setFeaturedProjects] = useState<any[]>([]);
 
-  useEffect(() => { setFeaturedProjects(getFeaturedProjects()); }, []);
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await api.get("/work");
+        const data = response.data?.data || response.data || [];
+        if (Array.isArray(data) && data.length > 0) {
+          const featured = data.filter((p: any) => p.featured).sort((a: any, b: any) => a.order - b.order);
+          const local = getFeaturedProjects();
+          const merged = featured.map((apiProject: any) => {
+             const localMatch = local.find(l => l.slug === apiProject.slug);
+             return { ...localMatch, ...apiProject, tags: localMatch?.tags || apiProject.techStack || [] };
+          });
+          setFeaturedProjects(merged.length > 0 ? merged : local);
+        } else {
+          setFeaturedProjects(getFeaturedProjects());
+        }
+      } catch {
+        setFeaturedProjects(getFeaturedProjects());
+      }
+    };
+    fetchProjects();
+  }, []);
 
   return (
     <main className="min-h-screen bg-[#f8fafc] overflow-x-hidden">

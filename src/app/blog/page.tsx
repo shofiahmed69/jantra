@@ -1,12 +1,32 @@
 import Link from "next/link";
 import { ArrowRight, Clock } from "lucide-react";
 import { getAllPosts, getFeaturedPost } from "@/data/blogPosts";
+import api from "@/lib/api";
 
-export default function BlogPage() {
-    const featuredPost = getFeaturedPost();
-    const posts = getAllPosts();
+export default async function BlogPage() {
+    let posts = [];
+    let featuredPost = null;
 
-    if (!featuredPost) return null;
+    try {
+        const response = await api.get("/blog");
+        const data = response.data?.posts || response.data?.data || response.data || [];
+        if (Array.isArray(data) && data.length > 0) {
+            posts = data.sort((a: any, b: any) => new Date(b.createdAt || b.publishedAt || 0).getTime() - new Date(a.createdAt || a.publishedAt || 0).getTime()).map(apiPost => {
+                const local = getAllPosts().find(l => l.slug === apiPost.slug);
+                return { ...local, ...apiPost, author: local?.author || apiPost.author || { name: 'Admin', role: 'Editor' } };
+            });
+            featuredPost = posts.find((p: any) => p.featured) || posts[0];
+        } else {
+            posts = getAllPosts();
+            featuredPost = getFeaturedPost();
+        }
+    } catch {
+        posts = getAllPosts();
+        featuredPost = getFeaturedPost();
+    }
+
+    if (!featuredPost && posts.length === 0) return null;
+    if (!featuredPost) featuredPost = posts[0];
 
     const defaultGradient = "bg-gradient-to-br from-slate-700 via-slate-800 to-orange-900";
 

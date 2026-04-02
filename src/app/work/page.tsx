@@ -13,9 +13,29 @@ export default function PortfolioPage() {
     const [activeFilter, setActiveFilter] = useState("All");
 
     useEffect(() => {
-        // We prioritize local projects as requested for consistency
-        setAllProjects(getAllProjects());
-        setLoading(false);
+        const fetchProjects = async () => {
+            try {
+                const response = await api.get("/work");
+                const data = response.data?.data || response.data || [];
+                if (Array.isArray(data) && data.length > 0) {
+                    // Merge API data with local enriched fields (tags, description, duration)
+                    const local = getAllProjects();
+                    const merged = data.map((apiProject: any) => {
+                        const localMatch = local.find(l => l.slug === apiProject.slug);
+                        return { ...localMatch, ...apiProject, tags: localMatch?.tags || apiProject.techStack || [] };
+                    });
+                    setAllProjects(merged);
+                } else {
+                    setAllProjects(getAllProjects());
+                }
+            } catch {
+                // Fallback to static data
+                setAllProjects(getAllProjects());
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchProjects();
     }, []);
 
     const filteredProjects = activeFilter === "All"

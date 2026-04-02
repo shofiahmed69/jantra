@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, CheckCircle2, LayoutTemplate, Layers, Cpu, ShieldCheck, BarChart4, Send } from "lucide-react";
 import LottiePlayer from "@/components/LottiePlayer";
+import api from "@/lib/api";
 
 export default async function ServiceDetailPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
@@ -18,13 +19,30 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
         "cloud-migration": { title: "Cloud Migration & Management", category: "Core Service", lottie: "/lottie/cloud-animation.json", description: "Secure, efficient transition to cloud infrastructure with ongoing optimization, reducing your cloud spend while boosting availability.", descBg: "bg-slate-200" },
     };
 
-    const service = serviceDataMap[slug] || {
-        title: "Service Not Found",
-        category: "Unknown",
-        lottie: "/lottie/cloud.json", // Fallback animation, removed globe as requested
-        description: "The requested service could not be found.",
-        descBg: "bg-slate-100"
-    };
+    let service = null;
+    try {
+        const response = await api.get("/services");
+        const apiData = response.data?.data || response.data || [];
+        if (Array.isArray(apiData) && apiData.length > 0) {
+            const apiService = apiData.find((s: any) => s.slug === slug);
+            if (apiService) {
+                const local = serviceDataMap[slug];
+                service = local ? { ...local, ...apiService } : apiService;
+            }
+        }
+    } catch {
+        // fallback
+    }
+
+    if (!service) {
+        service = serviceDataMap[slug] || {
+            title: "Service Not Found",
+            category: "Unknown",
+            lottie: "/lottie/cloud.json",
+            description: "The requested service could not be found.",
+            descBg: "bg-slate-100"
+        };
+    }
 
     return (
         <main className="relative w-full min-h-screen pt-24 pb-20 overflow-x-hidden">

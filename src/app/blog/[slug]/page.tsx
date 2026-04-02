@@ -1,11 +1,30 @@
 import Link from "next/link";
 import { ArrowLeft, Clock, Share2, Twitter, Linkedin, Github } from "lucide-react";
-import { getBlogPostBySlug } from "@/data/blogPosts";
+import { getBlogPostBySlug, getAllPosts } from "@/data/blogPosts";
 import { notFound } from "next/navigation";
+import api from "@/lib/api";
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
-    const post = getBlogPostBySlug(slug);
+    let post = null;
+
+    try {
+        const response = await api.get("/blog");
+        const data = response.data?.posts || response.data?.data || response.data || [];
+        if (Array.isArray(data) && data.length > 0) {
+            const apiPost = data.find((p: any) => p.slug === slug);
+            if (apiPost) {
+                const local = getAllPosts().find(l => l.slug === apiPost.slug);
+                post = { ...local, ...apiPost, author: local?.author || apiPost.author || { name: 'Admin', role: 'Editor' } };
+            } else {
+                post = getBlogPostBySlug(slug);
+            }
+        } else {
+            post = getBlogPostBySlug(slug);
+        }
+    } catch {
+        post = getBlogPostBySlug(slug);
+    }
 
     if (!post) {
         notFound();

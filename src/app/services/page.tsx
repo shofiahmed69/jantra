@@ -108,7 +108,23 @@ const services = [
     }
 ];
 
-export default function ServicesPage() {
+import api from "@/lib/api";
+
+export default async function ServicesPage() {
+    let finalServices = [...services];
+    try {
+        const response = await api.get("/services");
+        const apiData = response.data?.data || response.data || [];
+        if (Array.isArray(apiData) && apiData.length > 0) {
+            finalServices = apiData.map((s: any) => {
+                const local = services.find(l => l.slug === s.slug);
+                return local ? { ...local, ...s } : s;
+            });
+        }
+    } catch {
+        // use default services
+    }
+
     return (
         <main className="relative w-full overflow-x-hidden pt-24">
             {/* Hero Section */}
@@ -122,7 +138,7 @@ export default function ServicesPage() {
             </header>
 
             {/* Services List */}
-            {services.map((service, index) => {
+            {finalServices.map((service: any, index: number) => {
                 const isEven = index % 2 === 0;
 
                 return (
@@ -157,7 +173,7 @@ export default function ServicesPage() {
                                     <div className="mb-6 bg-slate-50/50 p-4 rounded-xl border border-slate-100">
                                         <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">Key Capabilities</h4>
                                         <ul className="space-y-2">
-                                            {service.features.map((feature, fIdx) => (
+                                            {service.features?.map((feature: string, fIdx: number) => (
                                                 <li key={fIdx} className="flex items-start gap-2.5 text-sm text-slate-700">
                                                     <CheckCircle className="w-4 h-4 text-orange-500 mt-0.5 shrink-0" />
                                                     <span className="font-medium">{feature}</span>
@@ -170,7 +186,7 @@ export default function ServicesPage() {
                                     <div className="mb-6 lg:mb-8">
                                         <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2.5">Industries</h4>
                                         <div className="flex flex-wrap gap-2">
-                                            {service.industries.map((industry, iIdx) => (
+                                            {service.industries?.map((industry: string, iIdx: number) => (
                                                 <span key={iIdx} className="px-3 py-1.5 bg-white border border-slate-200 text-slate-600 text-xs rounded-full font-medium shadow-sm">
                                                     {industry}
                                                 </span>

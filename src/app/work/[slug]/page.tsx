@@ -1,15 +1,40 @@
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2, ChevronRight, BarChart } from "lucide-react";
-import { getProjectBySlug, getProjectGradient, projects } from "@/data/projects";
+import { getProjectBySlug, getProjectGradient, projects as staticProjects } from "@/data/projects";
 import { notFound } from "next/navigation";
+import api from "@/lib/api";
 
 export default async function CaseStudyPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
-    const project = getProjectBySlug(slug);
+    
+    let allProjects: any[] = [];
+    let project = null;
+
+    try {
+        const response = await api.get("/work");
+        const data = response.data?.data || response.data || [];
+        if (Array.isArray(data) && data.length > 0) {
+            allProjects = data.sort((a: any, b: any) => a.order - b.order).map((apiP: any) => {
+                const local = staticProjects.find(l => l.slug === apiP.slug);
+                return { ...local, ...apiP, tags: local?.tags || apiP.techStack || [] };
+            });
+            project = allProjects.find((p: any) => p.slug === slug);
+        } else {
+            allProjects = staticProjects;
+            project = getProjectBySlug(slug);
+        }
+    } catch {
+        allProjects = staticProjects;
+        project = getProjectBySlug(slug);
+    }
 
     if (!project) {
         return notFound();
     }
+
+    const currentIndex = allProjects.findIndex(p => p.slug === slug);
+    const hasNext = currentIndex !== -1 && currentIndex < allProjects.length - 1;
+    const nextProject = hasNext ? allProjects[currentIndex + 1] : null;
 
     return (
         <main className="relative w-full min-h-screen pt-24 pb-20 overflow-x-hidden">
@@ -23,18 +48,18 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
                 <header className="mb-12">
                     <div className="flex items-center gap-3 mb-4">
                         <span className="text-orange-600 font-bold tracking-widest text-[10px] md:text-xs uppercase bg-orange-100/50 px-3 py-1.5 rounded-full inline-block">
-                            {project.category[0]}
+                            {project.category && project.category[0]}
                         </span>
-                        <span className="text-slate-400 text-sm font-medium">{project.duration}</span>
+                        <span className="text-slate-400 text-sm font-medium">{project.duration || "N/A"}</span>
                     </div>
                     <h1 className="text-4xl md:text-6xl font-bold text-slate-900 tracking-tight leading-tight mb-6">
                         {project.title}
                     </h1>
                 </header>
 
-                <div className={`w-full h-64 md:h-80 rounded-2xl bg-gradient-to-br ${getProjectGradient(projects.findIndex(p => p.slug === project.slug))} flex items-center justify-center overflow-hidden relative mb-10`}>
+                <div className={`w-full h-64 md:h-80 rounded-2xl bg-gradient-to-br ${getProjectGradient(currentIndex !== -1 ? currentIndex : 0)} flex items-center justify-center overflow-hidden relative mb-10`}>
                     <span className="text-white font-black opacity-10 select-none" style={{ fontSize: '14rem', lineHeight: 1 }}>
-                        {project.title.charAt(0)}
+                        {project.title && project.title.charAt(0)}
                     </span>
                 </div>
 
@@ -63,7 +88,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
                                 <CheckCircle2 className="w-6 h-6 text-orange-500" /> Features Built
                             </h2>
                             <ul className="space-y-4">
-                                {project.features.map((feature, i) => (
+                                {project.features && project.features.map((feature: string, i: number) => (
                                     <li key={i} className="flex items-start gap-3">
                                         <div className="w-2 h-2 rounded-full bg-orange-500 mt-2 shrink-0"></div>
                                         <span className="text-slate-700 font-medium">{feature}</span>
@@ -78,7 +103,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
                         <div className="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.05)]">
                             <h3 className="font-bold text-slate-900 mb-6 uppercase tracking-wider text-xs block">Technology Stack</h3>
                             <div className="flex flex-wrap gap-2">
-                                {project.techStack.map((tech, i) => (
+                                {project.techStack && project.techStack.map((tech: string, i: number) => (
                                     <span key={i} className="bg-slate-100 text-slate-600 px-3 py-1.5 rounded-lg text-sm font-medium border border-slate-200/50">
                                         {tech}
                                     </span>
@@ -104,8 +129,8 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
                     <Link href="/work" className="text-slate-500 hover:text-slate-900 font-medium transition-colors text-sm md:text-base">
                         View All Projects
                     </Link>
-                    {projects.findIndex(p => p.slug === slug) < projects.length - 1 && (
-                        <Link href={`/work/${projects[projects.findIndex(p => p.slug === slug) + 1].slug}`} className="flex items-center gap-2 font-bold text-orange-600 hover:text-orange-700 transition-colors text-sm md:text-base group">
+                    {hasNext && nextProject && (
+                        <Link href={`/work/${nextProject.slug}`} className="flex items-center gap-2 font-bold text-orange-600 hover:text-orange-700 transition-colors text-sm md:text-base group">
                             Next Case Study <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                         </Link>
                     )}
