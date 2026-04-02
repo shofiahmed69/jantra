@@ -286,8 +286,9 @@ export default function WorkManagementPage() {
 
             {/* Add Project Modal */}
             {modalOpen && (
-                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
-                    <div className="w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[calc(100vh-2rem)] sm:max-h-[calc(100vh-4rem)]">
+                <div className="fixed inset-0 z-[200] overflow-y-auto bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200 custom-scrollbar">
+                    <div className="flex min-h-screen items-center justify-center p-4 sm:p-6 text-center">
+                        <div className="w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col text-left align-middle relative transition-all">
                         <div className="flex items-center justify-between px-8 py-6 bg-slate-50 border-b border-slate-100 shrink-0">
                             <div>
                                 <h3 className="text-xl font-bold text-slate-900">{editingId ? "Edit Project" : "Add New Project"}</h3>
@@ -449,6 +450,7 @@ export default function WorkManagementPage() {
                             >
                                 {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save Project"}
                             </button>
+                        </div>
                         </div>
                     </div>
                 </div>
