@@ -24,6 +24,7 @@ interface Project {
     features?: string[];
     techStack?: string[];
     results?: string;
+    liveUrl?: string;
     published: boolean;
     featured: boolean;
     createdAt: string;
@@ -51,6 +52,7 @@ export default function WorkManagementPage() {
         features: [] as string[],
         techStack: [] as string[],
         results: "",
+        liveUrl: "",
         featured: false,
         published: true
     });
@@ -87,6 +89,7 @@ export default function WorkManagementPage() {
                 title: "", slug: "", client: "", thumbnail: "",
                 category: [], challenge: "", approach: "",
                 features: [], techStack: [], results: "",
+                liveUrl: "",
                 featured: false, published: true
             });
         } catch (error) {
@@ -108,6 +111,7 @@ export default function WorkManagementPage() {
             features: project.features || [],
             techStack: project.techStack || [],
             results: project.results || "",
+            liveUrl: project.liveUrl || "",
             featured: project.featured,
             published: project.published
         });
@@ -158,6 +162,7 @@ export default function WorkManagementPage() {
                             title: "", slug: "", client: "", thumbnail: "",
                             category: [], challenge: "", approach: "",
                             features: [], techStack: [], results: "",
+                            liveUrl: "",
                             featured: false, published: true
                         });
                         setModalOpen(true);
@@ -292,6 +297,16 @@ export default function WorkManagementPage() {
                                         onChange={(e) => setFormData({ ...formData, client: e.target.value })}
                                         className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all"
                                         placeholder="Company Name"
+                                    />
+                                </div>
+                                <div className="space-y-1 md:col-span-2">
+                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Live URL (Optional)</label>
+                                    <input
+                                        type="url"
+                                        value={formData.liveUrl}
+                                        onChange={(e) => setFormData({ ...formData, liveUrl: e.target.value })}
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-mono"
+                                        placeholder="https://example.com"
                                     />
                                 </div>
                                 <div className="space-y-3 md:col-span-2">
