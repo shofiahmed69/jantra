@@ -17,17 +17,27 @@ interface Project {
     title: string;
     slug: string;
     client: string;
+    thumbnail?: string;
     category: string[];
+    challenge?: string;
+    approach?: string;
+    features?: string[];
+    techStack?: string[];
+    results?: string;
     published: boolean;
     featured: boolean;
     createdAt: string;
 }
+
+const AVAILABLE_CATEGORIES = ["Web", "Mobile", "AI", "SaaS", "Automation", "Embedded", "Cloud"];
 
 export default function WorkManagementPage() {
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const [editingId, setEditingId] = useState<string | null>(null);
 
     // Form state
     const [formData, setFormData] = useState({
@@ -65,22 +75,44 @@ export default function WorkManagementPage() {
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            const response = await api.post("/admin/work", formData);
-            if (response.data.success) {
-                setModalOpen(false);
-                fetchProjects();
-                setFormData({
-                    title: "", slug: "", client: "", thumbnail: "",
-                    category: [], challenge: "", approach: "",
-                    features: [], techStack: [], results: "",
-                    featured: false, published: true
-                });
+            if (editingId) {
+                await api.put(`/admin/work/${editingId}`, formData);
+            } else {
+                await api.post("/admin/work", formData);
             }
+            setModalOpen(false);
+            setEditingId(null);
+            fetchProjects();
+            setFormData({
+                title: "", slug: "", client: "", thumbnail: "",
+                category: [], challenge: "", approach: "",
+                features: [], techStack: [], results: "",
+                featured: false, published: true
+            });
         } catch (error) {
-            console.error("Add project error:", error);
+            console.error("Save project error:", error);
         } finally {
             setIsSubmitting(false);
         }
+    };
+
+    const handleEdit = (project: Project) => {
+        setFormData({
+            title: project.title,
+            slug: project.slug,
+            client: project.client,
+            thumbnail: project.thumbnail || "",
+            category: project.category || [],
+            challenge: project.challenge || "",
+            approach: project.approach || "",
+            features: project.features || [],
+            techStack: project.techStack || [],
+            results: project.results || "",
+            featured: project.featured,
+            published: project.published
+        });
+        setEditingId(project.id);
+        setModalOpen(true);
     };
 
     const handleDelete = async (id: string) => {
@@ -120,7 +152,16 @@ export default function WorkManagementPage() {
                 </div>
 
                 <button
-                    onClick={() => setModalOpen(true)}
+                    onClick={() => {
+                        setEditingId(null);
+                        setFormData({
+                            title: "", slug: "", client: "", thumbnail: "",
+                            category: [], challenge: "", approach: "",
+                            features: [], techStack: [], results: "",
+                            featured: false, published: true
+                        });
+                        setModalOpen(true);
+                    }}
                     className="inline-flex items-center gap-2 bg-slate-900 text-white px-6 py-3 rounded-2xl font-bold hover:bg-orange-600 transition-all shadow-lg active:scale-95 text-sm"
                 >
                     <Plus className="w-4 h-4" /> Add New Project
@@ -195,7 +236,7 @@ export default function WorkManagementPage() {
                                         </td>
                                         <td className="px-8 py-6">
                                             <div className="flex items-center gap-2">
-                                                <button className="p-2 hover:bg-white rounded-xl transition-all text-slate-400 hover:text-blue-600 shadow-sm border border-transparent hover:border-blue-100">
+                                                <button onClick={() => handleEdit(project)} className="p-2 hover:bg-white rounded-xl transition-all text-slate-400 hover:text-blue-600 shadow-sm border border-transparent hover:border-blue-100">
                                                     <Edit3 className="w-4 h-4" />
                                                 </button>
                                                 <button
@@ -220,7 +261,7 @@ export default function WorkManagementPage() {
                     <div className="w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh]">
                         <div className="flex items-center justify-between px-8 py-6 bg-slate-50 border-b border-slate-100">
                             <div>
-                                <h3 className="text-xl font-bold text-slate-900">Add New Project</h3>
+                                <h3 className="text-xl font-bold text-slate-900">{editingId ? "Edit Project" : "Add New Project"}</h3>
                                 <p className="text-xs text-slate-500">Fill in the details to showcase your work.</p>
                             </div>
                             <button
@@ -253,14 +294,28 @@ export default function WorkManagementPage() {
                                         placeholder="Company Name"
                                     />
                                 </div>
-                                <div className="space-y-1">
-                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Categories (comma separated)</label>
-                                    <input
-                                        type="text"
-                                        onChange={(e) => setFormData({ ...formData, category: e.target.value.split(',').map(s => s.trim()) })}
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all"
-                                        placeholder="Web, SaaS, AI"
-                                    />
+                                <div className="space-y-3 md:col-span-2">
+                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Categories (Select Multiple)</label>
+                                    <div className="flex flex-wrap gap-2">
+                                        {AVAILABLE_CATEGORIES.map(cat => (
+                                            <button
+                                                key={cat}
+                                                type="button"
+                                                onClick={() => {
+                                                    const active = formData.category.includes(cat);
+                                                    setFormData({
+                                                        ...formData,
+                                                        category: active
+                                                            ? formData.category.filter(c => c !== cat)
+                                                            : [...formData.category, cat]
+                                                    });
+                                                }}
+                                                className={`px-4 py-2 rounded-xl text-sm font-bold transition-all border ${formData.category.includes(cat) ? 'bg-orange-500 text-white border-orange-500 shadow-md transform scale-105' : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-orange-300'}`}
+                                            >
+                                                {cat}
+                                            </button>
+                                        ))}
+                                    </div>
                                 </div>
                                 <div className="space-y-1 md:col-span-2">
                                     <label className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Challenge</label>

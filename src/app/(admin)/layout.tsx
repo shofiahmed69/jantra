@@ -55,9 +55,13 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
     ];
 
     return (
-        <div className="flex min-h-screen bg-slate-50">
+        <div className="flex min-h-screen bg-slate-50 relative overflow-hidden">
+            {/* Cinematic Background Glows */}
+            <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-orange-500/10 blur-[120px] rounded-full pointer-events-none -z-10" />
+            <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-500/5 blur-[120px] rounded-full pointer-events-none -z-10" />
+            
             {/* Sidebar */}
-            <aside className="fixed left-0 top-0 bottom-0 w-64 glass-panel m-4 rounded-[2.5rem] border-white/40 shadow-xl hidden md:flex md:flex-col z-50">
+            <aside className="fixed left-0 top-0 bottom-0 w-64 bg-white/70 backdrop-blur-3xl m-4 rounded-[2.5rem] border border-white/60 shadow-xl hidden md:flex md:flex-col z-50">
                 <div className="p-8 flex items-center gap-3">
                     <div className="w-8 h-8 bg-gradient-to-tr from-orange-500 to-orange-400 rounded-lg shadow-lg" />
                     <h2 className="text-xl font-bold tracking-tight text-slate-800">Admin</h2>

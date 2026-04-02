@@ -62,56 +62,72 @@ export default function DashboardPage() {
     ];
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-10 animate-fade-up min-h-[85vh]">
+            <div className="flex flex-col mb-8 pt-4">
+                <h2 className="text-3xl font-black text-slate-900 tracking-tight">Mission Control</h2>
+                <p className="text-sm font-medium text-slate-500 uppercase tracking-widest mt-1">Real-time business insights & signals</p>
+            </div>
+
             {/* Stats Grid */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                 {statCards.map((stat, i) => (
-                    <div key={i} className="glass-panel p-6 rounded-[2rem] border-white/60 shadow-lg hover:translate-y-[-4px] transition-all duration-300">
-                        <div className="flex items-center justify-between mb-4">
-                            <div className={`w-12 h-12 ${stat.bg} ${stat.color} rounded-2xl flex items-center justify-center shadow-sm`}>
-                                <stat.icon className="w-6 h-6" />
-                            </div>
-                            <TrendingUp className="w-4 h-4 text-slate-300" />
+                    <div key={i} className="relative group p-[1px] rounded-[2.5rem] bg-gradient-to-br from-white via-white to-slate-200 shadow-xl shadow-slate-200/50 hover:-translate-y-2 transition-all duration-500 overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="bg-white/80 backdrop-blur-3xl h-full w-full rounded-[2.5rem] p-8 flex flex-col justify-between">
+                             <div className="flex items-center justify-between mb-8">
+                                 <div className={`w-14 h-14 ${stat.bg} ${stat.color} rounded-[1.2rem] flex items-center justify-center shadow-inner`}>
+                                     <stat.icon className="w-7 h-7" />
+                                 </div>
+                                 <TrendingUp className="w-5 h-5 text-slate-300" />
+                             </div>
+                             <div>
+                                 <p className="text-5xl font-black text-slate-900 tracking-tighter">{stat.value}</p>
+                                 <p className="text-xs font-bold text-slate-400 uppercase tracking-[0.2em] mt-2">{stat.label}</p>
+                             </div>
                         </div>
-                        <p className="text-3xl font-bold text-slate-800">{stat.value}</p>
-                        <p className="text-sm font-medium text-slate-500 uppercase tracking-wider mt-1">{stat.label}</p>
                     </div>
                 ))}
             </div>
 
             <div className="grid lg:grid-cols-3 gap-8">
                 {/* Recent Leads */}
-                <div className="lg:col-span-2 glass-panel p-8 rounded-[2.5rem] border-white/60 shadow-xl">
-                    <div className="flex items-center justify-between mb-8">
-                        <h3 className="text-xl font-bold text-slate-800">Recent Signals</h3>
-                        <Link href="/admin/leads" className="text-sm font-bold text-orange-600 hover:text-orange-700 flex items-center gap-1 group">
+                <div className="lg:col-span-2 bg-white/60 backdrop-blur-2xl p-10 rounded-[3rem] border border-white shadow-2xl shadow-slate-200/50">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-10 gap-4">
+                        <div>
+                            <h3 className="text-2xl font-black text-slate-900">Recent Signals</h3>
+                            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Live from Contact & Pricing</p>
+                        </div>
+                        <Link href="/admin/leads" className="inline-flex items-center gap-2 bg-white border border-slate-200 hover:border-orange-500 text-xs font-bold uppercase tracking-widest text-slate-600 hover:text-orange-600 px-6 py-3 rounded-full transition-all group shadow-sm hover:shadow-md">
                             View All <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                         </Link>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-5">
                         {stats?.recentLeads.length === 0 ? (
-                            <p className="text-slate-400 text-sm text-center py-10">No recent leads found.</p>
+                            <div className="bg-slate-50 border border-dashed border-slate-200 rounded-3xl p-12 text-center">
+                                <Bell className="w-8 h-8 text-slate-300 mx-auto mb-3" />
+                                <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">No Recent Signals</p>
+                            </div>
                         ) : (
                             stats?.recentLeads.map((lead: any, i: number) => (
                                 <div
                                     key={i}
                                     onClick={() => setSelectedLead(lead)}
-                                    className="flex items-center justify-between p-4 rounded-3xl bg-white/40 border border-white/60 hover:bg-white/60 transition-colors cursor-pointer group"
+                                    className="flex flex-col sm:flex-row sm:items-center justify-between p-6 rounded-[2rem] bg-white border border-slate-100 hover:border-orange-200 hover:shadow-xl hover:shadow-orange-500/5 transition-all cursor-pointer group"
                                 >
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 font-bold uppercase text-xs">
+                                    <div className="flex items-center gap-6 mb-4 sm:mb-0">
+                                        <div className="w-14 h-14 rounded-full bg-slate-50 border-2 border-white shadow-sm flex items-center justify-center text-orange-600 font-black uppercase text-xl group-hover:bg-orange-500 group-hover:text-white transition-colors">
                                             {lead.name[0]}
                                         </div>
                                         <div>
-                                            <p className="font-bold text-slate-800 text-sm group-hover:text-orange-600 transition-colors">{lead.name}</p>
-                                            <p className="text-xs text-slate-500">{lead.service}</p>
+                                            <p className="font-bold text-lg text-slate-800 group-hover:text-orange-600 transition-colors">{lead.name}</p>
+                                            <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-wider">{lead.service}</p>
                                         </div>
                                     </div>
-                                    <div className="text-right">
-                                        <p className="text-[10px] font-bold text-orange-600 bg-orange-50 px-3 py-1 rounded-full">{lead.status}</p>
-                                        <div className="flex items-center gap-1 text-[10px] text-slate-400 mt-1">
-                                            <Clock className="w-3 h-3" />
+                                    <div className="text-left sm:text-right flex sm:flex-col items-center sm:items-end justify-between sm:justify-center w-full sm:w-auto">
+                                        <span className="text-[10px] font-black text-white bg-slate-900 px-4 py-1.5 rounded-full uppercase tracking-[0.2em] shadow-sm">{lead.status}</span>
+                                        <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-widest">
+                                            <Clock className="w-3.5 h-3.5 text-orange-400" />
                                             {new Date(lead.createdAt).toLocaleDateString()}
                                         </div>
                                     </div>
@@ -122,32 +138,41 @@ export default function DashboardPage() {
                 </div>
 
                 {/* System Status / Quick Info */}
-                <div className="glass-panel p-8 rounded-[2.5rem] border-white/60 shadow-xl flex flex-col justify-between">
-                    <div>
-                        <h3 className="text-xl font-bold text-slate-800 mb-6">System Status</h3>
+                <div className="bg-slate-900 p-10 rounded-[3rem] shadow-2xl relative overflow-hidden flex flex-col justify-between">
+                    <div className="absolute top-[-20%] right-[-10%] w-[80%] h-[50%] bg-orange-500/20 blur-[80px] rounded-full pointer-events-none" />
+                    
+                    <div className="relative z-10">
+                        <div className="w-12 h-1 h-1.5 bg-orange-500 rounded-full mb-8" />
+                        <h3 className="text-2xl font-black text-white mb-8">System<br/>Diagnostics</h3>
                         <div className="space-y-6">
-                            <div className="flex items-center justify-between">
-                                <span className="text-sm text-slate-500">API Latency</span>
-                                <span className="text-xs font-bold text-emerald-500 flex items-center gap-1">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                            <div className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm">
+                                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">API Engine</span>
+                                <span className="text-[10px] font-black text-emerald-400 flex items-center gap-2 uppercase tracking-widest">
+                                    <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)] animate-pulse" />
                                     Stable
                                 </span>
                             </div>
-                            <div className="flex items-center justify-between">
-                                <span className="text-sm text-slate-500">Database</span>
-                                <span className="text-xs font-bold text-emerald-500">Connected</span>
+                            <div className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm">
+                                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Database</span>
+                                <span className="text-[10px] font-black text-emerald-400 flex items-center gap-2 uppercase tracking-widest">
+                                    <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]" />
+                                    Connected
+                                </span>
                             </div>
-                            <div className="flex items-center justify-between">
-                                <span className="text-sm text-slate-500">Email Service</span>
-                                <span className="text-xs font-bold text-orange-500">Active</span>
+                            <div className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm">
+                                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">SMTP Network</span>
+                                <span className="text-[10px] font-black text-emerald-400 flex items-center gap-2 uppercase tracking-widest">
+                                    <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]" />
+                                    Active
+                                </span>
                             </div>
                         </div>
                     </div>
 
-                    <div className="mt-10 p-5 rounded-[1.5rem] bg-slate-900 text-white shadow-xl shadow-slate-200">
-                        <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-2">Build Version</p>
-                        <h4 className="font-bold text-lg leading-tight">JANTRA <br /> Dashboard v1.0</h4>
-                        <p className="text-xs text-slate-400 mt-4 leading-relaxed">Enterprise management interface for real-time operations.</p>
+                    <div className="relative z-10 mt-12">
+                        <p className="text-[9px] font-black uppercase tracking-[0.3em] text-orange-500 mb-2">Build Environment</p>
+                        <h4 className="font-black text-white text-xl uppercase tracking-widest">JANTRA X.01</h4>
+                        <p className="text-xs font-medium text-slate-500 mt-3 leading-relaxed">Enterprise management interface deployed on ultra-resilient edge infrastructure.</p>
                     </div>
                 </div>
             </div>
