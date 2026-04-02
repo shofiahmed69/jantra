@@ -241,14 +241,20 @@ function TeamMemberModal({ member, onClose, onSuccess }: { member: TeamMember | 
     };
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm shadow-2xl">
-            <div className="relative w-full max-w-2xl bg-white rounded-[2.5rem] overflow-hidden border border-slate-200 max-h-[90vh] flex flex-col animate-in zoom-in-95 duration-300">
+        <div className="fixed inset-0 z-[200] overflow-y-auto bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200 custom-scrollbar">
+            <div className="flex min-h-screen items-center justify-center p-4 sm:p-6 text-center">
+                <div 
+                    className="w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col text-left align-middle relative transition-all animate-in zoom-in-95 duration-300 max-h-[calc(100vh-4rem)]"
+                    onClick={(e) => e.stopPropagation()}
+                >
                 <div className="bg-slate-900 px-8 py-6 flex items-center justify-between text-white shrink-0">
                     <div>
-                        <h3 className="text-xl font-bold">{member ? "Refine Personnel" : "Onboard Architect"}</h3>
-                        <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Team Intelligence</p>
+                        <h3 className="text-xl font-bold tracking-tight">{member ? "Optimize Individual" : "Onboard New Architect"}</h3>
+                        <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Personnel Infrastructure</p>
                     </div>
-                    <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full opacity-50 hover:opacity-100 transition-all"><X className="w-5 h-5" /></button>
+                    <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full transition-colors text-white/60 hover:text-white">
+                        <X className="w-5 h-5" />
+                    </button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="p-8 overflow-y-auto custom-scrollbar flex-1 space-y-8">
@@ -322,17 +328,18 @@ function TeamMemberModal({ member, onClose, onSuccess }: { member: TeamMember | 
                 </form>
 
                 <div className="px-8 py-6 bg-slate-50 border-t border-slate-100 flex justify-end gap-3 shrink-0">
-                    <button type="button" onClick={onClose} className="px-6 py-3 rounded-xl bg-white border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-100 font-bold">Cancel</button>
+                    <button type="button" onClick={onClose} className="px-6 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-100 italic transition-all">Cancel</button>
                     <button
                         disabled={loading || uploading}
                         onClick={handleSubmit}
-                        className="px-8 py-3 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-orange-600 transition-all shadow-xl disabled:opacity-50 flex items-center gap-2"
+                        className="px-8 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-orange-600 transition-all shadow-xl disabled:opacity-50 flex items-center gap-2"
                     >
                         {loading && <Loader2 className="w-4 h-4 animate-spin text-white" />}
-                        {loading ? "Processing..." : member ? "Update Profile" : "Onboard Architect"}
+                        {loading ? "Optimizing..." : member ? "Update Profile" : "Register Architect"}
                     </button>
                 </div>
             </div>
         </div>
+    </div>
     );
 }

@@ -218,9 +218,9 @@ export default function AdminCareersPage() {
                                             <td className="px-8 py-6">
                                                 <button
                                                     onClick={() => setSelectedApplication(app)}
-                                                    className="text-[10px] font-bold text-slate-400 hover:text-slate-800 uppercase tracking-widest flex items-center gap-1 group"
+                                                    className="text-[10px] font-bold text-slate-400 hover:text-slate-900 uppercase tracking-widest flex items-center gap-2 group transition-all"
                                                 >
-                                                    Details <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                                                    Analysis <ChevronRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                                                 </button>
                                             </td>
                                         </tr>
@@ -304,23 +304,27 @@ export default function AdminCareersPage() {
 
             {/* Application Detail Modal */}
             {selectedApplication && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-                    <div className="relative w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-200">
-                        <div className="bg-slate-900 px-8 py-6 flex items-center justify-between text-white">
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 font-bold text-lg uppercase">
-                                    {selectedApplication.name[0]}
+                <div className="fixed inset-0 z-[200] overflow-y-auto bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200 custom-scrollbar">
+                    <div className="flex min-h-screen items-center justify-center p-4 sm:p-6 text-center">
+                        <div 
+                            className="w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col text-left align-middle relative transition-all animate-in zoom-in-95 duration-300 max-h-[calc(100vh-4rem)]"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="bg-slate-900 px-8 py-6 flex items-center justify-between text-white shrink-0">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-2xl bg-blue-500/20 flex items-center justify-center text-blue-400 font-bold text-lg uppercase shadow-inner">
+                                        {selectedApplication.name[0]}
+                                    </div>
+                                    <div>
+                                        <h3 className="text-xl font-bold tracking-tight">{selectedApplication.name}</h3>
+                                        <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Talent Pipeline Analysis</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h3 className="text-xl font-bold">{selectedApplication.name}</h3>
-                                    <p className="text-xs text-slate-400 uppercase tracking-widest font-bold">Applicant Details</p>
-                                </div>
+                                <button onClick={() => setSelectedApplication(null)} className="p-2 hover:bg-white/10 rounded-full transition-colors text-white/60 hover:text-white">
+                                    <X className="w-5 h-5" />
+                                </button>
                             </div>
-                            <button onClick={() => setSelectedApplication(null)} className="p-2 hover:bg-white/10 rounded-full transition-colors">
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
-                        <div className="p-8 max-h-[70vh] overflow-y-auto custom-scrollbar space-y-8">
+                            <div className="p-8 overflow-y-auto custom-scrollbar flex-1 space-y-8">
                             <div className="grid grid-cols-2 gap-6">
                                 <div className="p-4 rounded-3xl bg-slate-50 border border-slate-100">
                                     <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-1">Position Applied</p>
@@ -366,13 +370,19 @@ export default function AdminCareersPage() {
                                 </div>
                             </div>
                         </div>
-                        <div className="px-8 py-6 bg-slate-50 border-t border-slate-100 flex justify-end gap-3">
-                            <button onClick={() => setSelectedApplication(null)} className="px-6 py-3 rounded-xl bg-white border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-100 transition-all">
-                                Close View
-                            </button>
-                            <a href={`mailto:${selectedApplication.email}`} className="px-6 py-3 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-orange-600 transition-all">
-                                Reply via Email
-                            </a>
+                            <div className="px-8 py-6 bg-slate-50 border-t border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
+                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                                    Submitted: {new Date(selectedApplication.createdAt).toLocaleDateString()}
+                                </p>
+                                <div className="flex gap-2">
+                                    <button onClick={() => setSelectedApplication(null)} className="px-6 py-2.5 rounded-xl text-slate-600 font-bold text-xs hover:bg-slate-200 transition-all">
+                                        Release Analysis
+                                    </button>
+                                    <a href={`mailto:${selectedApplication.email}`} className="px-8 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-orange-600 transition-all shadow-lg shadow-slate-200 flex items-center gap-2">
+                                        Initiate Onboarding
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -453,14 +463,20 @@ function JobModal({ job, onClose, onSuccess }: { job: Job | null, onClose: () =>
     };
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm shadow-2xl">
-            <div className="relative w-full max-w-4xl bg-white rounded-[2.5rem] overflow-hidden border border-slate-200 max-h-[90vh] flex flex-col">
+        <div className="fixed inset-0 z-[200] overflow-y-auto bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200 custom-scrollbar">
+            <div className="flex min-h-screen items-center justify-center p-4 sm:p-6 text-center">
+                <div 
+                    className="w-full max-w-4xl bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col text-left align-middle relative transition-all animate-in zoom-in-95 duration-300 max-h-[calc(100vh-4rem)]"
+                    onClick={(e) => e.stopPropagation()}
+                >
                 <div className="bg-slate-900 px-8 py-6 flex items-center justify-between text-white shrink-0">
                     <div>
-                        <h3 className="text-xl font-bold">{job ? "Edit Job Listing" : "Post New Career Opportunity"}</h3>
-                        <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Administrative Dashboard</p>
+                        <h3 className="text-xl font-bold tracking-tight">{job ? "Optimize Opportunity" : "Architect New Career Path"}</h3>
+                        <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Personnel Infrastructure</p>
                     </div>
-                    <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full opacity-50 hover:opacity-100 transition-all"><X className="w-5 h-5" /></button>
+                    <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full transition-colors text-white/60 hover:text-white">
+                        <X className="w-5 h-5" />
+                    </button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="p-8 overflow-y-auto custom-scrollbar flex-1">
@@ -532,17 +548,9 @@ function JobModal({ job, onClose, onSuccess }: { job: Job | null, onClose: () =>
                     >
                         {loading ? "Processing..." : job ? "Update Listing" : "Publish Job Post"}
                     </button>
+                    </div>
                 </div>
             </div>
         </div>
-    );
-}
-
-// Minimal ArrowRight for the actions button
-function ArrowRight({ className }: { className?: string }) {
-    return (
-        <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
-        </svg>
     );
 }

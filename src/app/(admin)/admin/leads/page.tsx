@@ -12,7 +12,9 @@ import {
     Mail,
     User,
     Calendar,
-    MessageSquare
+    MessageSquare,
+    Trash2,
+    X
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -24,6 +26,7 @@ interface Lead {
     country?: string;
     service: string;
     budget?: string;
+    phone?: string;
     description: string;
     status: string;
     createdAt: string;
@@ -182,26 +185,36 @@ export default function LeadsPage() {
                                             </div>
                                         </td>
                                         <td className="px-8 py-6" onClick={(e) => e.stopPropagation()}>
-                                            <select
-                                                value={lead.status}
-                                                onChange={(e) => updateStatus(lead.id, e.target.value)}
-                                                className={cn(
-                                                    "text-[10px] font-bold px-3 py-1.5 rounded-full border-0 focus:ring-2 focus:ring-orange-300 appearance-none cursor-pointer",
-                                                    lead.status === 'NEW' ? 'bg-orange-100 text-orange-600' :
-                                                        lead.status === 'CONTACTED' ? 'bg-blue-100 text-blue-600' :
-                                                            lead.status === 'QUALIFIED' ? 'bg-emerald-100 text-emerald-600' :
-                                                                'bg-slate-100 text-slate-500'
-                                                )}
-                                            >
-                                                <option value="NEW">NEW</option>
-                                                <option value="CONTACTED">CONTACTED</option>
-                                                <option value="QUALIFIED">QUALIFIED</option>
-                                                <option value="REJECTED">REJECTED</option>
-                                            </select>
+                                            <div className="relative group/status">
+                                                <div className={cn(
+                                                    "text-[10px] font-bold px-4 py-1.5 rounded-full border border-white/20 shadow-sm flex items-center gap-2",
+                                                    lead.status === 'NEW' ? 'bg-orange-500/10 text-orange-600' :
+                                                        lead.status === 'CONTACTED' ? 'bg-blue-500/10 text-blue-600' :
+                                                            lead.status === 'QUALIFIED' ? 'bg-emerald-500/10 text-emerald-600' :
+                                                                'bg-slate-500/10 text-slate-500'
+                                                )}>
+                                                    <div className={cn("w-1.5 h-1.5 rounded-full animate-pulse", 
+                                                        lead.status === 'NEW' ? 'bg-orange-500' :
+                                                        lead.status === 'CONTACTED' ? 'bg-blue-500' :
+                                                        lead.status === 'QUALIFIED' ? 'bg-emerald-500' : 'bg-slate-500'
+                                                    )} />
+                                                    {lead.status}
+                                                </div>
+                                                <select
+                                                    value={lead.status}
+                                                    onChange={(e) => updateStatus(lead.id, e.target.value)}
+                                                    className="absolute inset-0 opacity-0 cursor-pointer w-full"
+                                                >
+                                                    <option value="NEW">NEW</option>
+                                                    <option value="CONTACTED">CONTACTED</option>
+                                                    <option value="QUALIFIED">QUALIFIED</option>
+                                                    <option value="REJECTED">REJECTED</option>
+                                                </select>
+                                            </div>
                                         </td>
                                         <td className="px-8 py-6">
                                             <div className="flex items-center gap-2">
-                                                <button className="p-2 hover:bg-white rounded-xl transition-all text-slate-400 hover:text-orange-600 group-hover:bg-white shadow-sm border border-transparent group-hover:border-slate-100">
+                                                <button className="p-2 hover:bg-white rounded-xl transition-all text-slate-400 hover:text-blue-600 shadow-sm border border-transparent hover:border-blue-100">
                                                     <ExternalLink className="w-4 h-4" />
                                                 </button>
                                                 <button
@@ -209,9 +222,9 @@ export default function LeadsPage() {
                                                         e.stopPropagation();
                                                         deleteLead(lead.id);
                                                     }}
-                                                    className="px-3 py-1 bg-red-500 text-white rounded-lg text-sm hover:bg-red-600 transition flex items-center gap-1 shadow-sm"
+                                                    className="p-2 hover:bg-red-50 rounded-xl transition-all text-slate-400 hover:text-red-500 shadow-sm border border-transparent hover:border-red-100"
                                                 >
-                                                    🗑️ Delete
+                                                    <Trash2 className="w-4 h-4" />
                                                 </button>
                                             </div>
                                         </td>
@@ -296,96 +309,85 @@ export default function LeadsPage() {
                 </div>
                 {/* Lead Detail Modal */}
                 {selectedLead && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300">
-                        <div
-                            className="glass-panel w-full max-w-2xl rounded-[3rem] p-8 md:p-12 shadow-2xl relative animate-in zoom-in-95 duration-300"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <button
-                                onClick={() => setSelectedLead(null)}
-                                className="absolute right-8 top-8 p-3 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-slate-600"
+                    <div className="fixed inset-0 z-[200] overflow-y-auto bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200 custom-scrollbar">
+                        <div className="flex min-h-screen items-center justify-center p-4 sm:p-6 text-center">
+                            <div 
+                                className="w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col text-left align-middle relative transition-all animate-in zoom-in-95 duration-300 max-h-[calc(100vh-4rem)]"
+                                onClick={(e) => e.stopPropagation()}
                             >
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
-
-                            <div className="flex flex-col md:flex-row gap-8 mb-10">
-                                <div className="w-20 h-20 rounded-3xl bg-orange-100 flex items-center justify-center text-3xl font-bold text-orange-600 shadow-inner">
-                                    {selectedLead.name[0]}
-                                </div>
-                                <div>
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <h2 className="text-3xl font-bold text-slate-800 tracking-tight">{selectedLead.name}</h2>
-                                        <span className={cn(
-                                            "text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest",
-                                            selectedLead.status === 'NEW' ? 'bg-orange-500 text-white' : 'bg-slate-900 text-white'
-                                        )}>
-                                            {selectedLead.status}
-                                        </span>
+                                <div className="px-8 py-6 bg-slate-900 border-b border-white/10 shrink-0 flex items-center justify-between">
+                                    <div className="flex items-center gap-4 text-white">
+                                        <div className="w-12 h-12 rounded-2xl bg-orange-500/20 flex items-center justify-center text-xl font-bold text-orange-500 shadow-inner">
+                                            {selectedLead.name[0]}
+                                        </div>
+                                        <div>
+                                            <h3 className="text-xl font-bold tracking-tight">{selectedLead.name}</h3>
+                                            <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Signal Intelligence</p>
+                                        </div>
                                     </div>
-                                    <p className="text-slate-500 flex items-center gap-2 font-medium">
-                                        <Mail className="w-4 h-4 text-orange-500" /> {selectedLead.email}
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-10">
-                                <div className="p-4 rounded-3xl bg-white/40 border border-white/60">
-                                    <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-1">Company</p>
-                                    <p className="text-sm font-bold text-slate-800">{selectedLead.company || 'N/A'}</p>
-                                </div>
-                                <div className="p-4 rounded-3xl bg-white/40 border border-white/60">
-                                    <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-1">Country</p>
-                                    <p className="text-sm font-bold text-slate-800">{selectedLead.country || 'N/A'}</p>
-                                </div>
-                                <div className="p-4 rounded-3xl bg-white/40 border border-white/60">
-                                    <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-1">Budget</p>
-                                    <p className="text-sm font-bold text-orange-600">{selectedLead.budget || 'N/A'}</p>
-                                </div>
-                            </div>
-
-                            <div className="mb-10">
-                                <div className="flex items-center gap-2 mb-4">
-                                    <MessageSquare className="w-4 h-4 text-orange-500" />
-                                    <h3 className="text-sm font-bold text-slate-800 uppercase tracking-widest">Project Description</h3>
-                                </div>
-                                <div className="p-6 rounded-[2rem] bg-white/60 border border-white shadow-inner min-h-[120px]">
-                                    <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-wrap">
-                                        {selectedLead.description}
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="flex items-center justify-between pt-6 border-t border-white/30">
-                                <p className="text-xs text-slate-400 font-medium italic">
-                                    Signal received on {new Date(selectedLead.createdAt).toLocaleString()}
-                                    {selectedLead.referral && ` via ${selectedLead.referral}`}
-                                </p>
-                                <div className="flex gap-3">
-                                    <a
-                                        href={`mailto:${selectedLead.email}`}
-                                        className="px-6 py-3 rounded-2xl bg-slate-900 text-white font-bold text-sm hover:bg-orange-600 transition-all shadow-lg active:scale-95 flex items-center justify-center"
-                                    >
-                                        Send Email
-                                    </a>
                                     <button
-                                        onClick={() => updateStatus(selectedLead.id, 'QUALIFIED')}
-                                        className="px-6 py-3 rounded-2xl bg-white border border-slate-200 text-slate-800 font-bold text-sm hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-100 transition-all shadow-sm active:scale-95"
+                                        onClick={() => setSelectedLead(null)}
+                                        className="p-2 hover:bg-white/10 rounded-full transition-colors text-white/60 hover:text-white"
                                     >
-                                        Mark Qualified
+                                        <X className="w-5 h-5" />
                                     </button>
-                                    <button
-                                        onClick={() => deleteLead(selectedLead.id)}
-                                        className="px-6 py-3 rounded-2xl bg-white border border-red-200 text-red-600 font-bold text-sm hover:bg-red-50 hover:text-red-700 hover:border-red-300 transition-all shadow-sm active:scale-95 flex items-center gap-2"
-                                    >
-                                        🗑️ Delete
-                                    </button>
+                                </div>
+
+                                <div className="p-8 overflow-y-auto custom-scrollbar flex-1 space-y-8">
+                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                                        <div className="p-4 rounded-3xl bg-slate-50 border border-slate-100">
+                                            <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-1 font-bold">Company</p>
+                                            <p className="text-sm font-bold text-slate-800">{selectedLead.company || 'Personal'}</p>
+                                        </div>
+                                        <div className="p-4 rounded-3xl bg-slate-50 border border-slate-100">
+                                            <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-1 font-bold">Country</p>
+                                            <p className="text-sm font-bold text-slate-800">{selectedLead.country || 'Global'}</p>
+                                        </div>
+                                        <div className="p-4 rounded-3xl bg-slate-50 border border-slate-100">
+                                            <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-1 font-bold">Budget</p>
+                                            <p className="text-sm font-bold text-orange-600">{selectedLead.budget || 'Open'}</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <div className="flex items-center gap-2">
+                                            <MessageSquare className="w-4 h-4 text-orange-500" />
+                                            <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Inbound Description</h3>
+                                        </div>
+                                        <div className="p-6 rounded-[2rem] bg-slate-50 border border-slate-100 text-sm text-slate-600 leading-relaxed whitespace-pre-wrap min-h-[120px]">
+                                            {selectedLead.description}
+                                        </div>
+                                    </div>
+
+                                    {selectedLead.referral && (
+                                        <div className="flex items-center gap-3 p-4 rounded-2xl bg-blue-50/50 border border-blue-100 text-blue-700 text-xs font-medium">
+                                            <div className="w-2 h-2 rounded-full bg-blue-500" />
+                                            Source: {selectedLead.referral}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="px-8 py-6 bg-slate-50 border-t border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
+                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                                        Received: {new Date(selectedLead.createdAt).toLocaleDateString()}
+                                    </p>
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() => deleteLead(selectedLead.id)}
+                                            className="px-6 py-2.5 rounded-xl text-slate-600 font-bold text-xs hover:bg-red-50 hover:text-red-600 transition-all border border-transparent hover:border-red-100"
+                                        >
+                                            Archive Signal
+                                        </button>
+                                        <a
+                                            href={`mailto:${selectedLead.email}`}
+                                            className="px-8 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-orange-600 transition-all shadow-lg shadow-slate-200 flex items-center gap-2"
+                                        >
+                                            Initiate Contact
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        {/* Backgrop Close Area */}
-                        <div className="absolute inset-0 z-[-1]" onClick={() => setSelectedLead(null)} />
                     </div>
                 )}
             </div>
