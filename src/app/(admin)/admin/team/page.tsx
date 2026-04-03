@@ -537,6 +537,9 @@ function TeamMemberModal({ member, onClose, onSuccess }: { member: TeamMember | 
                                         className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-5 text-sm font-bold text-slate-800 focus:outline-none focus:border-orange-500 transition-all"
                                         placeholder="employee@jantra.com"
                                     />
+                                    <p className="px-2 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                                        Set this if the team member should log in at `/report`.
+                                    </p>
                                 </div>
                                 <div className="space-y-4">
                                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-4">{member ? "Reset Employee Password" : "Employee Password"}</label>
@@ -547,6 +550,9 @@ function TeamMemberModal({ member, onClose, onSuccess }: { member: TeamMember | 
                                         className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-5 text-sm font-bold text-slate-800 focus:outline-none focus:border-orange-500 transition-all"
                                         placeholder={member ? "Leave blank to keep current password" : "Minimum 6 characters"}
                                     />
+                                    <p className="px-2 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400">
+                                        Required the first time you enable employee login.
+                                    </p>
                                 </div>
                             </div>
 
