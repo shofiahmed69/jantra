@@ -99,13 +99,15 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
                 </div>
             </aside>
 
-            <nav className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-gray-200 flex md:hidden z-50 pb-[max(env(safe-area-inset-bottom),0px)]">
+            <nav className="fixed bottom-3 left-1/2 z-50 flex w-[calc(100%-1.5rem)] max-w-md -translate-x-1/2 items-center justify-between rounded-[2rem] border border-white/70 bg-white/85 px-2 py-2 shadow-[0_18px_50px_-18px_rgba(15,23,42,0.45)] backdrop-blur-2xl md:hidden">
                 <a href="/admin/dashboard"
                     className={cn(
-                        "flex-1 flex flex-col items-center justify-center py-3 text-[10px] font-semibold transition-colors",
-                        pathname === "/admin/dashboard" ? "text-orange-500" : "text-gray-500 hover:text-orange-500"
+                        "flex min-w-0 flex-1 flex-col items-center justify-center rounded-[1.4rem] px-2 py-2 text-[10px] font-semibold transition-all",
+                        pathname === "/admin/dashboard"
+                            ? "bg-slate-900 text-orange-400 shadow-lg shadow-slate-900/20"
+                            : "text-gray-500 hover:bg-orange-50 hover:text-orange-500"
                     )}>
-                    <svg className="w-5 h-5 mb-1" fill="none"
+                    <svg className="mb-1 h-5 w-5" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round"
                             strokeWidth={2}
@@ -115,10 +117,12 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
                 </a>
                 <a href="/admin/leads"
                     className={cn(
-                        "flex-1 flex flex-col items-center justify-center py-3 text-[10px] font-semibold transition-colors",
-                        pathname === "/admin/leads" ? "text-orange-500" : "text-gray-500 hover:text-orange-500"
+                        "flex min-w-0 flex-1 flex-col items-center justify-center rounded-[1.4rem] px-2 py-2 text-[10px] font-semibold transition-all",
+                        pathname === "/admin/leads"
+                            ? "bg-slate-900 text-orange-400 shadow-lg shadow-slate-900/20"
+                            : "text-gray-500 hover:bg-orange-50 hover:text-orange-500"
                     )}>
-                    <svg className="w-5 h-5 mb-1" fill="none"
+                    <svg className="mb-1 h-5 w-5" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round"
                             strokeWidth={2}
@@ -128,10 +132,12 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
                 </a>
                 <a href="/admin/careers"
                     className={cn(
-                        "flex-1 flex flex-col items-center justify-center py-3 text-[10px] font-semibold transition-colors",
-                        pathname === "/admin/careers" ? "text-orange-500" : "text-gray-500 hover:text-orange-500"
+                        "flex min-w-0 flex-1 flex-col items-center justify-center rounded-[1.4rem] px-2 py-2 text-[10px] font-semibold transition-all",
+                        pathname === "/admin/careers"
+                            ? "bg-slate-900 text-orange-400 shadow-lg shadow-slate-900/20"
+                            : "text-gray-500 hover:bg-orange-50 hover:text-orange-500"
                     )}>
-                    <svg className="w-5 h-5 mb-1" fill="none"
+                    <svg className="mb-1 h-5 w-5" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round"
                             strokeWidth={2}
@@ -141,10 +147,12 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
                 </a>
                 <a href="/admin/work"
                     className={cn(
-                        "flex-1 flex flex-col items-center justify-center py-3 text-[10px] font-semibold transition-colors",
-                        pathname === "/admin/work" ? "text-orange-500" : "text-gray-500 hover:text-orange-500"
+                        "flex min-w-0 flex-1 flex-col items-center justify-center rounded-[1.4rem] px-2 py-2 text-[10px] font-semibold transition-all",
+                        pathname === "/admin/work"
+                            ? "bg-slate-900 text-orange-400 shadow-lg shadow-slate-900/20"
+                            : "text-gray-500 hover:bg-orange-50 hover:text-orange-500"
                     )}>
-                    <svg className="w-5 h-5 mb-1" fill="none"
+                    <svg className="mb-1 h-5 w-5" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round"
                             strokeWidth={2}
@@ -154,10 +162,12 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
                 </a>
                 <a href="/admin/blog"
                     className={cn(
-                        "flex-1 flex flex-col items-center justify-center py-3 text-[10px] font-semibold transition-colors",
-                        pathname === "/admin/blog" ? "text-orange-500" : "text-gray-500 hover:text-orange-500"
+                        "flex min-w-0 flex-1 flex-col items-center justify-center rounded-[1.4rem] px-2 py-2 text-[10px] font-semibold transition-all",
+                        pathname === "/admin/blog"
+                            ? "bg-slate-900 text-orange-400 shadow-lg shadow-slate-900/20"
+                            : "text-gray-500 hover:bg-orange-50 hover:text-orange-500"
                     )}>
-                    <svg className="w-5 h-5 mb-1" fill="none"
+                    <svg className="mb-1 h-5 w-5" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round"
                             strokeWidth={2}
@@ -169,7 +179,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
 
 
             {/* Main Content */}
-            <main className="flex-1 md:ml-72 p-4 md:p-8 pb-24 md:pb-0">
+            <main className="flex-1 md:ml-72 p-4 md:p-8 pb-28 md:pb-0">
                 <header className="flex md:hidden items-center justify-between px-4 py-3 bg-white/90 backdrop-blur-xl rounded-[1.25rem] border border-white sticky top-3 z-40 mb-4 shadow-lg shadow-slate-200/40">
                     <div className="flex items-center gap-2 min-w-0">
                         <div className="w-7 h-7 bg-orange-500 rounded-lg shrink-0" />
