@@ -32,6 +32,7 @@ interface Project {
     client: string;
     thumbnail?: string;
     category: string[];
+    description?: string;
     challenge?: string;
     approach?: string;
     features?: string[];
@@ -43,7 +44,23 @@ interface Project {
     createdAt: string;
 }
 
-const AVAILABLE_CATEGORIES = ["Web", "Mobile", "AI", "SaaS", "Automation", "Embedded", "Cloud"];
+const AVAILABLE_CATEGORIES = [
+    "Web Design", 
+    "Web App",
+    "Mobile App", 
+    "AI & ML", 
+    "Automation", 
+    "SaaS", 
+    "Cloud Infra", 
+    "UI/UX Design", 
+    "Enterprise", 
+    "E-Commerce",
+    "Software Dev",
+    "Data Science",
+    "Cybersecurity",
+    "Branding",
+    "IoT & Embedded"
+];
 
 const normalizeUrl = (value: string) => {
     const trimmed = value.trim();
@@ -72,6 +89,7 @@ export default function WorkManagementPage() {
         client: "",
         thumbnail: "",
         category: [] as string[],
+        description: "",
         challenge: "",
         approach: "",
         features: [] as string[],
@@ -140,19 +158,21 @@ export default function WorkManagementPage() {
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            const payload = {
+            const payload: Record<string, unknown> = {
                 title: formData.title.trim(),
                 slug: formData.slug.trim(),
                 client: formData.client.trim(),
                 thumbnail: normalizeUrl(formData.thumbnail),
-                category: normalizeTextList(formData.category),
+                category: formData.category,
+                description: formData.description.trim(),
                 challenge: formData.challenge.trim(),
                 approach: formData.approach.trim(),
-                features: normalizeTextList(formData.features),
-                techStack: normalizeTextList(formData.techStack),
+                features: formData.features,
+                techStack: formData.techStack,
                 results: formData.results.trim(),
                 featured: formData.featured,
                 published: formData.published,
+                liveUrl: normalizeUrl(formData.liveUrl),
                 order: 0,
             };
 
@@ -175,7 +195,7 @@ export default function WorkManagementPage() {
     const resetForm = () => {
         setFormData({
             title: "", slug: "", client: "", thumbnail: "",
-            category: [], challenge: "", approach: "",
+            category: [], description: "", challenge: "", approach: "",
             features: [], techStack: [], results: "",
             liveUrl: "",
             featured: false, published: true
@@ -189,6 +209,7 @@ export default function WorkManagementPage() {
             client: project.client,
             thumbnail: project.thumbnail || "",
             category: project.category || [],
+            description: project.description || "",
             challenge: project.challenge || "",
             approach: project.approach || "",
             features: project.features || [],

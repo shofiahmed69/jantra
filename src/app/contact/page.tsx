@@ -1,6 +1,8 @@
 "use client";
+
 import { useState, useEffect, useRef } from "react";
-import { Linkedin } from "lucide-react";
+import { Linkedin, Mail, Globe, Clock, Send, CheckCircle2, ArrowRight, Binary, Target, ShieldCheck, Sparkles, User, Briefcase, MessageSquare, Layers } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function ContactPage() {
     const [formData, setFormData] = useState({
@@ -14,483 +16,250 @@ export default function ContactPage() {
         referral: ""
     });
 
-    const [uiState, setUiState] = useState<
-        "form" | "loading" | "success" | "error"
-    >("form");
-
+    const [uiState, setUiState] = useState<"form" | "loading" | "success" | "error">("form");
     const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-    // SAFETY NET: if loading for more than 10 seconds
-    // force show success (data is already saved)
     useEffect(() => {
         if (uiState === "loading") {
             timerRef.current = setTimeout(() => {
                 setUiState("success");
-            }, 10000);
+            }, 3000);
         }
         return () => {
             if (timerRef.current) clearTimeout(timerRef.current);
         };
     }, [uiState]);
 
-    const handleChange = (
-        e: React.ChangeEvent<
-            HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-        >
-    ) => {
-        setFormData(prev => ({
-            ...prev,
-            [e.target.name]: e.target.value
-        }));
+    const handleChange = (name: string, value: any) => {
+        setFormData(prev => ({ ...prev, [name]: value }));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
-        // Immediately show loading
+        if (!formData.service || !formData.budget) {
+            alert("Please select a service and budget range.");
+            return;
+        }
         setUiState("loading");
-
-        // Fire API call but DON'T await it for UI
-        // Show success after 3 seconds regardless
-        fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/leads`,
-            {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData)
-            }
-        ).catch(() => {
-            // silently ignore errors
-            // data might still save even if response fails
-        });
-
-        // Wait 3 seconds then ALWAYS show success
-        // Data is already being saved in the background
-        setTimeout(() => {
-            setUiState("success");
-            setFormData({
-                name: "",
-                email: "",
-                company: "",
-                country: "",
-                service: "",
-                budget: "",
-                description: "",
-                referral: ""
-            });
-        }, 3000);
+        
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/leads`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData)
+        }).catch(() => {});
     };
 
-    // SUCCESS STATE
-    if (uiState === "success") {
-        return (
-            <main className="relative w-full min-h-screen 
-        flex items-center justify-center px-4 pt-24">
-                <div className="glass-panel rounded-[2rem] 
-          p-12 max-w-md w-full text-center">
-                    <div className="w-20 h-20 bg-emerald-100 
-            rounded-full flex items-center 
-            justify-center mx-auto mb-6">
-                        <svg className="w-10 h-10 text-emerald-600"
-                            fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
-                            <path strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2.5}
-                                d="M5 13l4 4L19 7" />
-                        </svg>
-                    </div>
-                    <h2 className="text-3xl font-bold 
-            text-slate-900 mb-3">
-                        Signal{" "}
-                        <span className="text-orange-500">
-                            Transmitted!
-                        </span>
-                    </h2>
-                    <p className="text-slate-500 mb-8">
-                        We received your message and will
-                        get back to you within 24 hours.
-                    </p>
-                    <button
-                        onClick={() => setUiState("form")}
-                        className="w-full bg-slate-900 text-white 
-              py-4 rounded-2xl font-medium 
-              hover:bg-orange-500 transition">
-                        Send Another Message
-                    </button>
-                </div>
-            </main>
-        );
-    }
+    const services = ["Software", "AI", "Automation", "SaaS"];
+    const budgets = ["$5k-15k", "$15k-30k", "$30k+"];
 
-    // LOADING STATE  
-    if (uiState === "loading") {
-        return (
-            <main className="relative w-full min-h-screen 
-        flex items-center justify-center px-4 pt-24">
-                <div className="glass-panel rounded-[2rem] 
-          p-12 max-w-md w-full text-center">
-                    <div className="w-16 h-16 mx-auto mb-6 
-            relative">
-                        <div className="w-16 h-16 border-4 
-              border-orange-200 rounded-full"/>
-                        <div className="w-16 h-16 border-4 
-              border-orange-500 border-t-transparent 
-              rounded-full animate-spin absolute 
-              inset-0"/>
-                    </div>
-                    <h2 className="text-xl font-semibold 
-            text-slate-800 mb-2">
-                        Transmitting Signal...
-                    </h2>
-                    <p className="text-slate-400 text-sm">
-                        Sending your message to our team
-                    </p>
-                </div>
-            </main>
-        );
-    }
-
-    // FORM STATE (default)
     return (
-        <main className="relative w-full min-h-screen 
-      flex flex-col lg:flex-row items-center 
-      justify-center overflow-hidden pt-24 pb-12 
-      lg:pt-0 lg:pb-0 px-4 sm:px-6 lg:px-0 
-      gap-6 lg:gap-0">
-
-            {/* Contact Form */}
-            <section
-                className="relative lg:absolute lg:left-[10%] 
-          lg:top-[15%] w-full max-w-lg lg:w-[40%] 
-          lg:min-w-[400px] lg:max-w-[500px] z-20 
-          glass-panel rounded-[2rem] p-6 sm:p-8 md:p-10"
-                id="contact-form-widget"
-            >
-                <header className="mb-6">
-                    <h1 className="text-2xl md:text-3xl 
-            font-light tracking-tight text-slate-800">
-                        Send a{" "}
-                        <span className="font-semibold text-orange-500">
-                            Signal
-                        </span>
-                    </h1>
-                    <p className="text-slate-500 text-xs mt-2">
-                        Let&apos;s build something extraordinary.
-                    </p>
-                </header>
-
-                <form onSubmit={handleSubmit}
-                    className="space-y-4">
-
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-[10px] 
-                uppercase tracking-widest 
-                text-slate-400 mb-1 ml-1">
-                                Name
-                            </label>
-                            <input
-                                className="w-full bg-white/40 
-                  border-0 rounded-xl px-4 py-3 
-                  focus:ring-2 focus:ring-orange-300 
-                  placeholder:text-slate-400 text-sm"
-                                placeholder="Full Name"
-                                type="text"
-                                name="name"
-                                value={formData.name}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-[10px] 
-                uppercase tracking-widest 
-                text-slate-400 mb-1 ml-1">
-                                Email
-                            </label>
-                            <input
-                                className="w-full bg-white/40 
-                  border-0 rounded-xl px-4 py-3 
-                  focus:ring-2 focus:ring-orange-300 
-                  placeholder:text-slate-400 text-sm"
-                                placeholder="work@domain.com"
-                                type="email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-[10px] 
-                uppercase tracking-widest 
-                text-slate-400 mb-1 ml-1">
-                                Company
-                            </label>
-                            <input
-                                className="w-full bg-white/40 
-                  border-0 rounded-xl px-4 py-3 
-                  focus:ring-2 focus:ring-orange-300 
-                  placeholder:text-slate-400 text-sm"
-                                placeholder="Organization"
-                                type="text"
-                                name="company"
-                                value={formData.company}
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-[10px] 
-                uppercase tracking-widest 
-                text-slate-400 mb-1 ml-1">
-                                Country
-                            </label>
-                            <input
-                                className="w-full bg-white/40 
-                  border-0 rounded-xl px-4 py-3 
-                  focus:ring-2 focus:ring-orange-300 
-                  placeholder:text-slate-400 text-sm"
-                                placeholder="Your country"
-                                type="text"
-                                name="country"
-                                value={formData.country}
-                                onChange={handleChange}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="block text-[10px] 
-                uppercase tracking-widest 
-                text-slate-400 mb-1 ml-1">
-                                Service Interest
-                            </label>
-                            <select
-                                name="service"
-                                value={formData.service}
-                                onChange={handleChange}
-                                className="w-full bg-white/40 
-                  border-0 rounded-xl px-4 py-3 
-                  focus:ring-2 focus:ring-orange-300 
-                  text-slate-700 text-sm appearance-none"
-                            >
-                                <option value="">Select Service</option>
-                                <option value="software">
-                                    Custom Software
-                                </option>
-                                <option value="ai">AI Agents</option>
-                                <option value="automation">
-                                    Workflow Automation
-                                </option>
-                                <option value="saas">
-                                    SaaS Development
-                                </option>
-                                <option value="mobile">Mobile Apps</option>
-                                <option value="design">UI/UX Design</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label className="block text-[10px] 
-                uppercase tracking-widest 
-                text-slate-400 mb-1 ml-1">
-                                Budget Range
-                            </label>
-                            <select
-                                name="budget"
-                                value={formData.budget}
-                                onChange={handleChange}
-                                className="w-full bg-white/40 
-                  border-0 rounded-xl px-4 py-3 
-                  focus:ring-2 focus:ring-orange-300 
-                  text-slate-700 text-sm appearance-none"
-                            >
-                                <option value="">Select Budget</option>
-                                <option value="5k">
-                                    $5,000 USD
-                                </option>
-                                <option value="15k">
-                                    $15,000 USD
-                                </option>
-                                <option value="30k">
-                                    $30,000 USD
-                                </option>
-                                <option value="50k+">
-                                    $50,000+ USD
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label className="block text-[10px] 
-              uppercase tracking-widest 
-              text-slate-400 mb-1 ml-1">
-                            Project Description
-                        </label>
-                        <textarea
-                            className="w-full bg-white/40 
-                border-0 rounded-xl px-4 py-3 
-                focus:ring-2 focus:ring-orange-300 
-                placeholder:text-slate-400 text-sm 
-                resize-none"
-                            placeholder="Tell us about your project..."
-                            rows={3}
-                            name="description"
-                            value={formData.description}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block text-[10px] 
-              uppercase tracking-widest 
-              text-slate-400 mb-1 ml-1">
-                            Referral Source
-                        </label>
-                        <input
-                            className="w-full bg-white/40 
-                border-0 rounded-xl px-4 py-3 
-                focus:ring-2 focus:ring-orange-300 
-                placeholder:text-slate-400 text-sm"
-                            placeholder="How did you hear about us?"
-                            type="text"
-                            name="referral"
-                            value={formData.referral}
-                            onChange={handleChange}
-                        />
-                    </div>
-
-                    <button
-                        className="w-full bg-slate-900 text-white 
-              py-4 mt-2 rounded-2xl font-medium 
-              tracking-wide hover:bg-orange-600 
-              transition shadow-lg text-sm"
-                        type="submit"
-                    >
-                        Send Message
-                    </button>
-                </form>
-            </section>
-
-            {/* Info Widget */}
-            <section
-                className="relative lg:absolute lg:right-[15%] 
-          lg:top-[35%] w-full max-w-md lg:w-[25%] 
-          z-20 glass-panel rounded-[2rem] p-6 sm:p-8"
-                id="contact-info-widget"
-            >
-                <div className="space-y-8">
-                    <div>
-                        <h2 className="text-[10px] uppercase 
-              tracking-[0.4em] text-orange-500 
-              font-bold mb-4">
-                            Global Reach
-                        </h2>
-                        <div className="space-y-4">
-                            <div className="flex items-start">
-                                <div className="w-8 h-8 rounded-full 
-                  bg-orange-100 flex items-center 
-                  justify-center mr-4 text-orange-600 
-                  flex-shrink-0">
-                                    <svg className="w-4 h-4" fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path d="M3 8l7.89 5.26a2 2 0 002.22 
-                      0L21 8M5 19h14a2 2 0 002-2V7a2 2 
-                      0 00-2-2H5a2 2 0 00-2 2v10a2 2 
-                      0 002 2z"
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth="2" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <p className="text-[10px] text-slate-400 
-                    uppercase tracking-wider">
-                                        Email Response
-                                    </p>
-                                    <p className="text-sm font-medium 
-                    text-slate-700">
-                                        Under 2 hours typical
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="pt-6 border-t border-white/30">
-                        <h2 className="text-[10px] uppercase 
-              tracking-[0.4em] text-slate-400 
-              font-bold mb-4">
-                            Operations
-                        </h2>
-                        <p className="text-sm text-slate-600 
-              leading-relaxed italic">
-                            Mon - Fri, 9:00 AM - 6:00 PM (GMT+6)
-                            <br />Serving clients globally.
-                        </p>
-                        <div className="mt-4 flex items-center 
-              space-x-2">
-                            <span className="relative flex h-2 w-2">
-                                <span className="animate-ping absolute 
-                  inline-flex h-full w-full rounded-full 
-                  bg-green-400 opacity-75"/>
-                                <span className="relative inline-flex 
-                  rounded-full h-2 w-2 bg-green-500"/>
-                            </span>
-                            <span className="text-[10px] text-slate-500 
-                uppercase tracking-widest">
-                                Global Nodes Active
-                            </span>
-                        </div>
-                    </div>
-
-                    <div className="pt-6 border-t border-white/30">
-                        <h2 className="text-[10px] uppercase 
-              tracking-[0.4em] text-slate-400 
-              font-bold mb-4">
-                            Connect
-                        </h2>
-                        <div className="flex items-center gap-3">
-                            <a href="https://www.linkedin.com/company/jantra-soft/"
-                                target="_blank" rel="noreferrer"
-                                className="w-8 h-8 flex items-center 
-                justify-center rounded-lg bg-white/40 
-                text-slate-600 hover:bg-orange-100 
-                hover:text-orange-600 transition">
-                                <Linkedin className="w-4 h-4" />
-                            </a>
-                            <a
-                                href="https://www.facebook.com/profile.php?id=61578641909784"
-                                target="_blank" rel="noreferrer"
-                                className="w-8 h-8 flex items-center 
-                justify-center rounded-lg bg-white/40 
-                text-slate-600 hover:bg-orange-100 
-                hover:text-orange-600 transition">
-                                <svg className="w-4 h-4"
-                                    fill="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path d="M24 12.073c0-6.627-5.373-12-12
-                    -12s-12 5.373-12 12c0 5.99 4.388 
-                    10.954 10.125 11.854v-8.385H7.078v-3.47
-                    h3.047V9.43c0-3.007 1.792-4.669 
-                    4.533-4.669 1.312 0 2.686.235 
-                    2.686.235v2.953H15.83c-1.491 
-                    0-1.956.925-1.956 1.874v2.25h3.328
-                    l-.532 3.47h-2.796v8.385C19.612 
-                    23.027 24 18.062 24 12.073z"/>
-                                </svg>
-                            </a>
-                        </div>
-                    </div>
+        <main className="relative w-full min-h-screen bg-slate-50 overflow-hidden pb-20 font-sans selection:bg-orange-500 selection:text-white">
+            {/* ── BACKGROUND ORCHESTRATION ── */}
+            <div className="absolute top-[5%] left-0 w-full overflow-hidden opacity-[0.03] pointer-events-none select-none z-0">
+                <div className="flex whitespace-nowrap animate-marquee-slow">
+                    <span className="text-[10rem] font-black tracking-tighter leading-none mr-24 uppercase">CONTACT. CONNECT. BUILD. GROW. SCALE. COLLABORATE.</span>
                 </div>
-            </section>
+            </div>
+
+            <div className="max-w-[1540px] mx-auto px-6 sm:px-12 pt-28 sm:pt-32 relative z-10">
+                <div className="grid lg:grid-cols-12 gap-10 items-start">
+                    
+                    {/* LEFT SIDEBAR — COMPACT HERO */}
+                    <div className="lg:col-span-3 space-y-8 sticky top-32">
+                        <div className="flex flex-col gap-4 text-left">
+                            <div className="flex items-center gap-3">
+                                <div className="w-8 h-[3px] bg-orange-500 rounded-full" />
+                                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-orange-600">Inquiry Terminal</span>
+                            </div>
+                            <h1 className="text-5xl sm:text-6xl font-black text-slate-950 leading-[0.85] tracking-tighter uppercase whitespace-nowrap">
+                                Let's <br />
+                                <span className="text-orange-500">Sync</span>
+                                <span className="text-slate-950">.</span>
+                            </h1>
+                            <p className="text-[13px] text-slate-500 font-bold leading-relaxed border-l-2 border-orange-500/20 pl-6 max-w-[240px] uppercase tracking-tight">
+                                Partner with our engineering squad to architect elite digital systems.
+                            </p>
+                        </div>
+
+                        {/* STUDIO STATUS — ORANGE VIBRANCY */}
+                        <div className="p-6 rounded-[2.5rem] bg-orange-600 shadow-[0_20px_50px_-10px_rgba(249,115,22,0.4)] text-white space-y-4 relative overflow-hidden group">
+                             <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 blur-[30px] rounded-full" />
+                             <div className="flex items-center justify-between relative z-10">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2 h-2 rounded-full bg-white animate-pulse" />
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-white">Status: Online</span>
+                                </div>
+                                <span className="text-[8px] font-black text-white/40 uppercase tracking-widest leading-none">High Priority</span>
+                             </div>
+                             <div className="h-1 w-full bg-white/20 rounded-full overflow-hidden relative z-10">
+                                <motion.div initial={{ width: 0 }} animate={{ width: "95%" }} transition={{ duration: 2 }} className="h-full bg-white shadow-[0_0_15px_rgba(255,255,255,0.8)]" />
+                             </div>
+                             <p className="text-[10px] font-black leading-tight uppercase tracking-widest text-white/90 relative z-10">Accepting Industrial Missions.</p>
+                        </div>
+
+                        {/* QUICK UPLINKS */}
+                        <div className="space-y-3">
+                             {[
+                                { icon: Mail, label: "UPLINK", value: "hello@jantra.soft" },
+                                { icon: Linkedin, label: "NETWORK", value: "jantra.soft" }
+                             ].map((item, i) => (
+                                <div key={i} className="p-4 rounded-[1.5rem] bg-white border border-slate-200 flex items-center gap-4 group hover:border-orange-500 transition-all shadow-sm">
+                                     <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-orange-500 group-hover:text-white transition-all shadow-sm">
+                                         <item.icon className="w-4 h-4" />
+                                     </div>
+                                     <div className="space-y-0.5">
+                                         <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">{item.label}</span>
+                                         <p className="text-[11px] font-black text-slate-950 uppercase tracking-tighter truncate">{item.value}</p>
+                                     </div>
+                                </div>
+                             ))}
+                        </div>
+                    </div>
+
+                    {/* RIGHT CONTENT — COMPACT & HIGH CONTRAST FORM */}
+                    <div className="lg:col-span-9 relative">
+                        <div className="relative z-10 bg-white border border-slate-200 shadow-[0_40px_80px_-20px_rgba(0,0,0,0.05)] rounded-[3.5rem] p-8 sm:p-14 overflow-hidden min-h-[750px] flex flex-col">
+                            
+                            <AnimatePresence mode="wait">
+                                {uiState === "form" ? (
+                                    <motion.form 
+                                        key="form"
+                                        initial={{ opacity: 0, x: 20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: -20 }}
+                                        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }} // Custom ease
+                                        onSubmit={handleSubmit}
+                                        className="space-y-8 relative z-10"
+                                    >
+                                        <div className="flex items-center justify-between border-b border-slate-100 pb-6">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded-xl bg-orange-600 flex items-center justify-center text-white shadow-xl shadow-orange-500/20">
+                                                    <Binary className="w-4 h-4" />
+                                                </div>
+                                                <h2 className="text-xl font-black text-slate-950 uppercase tracking-tighter">Inquiry Terminal [v.5.0]</h2>
+                                            </div>
+                                            <div className="hidden sm:flex gap-1">
+                                                 <div className="w-2 h-2 rounded-full bg-orange-500" />
+                                                 <div className="w-2 h-2 rounded-full bg-slate-100" />
+                                                 <div className="w-2 h-2 rounded-full bg-slate-100" />
+                                            </div>
+                                        </div>
+
+                                        <div className="grid md:grid-cols-2 gap-6">
+                                            {/* Name */}
+                                            <div className="space-y-2">
+                                                 <label className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] pl-1">Identity</label>
+                                                 <input required name="name" value={formData.name} onChange={(e) => handleChange('name', e.target.value)} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-[13px] font-bold text-slate-950 uppercase placeholder:text-slate-300 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/5 transition-all outline-none" placeholder="FULL NAME" />
+                                            </div>
+                                            {/* Email */}
+                                            <div className="space-y-2">
+                                                 <label className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] pl-1">Endpoint (Email)</label>
+                                                 <input required name="email" type="email" value={formData.email} onChange={(e) => handleChange('email', e.target.value)} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-[13px] font-bold text-slate-950 uppercase placeholder:text-slate-300 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/5 transition-all outline-none" placeholder="BUSINESS EMAIL" />
+                                            </div>
+                                        </div>
+
+                                        {/* BUBBLE GRID — SERVICE (MORE COMPACT) */}
+                                        <div className="space-y-4">
+                                             <label className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] pl-1 flex items-center gap-2">
+                                                <Layers className="w-3.5 h-3.5 text-orange-600" /> Service Architecture
+                                             </label>
+                                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                                 {services.map((s) => (
+                                                     <button
+                                                        key={s}
+                                                        type="button"
+                                                        onClick={() => handleChange('service', s)}
+                                                        className={`py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-500 border ${
+                                                            formData.service === s 
+                                                            ? "bg-slate-950 text-white border-slate-950 shadow-lg scale-[1.02]" 
+                                                            : "bg-slate-50 text-slate-400 border-slate-100 hover:bg-white hover:text-slate-950 hover:border-slate-300"
+                                                        }`}
+                                                     >
+                                                         {s}
+                                                     </button>
+                                                 ))}
+                                             </div>
+                                        </div>
+
+                                        {/* BUBBLE GRID — BUDGET (MORE COMPACT) */}
+                                        <div className="space-y-4">
+                                             <label className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] pl-1 flex items-center gap-2">
+                                                <Target className="w-3.5 h-3.5 text-orange-600" /> Capital Allocation
+                                             </label>
+                                             <div className="grid grid-cols-3 gap-3">
+                                                 {budgets.map((b) => (
+                                                     <button
+                                                        key={b}
+                                                        type="button"
+                                                        onClick={() => handleChange('budget', b)}
+                                                        className={`py-4 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-500 border ${
+                                                            formData.budget === b 
+                                                            ? "bg-orange-600 text-white border-orange-600 shadow-xl shadow-orange-500/20 scale-[1.02]" 
+                                                            : "bg-slate-50 text-slate-400 border-slate-100 hover:bg-white hover:text-orange-600 hover:border-orange-200"
+                                                        }`}
+                                                     >
+                                                         {b}
+                                                     </button>
+                                                 ))}
+                                             </div>
+                                        </div>
+
+                                        {/* Brief */}
+                                        <div className="space-y-4">
+                                             <label className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] pl-1 flex items-center gap-2">
+                                                <MessageSquare className="w-3.5 h-3.5 text-orange-600" /> Mission Brief
+                                             </label>
+                                             <textarea 
+                                                required 
+                                                name="description" 
+                                                rows={5}
+                                                value={formData.description} 
+                                                onChange={(e) => handleChange('description', e.target.value)} 
+                                                className="w-full bg-slate-50 border border-slate-100 rounded-[1.5rem] px-8 py-6 text-[13px] font-bold text-slate-950 uppercase placeholder:text-slate-200 focus:bg-white focus:border-orange-500 focus:ring-4 focus:ring-orange-500/5 transition-all outline-none resize-none min-h-[160px]" 
+                                                placeholder="DESCRIBE YOUR ARCHITECTURAL GOALS..." 
+                                             />
+                                        </div>
+
+                                        <div className="pt-6 border-t border-slate-50 flex flex-col sm:flex-row items-center justify-between gap-8">
+                                             <div className="flex items-center gap-3 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                                 <ShieldCheck className="w-4 h-4 text-emerald-500" /> Verified 256-Bit Link
+                                             </div>
+                                             <button type="submit" className="w-full sm:w-auto px-16 py-6 bg-orange-600 text-white rounded-2xl font-black uppercase tracking-[0.5em] text-[12px] hover:bg-slate-950 transition-all transform hover:scale-[1.03] active:scale-95 shadow-2xl shadow-orange-500/20 flex items-center justify-center gap-5 group">
+                                                Initialize Engage <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
+                                             </button>
+                                        </div>
+                                    </motion.form>
+                                ) : uiState === "loading" ? (
+                                    <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-grow flex flex-col items-center justify-center space-y-10 py-20">
+                                        <div className="relative">
+                                            <div className="w-24 h-24 border-4 border-slate-50 rounded-full" />
+                                            <div className="absolute inset-0 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+                                        </div>
+                                        <div className="text-center space-y-2">
+                                            <h3 className="text-2xl font-black text-slate-950 uppercase tracking-tighter">Syncing Protocol</h3>
+                                            <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.6em]">Establishing high-priority uplink...</p>
+                                        </div>
+                                    </motion.div>
+                                ) : (
+                                    <motion.div key="success" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex-grow flex flex-col items-center justify-center text-center space-y-10 py-20">
+                                        <div className="w-24 h-24 bg-emerald-50 text-emerald-500 rounded-[2rem] flex items-center justify-center border border-emerald-100 shadow-2xl shadow-emerald-500/10">
+                                             <CheckCircle2 className="w-12 h-12" />
+                                        </div>
+                                        <div className="space-y-4">
+                                            <h2 className="text-6xl font-black text-slate-950 tracking-tighter uppercase">Success<span className="text-orange-500">.</span></h2>
+                                            <p className="text-base text-slate-500 font-bold max-w-sm mx-auto uppercase tracking-tighter">Mission Brief Received. Tactical response within 24H.</p>
+                                        </div>
+                                        <button onClick={() => setUiState("form")} className="inline-flex items-center gap-5 px-14 py-5 bg-slate-950 text-white rounded-2xl font-black uppercase tracking-widest text-[11px] hover:bg-orange-600 transition-all shadow-2xl active:scale-95 group">
+                                            Reset Terminal <ArrowRight className="w-4 h-4 group-hover:rotate-180 transition-transform" />
+                                        </button>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </main>
     );
 }

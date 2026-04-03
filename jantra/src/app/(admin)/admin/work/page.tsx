@@ -179,21 +179,27 @@ export default function WorkManagementPage() {
                 if (uploadedUrl) thumbnailUrl = uploadedUrl;
             }
 
-            const payload = {
-                ...formData,
+            const payload: Record<string, unknown> = {
+                title: formData.title.trim(),
+                client: formData.client.trim(),
                 thumbnail: thumbnailUrl,
-                liveUrl: normalizeUrl(formData.liveUrl),
-                githubUrl: normalizeUrl(formData.githubUrl),
                 category: formData.categories
                     .split(",")
                     .map((c) => c.trim())
                     .filter(Boolean),
-                features: formData.features.split("\n").filter(Boolean),
+                challenge: formData.challenge.trim(),
+                approach: formData.approach.trim(),
+                features: formData.features.split("\n").map((item) => item.trim()).filter(Boolean),
                 techStack: formData.techStack
                     .split(",")
                     .map((t) => t.trim())
                     .filter(Boolean),
+                results: formData.results.trim(),
+                featured: formData.featured,
+                published: formData.published,
             };
+            delete payload.liveUrl;
+            delete payload.githubUrl;
 
             let response;
             if (editingId) {
@@ -207,8 +213,8 @@ export default function WorkManagementPage() {
                 fetchProjects();
                 resetForm();
             }
-        } catch (error) {
-            console.error("Save project error:", error);
+        } catch (error: any) {
+            console.error("Save project error:", error.response?.data || error.message || error);
         } finally {
             setIsSubmitting(false);
         }

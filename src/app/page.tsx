@@ -16,112 +16,143 @@ import api from "@/lib/api";
 
 const JANTRA_ORANGE_GLOW = "rgba(249, 115, 22, 0.5)";
 
-// ─── PROJECT CAROUSEL — High End Architectural Carousel ──────────────────
-// ─── PROJECT CAROUSEL — Sophisticated Elite Gallery ──────────────────
+// ─── PROJECT CAROUSEL — Signature High-End Editorial Fader ──────────────────
 function ProjectCarousel({ projects }: { projects: any[] }) {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    if (!projects || projects.length === 0) return;
-    const timer = setInterval(() => setIndex(p => (p + 1) % projects.length), 5500);
+    if (!projects || projects.length <= 1) return;
+    const timer = setInterval(() => setIndex(p => (p + 1) % projects.length), 7000);
     return () => clearInterval(timer);
-  }, [projects]);
+  }, [projects.length]);
 
   if (!projects || projects.length === 0) return (
-    <div className="w-full h-[400px] bg-slate-50 animate-pulse rounded-[2.5rem]" />
+    <div className="w-full h-[500px] bg-slate-50 animate-pulse rounded-[3rem]" />
   );
 
   const project = projects[index];
-  if (!project) return null;
   const defaultImage = "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop";
   const projectImage = project.thumbnail || defaultImage;
 
   return (
-    <div className="relative group w-full max-w-[1200px] mx-auto">
+    <div className="relative group w-full max-w-[1240px] mx-auto">
+      {/* Dynamic Brand Ambient Halo */}
+      <div className="absolute inset-x-12 -bottom-6 top-12 bg-orange-500/10 blur-[100px] rounded-full pointer-events-none z-0" />
+
       <AnimatePresence mode="wait">
         <motion.div
           key={index}
-          initial={{ opacity: 0, y: 30, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: -30, scale: 0.98 }}
-          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          className="relative min-h-[400px] sm:min-h-[480px] rounded-[3.5rem] overflow-hidden bg-white border border-slate-100 shadow-[0_45px_100px_-30px_rgba(249,115,22,0.12),0_15px_40px_-15px_rgba(0,0,0,0.04)] ring-1 ring-white/50 flex flex-col lg:flex-row items-stretch group"
+          initial={{ opacity: 0, scale: 0.98, filter: "blur(10px)", y: 20 }}
+          animate={{ opacity: 1, scale: 1, filter: "blur(0px)", y: 0 }}
+          exit={{ opacity: 0, scale: 0.98, filter: "blur(10px)", y: -20 }}
+          transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+          className="relative z-10 w-full flex flex-col lg:flex-row items-stretch rounded-[2.5rem] sm:rounded-[3.5rem] overflow-hidden bg-white border border-slate-100 shadow-[0_50px_100px_-40px_rgba(30,41,59,0.08)]"
         >
-          {/* Visual Column — High Performance Imagery */}
-          <div className="h-[250px] sm:h-[300px] lg:h-auto lg:w-[50%] relative overflow-hidden bg-slate-900 border-b lg:border-b-0 lg:border-r border-slate-100/30">
-            <motion.img
-              key={`img-${project.id}`}
-              initial={{ scale: 1.1, filter: "grayscale(1) brightness(0.6)" }}
-              animate={{ scale: 1, filter: "grayscale(0) brightness(0.85)" }}
-              transition={{ duration: 7 }}
-              src={projectImage}
-              className="absolute inset-0 w-full h-full object-cover"
-              alt={project.title}
+          {/* Visual Column — Responsive Aspect Ratio Control */}
+          <div className="min-h-[280px] sm:h-[450px] lg:h-auto lg:w-[55%] relative overflow-hidden bg-slate-50 flex items-center justify-center p-6 sm:p-14 border-b lg:border-b-0 lg:border-r border-slate-50">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,1)_0%,rgba(248,250,252,0.5)_100%)]" />
+
+            {/* Focal Core Animation */}
+            <motion.div
+              animate={{ opacity: [0.2, 0.4, 0.2], scale: [1, 1.2, 1] }}
+              transition={{ duration: 8, repeat: Infinity }}
+              className="absolute w-2/3 h-2/3 bg-orange-500/10 blur-[80px] rounded-full z-0"
             />
-            {/* Identity Marker */}
-            <div className="absolute top-8 left-8 z-20">
-               <span className="px-4 py-2 rounded-2xl bg-black/50 backdrop-blur-xl border border-white/10 text-[9px] font-black uppercase tracking-[0.5em] text-white/90">
-                  BUILD 0{index + 1}
-               </span>
+
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 40 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.15, ease: "easeOut" }}
+              className="relative z-10 w-full h-full flex items-center justify-center"
+            >
+              <img
+                src={projectImage}
+                alt={project.title}
+                className="max-w-[100%] max-h-full object-contain rounded-2xl shadow-[0_40px_100px_-20px_rgba(0,0,0,0.22)] border border-white/40"
+              />
+            </motion.div>
+
+            {/* Editorial Numbering */}
+            <div className="absolute top-8 left-8 sm:top-12 sm:left-12 z-20">
+              <span className="text-6xl sm:text-8xl font-black text-slate-900/5 select-none leading-none tracking-tighter">
+                0{index + 1}
+              </span>
             </div>
-            {/* Soft Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-slate-900/20 via-transparent to-transparent z-10" />
           </div>
 
-          {/* Content Column — Refined Precision Typography */}
-          <div className="lg:w-[50%] p-8 sm:p-12 flex flex-col justify-center bg-white relative">
-            <motion.div 
-              initial={{ x: 20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.35 }}
-              className="space-y-6 lg:space-y-8"
-            >
-              <div className="flex flex-wrap gap-2">
-                {project.tags.slice(0, 3).map((t: string) => (
-                  <span key={t} className="px-3 py-1 rounded-lg bg-slate-50 border border-slate-200/50 text-[9px] font-black uppercase tracking-widest text-slate-400">
-                    {t}
-                  </span>
-                ))}
-              </div>
-              
-              <div className="space-y-4">
-                <h4 className="text-4xl lg:text-5xl font-black text-slate-900 leading-[0.9] tracking-tighter">
-                  {project.title.split(' ')[0]} <br/> 
-                  <span className="text-orange-500">{project.title.split(' ').slice(1).join(' ') || "Architecture"}</span>
-                </h4>
-                <p className="max-w-sm text-base text-slate-500 font-medium leading-relaxed opacity-80">
-                  {project.description}
-                </p>
+          {/* Content Column — High Density Fine Typography */}
+          <div className="lg:w-[45%] p-8 sm:p-14 lg:p-20 flex flex-col justify-center bg-white">
+            <div className="space-y-8 sm:space-y-12">
+              <div className="flex items-center gap-4 group/cat">
+                <div className="h-[2px] w-12 bg-orange-500 origin-left group-hover/cat:scale-x-125 transition-transform duration-500" />
+                <span className="text-[10px] font-black uppercase tracking-[0.6em] text-orange-600">
+                  {Array.isArray(project.category) ? project.category[0] : (project.category || "Case Study")}
+                </span>
               </div>
 
-              <div className="flex items-center gap-4 pt-4">
-                <Link 
-                   href={`/work/${project.slug}`}
-                   className="px-10 py-5 bg-slate-900 hover:bg-orange-600 text-white rounded-[1.5rem] font-black text-[11px] tracking-[.25em] uppercase transition-all flex items-center justify-center gap-3 shadow-[0_15px_35px_-10px_rgba(0,0,0,0.3)] active:scale-95"
-                >
-                  Explore <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-                <div className="w-[1px] h-8 bg-slate-100 mx-2" />
-                <Link 
-                    href={`/work/${project.slug}`}
-                    className="group flex items-center gap-2 text-slate-400 hover:text-slate-900 font-black text-[10px] uppercase tracking-[0.3em] transition-all"
-                  >
-                  Preview <ExternalLink className="w-3 h-3 translate-y-[0px] group-hover:translate-x-1 transition-transform" />
-                </Link>
+              <div className="space-y-4 sm:space-y-6">
+                <h4 className="text-4xl sm:text-6xl lg:text-7xl font-black text-slate-900 leading-[0.85] tracking-tighter">
+                  {project.title}
+                </h4>
+                <div className="flex flex-wrap gap-2 pt-2">
+                  {(project.tags || []).slice(0, 3).map((t: string) => (
+                    <span key={t} className="text-[8px] sm:text-[9px] font-black text-slate-400 uppercase tracking-[0.4em] border border-slate-50 px-4 py-2 rounded-full bg-slate-50/50">
+                      {t}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </motion.div>
+
+              <p className="text-base sm:text-lg lg:text-xl text-slate-500 font-medium leading-relaxed max-w-md">
+                {project.description}
+              </p>
+
+              {/* Precision Command Unit — Fixed Overflow & Redesigned */}
+              <div className="pt-8 sm:pt-10">
+                <div className="inline-flex flex-col sm:flex-row items-stretch sm:items-center p-1.5 sm:p-2 bg-slate-50 border border-slate-100 rounded-[2rem] sm:rounded-full shadow-inner">
+                  {/* Primary Unit */}
+                  <Link 
+                     href={`/work/${project.slug}`}
+                     className="group/btn flex items-center justify-between sm:justify-start gap-4 px-8 py-4 sm:py-3.5 bg-slate-900 text-white rounded-[1.5rem] sm:rounded-full hover:bg-orange-600 transition-all duration-700 shadow-xl shadow-slate-900/10 active:scale-95"
+                  >
+                     <span className="text-[10px] font-black uppercase tracking-[0.4em]">Case Study</span>
+                     <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center group-hover/btn:bg-white/20 transition-colors">
+                        <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 transition-transform" />
+                     </div>
+                  </Link>
+
+                  {/* Aesthetic Divider — Desktop Only */}
+                  <div className="hidden sm:block w-[1px] h-6 bg-slate-200 mx-4" />
+
+                  {/* Secondary Unit */}
+                  <Link 
+                    href={project.liveUrl || `/work/${project.slug}`}
+                    target={project.liveUrl ? "_blank" : undefined}
+                    className="flex-1 sm:flex-none group/live flex items-center justify-center sm:justify-start gap-4 px-8 py-5 sm:py-3.5 text-slate-500 hover:text-slate-900 transition-colors active:scale-95"
+                  >
+                     <span className="text-[10px] font-black uppercase tracking-[0.4em]">Live Preview</span>
+                     <ExternalLink className="w-3.5 h-3.5 opacity-40 group-hover/live:opacity-100 transition-opacity" />
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
         </motion.div>
       </AnimatePresence>
 
-      {/* Rhythmic Navigation Dots */}
-      <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-3 z-30">
+      {/* Rhythmic Progress Engine */}
+      <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 flex items-center gap-4 z-30">
         {projects.map((_, i) => (
           <button
             key={i}
             onClick={() => setIndex(i)}
-            className={`w-2.5 h-2.5 rounded-full transition-all duration-500 ${index === i ? 'bg-orange-500 ring-4 ring-orange-100 w-8' : 'bg-slate-200 hover:bg-slate-300'}`}
-          />
+            className={`group relative py-4 flex items-center justify-center transition-all duration-700 ${index === i ? 'w-20 sm:w-24' : 'w-4'}`}
+          >
+            <div className={`h-[4px] rounded-full transition-all duration-1000 ${index === i ? 'w-full bg-orange-600' : 'w-3 bg-slate-200 group-hover:bg-slate-300'}`} />
+            {index === i && (
+              <div className="absolute h-[1px] w-full bg-orange-500/20 blur-[2px] top-1/2 animate-pulse" />
+            )}
+          </button>
         ))}
       </div>
     </div>
@@ -152,54 +183,54 @@ function ReviewCarousel({ testimonials }: { testimonials: any[] }) {
         >
           {/* Identity Side — High Fidelity Branding */}
           <div className="md:w-[35%] bg-slate-900 p-10 flex flex-col items-center justify-center text-center relative overflow-hidden">
-             <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-transparent pointer-events-none" />
-             <div className="relative space-y-6">
-                <div className="relative inline-block">
-                   <div className="absolute inset-0 bg-orange-500 blur-[25px] opacity-40 rounded-full" />
-                   <div className="relative w-20 h-20 rounded-full border-4 border-white/10 overflow-hidden ring-4 ring-slate-900">
-                      <img src={`https://i.pravatar.cc/150?u=jantra_rev_main_${index}`} className="w-full h-full object-cover" alt={t.author} />
-                   </div>
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-transparent pointer-events-none" />
+            <div className="relative space-y-6">
+              <div className="relative inline-block">
+                <div className="absolute inset-0 bg-orange-500 blur-[25px] opacity-40 rounded-full" />
+                <div className="relative w-20 h-20 rounded-full border-4 border-white/10 overflow-hidden ring-4 ring-slate-900">
+                  <img src={`https://i.pravatar.cc/150?u=jantra_rev_main_${index}`} className="w-full h-full object-cover" alt={t.author} />
                 </div>
-                <div className="space-y-1">
-                   <h5 className="text-lg font-black text-white tracking-tight leading-none">{t.author}</h5>
-                   <p className="text-[9px] font-black text-orange-400 uppercase tracking-[0.4em]">{t.role}</p>
-                   <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pt-2">@{t.company}</p>
-                </div>
-                {/* Trust Chip */}
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/5 backdrop-blur-md">
-                   <div className="w-1 h-1 rounded-full bg-green-500" />
-                   <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Verified Client</span>
-                </div>
-             </div>
+              </div>
+              <div className="space-y-1">
+                <h5 className="text-lg font-black text-white tracking-tight leading-none">{t.author}</h5>
+                <p className="text-[9px] font-black text-orange-400 uppercase tracking-[0.4em]">{t.role}</p>
+                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pt-2">@{t.company}</p>
+              </div>
+              {/* Trust Chip */}
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/5 backdrop-blur-md">
+                <div className="w-1 h-1 rounded-full bg-green-500" />
+                <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Verified Client</span>
+              </div>
+            </div>
           </div>
 
           {/* Quote Side — Architectural Typography */}
           <div className="md:w-[65%] p-10 sm:p-16 lg:p-20 flex flex-col justify-center relative bg-white">
-             {/* Architectural backdrop quote icon */}
-             <div className="absolute top-10 left-10 pointer-events-none">
-                <span className="text-8xl sm:text-[10rem] font-black text-slate-50 select-none leading-none">“</span>
-             </div>
-             
-             <motion.div 
-               initial={{ y: 20, opacity: 0 }}
-               animate={{ y: 0, opacity: 1 }}
-               transition={{ delay: 0.3 }}
-               className="relative z-10"
-             >
-                <blockquote className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-800 leading-[1.3] tracking-tight mb-8">
-                  &ldquo;{t.quote}&rdquo;
-                </blockquote>
-                
-                <div className="flex items-center gap-5">
-                   <div className="flex gap-1">
-                      {[1,2,3,4,5].map(i => (
-                         <Star key={i} className="w-3.5 h-3.5 fill-orange-500 text-orange-500" />
-                      ))}
-                   </div>
-                   <div className="h-[1px] w-12 bg-slate-100" />
-                   <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em]">Review Integrity Certified</span>
+            {/* Architectural backdrop quote icon */}
+            <div className="absolute top-10 left-10 pointer-events-none">
+              <span className="text-8xl sm:text-[10rem] font-black text-slate-50 select-none leading-none">“</span>
+            </div>
+
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="relative z-10"
+            >
+              <blockquote className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-800 leading-[1.3] tracking-tight mb-8">
+                &ldquo;{t.quote}&rdquo;
+              </blockquote>
+
+              <div className="flex items-center gap-5">
+                <div className="flex gap-1">
+                  {[1, 2, 3, 4, 5].map(i => (
+                    <Star key={i} className="w-3.5 h-3.5 fill-orange-500 text-orange-500" />
+                  ))}
                 </div>
-             </motion.div>
+                <div className="h-[1px] w-12 bg-slate-100" />
+                <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em]">Review Integrity Certified</span>
+              </div>
+            </motion.div>
           </div>
         </motion.div>
       </AnimatePresence>
@@ -214,7 +245,7 @@ function ReviewCarousel({ testimonials }: { testimonials: any[] }) {
           >
             <div className={`h-[3px] transition-all duration-700 ${index === i ? 'w-16 bg-orange-500' : 'w-4 bg-slate-200 group-hover:bg-slate-300'}`} />
             {index === i && (
-               <div className="absolute inset-0 bg-orange-500/10 blur-[6px] -z-10" />
+              <div className="absolute inset-0 bg-orange-500/10 blur-[6px] -z-10" />
             )}
           </button>
         ))}
@@ -236,8 +267,8 @@ function MobileLottieHero() {
   const current = services[index];
 
   return (
-    <section 
-      className="lg:hidden relative min-h-screen overflow-hidden" 
+    <section
+      className="lg:hidden relative min-h-screen overflow-hidden"
       style={{ background: "linear-gradient(160deg, #fffcf9 0%, #fffbf7 35%, #fffaf8 60%, #f8fafc 100%)" }}
     >
       {/* ── Background Moniker scrolling ── */}
@@ -254,7 +285,7 @@ function MobileLottieHero() {
         className="absolute top-[5%] left-1/2 -translate-x-1/2 w-[140vw] h-[140vw] rounded-full blur-[110px] pointer-events-none"
         style={{ background: "radial-gradient(circle, rgba(249,115,22,0.3) 0%, rgba(251,146,60,0.1) 45%, transparent 70%)" }}
       />
-      
+
       <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-orange-400/40 to-transparent" />
 
       {/* ── FULL-BLEED LOTTIE ── */}
@@ -351,7 +382,7 @@ function MobileLottieHero() {
           {/* Social Proof — Super Compact */}
           <div className="flex items-center justify-center gap-3 mt-6 pt-5 border-t border-slate-100/60" id="trust-mob">
             <div className="flex -space-x-2">
-              {[1,2,3].map(i => (
+              {[1, 2, 3].map(i => (
                 <img key={i} src={`https://i.pravatar.cc/80?u=jantra${i}`} className="w-6 h-6 rounded-full border-2 border-white shadow-sm" alt="User" />
               ))}
             </div>
@@ -394,13 +425,13 @@ function DesktopHero() {
             <div className="relative">
               <div className="absolute -left-10 top-2 bottom-2 w-[4px] bg-gradient-to-b from-orange-500 via-orange-500/20 to-transparent opacity-40 rounded-full" />
               <h1 className="text-9xl xl:text-[11rem] font-black leading-[0.78] tracking-tighter text-slate-900">
-                Precision <br/><span className="text-orange-500">Built.</span>
+                Precision <br /><span className="text-orange-500">Built.</span>
               </h1>
             </div>
             <div className="pt-2">
-               <p className="text-2xl font-black text-slate-400 uppercase tracking-[0.5em]">
-                  Elite Software & AI Agents
-               </p>
+              <p className="text-2xl font-black text-slate-400 uppercase tracking-[0.5em]">
+                Elite Software & AI Agents
+              </p>
             </div>
             <div className="flex items-center gap-5 pt-2">
               <button
@@ -418,12 +449,12 @@ function DesktopHero() {
             <div className="flex items-center gap-5 pt-6 opacity-0 animate-fade-up" style={{ animationDelay: '0.4s', animationFillMode: 'forwards' }}>
               <div className="flex -space-x-3">
                 {[1, 2, 3, 4, 5].map(i => (
-                  <motion.img 
+                  <motion.img
                     whileHover={{ y: -5, scale: 1.1 }}
-                    key={i} 
-                    src={`https://i.pravatar.cc/100?u=jantra_desktop${i}`} 
-                    className="w-10 h-10 rounded-full border-2 border-white shadow-lg cursor-pointer" 
-                    alt="User" 
+                    key={i}
+                    src={`https://i.pravatar.cc/100?u=jantra_desktop${i}`}
+                    className="w-10 h-10 rounded-full border-2 border-white shadow-lg cursor-pointer"
+                    alt="User"
                   />
                 ))}
               </div>
@@ -461,7 +492,7 @@ function DesktopHero() {
                     <LottiePlayer src={current.animationSrc!} className="w-full h-full drop-shadow-[0_0_85px_rgba(249,115,22,0.3)] scale-110" />
                   </div>
                   <div className="mt-2 flex flex-col items-center">
-                    <motion.div 
+                    <motion.div
                       className="flex items-center gap-6 px-10 py-5 rounded-[1.5rem] bg-white/40 backdrop-blur-xl border border-slate-100 shadow-[0_15px_45px_-10px_rgba(0,0,0,0.05)] ring-1 ring-white/50"
                       initial={{ opacity: 0, y: 15 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -477,11 +508,11 @@ function DesktopHero() {
                       </div>
                     </motion.div>
                   </div>
-                   <div className="flex gap-2 justify-center mt-6">
-                      {services.map((_, i) => (
-                        <button key={i} onClick={() => setIndex(i)} className={`rounded-full transition-all duration-300 ${i === index ? 'bg-orange-500 w-5 h-1.5' : 'bg-slate-300 w-1.5 h-1.5'}`} />
-                      ))}
-                   </div>
+                  <div className="flex gap-2 justify-center mt-6">
+                    {services.map((_, i) => (
+                      <button key={i} onClick={() => setIndex(i)} className={`rounded-full transition-all duration-300 ${i === index ? 'bg-orange-500 w-5 h-1.5' : 'bg-slate-300 w-1.5 h-1.5'}`} />
+                    ))}
+                  </div>
                 </motion.div>
               </AnimatePresence>
             </div>
@@ -504,10 +535,18 @@ export default function HomePage() {
         const response = await api.get("/work");
         const data = response.data?.data || response.data || [];
         if (Array.isArray(data) && data.length > 0) {
-          const featured = data.filter((p: any) => p.featured).sort((a: any, b: any) => a.order - b.order);
-          const formatted = featured.map((apiProject: any) => ({
-             ...apiProject,
-             tags: apiProject.techStack || []
+          const published = data
+            .filter((p: any) => p.published)
+            .sort((a: any, b: any) => {
+              // Prioritize featured, then sort by order
+              if (a.featured !== b.featured) return a.featured ? -1 : 1;
+              return (a.order || 0) - (b.order || 0);
+            });
+
+          const formatted = published.map((apiProject: any) => ({
+            ...apiProject,
+            tags: apiProject.techStack || [],
+            description: apiProject.description || apiProject.challenge || "Production software delivery.",
           }));
           setFeaturedProjects(formatted);
         } else {
@@ -532,11 +571,11 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,white_0%,transparent_8%,transparent_92%,white_100%)] pointer-events-none z-20 w-full" />
         <div className="flex gap-4 whitespace-nowrap animate-marquee items-center px-4 relative z-10">
           {[
-            "React","Next.js","Node.js","Python","AWS","OpenAI","Flutter","PostgreSQL","TypeScript","Docker",
-            "React","Next.js","Node.js","Python","AWS","OpenAI","Flutter","PostgreSQL","TypeScript","Docker",
-            "React","Next.js","Node.js","Python","AWS","OpenAI","Flutter","PostgreSQL","TypeScript","Docker",
+            "React", "Next.js", "Node.js", "Python", "AWS", "OpenAI", "Flutter", "PostgreSQL", "TypeScript", "Docker",
+            "React", "Next.js", "Node.js", "Python", "AWS", "OpenAI", "Flutter", "PostgreSQL", "TypeScript", "Docker",
+            "React", "Next.js", "Node.js", "Python", "AWS", "OpenAI", "Flutter", "PostgreSQL", "TypeScript", "Docker",
           ].map((tech, i) => {
-            const map: Record<string,string> = { React:"react","Next.js":"nextdotjs","Node.js":"nodedotjs",Python:"python",AWS:"amazonaws",OpenAI:"openai",Flutter:"flutter",PostgreSQL:"postgresql",TypeScript:"typescript",Docker:"docker" };
+            const map: Record<string, string> = { React: "react", "Next.js": "nextdotjs", "Node.js": "nodedotjs", Python: "python", AWS: "amazonaws", OpenAI: "openai", Flutter: "flutter", PostgreSQL: "postgresql", TypeScript: "typescript", Docker: "docker" };
             const slug = map[tech];
             const broken = slug === "amazonaws" || slug === "openai";
             return (
@@ -588,18 +627,12 @@ export default function HomePage() {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-slate-100 pb-10">
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-3">
-                 <div className="w-8 h-[2px] bg-orange-500" />
-                 <p className="text-[10px] font-black uppercase tracking-[0.6em] text-orange-600">Selected Work</p>
+                <div className="w-8 h-[2px] bg-orange-500" />
+                <p className="text-[10px] font-black uppercase tracking-[0.6em] text-orange-600">Selected Work</p>
               </div>
               <h2 className="text-5xl sm:text-7xl font-black text-slate-900 leading-none tracking-tighter">
-                 Portfolio<span className="text-orange-500">.</span>
+                Portfolio<span className="text-orange-500">.</span>
               </h2>
-            </div>
-            
-            <div className="max-w-md lg:pb-1">
-               <p className="text-base sm:text-lg text-slate-400 font-medium leading-relaxed border-l-2 border-orange-500/10 pl-6 ml-1 transition-all">
-                  Engineering <span className="text-slate-900 font-black">high-performance</span> systems and <span className="text-slate-900 font-black">AI agents</span> for the world&apos;s elite product teams.
-               </p>
             </div>
           </div>
         </div>
@@ -612,7 +645,7 @@ export default function HomePage() {
 
       {/* ── TESTIMONIALS CAROUSEL ─────────────────────────── */}
       <section className="py-20 sm:py-32 lg:py-48 px-5 sm:px-8 border-y border-slate-100 bg-[#f8fafc] relative overflow-hidden">
-         {/* Subtle background moniker */}
+        {/* Subtle background moniker */}
         <div className="absolute top-[15%] left-[-5%] w-[110%] overflow-hidden opacity-[0.015] pointer-events-none select-none z-0">
           <div className="flex whitespace-nowrap animate-marquee-slow">
             <span className="text-[18rem] font-black tracking-tighter leading-none mr-24 uppercase">TESTIMONIALS. REVIEWS. TRUST. FEEDBACK.</span>

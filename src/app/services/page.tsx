@@ -1,214 +1,175 @@
+"use client";
+
 import LottiePlayer from "@/components/LottiePlayer";
 import Link from "next/link";
-import {
-    Code, Smartphone, Bot, MessageSquare, Workflow,
-    Cloud, Network, BarChart, Layout, Server, CheckCircle
+import { motion } from "framer-motion";
+import { 
+    ArrowRight, 
+    Code, Smartphone, Bot, Workflow, 
+    Cloud, BarChart, ExternalLink 
 } from "lucide-react";
 
 const services = [
     {
-        title: "Custom Software Development",
+        title: "Software Engineering",
         slug: "custom-software",
-        description: "End-to-end bespoke software solutions built for scale and performance.",
+        description: "High-performance enterprise systems built for global scale and production-grade reliability.",
         icon: Code,
         lottieSrc: "/lottie/software-development-green.json",
-        bgGradient: "bg-gradient-to-br from-orange-100 to-orange-200",
-        features: ["Full-stack development", "Scalable architecture design", "Comprehensive QA & testing"],
-        industries: ["Finance", "Healthcare", "E-commerce"]
+        features: ["Scalable Architecture", "Professional Quality", "Maintenance"],
+        id: "SER-01"
     },
     {
-        title: "Mobile App Development",
-        slug: "mobile-app",
-        description: "High-performance native and cross-platform mobile applications that users love.",
-        icon: Smartphone,
-        lottieSrc: "/lottie/app-development.json",
-        bgGradient: "bg-gradient-to-tr from-slate-200 to-slate-300",
-        features: ["iOS & Android platforms", "React Native & Flutter", "Intuitive UI/UX implementation"],
-        industries: ["Retail", "Social Apps", "Tech"]
-    },
-    {
-        title: "AI Agent Development",
+        title: "AI Solutions",
         slug: "ai-agent",
-        description: "Deploy autonomous AI agents that think, act, and execute complex business tasks 24/7.",
+        description: "Intelligent autonomous systems and AI-powered applications to drive operational efficiency.",
         icon: Bot,
         lottieSrc: "/lottie/assistant-bot.json",
-        bgGradient: "bg-gradient-to-br from-orange-100 to-orange-200",
-        features: ["Autonomous execution", "LLM integration", "Custom decision capabilities"],
-        industries: ["Finance", "Operations", "Logistics"]
+        features: ["AI Integration", "Training", "Strategic Planning"],
+        id: "SER-02"
     },
     {
-        title: "AI Chatbots & Virtual Assistants",
-        slug: "ai-chatbot",
-        description: "Intelligent conversational interfaces that support customers and drive sales.",
-        icon: MessageSquare,
-        lottieSrc: "/lottie/live-chatbot.json",
-        bgGradient: "bg-gradient-to-tr from-slate-200 to-slate-300",
-        features: ["Advanced NLP processing", "24/7 automated support", "Multi-channel integration"],
-        industries: ["Customer Service", "Retail", "Healthcare"]
+        title: "Mobile Development",
+        slug: "mobile-app",
+        description: "Premium native and cross-platform mobile experiences for iOS and Android.",
+        icon: Smartphone,
+        lottieSrc: "/lottie/app-development.json",
+        features: ["iOS & Android", "UI/UX Design", "Launch Support"],
+        id: "SER-03"
     },
     {
-        title: "Agentic Workflow Automation",
+        title: "Process Automation",
         slug: "workflow-automation",
-        description: "Eliminate manual operational bottlenecks with intelligent, end-to-end automated workflows.",
+        description: "Streamlining complex business workflows through modern automation technologies.",
         icon: Workflow,
         lottieSrc: "/lottie/automatic.json",
-        bgGradient: "bg-gradient-to-br from-orange-100 to-orange-200",
-        features: ["Process mapping", "AI orchestration", "Third-party systems integration"],
-        industries: ["Enterprise", "Logistics", "Manufacturing"]
+        features: ["Business Logic", "API Integration", "Efficiency"],
+        id: "SER-04"
     },
     {
-        title: "SaaS Product Development",
+        title: "Cloud Infrastructure",
         slug: "saas",
-        description: "From architecture to deployment, we build scalable Software-as-a-Service platforms.",
+        description: "Cloud-native foundations and SaaS platforms architected for security and performance.",
         icon: Cloud,
         lottieSrc: "/lottie/saas.json",
-        bgGradient: "bg-gradient-to-tr from-slate-200 to-slate-300",
-        features: ["Multi-tenant architecture", "Subscription management", "Scalable database design"],
-        industries: ["B2B Tech", "Education", "Marketing"]
+        features: ["Secure Cloud", "Scaled Delivery", "Monitoring"],
+        id: "SER-05"
     },
     {
-        title: "API & Microservices Development",
-        slug: "api-microservices",
-        description: "Robust backend systems and APIs to connect and power your digital ecosystem.",
-        icon: Network,
-        lottieSrc: "/lottie/3d-web.json",
-        bgGradient: "bg-gradient-to-br from-orange-100 to-orange-200",
-        features: ["REST & GraphQL APIs", "Microservices architecture", "Advanced API security"],
-        industries: ["Fintech", "Enterprise", "Media"]
-    },
-    {
-        title: "Business Intelligence Dashboards",
+        title: "Business Intelligence",
         slug: "business-intelligence",
-        description: "Actionable insights through beautiful, real-time data visualization platforms.",
+        description: "Advanced data visualization and real-time analytics for informed decision making.",
         icon: BarChart,
         lottieSrc: "/lottie/bpo-3d.json",
-        bgGradient: "bg-gradient-to-tr from-slate-200 to-slate-300",
-        features: ["Real-time analytics", "Custom reporting metrics", "Interactive visualizations"],
-        industries: ["Finance", "Marketing", "Sales"]
-    },
-    {
-        title: "UI/UX Design & Product Design",
-        slug: "ui-ux-design",
-        description: "User-centric design that creates intuitive and engaging digital experiences.",
-        icon: Layout,
-        lottieSrc: "/lottie/uxui-d.json",
-        bgGradient: "bg-gradient-to-br from-orange-100 to-orange-200",
-        features: ["Wireframing & journey mapping", "High-fidelity prototyping", "Usability testing"],
-        industries: ["Consumer Tech", "E-commerce", "SaaS"]
-    },
-    {
-        title: "Cloud Migration & Management",
-        slug: "cloud-migration",
-        description: "Secure, efficient transition to cloud infrastructure with ongoing optimization.",
-        icon: Server,
-        lottieSrc: "/lottie/cloud-animation.json",
-        bgGradient: "bg-gradient-to-tr from-slate-200 to-slate-300",
-        features: ["AWS/Azure/GCP expertise", "Comprehensive security audits", "Infrastructure cost optimization"],
-        industries: ["IT", "Healthcare", "Government"]
+        features: ["Data Analytics", "Actionable Insights", "Reporting"],
+        id: "SER-06"
     }
 ];
 
-import api from "@/lib/api";
-
-export default async function ServicesPage() {
-    let finalServices = [...services];
-    try {
-        const response = await api.get("/services");
-        const apiData = response.data?.data || response.data || [];
-        if (Array.isArray(apiData) && apiData.length > 0) {
-            finalServices = apiData.map((s: any) => {
-                const local = services.find(l => l.slug === s.slug);
-                return local ? { ...local, ...s } : s;
-            });
-        }
-    } catch {
-        // use default services
-    }
-
+export default function ServicesPage() {
     return (
-        <main className="relative w-full overflow-x-hidden pt-24">
-            {/* Hero Section */}
-            <header className="pt-32 md:pt-48 pb-10 md:pb-16 text-center px-6">
-                <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold tracking-tight text-slate-900 mb-4 md:mb-6">
-                    Elevating Reality
-                </h1>
-                <p className="text-base md:text-xl text-slate-600 max-w-2xl mx-auto">
-                    JANTRA delivers spatial computing solutions that bridge the gap between physical and digital dimensions.
-                </p>
-            </header>
+        <main className="relative w-full min-h-screen bg-white overflow-hidden pb-20">
+            {/* ── BACKGROUND TEXT ── */}
+            <div className="absolute top-[5%] left-0 w-full overflow-hidden opacity-[0.03] pointer-events-none select-none z-0">
+                <div className="flex whitespace-nowrap animate-marquee-slow">
+                    <span className="text-[12rem] font-black tracking-tighter leading-none mr-24 uppercase">EXCELLENCE. INNOVATION. QUALITY. RESULTS.</span>
+                </div>
+            </div>
 
-            {/* Services List */}
-            {finalServices.map((service: any, index: number) => {
-                const isEven = index % 2 === 0;
-
-                return (
-                    <section key={service.slug} className="relative w-full py-16 md:py-24 lg:min-h-[550px] xl:min-h-[600px]" id={`service-${index + 1}`}>
-                        <div className="container mx-auto px-6 relative">
-                            {/* Mobile: stacked layout, Desktop: side-by-side flex layout */}
-                            <div className={`flex flex-col lg:flex-row ${isEven ? '' : 'lg:flex-row-reverse'} items-center gap-6 lg:gap-10 relative`}>
-                                <div className={`w-full lg:w-[45%] h-[200px] sm:h-[250px] lg:h-[350px] xl:h-[400px] z-10 rounded-[2rem] ${service.bgGradient} overflow-hidden flex items-center justify-center shadow-lg relative shrink-0`}>
-                                    <LottiePlayer src={service.lottieSrc} className="w-[85%] h-[85%]" />
-                                </div>
-
-                                {/* Glass Content Card */}
-                                <div className={`w-full lg:w-[55%] z-20 glass-panel bg-white/70 lg:bg-white/60 backdrop-blur-xl border border-white/50 p-6 sm:p-7 lg:p-8 xl:p-10 rounded-[2rem] shadow-[0_20px_40px_-15px_rgba(0,0,0,0.08)]`}>
-                                    <div className="flex items-center gap-3 mb-4 lg:mb-5">
-                                        <div className="p-2.5 bg-white shadow-sm text-orange-600 rounded-xl">
-                                            <service.icon className="w-5 h-5 lg:w-6 h-6" />
-                                        </div>
-                                        <span className="text-orange-600 font-bold tracking-widest text-[10px] md:text-xs uppercase bg-orange-100/50 px-3 py-1.5 rounded-full inline-block">
-                                            Core Service {String(index + 1).padStart(2, '0')}
-                                        </span>
-                                    </div>
-
-                                    <h2 className="text-2xl lg:text-3xl font-bold mb-3 text-slate-900 leading-tight">
-                                        {service.title}
-                                    </h2>
-
-                                    <p className="text-slate-600 leading-relaxed mb-6 text-sm lg:text-base">
-                                        {service.description}
-                                    </p>
-
-                                    {/* Feature list */}
-                                    <div className="mb-6 bg-slate-50/50 p-4 rounded-xl border border-slate-100">
-                                        <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">Key Capabilities</h4>
-                                        <ul className="space-y-2">
-                                            {service.features?.map((feature: string, fIdx: number) => (
-                                                <li key={fIdx} className="flex items-start gap-2.5 text-sm text-slate-700">
-                                                    <CheckCircle className="w-4 h-4 text-orange-500 mt-0.5 shrink-0" />
-                                                    <span className="font-medium">{feature}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-
-                                    {/* Industry tags */}
-                                    <div className="mb-6 lg:mb-8">
-                                        <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2.5">Industries</h4>
-                                        <div className="flex flex-wrap gap-2">
-                                            {service.industries?.map((industry: string, iIdx: number) => (
-                                                <span key={iIdx} className="px-3 py-1.5 bg-white border border-slate-200 text-slate-600 text-xs rounded-full font-medium shadow-sm">
-                                                    {industry}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    </div>
-
-                                    <div className="pt-2 border-t border-slate-200 border-dashed">
-                                        <Link href={`/services/${service.slug}`} className="inline-flex items-center justify-center gap-2 w-full sm:w-auto bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-full hover:shadow-[0_10px_20px_-5px_rgba(249,115,22,0.4)] transition-all font-bold text-sm active:scale-95 group">
-                                            <span>Explore Case Studies</span>
-                                            <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                            </svg>
-                                        </Link>
-                                    </div>
-                                </div>
+            <div className="max-w-[1540px] mx-auto px-6 sm:px-12 pt-28 sm:pt-36 relative z-10">
+                
+                {/* ── PROFESSIONAL INTEGRATED HERO ── */}
+                <div className="grid lg:grid-cols-12 gap-8 items-start mb-12">
+                    
+                    {/* Left Column Header (Spans 3 cols) */}
+                    <div className="lg:col-span-3 space-y-8 sticky top-36">
+                        <div className="flex flex-col gap-4">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-[2px] bg-orange-500" />
+                                <span className="text-[9px] font-black uppercase tracking-[0.4em] text-orange-600">Our Services</span>
                             </div>
+                            <h1 className="text-5xl sm:text-6xl font-black text-slate-900 leading-[0.85] tracking-tighter uppercase">
+                                Our <br />
+                                <span className="text-transparent" style={{ WebkitTextStroke: "1px #0f172a" }}>Expertise</span>
+                                <span className="text-orange-500">.</span>
+                            </h1>
+                            <p className="text-sm text-slate-500 font-medium leading-relaxed border-l-2 border-slate-100 pl-6">
+                                Delivering professional digital solutions for industry leaders.
+                            </p>
                         </div>
-                    </section>
-                );
-            })}
 
+                        <div className="p-6 rounded-[2rem] bg-slate-50 border border-slate-100 space-y-4">
+                            <div className="flex items-center gap-2">
+                                <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.3)]" />
+                                <span className="text-[8px] font-black uppercase tracking-widest text-slate-400">Available for Hire</span>
+                            </div>
+                            <Link href="/contact" className="w-full py-4 rounded-xl bg-orange-600 text-white text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-slate-950 transition-colors shadow-lg shadow-orange-500/20">
+                                Get In Touch <ArrowRight className="w-3 h-3" />
+                            </Link>
+                        </div>
+                    </div>
+
+                    {/* Services Grid (Spans 9 cols) */}
+                    <div className="lg:col-span-9 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                        {services.map((service, i) => (
+                            <motion.div 
+                                key={service.slug} 
+                                whileHover={{ y: -4 }}
+                                className="group relative rounded-[2.5rem] bg-slate-50 border border-slate-100 p-6 flex flex-col items-stretch transition-all duration-700 hover:bg-white hover:border-slate-200"
+                            >
+                                {/* RADIANT UNDERGLOW */}
+                                <div className="absolute inset-x-12 -bottom-5 h-16 bg-orange-500/10 blur-[50px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+                                
+                                <div className="flex justify-between items-center mb-6 relative z-10">
+                                   <div className="flex items-center gap-2">
+                                        <div className="w-8 h-8 rounded-lg bg-white border border-slate-100 flex items-center justify-center text-orange-500 group-hover:bg-slate-950 group-hover:text-white transition-colors duration-500">
+                                            <service.icon className="w-4 h-4" />
+                                        </div>
+                                        <span className="text-[8px] font-black uppercase tracking-widest text-slate-400">{service.id}</span>
+                                   </div>
+                                   <Link href={`/services/${service.slug}`} className="w-6 h-6 rounded-full border border-slate-100 flex items-center justify-center hover:bg-slate-100 transition-colors">
+                                       <ExternalLink className="w-3 h-3 text-slate-300 group-hover:text-slate-950" />
+                                   </Link>
+                                </div>
+
+                                <div className="relative aspect-[16/10] rounded-[2rem] bg-white border border-slate-100/50 flex items-center justify-center p-6 mb-6 overflow-hidden">
+                                    <LottiePlayer src={service.lottieSrc} className="w-full h-full grayscale-0 opacity-80 group-hover:opacity-100 transition-all duration-1000" />
+                                </div>
+
+                                <div className="space-y-3">
+                                    <h3 className="text-xl font-black text-slate-900 tracking-tighter leading-none group-hover:text-orange-600 transition-colors duration-500 uppercase">{service.title}</h3>
+                                    <p className="text-[12px] text-slate-500 font-medium leading-relaxed line-clamp-2">{service.description}</p>
+                                    
+                                    <div className="pt-3 border-t border-slate-100 flex flex-wrap gap-1.5">
+                                        {service.features.map((feat, fIdx) => (
+                                            <span key={fIdx} className="text-[7px] font-black uppercase tracking-widest text-slate-400 px-2.5 py-1 rounded-full bg-white border border-slate-100 group-hover:text-slate-950 group-hover:border-slate-200">
+                                                {feat}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <Link href={`/services/${service.slug}`} className="mt-6 py-3.5 rounded-xl bg-orange-50/50 text-orange-600 border border-orange-100 flex items-center justify-center gap-2 group-hover:bg-orange-600 group-hover:text-white transition-all duration-500 shadow-sm">
+                                    <span className="text-[8px] font-black uppercase tracking-[0.3em]">Learn More</span>
+                                    <ArrowRight className="w-3 h-3" />
+                                </Link>
+                            </motion.div>
+                        ))}
+                    </div>
+
+                </div>
+
+                {/* ── FOOTER CTA ── */}
+                <footer className="mt-12 relative overflow-hidden rounded-[3rem] bg-slate-950 p-10 text-center">
+                    <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-orange-600 opacity-10 blur-[100px] rounded-full translate-x-1/2 -translate-y-1/2" />
+                    <div className="relative z-10">
+                        <h2 className="text-3xl sm:text-5xl font-black mb-6 text-white tracking-tighter leading-none uppercase">Start Your Project.</h2>
+                        <Link href="/contact" className="inline-flex items-center gap-4 px-10 py-4 bg-orange-600 text-white rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-white hover:text-slate-950 transition-all shadow-2xl active:scale-95 group">
+                            Contact Our Team <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                    </div>
+                </footer>
+            </div>
         </main>
     );
 }
