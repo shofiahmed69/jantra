@@ -530,7 +530,7 @@ function TeamMemberModal({ member, onClose, onSuccess }: { member: TeamMember | 
                                             value={formData.linkedIn} 
                                             onChange={e => setFormData({ ...formData, linkedIn: e.target.value })} 
                                             className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl pl-14 pr-4 py-4 text-[10px] font-bold focus:outline-none focus:border-orange-500 transition-all"
-                                            placeholder="linkedin.com/in/..."
+                                            placeholder="https://linkedin.com/in/..."
                                         />
                                     </div>
                                 </div>
@@ -542,7 +542,7 @@ function TeamMemberModal({ member, onClose, onSuccess }: { member: TeamMember | 
                                             value={formData.twitter} 
                                             onChange={e => setFormData({ ...formData, twitter: e.target.value })} 
                                             className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl pl-14 pr-4 py-4 text-[10px] font-bold focus:outline-none focus:border-orange-500 transition-all"
-                                            placeholder="x.com/..."
+                                            placeholder="https://x.com/..."
                                         />
                                     </div>
                                 </div>
@@ -551,7 +551,7 @@ function TeamMemberModal({ member, onClose, onSuccess }: { member: TeamMember | 
                                     <input 
                                         type="number" 
                                         value={formData.order} 
-                                        onChange={e => setFormData({ ...formData, order: parseInt(e.target.value) })} 
+                                        onChange={e => setFormData({ ...formData, order: e.target.value === "" ? 0 : parseInt(e.target.value, 10) })} 
                                         className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-sm font-black text-slate-900 focus:outline-none focus:border-orange-500 transition-all text-center"
                                     />
                                 </div>
