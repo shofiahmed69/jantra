@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, Clock, Share2, Twitter, Linkedin, Github, User, Binary, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock, Share2, Twitter, Linkedin, Github, User, Binary, Sparkles } from "lucide-react";
 import { getBlogPostBySlug, getAllPosts } from "@/data/blogPosts";
 import { notFound } from "next/navigation";
 import api from "@/lib/api";
