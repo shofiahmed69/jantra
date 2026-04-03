@@ -638,6 +638,18 @@ export default function WorkManagementPage() {
                                             </div>
                                         </div>
 
+                                        {/* Project Brief */}
+                                        <div className="space-y-3">
+                                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-1">Project Brief</label>
+                                            <textarea
+                                                rows={4}
+                                                value={formData.description}
+                                                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                                className="w-full bg-slate-50 border-2 border-slate-100 rounded-[1.5rem] px-5 py-4 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all resize-none"
+                                                placeholder="Summarize the project in a few sharp lines..."
+                                            />
+                                        </div>
+
                                         {/* Technical Narrative */}
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                             <div className="space-y-3">
@@ -651,15 +663,57 @@ export default function WorkManagementPage() {
                                                 />
                                             </div>
                                             <div className="space-y-3">
-                                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-1">The Approach</label>
+                                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-1">Our Strategy</label>
                                                 <textarea
                                                     rows={3}
                                                     value={formData.approach}
                                                     onChange={(e) => setFormData({ ...formData, approach: e.target.value })}
                                                     className="w-full bg-slate-50 border-2 border-slate-100 rounded-[1.5rem] px-5 py-4 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all resize-none"
-                                                    placeholder="Our engineered solution..."
+                                                    placeholder="Describe the execution plan and strategic direction..."
                                                 />
                                             </div>
+                                        </div>
+
+                                        {/* Feature System */}
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                            <div className="space-y-3">
+                                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-1">Key Features</label>
+                                                <textarea
+                                                    rows={5}
+                                                    value={formData.features.join("\n")}
+                                                    onChange={(e) => setFormData({
+                                                        ...formData,
+                                                        features: e.target.value.split("\n").map(item => item.trim()).filter(Boolean)
+                                                    })}
+                                                    className="w-full bg-slate-50 border-2 border-slate-100 rounded-[1.5rem] px-5 py-4 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all resize-none"
+                                                    placeholder={`Authentication flow\nReal-time dashboard\nRole-based access`}
+                                                />
+                                            </div>
+                                            <div className="space-y-3">
+                                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-1">Technology Protocol</label>
+                                                <textarea
+                                                    rows={5}
+                                                    value={formData.techStack.join(", ")}
+                                                    onChange={(e) => setFormData({
+                                                        ...formData,
+                                                        techStack: e.target.value.split(",").map(item => item.trim()).filter(Boolean)
+                                                    })}
+                                                    className="w-full bg-slate-50 border-2 border-slate-100 rounded-[1.5rem] px-5 py-4 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all resize-none"
+                                                    placeholder="Next.js, Node.js, Prisma, PostgreSQL"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        {/* Metrics */}
+                                        <div className="space-y-3">
+                                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-1">Performance Metrics</label>
+                                            <textarea
+                                                rows={3}
+                                                value={formData.results}
+                                                onChange={(e) => setFormData({ ...formData, results: e.target.value })}
+                                                className="w-full bg-slate-50 border-2 border-slate-100 rounded-[1.5rem] px-5 py-4 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all resize-none"
+                                                placeholder="98% uptime improvement, 3x faster reporting, 42% lower manual workload"
+                                            />
                                         </div>
 
                                         {/* Directives */}
