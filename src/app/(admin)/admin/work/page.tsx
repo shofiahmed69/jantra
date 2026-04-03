@@ -51,6 +51,9 @@ const normalizeUrl = (value: string) => {
     return /^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(trimmed) ? trimmed : `https://${trimmed}`;
 };
 
+const normalizeTextList = (values: string[]) =>
+    values.map((value) => value.trim()).filter(Boolean);
+
 export default function WorkManagementPage() {
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
@@ -138,8 +141,21 @@ export default function WorkManagementPage() {
         setIsSubmitting(true);
         try {
             const payload = {
-                ...formData,
+                title: formData.title.trim(),
+                slug: formData.slug.trim(),
+                client: formData.client.trim(),
+                thumbnail: normalizeUrl(formData.thumbnail),
+                category: normalizeTextList(formData.category),
+                challenge: formData.challenge.trim(),
+                approach: formData.approach.trim(),
+                features: normalizeTextList(formData.features),
+                techStack: normalizeTextList(formData.techStack),
+                results: formData.results.trim(),
                 liveUrl: normalizeUrl(formData.liveUrl),
+                githubUrl: "",
+                featured: formData.featured,
+                published: formData.published,
+                order: 0,
             };
 
             if (editingId) {
@@ -151,8 +167,8 @@ export default function WorkManagementPage() {
             setEditingId(null);
             fetchProjects();
             resetForm();
-        } catch (error) {
-            console.error("Save project error:", error);
+        } catch (error: any) {
+            console.error("Save project error:", error.response?.data || error.message || error);
         } finally {
             setIsSubmitting(false);
         }
