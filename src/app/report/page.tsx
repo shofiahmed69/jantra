@@ -83,7 +83,7 @@ export default function EmployeeReportPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [loggingIn, setLoggingIn] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [formData, setFormData] = useState({
@@ -109,8 +109,8 @@ export default function EmployeeReportPage() {
     const loadWorkspace = useCallback(async (sessionToken: string) => {
         const authHeaders = { headers: { Authorization: `Bearer ${sessionToken}` } };
         const [meRes, reportsRes] = await Promise.all([
-            axios.get(`${apiBaseUrl}/auth/employee/me`, authHeaders),
-            axios.get(`${apiBaseUrl}/reports/employee/my`, authHeaders)
+            axios.get(`${apiBaseUrl}/auth/employee/me`, { ...authHeaders, timeout: 8000 }),
+            axios.get(`${apiBaseUrl}/reports/employee/my`, { ...authHeaders, timeout: 8000 })
         ]);
 
         setEmployee(meRes.data);
@@ -123,10 +123,10 @@ export default function EmployeeReportPage() {
         const storedUser = localStorage.getItem(EMPLOYEE_USER_KEY);
 
         if (!storedToken) {
-            setLoading(false);
             return;
         }
 
+        setLoading(true);
         setToken(storedToken);
         if (storedUser) {
             setEmployee(JSON.parse(storedUser));
@@ -148,7 +148,7 @@ export default function EmployeeReportPage() {
         setError("");
 
         try {
-            const response = await axios.post(`${apiBaseUrl}/auth/employee/login`, { email, password });
+            const response = await axios.post(`${apiBaseUrl}/auth/employee/login`, { email, password }, { timeout: 8000 });
             const nextToken = response.data.token;
             setToken(nextToken);
             localStorage.setItem(EMPLOYEE_TOKEN_KEY, nextToken);
@@ -182,7 +182,7 @@ export default function EmployeeReportPage() {
         setError("");
 
         try {
-            await axios.post(`${apiBaseUrl}/reports/employee/submit`, formData, requestConfig);
+            await axios.post(`${apiBaseUrl}/reports/employee/submit`, formData, { ...requestConfig, timeout: 8000 });
             setFormData({
                 periodType: "DAILY",
                 title: "",

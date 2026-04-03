@@ -10,12 +10,13 @@ export default function ClientLayout({
 }) {
     const pathname = usePathname()
     const isAdmin = pathname?.startsWith('/admin')
+    const isStandalonePortal = pathname?.startsWith('/report')
 
     return (
         <>
-            {!isAdmin && <Navbar />}
+            {!isAdmin && !isStandalonePortal && <Navbar />}
             {children}
-            {!isAdmin && <Footer />}
+            {!isAdmin && !isStandalonePortal && <Footer />}
         </>
     )
 }
