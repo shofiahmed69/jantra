@@ -120,7 +120,7 @@ export default function WorkManagementPage() {
 
         setUploadingImage(true);
         try {
-            const res = await api.post('/upload/image', data, {
+            const res = await api.post('/admin/work/upload-image', data, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             if (res.data.url) {
