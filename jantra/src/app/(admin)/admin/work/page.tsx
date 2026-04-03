@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import api from "@/lib/api";
 import {
     Plus,
@@ -26,10 +27,17 @@ interface Project {
     createdAt: string;
 }
 
+const normalizeUrl = (value: string) => {
+    const trimmed = value.trim();
+    if (!trimmed) return "";
+    return /^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(trimmed) ? trimmed : `https://${trimmed}`;
+};
+
 export default function WorkManagementPage() {
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState("");
@@ -66,6 +74,11 @@ export default function WorkManagementPage() {
 
     useEffect(() => {
         fetchProjects();
+    }, []);
+
+    useEffect(() => {
+        setIsMounted(true);
+        return () => setIsMounted(false);
     }, []);
 
     const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -160,7 +173,7 @@ export default function WorkManagementPage() {
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            let thumbnailUrl = formData.thumbnail;
+            let thumbnailUrl = normalizeUrl(formData.thumbnail);
             if (imageFile) {
                 const uploadedUrl = await uploadImage();
                 if (uploadedUrl) thumbnailUrl = uploadedUrl;
@@ -169,6 +182,8 @@ export default function WorkManagementPage() {
             const payload = {
                 ...formData,
                 thumbnail: thumbnailUrl,
+                liveUrl: normalizeUrl(formData.liveUrl),
+                githubUrl: normalizeUrl(formData.githubUrl),
                 category: formData.categories
                     .split(",")
                     .map((c) => c.trim())
@@ -338,7 +353,7 @@ export default function WorkManagementPage() {
             </div>
 
             {/* Add Project Modal */}
-            {modalOpen && (
+            {isMounted && modalOpen && createPortal(
                 <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
                     <div className="w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh]">
                         <div className="flex items-center justify-between px-8 py-6 bg-slate-50 border-b border-slate-100">
@@ -396,10 +411,12 @@ export default function WorkManagementPage() {
                                 <div className="space-y-1">
                                     <label className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Or paste image URL</label>
                                     <input
-                                        type="url"
+                                        type="text"
+                                        inputMode="url"
                                         placeholder="https://example.com/image.jpg"
                                         value={formData.thumbnail}
                                         onChange={(e) => setFormData({ ...formData, thumbnail: e.target.value })}
+                                        onBlur={(e) => setFormData({ ...formData, thumbnail: normalizeUrl(e.target.value) })}
                                         className={inputClassName}
                                     />
                                 </div>
@@ -457,10 +474,12 @@ export default function WorkManagementPage() {
                                 <div className="space-y-1">
                                     <label className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Live Project URL</label>
                                     <input
-                                        type="url"
+                                        type="text"
+                                        inputMode="url"
                                         placeholder="https://yourproject.com"
                                         value={formData.liveUrl}
                                         onChange={(e) => setFormData({ ...formData, liveUrl: e.target.value })}
+                                        onBlur={(e) => setFormData({ ...formData, liveUrl: normalizeUrl(e.target.value) })}
                                         className={inputClassName}
                                     />
                                 </div>
@@ -469,10 +488,12 @@ export default function WorkManagementPage() {
                                 <div className="space-y-1">
                                     <label className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">GitHub URL (optional)</label>
                                     <input
-                                        type="url"
+                                        type="text"
+                                        inputMode="url"
                                         placeholder="https://github.com/yourrepo"
                                         value={formData.githubUrl}
                                         onChange={(e) => setFormData({ ...formData, githubUrl: e.target.value })}
+                                        onBlur={(e) => setFormData({ ...formData, githubUrl: normalizeUrl(e.target.value) })}
                                         className={inputClassName}
                                     />
                                 </div>
@@ -573,7 +594,8 @@ export default function WorkManagementPage() {
                             </button>
                         </div>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </div>
     );
