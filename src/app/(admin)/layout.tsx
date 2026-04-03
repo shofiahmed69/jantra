@@ -179,14 +179,37 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
                         Dashboard
                     </a>
                 </header>
-                <header className="flex items-center justify-between mb-8 pb-4 border-b border-slate-200">
-                    <div>
-                        <h1 className="text-2xl font-bold text-slate-800">Welcome Back</h1>
-                        <p className="text-sm text-slate-500">{user?.email}</p>
+                {/* Modernized Global Header */}
+                <header className="mb-10 flex items-center justify-between bg-white/40 backdrop-blur-3xl p-6 rounded-[2rem] border border-white/60 shadow-lg shadow-slate-200/40">
+                    <div className="flex items-center gap-5">
+                        <div className="relative group">
+                            <div className="absolute inset-0 bg-orange-500 rounded-2xl blur-lg opacity-20 group-hover:opacity-40 transition-opacity" />
+                            <div className="relative w-14 h-14 rounded-2xl bg-slate-900 flex items-center justify-center text-white text-xl font-black shadow-2xl border border-white/10 group-hover:scale-105 transition-transform">
+                                {user?.email?.[0].toUpperCase()}
+                            </div>
+                            <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full" />
+                        </div>
+                        <div className="space-y-0.5">
+                            <div className="flex items-center gap-2">
+                                <h1 className="text-xl font-black text-slate-900 tracking-tight">MISSION CONTROL</h1>
+                                <span className="text-[10px] bg-orange-500 text-white px-2 py-0.5 rounded-full font-black tracking-widest">v4.0</span>
+                            </div>
+                            <p className="text-xs text-slate-500 font-bold uppercase tracking-widest opacity-60">Welcome Back, <span className="text-slate-900">{user?.email}</span></p>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold border-2 border-white shadow-sm uppercase">
-                            {user?.email[0]}
+
+                    <div className="hidden lg:flex items-center gap-8 pr-4">
+                        <div className="text-right">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">ENVIRONMENT</p>
+                            <div className="text-xs font-bold text-emerald-600 flex items-center gap-1.5 justify-end">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                <span>PRODUCTION LIVE</span>
+                            </div>
+                        </div>
+                        <div className="w-px h-10 bg-slate-200" />
+                        <div className="text-right">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">SYSTEM STATUS</p>
+                            <p className="text-xs font-bold text-slate-900">ALL SYSTEMS NOMINAL</p>
                         </div>
                     </div>
                 </header>
