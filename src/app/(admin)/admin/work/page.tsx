@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import api from "@/lib/api";
 import {
     Plus,
@@ -9,8 +9,20 @@ import {
     Loader2,
     X,
     UploadCloud,
-    Image as ImageIcon
+    Image as ImageIcon,
+    ExternalLink,
+    CheckCircle2,
+    Circle,
+    LayoutGrid,
+    Globe,
+    Zap,
+    ChevronRight,
+    Search,
+    Monitor,
+    Smartphone
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 interface Project {
     id: string;
@@ -37,6 +49,7 @@ export default function WorkManagementPage() {
     const [loading, setLoading] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
 
     const [editingId, setEditingId] = useState<string | null>(null);
     const [uploadingImage, setUploadingImage] = useState(false);
@@ -74,6 +87,17 @@ export default function WorkManagementPage() {
         fetchProjects();
     }, []);
 
+    // Auto-slug generation
+    useEffect(() => {
+        if (!editingId && formData.title) {
+            const slug = formData.title
+                .toLowerCase()
+                .replace(/[^\w ]+/g, '')
+                .replace(/ +/g, '-');
+            setFormData(prev => ({ ...prev, slug }));
+        }
+    }, [formData.title, editingId]);
+
     const handleThumbnailUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
@@ -91,7 +115,6 @@ export default function WorkManagementPage() {
             }
         } catch (error) {
             console.error('Image upload failed:', error);
-            alert('Failed to upload image banner. Please try again.');
         } finally {
             setUploadingImage(false);
         }
@@ -109,18 +132,22 @@ export default function WorkManagementPage() {
             setModalOpen(false);
             setEditingId(null);
             fetchProjects();
-            setFormData({
-                title: "", slug: "", client: "", thumbnail: "",
-                category: [], challenge: "", approach: "",
-                features: [], techStack: [], results: "",
-                liveUrl: "",
-                featured: false, published: true
-            });
+            resetForm();
         } catch (error) {
             console.error("Save project error:", error);
         } finally {
             setIsSubmitting(false);
         }
+    };
+
+    const resetForm = () => {
+        setFormData({
+            title: "", slug: "", client: "", thumbnail: "",
+            category: [], challenge: "", approach: "",
+            features: [], techStack: [], results: "",
+            liveUrl: "",
+            featured: false, published: true
+        });
     };
 
     const handleEdit = (project: Project) => {
@@ -144,7 +171,7 @@ export default function WorkManagementPage() {
     };
 
     const handleDelete = async (id: string) => {
-        if (!confirm("Delete this project?")) return;
+        if (!confirm("Are you sure you want to delete this project? This action cannot be undone.")) return;
         try {
             await api.delete(`/admin/work/${id}`);
             fetchProjects();
@@ -156,7 +183,7 @@ export default function WorkManagementPage() {
     const handleTogglePublish = async (id: string) => {
         try {
             await api.patch(`/admin/work/${id}/publish`);
-            fetchProjects();
+            setProjects(prev => prev.map(p => p.id === id ? { ...p, published: !p.published } : p));
         } catch (error) {
             console.error("Toggle publish error:", error);
         }
@@ -165,296 +192,492 @@ export default function WorkManagementPage() {
     const handleToggleFeatured = async (id: string) => {
         try {
             await api.patch(`/admin/work/${id}/featured`);
-            fetchProjects();
+            setProjects(prev => prev.map(p => p.id === id ? { ...p, featured: !p.featured } : p));
         } catch (error) {
             console.error("Toggle featured error:", error);
         }
     };
 
+    const filteredProjects = useMemo(() => {
+        return projects.filter(p => 
+            p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+            p.client.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+    }, [projects, searchQuery]);
+
     return (
-        <div className="space-y-6">
-            <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h2 className="text-2xl font-bold text-slate-800 tracking-tight">Portfolio Management</h2>
-                    <p className="text-sm text-slate-500">Manage and showcase your best engineering work.</p>
+        <div className="space-y-8 pb-20">
+            {/* Header Section */}
+            <motion.header 
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex flex-col lg:flex-row lg:items-center justify-between gap-6"
+            >
+                <div className="space-y-1">
+                    <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-3">
+                        <LayoutGrid className="w-8 h-8 text-orange-500" />
+                        Portfolio Management
+                    </h2>
+                    <p className="text-slate-500 font-medium">Engineer, catalog, and showcase your technological milestones.</p>
                 </div>
 
-                <button
-                    onClick={() => {
-                        setEditingId(null);
-                        setFormData({
-                            title: "", slug: "", client: "", thumbnail: "",
-                            category: [], challenge: "", approach: "",
-                            features: [], techStack: [], results: "",
-                            liveUrl: "",
-                            featured: false, published: true
-                        });
-                        setModalOpen(true);
-                    }}
-                    className="inline-flex items-center gap-2 bg-slate-900 text-white px-6 py-3 rounded-2xl font-bold hover:bg-orange-600 transition-all shadow-lg active:scale-95 text-sm"
-                >
-                    <Plus className="w-4 h-4" /> Add New Project
-                </button>
-            </header>
+                <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="relative group">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-orange-500 transition-colors" />
+                        <input 
+                            type="text" 
+                            placeholder="Find a project..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="bg-white border border-slate-200 rounded-2xl pl-11 pr-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all w-full sm:w-64 shadow-sm font-medium"
+                        />
+                    </div>
+                    
+                    <button
+                        onClick={() => {
+                            setEditingId(null);
+                            resetForm();
+                            setModalOpen(true);
+                        }}
+                        className="inline-flex items-center justify-center gap-2 bg-slate-900 text-white px-8 py-3 rounded-2xl font-bold hover:bg-orange-600 transition-all shadow-xl shadow-slate-200 active:scale-95 text-sm group"
+                    >
+                        <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" /> 
+                        <span>Add New Project</span>
+                    </button>
+                </div>
+            </motion.header>
 
-            <div className="glass-panel overflow-hidden border-white/60 shadow-xl rounded-[2.5rem]">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left">
+            {/* Main Content Card */}
+            <motion.div 
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.1 }}
+                className="bg-white border border-slate-200 shadow-2xl shadow-slate-200/50 rounded-[2.5rem] overflow-hidden"
+            >
+                <div className="overflow-x-auto custom-scrollbar">
+                    <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="border-b border-white/20 bg-slate-900/5">
-                                <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Project Title</th>
-                                <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Client</th>
-                                <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Categories</th>
-                                <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Status</th>
-                                <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Actions</th>
+                            <tr className="bg-slate-50/50 border-b border-slate-100">
+                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Identity & Design</th>
+                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Client Info</th>
+                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Architecture</th>
+                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-center">Status Matrix</th>
+                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-right">Operations</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/10">
+                        <tbody className="divide-y divide-slate-50">
                             {loading ? (
                                 <tr>
-                                    <td colSpan={5} className="px-8 py-20 text-center">
-                                        <Loader2 className="w-8 h-8 text-orange-500 animate-spin mx-auto" />
+                                    <td colSpan={5} className="px-8 py-32 text-center">
+                                        <div className="flex flex-col items-center gap-4">
+                                            <Loader2 className="w-10 h-10 text-orange-500 animate-spin" />
+                                            <p className="text-sm font-bold text-slate-400 tracking-widest uppercase">Initializing Datagrid...</p>
+                                        </div>
                                     </td>
                                 </tr>
-                            ) : projects.length === 0 ? (
+                            ) : filteredProjects.length === 0 ? (
                                 <tr>
-                                    <td colSpan={5} className="px-8 py-20 text-center text-slate-400 text-sm">
-                                        No projects found. Time to showcase your work!
+                                    <td colSpan={5} className="px-8 py-32 text-center">
+                                        <div className="flex flex-col items-center gap-4 opacity-40">
+                                            <LayoutGrid className="w-16 h-16 text-slate-300" />
+                                            <p className="text-slate-400 font-bold uppercase tracking-widest">No matching infrastructure found</p>
+                                        </div>
                                     </td>
                                 </tr>
                             ) : (
-                                projects.map((project) => (
-                                    <tr key={project.id} className="hover:bg-white/40 transition-colors group">
-                                        <td className="px-8 py-6 max-w-xs">
-                                            <p className="font-bold text-slate-800 text-sm truncate">{project.title}</p>
-                                            <div className="flex items-center gap-2 mt-1">
-                                                {project.featured && (
-                                                    <span className="text-[8px] font-bold bg-orange-500 text-white px-1.5 py-0.5 rounded uppercase tracking-tighter">Featured</span>
-                                                )}
+                                filteredProjects.map((project, index) => (
+                                    <motion.tr 
+                                        key={project.id}
+                                        initial={{ opacity: 0, x: -10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: index * 0.05 }}
+                                        className="hover:bg-orange-50/30 transition-colors group"
+                                    >
+                                        <td className="px-8 py-5 max-w-sm">
+                                            <div className="flex items-center gap-5">
+                                                <div className="relative w-16 h-16 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0 shadow-inner group-hover:border-orange-200 transition-colors">
+                                                    {project.thumbnail ? (
+                                                        <img src={project.thumbnail} alt="" className="w-full h-full object-cover grayscale-[0.5] group-hover:grayscale-0 transition-all duration-500 scale-110 group-hover:scale-100" />
+                                                    ) : (
+                                                        <div className="flex items-center justify-center w-full h-full text-slate-300">
+                                                            <ImageIcon className="w-6 h-6" />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <h3 className="font-bold text-slate-900 group-hover:text-orange-600 transition-colors truncate pr-2">{project.title}</h3>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-[10px] text-slate-400 font-mono tracking-tighter">/{project.slug}</span>
+                                                        {project.featured && (
+                                                            <span className="flex items-center gap-1 text-[8px] bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-black uppercase">
+                                                                <Zap className="w-2 h-2 fill-current" /> Premium
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                </div>
                                             </div>
                                         </td>
-                                        <td className="px-8 py-6">
-                                            <span className="text-xs text-slate-600 font-medium">
-                                                {project.client}
-                                            </span>
+                                        <td className="px-8 py-5">
+                                            <div className="flex flex-col">
+                                                <span className="text-sm font-bold text-slate-700">{project.client}</span>
+                                                <span className="text-[10px] text-slate-400 font-medium">Enterprise Stakeholder</span>
+                                            </div>
                                         </td>
-                                        <td className="px-8 py-6">
-                                            <div className="flex flex-wrap gap-1">
-                                                {project.category.slice(0, 2).map((cat, i) => (
-                                                    <span key={i} className="text-[10px] bg-slate-100 px-2 py-1 rounded text-slate-500 font-medium whitespace-nowrap">
+                                        <td className="px-8 py-5">
+                                            <div className="flex flex-wrap gap-1.5">
+                                                {project.category.map((cat, i) => (
+                                                    <span key={i} className="text-[9px] bg-slate-100/80 text-slate-500 px-2.5 py-1 rounded-lg font-bold tracking-tight border border-slate-200 group-hover:border-orange-100 group-hover:bg-orange-50 transition-colors">
                                                         {cat}
                                                     </span>
                                                 ))}
                                             </div>
                                         </td>
-                                        <td className="px-8 py-6">
-                                            <div className="flex items-center gap-2">
+                                        <td className="px-8 py-5">
+                                            <div className="flex items-center justify-center gap-3">
                                                 <button
                                                     onClick={() => handleTogglePublish(project.id)}
-                                                    className={`text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest transition-colors ${project.published ? 'bg-emerald-100 text-emerald-600' : 'bg-orange-100 text-orange-600'
-                                                        }`}>
-                                                    {project.published ? 'Live' : 'Draft'}
+                                                    className={cn(
+                                                        "group/status flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all text-[10px] font-black uppercase tracking-widest",
+                                                        project.published 
+                                                            ? "bg-emerald-50 text-emerald-600 border-emerald-100 hover:bg-emerald-100" 
+                                                            : "bg-orange-50 text-orange-600 border-orange-100 hover:bg-orange-100"
+                                                    )}
+                                                >
+                                                    {project.published ? <Globe className="w-3 h-3 animate-pulse" /> : <Monitor className="w-3 h-3" />}
+                                                    {project.published ? 'Live Environment' : 'Sandbox Draft'}
                                                 </button>
                                                 <button
                                                     onClick={() => handleToggleFeatured(project.id)}
-                                                    className={`text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest transition-colors ${project.featured ? 'bg-purple-100 text-purple-600' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
-                                                        }`}>
-                                                    {project.featured ? 'Featured' : 'Not Featured'}
+                                                    className={cn(
+                                                        "p-2 rounded-xl border transition-all",
+                                                        project.featured 
+                                                            ? "bg-purple-50 text-purple-600 border-purple-100 shadow-sm" 
+                                                            : "bg-slate-50 text-slate-300 border-slate-100 hover:border-slate-200 hover:text-slate-400"
+                                                    )}
+                                                    title={project.featured ? "Featured" : "Regular"}
+                                                >
+                                                    <Zap className={cn("w-4 h-4", project.featured && "fill-current")} />
                                                 </button>
                                             </div>
                                         </td>
-                                        <td className="px-8 py-6">
-                                            <div className="flex items-center gap-2">
-                                                <button onClick={() => handleEdit(project)} className="p-2 hover:bg-white rounded-xl transition-all text-slate-400 hover:text-blue-600 shadow-sm border border-transparent hover:border-blue-100">
-                                                    <Edit3 className="w-4 h-4" />
+                                        <td className="px-8 py-5">
+                                            <div className="flex items-center justify-end gap-2">
+                                                <button 
+                                                    onClick={() => handleEdit(project)} 
+                                                    className="p-2.5 bg-white hover:bg-slate-900 hover:text-white border border-slate-200 rounded-2xl transition-all shadow-sm active:scale-90 group/btn"
+                                                >
+                                                    <Edit3 className="w-4 h-4 group-hover/btn:scale-110 transition-transform" />
                                                 </button>
                                                 <button
                                                     onClick={() => handleDelete(project.id)}
-                                                    className="p-2 hover:bg-white rounded-xl transition-all text-slate-400 hover:text-red-500 shadow-sm border border-transparent hover:border-red-100"
+                                                    className="p-2.5 bg-white hover:bg-red-500 hover:text-white border border-slate-200 hover:border-red-500 rounded-2xl transition-all shadow-sm active:scale-90 group/btn"
                                                 >
-                                                    <Trash2 className="w-4 h-4" />
+                                                    <Trash2 className="w-4 h-4 group-hover/btn:scale-110 transition-transform" />
                                                 </button>
                                             </div>
                                         </td>
-                                    </tr>
+                                    </motion.tr>
                                 ))
                             )}
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </motion.div>
 
-            {/* Add Project Modal */}
-            {modalOpen && (
-                <div className="fixed inset-0 z-[200] overflow-y-auto bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200 custom-scrollbar">
-                    <div className="flex min-h-screen items-center justify-center p-4 sm:p-6 text-center">
-                        <div className="w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col text-left align-middle relative transition-all">
-                        <div className="flex items-center justify-between px-8 py-6 bg-slate-50 border-b border-slate-100 shrink-0">
-                            <div>
-                                <h3 className="text-xl font-bold text-slate-900">{editingId ? "Edit Project" : "Add New Project"}</h3>
-                                <p className="text-xs text-slate-500">Fill in the details to showcase your work.</p>
-                            </div>
-                            <button
-                                onClick={() => setModalOpen(false)}
-                                className="p-2 hover:bg-white rounded-full transition-colors text-slate-400 hover:text-slate-600"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
+            {/* Professional Modal System */}
+            <AnimatePresence>
+                {modalOpen && (
+                    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+                        {/* Backdrop */}
+                        <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setModalOpen(false)}
+                            className="absolute inset-0 bg-slate-950/80 backdrop-blur-md"
+                        />
 
-                        <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6 custom-scrollbar">
-                            <form id="project-form" onSubmit={handleAddProject} className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                <div className="space-y-1 md:col-span-2">
-                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Project Title*</label>
-                                    <input
-                                        type="text" required
-                                        value={formData.title}
-                                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all"
-                                        placeholder="e.g. NexaFlow CRM"
-                                    />
-                                </div>
-                                <div className="space-y-2 md:col-span-2">
-                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Project Banner (Thumbnail)</label>
-                                    <div className="flex items-center gap-4">
-                                        {formData.thumbnail ? (
-                                            <div className="relative w-32 h-20 rounded-xl overflow-hidden border border-slate-200">
-                                                <img src={formData.thumbnail} alt="Banner Preview" className="object-cover w-full h-full" />
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setFormData({ ...formData, thumbnail: "" })}
-                                                    className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors"
-                                                >
-                                                    <X className="w-3 h-3" />
-                                                </button>
-                                            </div>
-                                        ) : (
-                                            <div className="w-32 h-20 rounded-xl bg-slate-50 border border-slate-200 border-dashed flex items-center justify-center text-slate-400">
-                                                <ImageIcon className="w-6 h-6 opacity-50" />
-                                            </div>
-                                        )}
-                                        <div className="flex-1">
-                                            <label className={`cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold shadow-sm transition-all ${uploadingImage ? 'opacity-50 cursor-not-allowed' : 'hover:border-orange-500 hover:text-orange-600'}`}>
-                                                {uploadingImage ? <Loader2 className="w-4 h-4 animate-spin" /> : <UploadCloud className="w-4 h-4" />}
-                                                <span>{uploadingImage ? 'Uploading...' : 'Upload Banner'}</span>
-                                                <input
-                                                    type="file"
-                                                    accept="image/*"
-                                                    className="hidden"
-                                                    onChange={handleThumbnailUpload}
-                                                    disabled={uploadingImage}
-                                                />
-                                            </label>
-                                            <p className="text-[10px] text-slate-400 font-medium mt-2 max-w-[200px]">Optimal ratio is 16:9. Max 2MB.</p>
+                        {/* Modal Container */}
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            className="relative w-full max-w-5xl bg-white rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] border border-white/20 overflow-hidden flex flex-col md:flex-row max-h-[90vh]"
+                        >
+                            {/* Left Side: Visual/Context */}
+                            <div className="hidden md:flex md:w-1/3 bg-slate-900 p-12 flex-col justify-between text-white relative overflow-hidden shrink-0">
+                                <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/20 blur-[100px] rounded-full -mr-32 -mt-32" />
+                                <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 blur-[100px] rounded-full -ml-32 -mb-32" />
+                                
+                                <div className="space-y-6 relative z-10">
+                                    <div className="w-14 h-14 bg-gradient-to-tr from-orange-500 to-orange-400 rounded-2xl shadow-xl shadow-orange-500/20 flex items-center justify-center">
+                                        <LayoutGrid className="w-7 h-7 text-white" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-3xl font-black tracking-tight leading-none leading-[1.1]">{editingId ? "Refine Project Blueprint" : "Initialize New Milestone"}</h3>
+                                        <p className="text-slate-400 text-sm mt-4 font-medium leading-relaxed">Systematic architecture for high-performance portfolio showcasing.</p>
+                                    </div>
+
+                                    <div className="pt-8 space-y-4">
+                                        <div className="flex items-center gap-4 text-xs font-bold text-slate-400">
+                                            <div className="w-2 h-2 rounded-full bg-orange-500" />
+                                            AUTOGEN SLUG CAPABILITY
+                                        </div>
+                                        <div className="flex items-center gap-4 text-xs font-bold text-slate-400">
+                                            <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                                            REAL-TIME CLOUD UPLOAD
+                                        </div>
+                                        <div className="flex items-center gap-4 text-xs font-bold text-slate-400">
+                                            <div className="w-2 h-2 rounded-full bg-blue-500" />
+                                            ENTERPRISE STATUS MATRIX
                                         </div>
                                     </div>
                                 </div>
-                                <div className="space-y-1">
-                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Client*</label>
-                                    <input
-                                        type="text" required
-                                        value={formData.client}
-                                        onChange={(e) => setFormData({ ...formData, client: e.target.value })}
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all"
-                                        placeholder="Company Name"
-                                    />
-                                </div>
-                                <div className="space-y-1 md:col-span-2">
-                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Live URL (Optional)</label>
-                                    <input
-                                        type="url"
-                                        value={formData.liveUrl}
-                                        onChange={(e) => setFormData({ ...formData, liveUrl: e.target.value })}
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all font-mono"
-                                        placeholder="https://example.com"
-                                    />
-                                </div>
-                                <div className="space-y-3 md:col-span-2">
-                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Categories (Select Multiple)</label>
-                                    <div className="flex flex-wrap gap-2">
-                                        {AVAILABLE_CATEGORIES.map(cat => (
-                                            <button
-                                                key={cat}
-                                                type="button"
-                                                onClick={() => {
-                                                    const active = formData.category.includes(cat);
-                                                    setFormData({
-                                                        ...formData,
-                                                        category: active
-                                                            ? formData.category.filter(c => c !== cat)
-                                                            : [...formData.category, cat]
-                                                    });
-                                                }}
-                                                className={`px-4 py-2 rounded-xl text-sm font-bold transition-all border ${formData.category.includes(cat) ? 'bg-orange-500 text-white border-orange-500 shadow-md transform scale-105' : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-orange-300'}`}
-                                            >
-                                                {cat}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-                                <div className="space-y-1 md:col-span-2">
-                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Challenge</label>
-                                    <textarea
-                                        rows={2}
-                                        value={formData.challenge}
-                                        onChange={(e) => setFormData({ ...formData, challenge: e.target.value })}
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all"
-                                        placeholder="Describe the problem..."
-                                    />
-                                </div>
-                                <div className="space-y-1 md:col-span-2">
-                                    <label className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Approach</label>
-                                    <textarea
-                                        rows={2}
-                                        value={formData.approach}
-                                        onChange={(e) => setFormData({ ...formData, approach: e.target.value })}
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all"
-                                        placeholder="Describe your solution..."
-                                    />
-                                </div>
-                                <div className="flex items-center gap-6 md:col-span-2 p-2">
-                                    <label className="flex items-center gap-2 cursor-pointer group">
-                                        <input
-                                            type="checkbox"
-                                            checked={formData.featured}
-                                            onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
-                                            className="w-4 h-4 rounded text-orange-600 focus:ring-orange-500 border-slate-300"
-                                        />
-                                        <span className="text-sm font-medium text-slate-600 group-hover:text-slate-900 transition-colors">Mark as Featured</span>
-                                    </label>
-                                    <label className="flex items-center gap-2 cursor-pointer group">
-                                        <input
-                                            type="checkbox"
-                                            checked={formData.published}
-                                            onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
-                                            className="w-4 h-4 rounded text-orange-600 focus:ring-orange-500 border-slate-300"
-                                        />
-                                        <span className="text-sm font-medium text-slate-600 group-hover:text-slate-900 transition-colors">Publish Directly</span>
-                                    </label>
-                                </div>
-                            </form>
-                        </div>
 
-                        <div className="px-8 py-6 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-3 shrink-0">
-                            <button
-                                onClick={() => setModalOpen(false)}
-                                className="px-6 py-2.5 rounded-xl text-sm font-bold text-slate-600 hover:bg-white transition-all border border-transparent hover:border-slate-200"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                type="submit"
-                                form="project-form"
-                                disabled={isSubmitting}
-                                className="inline-flex items-center gap-2 bg-slate-900 text-white px-8 py-2.5 rounded-xl font-bold hover:bg-orange-600 transition-all shadow-lg active:scale-95 text-sm disabled:opacity-50 disabled:pointer-events-none"
-                            >
-                                {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save Project"}
-                            </button>
-                        </div>
-                        </div>
+                                <div className="relative z-10">
+                                    <p className="text-[10px] uppercase tracking-[0.3em] font-black text-slate-500">Jantra Cloud Infrastructure v4.0</p>
+                                </div>
+                            </div>
+
+                            {/* Right Side: Form */}
+                            <div className="flex-1 flex flex-col min-w-0 bg-white">
+                                <div className="flex items-center justify-between p-8 md:px-12 border-b border-slate-100 shrink-0">
+                                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Project Parameters</span>
+                                    <button 
+                                        onClick={() => setModalOpen(false)}
+                                        className="p-3 bg-slate-50 hover:bg-red-500 hover:text-white rounded-2xl transition-all active:scale-90"
+                                    >
+                                        <X className="w-5 h-5" />
+                                    </button>
+                                </div>
+
+                                <div className="flex-1 overflow-y-auto custom-scrollbar p-8 md:p-12 space-y-10">
+                                    <form id="project-form" onSubmit={handleAddProject} className="space-y-10">
+                                        {/* Core Identity */}
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                            <div className="space-y-3">
+                                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-1">Project Title*</label>
+                                                <input
+                                                    type="text" required
+                                                    value={formData.title}
+                                                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                                                    className="w-full bg-slate-50 border-2 border-slate-100 rounded-[1.5rem] px-5 py-4 text-sm font-bold focus:outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all placeholder:text-slate-300"
+                                                    placeholder="e.g. Advanced AI Engine"
+                                                />
+                                            </div>
+                                            <div className="space-y-3">
+                                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-1">Universal Slug</label>
+                                                <div className="relative">
+                                                    <span className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 font-mono text-sm">/</span>
+                                                    <input
+                                                        type="text" required
+                                                        value={formData.slug}
+                                                        onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                                                        className="w-full bg-slate-50 border-2 border-slate-100 rounded-[1.5rem] pl-8 pr-5 py-4 text-sm font-mono text-slate-500 focus:outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all"
+                                                        placeholder="auto-generated-slug"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Visual Media */}
+                                        <div className="space-y-4">
+                                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-1">Cinematic Keyframe (Thumbnail)</label>
+                                            <div className="flex flex-col sm:flex-row items-stretch gap-6">
+                                                <div className="relative w-full sm:w-48 aspect-video sm:aspect-square md:aspect-video rounded-[2rem] overflow-hidden bg-slate-50 border-2 border-slate-100 border-dashed flex items-center justify-center group flex-shrink-0">
+                                                    {formData.thumbnail ? (
+                                                        <>
+                                                            <img src={formData.thumbnail} alt="" className="object-cover w-full h-full" />
+                                                            <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => setFormData({ ...formData, thumbnail: "" })}
+                                                                    className="bg-red-500 text-white p-3 rounded-2xl hover:scale-110 active:scale-95 transition-all shadow-xl"
+                                                                >
+                                                                    <Trash2 className="w-5 h-5" />
+                                                                </button>
+                                                            </div>
+                                                        </>
+                                                    ) : (
+                                                        <div className="flex flex-col items-center gap-2 text-slate-300">
+                                                            <ImageIcon className="w-8 h-8 opacity-40 shrink-0" />
+                                                            <span className="text-[9px] font-black uppercase tracking-widest">No Keyframe</span>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                
+                                                <div className="flex-1 flex flex-col justify-center space-y-4">
+                                                    <p className="text-[11px] text-slate-400 font-medium leading-relaxed">
+                                                        Recommended: <span className="text-slate-900 font-bold">1920x1080px (16:9)</span>. 
+                                                        Format: JPNG/PNG. Max size: 2MB. This image defines the project in the public grid.
+                                                    </p>
+                                                    <label className={cn(
+                                                        "cursor-pointer inline-flex items-center justify-center gap-3 px-8 py-4 rounded-2xl text-sm font-black transition-all border-2 shadow-sm w-full sm:w-fit active:scale-95",
+                                                        uploadingImage 
+                                                            ? "bg-slate-50 text-slate-300 border-slate-100 pointer-events-none" 
+                                                            : "bg-white border-slate-100 hover:border-orange-500 hover:text-orange-600 hover:shadow-orange-500/10"
+                                                    )}>
+                                                        {uploadingImage ? <Loader2 className="w-5 h-5 animate-spin" /> : <UploadCloud className="w-5 h-5" />}
+                                                        <span>{uploadingImage ? 'TRANSMITTING...' : 'UPLOAD FRAME'}</span>
+                                                        <input type="file" accept="image/*" className="hidden" onChange={handleThumbnailUpload} />
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Client & Deployment */}
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                            <div className="space-y-3">
+                                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-1">Client Entity</label>
+                                                <input
+                                                    type="text" required
+                                                    value={formData.client}
+                                                    onChange={(e) => setFormData({ ...formData, client: e.target.value })}
+                                                    className="w-full bg-slate-50 border-2 border-slate-100 rounded-[1.5rem] px-5 py-4 text-sm font-bold focus:outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all"
+                                                    placeholder="e.g. Global Tech Solutions"
+                                                />
+                                            </div>
+                                            <div className="space-y-3">
+                                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-1">Production URL</label>
+                                                <div className="relative">
+                                                     <Globe className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 w-4 h-4" />
+                                                    <input
+                                                        type="url"
+                                                        value={formData.liveUrl}
+                                                        onChange={(e) => setFormData({ ...formData, liveUrl: e.target.value })}
+                                                        className="w-full bg-slate-50 border-2 border-slate-100 rounded-[1.5rem] pl-12 pr-5 py-4 text-sm font-bold focus:outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all font-mono text-slate-500"
+                                                        placeholder="https://cloud.engine.com"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Categories */}
+                                        <div className="space-y-4">
+                                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-1">Architecture Classification</label>
+                                            <div className="flex flex-wrap gap-2.5">
+                                                {AVAILABLE_CATEGORIES.map(cat => {
+                                                    const isActive = formData.category.includes(cat);
+                                                    return (
+                                                        <button
+                                                            key={cat}
+                                                            type="button"
+                                                            onClick={() => {
+                                                                setFormData({
+                                                                    ...formData,
+                                                                    category: isActive
+                                                                        ? formData.category.filter(c => c !== cat)
+                                                                        : [...formData.category, cat]
+                                                                });
+                                                            }}
+                                                            className={cn(
+                                                                "px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all border-2",
+                                                                isActive 
+                                                                    ? "bg-orange-600 text-white border-orange-600 shadow-lg shadow-orange-500/30 scale-105" 
+                                                                    : "bg-slate-50 text-slate-500 border-slate-100 hover:border-orange-200"
+                                                            )}
+                                                        >
+                                                            {cat}
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+
+                                        {/* Technical Narrative */}
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                            <div className="space-y-3">
+                                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-1">The Challenge</label>
+                                                <textarea
+                                                    rows={3}
+                                                    value={formData.challenge}
+                                                    onChange={(e) => setFormData({ ...formData, challenge: e.target.value })}
+                                                    className="w-full bg-slate-50 border-2 border-slate-100 rounded-[1.5rem] px-5 py-4 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all resize-none"
+                                                    placeholder="Identify the core problem..."
+                                                />
+                                            </div>
+                                            <div className="space-y-3">
+                                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-1">The Approach</label>
+                                                <textarea
+                                                    rows={3}
+                                                    value={formData.approach}
+                                                    onChange={(e) => setFormData({ ...formData, approach: e.target.value })}
+                                                    className="w-full bg-slate-50 border-2 border-slate-100 rounded-[1.5rem] px-5 py-4 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all resize-none"
+                                                    placeholder="Our engineered solution..."
+                                                />
+                                            </div>
+                                        </div>
+
+                                        {/* Directives */}
+                                        <div className="flex flex-wrap items-center gap-8 bg-slate-50 p-6 rounded-[2rem] border-2 border-slate-100">
+                                            <label className="flex items-center gap-3 cursor-pointer group">
+                                                <div className={cn(
+                                                    "w-6 h-6 rounded-lg border-2 transition-all flex items-center justify-center",
+                                                    formData.featured ? "bg-purple-600 border-purple-600 shadow-md" : "bg-white border-slate-300 group-hover:border-purple-300"
+                                                )}>
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={formData.featured}
+                                                        onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
+                                                        className="hidden"
+                                                    />
+                                                    {formData.featured && <Zap className="w-3.5 h-3.5 text-white fill-current" />}
+                                                </div>
+                                                <span className="text-xs font-black uppercase tracking-widest text-slate-700">Premium Spotlight</span>
+                                            </label>
+                                            
+                                            <label className="flex items-center gap-3 cursor-pointer group">
+                                                <div className={cn(
+                                                    "w-6 h-6 rounded-lg border-2 transition-all flex items-center justify-center",
+                                                    formData.published ? "bg-emerald-600 border-emerald-600 shadow-md" : "bg-white border-slate-300 group-hover:border-emerald-300"
+                                                )}>
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={formData.published}
+                                                        onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
+                                                        className="hidden"
+                                                    />
+                                                    {formData.published && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
+                                                </div>
+                                                <span className="text-xs font-black uppercase tracking-widest text-slate-700">Live Status</span>
+                                            </label>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <div className="p-8 md:px-12 bg-slate-50/50 border-t border-slate-100 flex items-center justify-end gap-5 shrink-0">
+                                    <button
+                                        type="button"
+                                        onClick={() => setModalOpen(false)}
+                                        className="px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-red-500 transition-all active:scale-95"
+                                    >
+                                        Abort
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        form="project-form"
+                                        disabled={isSubmitting}
+                                        className="inline-flex items-center justify-center gap-3 bg-slate-950 text-white px-12 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-orange-600 transition-all shadow-2xl shadow-slate-300 active:scale-95 disabled:opacity-50 disabled:pointer-events-none min-w-[200px]"
+                                    >
+                                        {isSubmitting ? (
+                                            <>
+                                                <Loader2 className="w-4 h-4 animate-spin" />
+                                                <span>Transmitting...</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <span>Deploy Blueprint</span>
+                                                <ChevronRight className="w-4 h-4" />
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
+                            </div>
+                        </motion.div>
                     </div>
-                </div>
-            )}
+                )}
+            </AnimatePresence>
         </div>
     );
 }
+

@@ -20,6 +20,7 @@ import {
     Settings,
     Check
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Application {
     id: string;
@@ -303,16 +304,19 @@ export default function AdminCareersPage() {
             </div>
 
             {/* Application Detail Modal */}
-            {selectedApplication && (
-                <div className="fixed inset-0 z-[200] overflow-y-auto bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200 custom-scrollbar">
-                    <div className="flex min-h-screen items-center justify-center p-4 sm:p-6 text-center">
-                        <div 
-                            className="w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col text-left align-middle relative transition-all animate-in zoom-in-95 duration-300 max-h-[calc(100vh-4rem)]"
+            <AnimatePresence>
+                {selectedApplication && (
+                    <div className="fixed inset-0 z-[200] overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            className="w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col text-left align-middle relative max-h-[90vh]"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <div className="bg-slate-900 px-8 py-6 flex items-center justify-between text-white shrink-0">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-2xl bg-blue-500/20 flex items-center justify-center text-blue-400 font-bold text-lg uppercase shadow-inner">
+                                    <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-lg uppercase shadow-inner">
                                         {selectedApplication.name[0]}
                                     </div>
                                     <div>
@@ -325,51 +329,51 @@ export default function AdminCareersPage() {
                                 </button>
                             </div>
                             <div className="p-8 overflow-y-auto custom-scrollbar flex-1 space-y-8">
-                            <div className="grid grid-cols-2 gap-6">
-                                <div className="p-4 rounded-3xl bg-slate-50 border border-slate-100">
-                                    <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-1">Position Applied</p>
-                                    <p className="text-sm font-bold text-slate-800">{selectedApplication.job?.title || "Unknown Job"}</p>
+                                <div className="grid grid-cols-2 gap-6">
+                                    <div className="p-4 rounded-3xl bg-slate-50 border border-slate-100">
+                                        <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-1">Position Applied</p>
+                                        <p className="text-sm font-bold text-slate-800">{selectedApplication.job?.title || "Unknown Job"}</p>
+                                    </div>
+                                    <div className="p-4 rounded-3xl bg-slate-50 border border-slate-100">
+                                        <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-1">Applied Date</p>
+                                        <p className="text-sm font-bold text-slate-800">{new Date(selectedApplication.createdAt).toLocaleString()}</p>
+                                    </div>
                                 </div>
-                                <div className="p-4 rounded-3xl bg-slate-50 border border-slate-100">
-                                    <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-1">Applied Date</p>
-                                    <p className="text-sm font-bold text-slate-800">{new Date(selectedApplication.createdAt).toLocaleString()}</p>
-                                </div>
-                            </div>
-                            <div className="space-y-6">
-                                <div>
-                                    <h4 className="text-[10px] uppercase tracking-widest text-slate-400 mb-3 font-bold">Contact Intelligence</h4>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="flex items-center gap-3 p-3 rounded-2xl bg-white border border-slate-100 shadow-sm text-sm">
-                                            <Mail className="w-4 h-4 text-orange-500" /> {selectedApplication.email}
-                                        </div>
-                                        {selectedApplication.phone && (
+                                <div className="space-y-6">
+                                    <div>
+                                        <h4 className="text-[10px] uppercase tracking-widest text-slate-400 mb-3 font-bold">Contact Intelligence</h4>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div className="flex items-center gap-3 p-3 rounded-2xl bg-white border border-slate-100 shadow-sm text-sm">
-                                                <Phone className="w-4 h-4 text-emerald-500" /> {selectedApplication.phone}
+                                                <Mail className="w-4 h-4 text-orange-500" /> {selectedApplication.email}
                                             </div>
-                                        )}
+                                            {selectedApplication.phone && (
+                                                <div className="flex items-center gap-3 p-3 rounded-2xl bg-white border border-slate-100 shadow-sm text-sm">
+                                                    <Phone className="w-4 h-4 text-emerald-500" /> {selectedApplication.phone}
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
-                                <div>
-                                    <h4 className="text-[10px] uppercase tracking-widest text-slate-400 mb-3 font-bold">Verification Links</h4>
-                                    <div className="flex flex-wrap gap-3">
-                                        <a href={selectedApplication.resumeUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-orange-500 text-white font-bold text-xs hover:bg-orange-600 transition-all shadow-lg">
-                                            <Download className="w-4 h-4" /> Download CV
-                                        </a>
-                                        {selectedApplication.portfolioUrl && (
-                                            <a href={selectedApplication.portfolioUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-slate-900 text-white font-bold text-xs hover:bg-slate-800 transition-all shadow-lg">
-                                                <ExternalLink className="w-4 h-4" /> Portfolio Site
+                                    <div>
+                                        <h4 className="text-[10px] uppercase tracking-widest text-slate-400 mb-3 font-bold">Verification Links</h4>
+                                        <div className="flex flex-wrap gap-3">
+                                            <a href={selectedApplication.resumeUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-orange-500 text-white font-bold text-xs hover:bg-orange-600 transition-all shadow-lg">
+                                                <Download className="w-4 h-4" /> Download CV
                                             </a>
-                                        )}
+                                            {selectedApplication.portfolioUrl && (
+                                                <a href={selectedApplication.portfolioUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-slate-900 text-white font-bold text-xs hover:bg-slate-800 transition-all shadow-lg">
+                                                    <ExternalLink className="w-4 h-4" /> Portfolio Site
+                                                </a>
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
-                                <div>
-                                    <h4 className="text-[10px] uppercase tracking-widest text-slate-400 mb-3 font-bold">Cover Letter / Highlights</h4>
-                                    <div className="p-6 rounded-[2rem] bg-slate-50 border border-slate-100 text-sm text-slate-600 leading-relaxed whitespace-pre-wrap min-h-[120px]">
-                                        {selectedApplication.coverLetter || "No cover letter provided."}
+                                    <div>
+                                        <h4 className="text-[10px] uppercase tracking-widest text-slate-400 mb-3 font-bold">Cover Letter / Highlights</h4>
+                                        <div className="p-6 rounded-[2rem] bg-slate-50 border border-slate-100 text-sm text-slate-600 leading-relaxed whitespace-pre-wrap min-h-[120px]">
+                                            {selectedApplication.coverLetter || "No cover letter provided."}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
                             <div className="px-8 py-6 bg-slate-50 border-t border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
                                 <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
                                     Submitted: {new Date(selectedApplication.createdAt).toLocaleDateString()}
@@ -383,19 +387,21 @@ export default function AdminCareersPage() {
                                     </a>
                                 </div>
                             </div>
-                        </div>
+                        </motion.div>
                     </div>
-                </div>
-            )}
+                )}
+            </AnimatePresence>
 
             {/* Job Create/Edit Modal */}
-            {showJobModal && (
-                <JobModal
-                    job={editingJob}
-                    onClose={() => setShowJobModal(false)}
-                    onSuccess={() => { fetchJobs(); setShowJobModal(false); }}
-                />
-            )}
+            <AnimatePresence>
+                {showJobModal && (
+                    <JobModal
+                        job={editingJob}
+                        onClose={() => setShowJobModal(false)}
+                        onSuccess={() => { fetchJobs(); setShowJobModal(false); }}
+                    />
+                )}
+            </AnimatePresence>
 
             {/* Delete Confirmation Modal */}
             {deletingId && (
@@ -465,8 +471,11 @@ function JobModal({ job, onClose, onSuccess }: { job: Job | null, onClose: () =>
     return (
         <div className="fixed inset-0 z-[200] overflow-y-auto bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200 custom-scrollbar">
             <div className="flex min-h-screen items-center justify-center p-4 sm:p-6 text-center">
-                <div 
-                    className="w-full max-w-4xl bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col text-left align-middle relative transition-all animate-in zoom-in-95 duration-300 max-h-[calc(100vh-4rem)]"
+                <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    className="w-full max-w-4xl bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col text-left align-middle relative max-h-[90vh]"
                     onClick={(e) => e.stopPropagation()}
                 >
                 <div className="bg-slate-900 px-8 py-6 flex items-center justify-between text-white shrink-0">
@@ -548,8 +557,8 @@ function JobModal({ job, onClose, onSuccess }: { job: Job | null, onClose: () =>
                     >
                         {loading ? "Processing..." : job ? "Update Listing" : "Publish Job Post"}
                     </button>
-                    </div>
                 </div>
+            </motion.div>
             </div>
         </div>
     );

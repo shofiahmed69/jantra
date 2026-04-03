@@ -1,23 +1,32 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import api from "@/lib/api";
 import {
     Plus,
     Search,
     Edit3,
     Trash2,
-    Eye,
     CheckCircle,
     X,
     User,
-    ChevronDown,
     Loader2,
     Calendar,
     Tag,
     ChevronLeft,
-    ChevronRight
+    ChevronRight,
+    FileText,
+    Eye,
+    Globe,
+    Zap,
+    LayoutGrid,
+    ChevronDown,
+    Layers,
+    Clock,
+    Sparkles
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 interface Post {
     id: string;
@@ -48,6 +57,7 @@ export default function BlogManagementPage() {
     const [showPostModal, setShowPostModal] = useState(false);
     const [editingPost, setEditingPost] = useState<Post | null>(null);
     const [authors, setAuthors] = useState<TeamMember[]>([]);
+    const [searchQuery, setSearchQuery] = useState("");
 
     const fetchAuthors = async () => {
         try {
@@ -76,14 +86,10 @@ export default function BlogManagementPage() {
     const handlePublish = async (id: string) => {
         try {
             await api.put(`/blog/${id}`, { published: true });
-            fetchPosts();
+            setPosts(prev => prev.map(p => p.id === id ? { ...p, published: true } : p));
         } catch (error) {
-            alert("Failed to publish post");
+            console.error("Failed to publish post", error);
         }
-    };
-
-    const handleDelete = async (id: string) => {
-        setDeletingId(id);
     };
 
     const confirmDelete = async () => {
@@ -92,7 +98,7 @@ export default function BlogManagementPage() {
             await api.delete(`/blog/${deletingId}`);
             fetchPosts();
         } catch (error) {
-            alert("Failed to delete post");
+            console.error("Failed to delete post", error);
         } finally {
             setDeletingId(null);
         }
@@ -103,165 +109,249 @@ export default function BlogManagementPage() {
         fetchAuthors();
     }, [page]);
 
+    const filteredPosts = useMemo(() => {
+        return posts.filter(p => 
+            p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+            p.category.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+    }, [posts, searchQuery]);
+
     return (
-        <div className="space-y-6">
-            <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h2 className="text-2xl font-bold text-slate-800 tracking-tight">Content Management</h2>
-                    <p className="text-sm text-slate-500">Curate and publish professional insights.</p>
+        <div className="space-y-8 pb-24">
+            {/* Header / Command Center */}
+            <motion.header 
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex flex-col lg:flex-row lg:items-center justify-between gap-6"
+            >
+                <div className="space-y-1">
+                    <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-3">
+                        <FileText className="w-8 h-8 text-orange-500" />
+                        Content Repository
+                    </h2>
+                    <p className="text-slate-500 font-medium leading-relaxed">Curate industrial insights and high-performance engineering narratives.</p>
                 </div>
 
-                <button
-                    onClick={() => { setEditingPost(null); setShowPostModal(true); }}
-                    className="inline-flex items-center gap-2 bg-slate-900 text-white px-6 py-3 rounded-2xl font-bold hover:bg-orange-600 transition-all shadow-lg active:scale-95 text-sm"
-                >
-                    <Plus className="w-4 h-4" /> Create New Post
-                </button>
-            </header>
+                <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="relative group">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-orange-500 transition-colors" />
+                        <input 
+                            type="text" 
+                            placeholder="Scan articles..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="bg-white border border-slate-200 rounded-2xl pl-11 pr-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all w-full sm:w-64 shadow-sm font-medium"
+                        />
+                    </div>
+                    
+                    <button
+                        onClick={() => { setEditingPost(null); setShowPostModal(true); }}
+                        className="inline-flex items-center justify-center gap-2 bg-slate-900 text-white px-8 py-3 rounded-2xl font-bold hover:bg-orange-600 transition-all shadow-xl shadow-slate-200 active:scale-95 text-sm group"
+                    >
+                        <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" /> 
+                        <span>Create Insight</span>
+                    </button>
+                </div>
+            </motion.header>
 
-            <div className="glass-panel overflow-hidden border-white/60 shadow-xl rounded-[2.5rem]">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left">
+            {/* Datagrid Container */}
+            <motion.div 
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.1 }}
+                className="bg-white border border-slate-200 shadow-2xl shadow-slate-200/50 rounded-[2.5rem] overflow-hidden"
+            >
+                <div className="overflow-x-auto custom-scrollbar">
+                    <table className="w-full text-left border-separate border-spacing-0">
                         <thead>
-                            <tr className="border-b border-white/20 bg-slate-900/5">
-                                <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Article Title</th>
-                                <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Category</th>
-                                <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Published</th>
-                                <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Status</th>
-                                <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Actions</th>
+                            <tr className="bg-slate-50/50 border-b border-slate-100">
+                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Article Identity</th>
+                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-center">Taxonomy</th>
+                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-center">Temporal Data</th>
+                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-center">Environment</th>
+                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-right">Operations</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/10">
+                        <tbody className="divide-y divide-slate-50">
                             {loading ? (
                                 <tr>
-                                    <td colSpan={5} className="px-8 py-20 text-center">
-                                        <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto" />
+                                    <td colSpan={5} className="px-8 py-32 text-center">
+                                        <div className="flex flex-col items-center gap-4">
+                                            <Loader2 className="w-10 h-10 text-orange-500 animate-spin" />
+                                            <p className="text-sm font-bold text-slate-400 tracking-widest uppercase">Fetching Intel...</p>
+                                        </div>
                                     </td>
                                 </tr>
-                            ) : posts.length === 0 ? (
+                            ) : filteredPosts.length === 0 ? (
                                 <tr>
-                                    <td colSpan={5} className="px-8 py-20 text-center text-slate-400 text-sm">
-                                        No blog posts created yet. Start typing!
+                                    <td colSpan={5} className="px-8 py-32 text-center">
+                                        <div className="flex flex-col items-center gap-4 opacity-40">
+                                            <Layers className="w-16 h-16 text-slate-300" />
+                                            <p className="text-slate-400 font-bold uppercase tracking-widest">No matching insights recorded</p>
+                                        </div>
                                     </td>
                                 </tr>
                             ) : (
-                                posts.map((post) => (
-                                    <tr key={post.id} className="hover:bg-white/40 transition-colors group">
-                                        <td className="px-8 py-6 max-w-xs text-sm">
-                                            <p className="font-bold text-slate-800 truncate">{post.title}</p>
-                                            <p className="text-[10px] text-slate-400 font-medium">By {post.author?.name || "JANTRA Team"}</p>
-                                        </td>
-                                        <td className="px-8 py-6">
-                                            <span className="flex items-center gap-1.5 text-xs text-slate-600 bg-slate-100/50 px-3 py-1.5 rounded-full font-medium">
-                                                <Tag className="w-3 h-3 text-orange-500" />
-                                                {post.category}
-                                            </span>
-                                        </td>
-                                        <td className="px-8 py-6">
-                                            <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
-                                                <Calendar className="w-3.5 h-3.5" />
-                                                {new Date(post.createdAt).toLocaleDateString()}
+                                filteredPosts.map((post, index) => (
+                                    <motion.tr 
+                                        key={post.id}
+                                        initial={{ opacity: 0, x: -10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: index * 0.05 }}
+                                        className="hover:bg-orange-50/20 transition-colors group"
+                                    >
+                                        <td className="px-8 py-5 max-w-sm">
+                                            <div className="space-y-1">
+                                                <h3 className="font-bold text-slate-900 group-hover:text-orange-600 transition-colors truncate">{post.title}</h3>
+                                                <div className="flex items-center gap-2">
+                                                    <div className="w-4 h-4 rounded-full bg-slate-100 flex items-center justify-center border border-slate-200">
+                                                        <User className="w-2.5 h-2.5 text-slate-400" />
+                                                    </div>
+                                                    <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{post.author?.name || "Jantra Intelligence"}</span>
+                                                </div>
                                             </div>
                                         </td>
-                                        <td className="px-8 py-6">
-                                            <span className={`text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest ${post.published ? 'bg-emerald-100 text-emerald-600' : 'bg-orange-100 text-orange-600'
-                                                }`}>
-                                                {post.published ? 'LIVE' : 'REVIEW'}
-                                            </span>
+                                        <td className="px-8 py-5">
+                                            <div className="flex items-center justify-center">
+                                                <span className="text-[10px] bg-white border-2 border-slate-100 text-slate-500 px-3 py-1.5 rounded-xl font-black uppercase tracking-widest group-hover:border-orange-200 group-hover:text-orange-600 transition-all">
+                                                    {post.category}
+                                                </span>
+                                            </div>
                                         </td>
-                                        <td className="px-8 py-6">
-                                            <div className="flex items-center gap-2">
-                                                {!post.published && (
-                                                    <button
-                                                        onClick={() => handlePublish(post.id)}
-                                                        className="p-2 hover:bg-white rounded-xl transition-all text-slate-400 hover:text-emerald-500 shadow-sm border border-transparent hover:border-emerald-100"
-                                                        title="Approve & Publish"
-                                                    >
-                                                        <CheckCircle className="w-4 h-4" />
-                                                    </button>
-                                                )}
+                                        <td className="px-8 py-5">
+                                            <div className="flex flex-col items-center gap-1">
+                                                <div className="flex items-center gap-1.5 text-xs text-slate-500 font-bold">
+                                                    <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                                                    {new Date(post.createdAt).toLocaleDateString()}
+                                                </div>
+                                                <span className="text-[9px] text-slate-300 font-black tracking-[0.2em]">{post.readTime}M READ</span>
+                                            </div>
+                                        </td>
+                                        <td className="px-8 py-5">
+                                            <div className="flex items-center justify-center">
                                                 <button
+                                                    onClick={() => !post.published && handlePublish(post.id)}
+                                                    className={cn(
+                                                        "flex items-center gap-2 px-4 py-2 rounded-2xl border transition-all text-[10px] font-black uppercase tracking-widest",
+                                                        post.published 
+                                                            ? "bg-emerald-50 text-emerald-600 border-emerald-100 hover:bg-emerald-100" 
+                                                            : "bg-slate-50 text-slate-400 border-slate-100 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-100"
+                                                    )}
+                                                >
+                                                    {post.published ? <Globe className="w-3.5 h-3.5 animate-pulse" /> : <Clock className="w-3.5 h-3.5" />}
+                                                    {post.published ? 'Live Node' : 'In Review'}
+                                                </button>
+                                            </div>
+                                        </td>
+                                        <td className="px-8 py-5">
+                                            <div className="flex items-center justify-end gap-2.5">
+                                                <button 
                                                     onClick={() => { setEditingPost(post); setShowPostModal(true); }}
-                                                    className="p-2 hover:bg-white rounded-xl transition-all text-slate-400 hover:text-blue-600 shadow-sm border border-transparent hover:border-blue-100"
+                                                    className="p-3 bg-white hover:bg-slate-900 hover:text-white border border-slate-200 rounded-2xl transition-all shadow-sm active:scale-90 group/btn"
                                                 >
-                                                    <Edit3 className="w-4 h-4" />
+                                                    <Edit3 className="w-4 h-4 group-hover/btn:scale-110 transition-transform" />
                                                 </button>
                                                 <button
-                                                    onClick={() => handleDelete(post.id)}
-                                                    className="p-2 hover:bg-white rounded-xl transition-all text-slate-400 hover:text-red-500 shadow-sm border border-transparent hover:border-red-100"
+                                                    onClick={() => setDeletingId(post.id)}
+                                                    className="p-3 bg-white hover:bg-red-500 hover:text-white border border-slate-200 hover:border-red-500 rounded-2xl transition-all shadow-sm active:scale-90 group/btn"
                                                 >
-                                                    <Trash2 className="w-4 h-4" />
+                                                    <Trash2 className="w-4 h-4 group-hover/btn:scale-110 transition-transform" />
                                                 </button>
                                             </div>
                                         </td>
-                                    </tr>
+                                    </motion.tr>
                                 ))
                             )}
                         </tbody>
                     </table>
                 </div>
 
-                {/* Pagination */}
-                <div className="px-8 py-6 bg-slate-900/5 flex items-center justify-between border-t border-white/20">
-                    <p className="text-xs text-slate-500 font-medium">
-                        Showing page <span className="text-slate-900">{page}</span> of <span className="text-slate-900">{totalPages}</span>
-                    </p>
-                    <div className="flex items-center gap-2">
+                {/* Pagination Controls */}
+                <div className="px-12 py-8 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
+                            Cluster <span className="text-slate-900">{page}</span> / {totalPages}
+                        </p>
+                    </div>
+
+                    <div className="flex items-center gap-3">
                         <button
                             onClick={() => setPage(prev => Math.max(1, prev - 1))}
                             disabled={page === 1}
-                            className="p-2 rounded-xl bg-white border border-slate-200 disabled:opacity-50 hover:bg-orange-50 transition-all"
+                            className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-white border border-slate-200 disabled:opacity-50 hover:border-orange-500 hover:text-orange-600 transition-all shadow-sm active:scale-90"
                         >
-                            <ChevronLeft className="w-4 h-4" />
+                            <ChevronLeft className="w-5 h-5" />
                         </button>
+                        <div className="w-12 h-1 text-slate-100 bg-slate-100 rounded-full overflow-hidden">
+                             <motion.div 
+                                className="h-full bg-orange-500" 
+                                initial={{ width: "0%" }}
+                                animate={{ width: `${(page / totalPages) * 100}%` }}
+                             />
+                        </div>
                         <button
                             onClick={() => setPage(prev => Math.min(totalPages, prev + 1))}
                             disabled={page === totalPages}
-                            className="p-2 rounded-xl bg-white border border-slate-200 disabled:opacity-50 hover:bg-orange-50 transition-all"
+                            className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-white border border-slate-200 disabled:opacity-50 hover:border-orange-500 hover:text-orange-600 transition-all shadow-sm active:scale-90"
                         >
-                            <ChevronRight className="w-4 h-4" />
+                            <ChevronRight className="w-5 h-5" />
                         </button>
                     </div>
                 </div>
-            </div>
-            {/* BlogPost Create/Edit Modal */}
-            {showPostModal && (
-                <BlogPostModal
-                    post={editingPost}
-                    authors={authors}
-                    onClose={() => setShowPostModal(false)}
-                    onSuccess={() => { fetchPosts(); setShowPostModal(false); }}
-                />
-            )}
+            </motion.div>
 
-            {/* Delete Confirmation Modal */}
-            {deletingId && (
-                <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md animate-in fade-in duration-300">
-                    <div className="relative w-full max-w-sm bg-white rounded-[2rem] shadow-2xl p-8 border border-slate-200 text-center animate-in zoom-in-95 duration-200">
-                        <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <Trash2 className="w-8 h-8" />
-                        </div>
-                        <h3 className="text-xl font-bold text-slate-800 mb-2">Remove Article?</h3>
-                        <p className="text-sm text-slate-500 mb-8 leading-relaxed">
-                            Once deleted, this post will be removed from the public blog permanently.
-                        </p>
-                        <div className="flex gap-3">
-                            <button
-                                onClick={() => setDeletingId(null)}
-                                className="flex-1 py-3 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs hover:bg-slate-200 transition-all"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                onClick={confirmDelete}
-                                className="flex-1 py-3 rounded-xl bg-red-500 text-white font-bold text-xs hover:bg-red-600 transition-all shadow-lg shadow-red-200"
-                            >
-                                Confirm Delete
-                            </button>
-                        </div>
+            {/* Premium Modals */}
+            <AnimatePresence>
+                {showPostModal && (
+                    <BlogPostModal
+                        post={editingPost}
+                        authors={authors}
+                        onClose={() => setShowPostModal(false)}
+                        onSuccess={() => { fetchPosts(); setShowPostModal(false); }}
+                    />
+                )}
+
+                {deletingId && (
+                    <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4">
+                        <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setDeletingId(null)}
+                            className="absolute inset-0 bg-slate-950/80 backdrop-blur-md"
+                        />
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            className="relative w-full max-w-md bg-white rounded-[3rem] shadow-2xl p-10 border border-slate-100 text-center"
+                        >
+                            <div className="w-20 h-20 bg-red-50 text-red-500 rounded-[2rem] flex items-center justify-center mx-auto mb-8 rotate-12 transition-transform hover:rotate-0">
+                                <Trash2 className="w-10 h-10" />
+                            </div>
+                            <h3 className="text-2xl font-black text-slate-900 tracking-tight mb-4">Decommission Insight?</h3>
+                            <p className="text-slate-500 font-medium leading-relaxed mb-10">
+                                This will permanently remove the article from the production network. This operation is irreversible.
+                            </p>
+                            <div className="flex gap-4">
+                                <button
+                                    onClick={() => setDeletingId(null)}
+                                    className="flex-1 py-4 rounded-2xl bg-slate-50 text-slate-500 font-black text-[10px] uppercase tracking-widest hover:bg-slate-100 transition-all active:scale-95"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={confirmDelete}
+                                    className="flex-1 py-4 rounded-2xl bg-red-600 text-white font-black text-[10px] uppercase tracking-widest hover:bg-red-700 transition-all shadow-xl shadow-red-200 active:scale-95"
+                                >
+                                    Confirm Wipe
+                                </button>
+                            </div>
+                        </motion.div>
                     </div>
-                </div>
-            )}
+                )}
+            </AnimatePresence>
         </div>
     );
 }
@@ -286,7 +376,7 @@ function BlogPostModal({ post, authors, onClose, onSuccess }: {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!formData.authorId) {
-            alert("Please select or create an author (Team Member) first.");
+            alert("Security Protocol: Author identification required. Please assign an engineer.");
             return;
         }
         setLoading(true);
@@ -298,140 +388,195 @@ function BlogPostModal({ post, authors, onClose, onSuccess }: {
             }
             onSuccess();
         } catch (error: any) {
-            alert(error.response?.data?.error || "Failed to save blog post");
+             console.error("Transmision error", error);
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="fixed inset-0 z-[200] overflow-y-auto bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200 custom-scrollbar">
-            <div className="flex min-h-screen items-center justify-center p-4 sm:p-6 text-center">
-                <div 
-                    className="w-full max-w-4xl bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col text-left align-middle relative transition-all animate-in zoom-in-95 duration-300 max-h-[calc(100vh-4rem)]"
-                    onClick={(e) => e.stopPropagation()}
-                >
-                <div className="bg-slate-900 px-8 py-6 flex items-center justify-between text-white shrink-0">
-                    <div>
-                        <h3 className="text-xl font-bold tracking-tight">{post ? "Refine Institutional Insight" : "Architect New Insight"}</h3>
-                        <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Content Infrastructure</p>
-                    </div>
-                    <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full transition-colors text-white/60 hover:text-white">
-                        <X className="w-5 h-5" />
-                    </button>
-                </div>
-
-                <form onSubmit={handleSubmit} className="p-8 overflow-y-auto custom-scrollbar flex-1 space-y-8">
-                    <div className="space-y-6">
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-4">Article Title</label>
-                            <input
-                                required
-                                value={formData.title}
-                                onChange={e => setFormData({ ...formData, title: e.target.value })}
-                                className="w-full bg-slate-50 border-slate-100 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-orange-300 focus:bg-white transition-all text-lg font-bold text-slate-800"
-                                placeholder="E.g., The Future of Data Science in 2024"
-                            />
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+            <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={onClose}
+                className="absolute inset-0 bg-slate-950/80 backdrop-blur-md"
+            />
+            
+            <motion.div 
+                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                className="relative w-full max-w-6xl bg-white rounded-[3rem] shadow-2xl border border-white/20 overflow-hidden flex flex-col md:flex-row max-h-[90vh]"
+            >
+                {/* Side Context */}
+                <div className="hidden md:flex md:w-1/4 bg-slate-900 p-12 flex-col justify-between text-white shrink-0">
+                    <div className="space-y-8">
+                        <div className="w-14 h-14 bg-orange-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-orange-500/20">
+                            <Sparkles className="w-7 h-7 text-white" />
+                        </div>
+                        <div>
+                            <h3 className="text-3xl font-black tracking-tight leading-tight">
+                                {post ? "Refining Corporate Intel" : "Architecting New Insight"}
+                            </h3>
+                            <p className="text-slate-400 text-xs mt-6 font-bold leading-relaxed tracking-widest uppercase opacity-60">Insight Module v2.0</p>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-4">Category</label>
-                                <select
-                                    value={formData.category}
-                                    onChange={e => setFormData({ ...formData, category: e.target.value })}
-                                    className="w-full bg-slate-50 border-slate-100 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-orange-300 focus:bg-white transition-all text-sm font-medium"
-                                >
-                                    <option>Technology</option>
-                                    <option>Data Science</option>
-                                    <option>AI & Machine Learning</option>
-                                    <option>Business</option>
-                                    <option>Engineering</option>
-                                </select>
+                        <div className="pt-10 space-y-5">
+                            <div className="flex items-center gap-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                                <div className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+                                Markdown Capable
                             </div>
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-4">Assign Author</label>
-                                <select
-                                    required
-                                    value={formData.authorId}
-                                    onChange={e => setFormData({ ...formData, authorId: e.target.value })}
-                                    className="w-full bg-slate-50 border-slate-100 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-orange-300 focus:bg-white transition-all text-sm font-medium"
-                                >
-                                    <option value="" disabled>Select Author</option>
-                                    {authors.map(author => (
-                                        <option key={author.id} value={author.id}>{author.name}</option>
-                                    ))}
-                                </select>
-                                {authors.length === 0 && (
-                                    <p className="text-[10px] text-red-500 font-bold mt-1 ml-4 italic">* No Team Members found. Add one first!</p>
-                                )}
+                            <div className="flex items-center gap-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                Real-time Cache
                             </div>
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-4">Read Time (Mins)</label>
+                            <div className="flex items-center gap-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                                <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                                Global Node Link
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div className="text-[10px] font-black text-slate-600 tracking-[0.4em] uppercase">SYSTEM.LOG_UP</div>
+                </div>
+
+                {/* Main Form Area */}
+                <div className="flex-1 flex flex-col bg-white min-w-0">
+                    <div className="flex items-center justify-between p-8 border-b border-slate-100 shrink-0">
+                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Content Configuration</span>
+                        <button onClick={onClose} className="p-3 bg-slate-50 hover:bg-red-500 hover:text-white rounded-2xl transition-all">
+                            <X className="w-5 h-5" />
+                        </button>
+                    </div>
+
+                    <div className="flex-1 overflow-y-auto custom-scrollbar p-8 md:p-12">
+                        <form id="blog-form" onSubmit={handleSubmit} className="space-y-12">
+                            <div className="space-y-4">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-2">Article Headline</label>
                                 <input
-                                    type="number"
                                     required
-                                    min={1}
-                                    value={formData.readTime}
-                                    onChange={e => setFormData({ ...formData, readTime: parseInt(e.target.value) })}
-                                    className="w-full bg-slate-50 border-slate-100 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-orange-300 focus:bg-white transition-all text-sm font-medium"
+                                    value={formData.title}
+                                    onChange={e => setFormData({ ...formData, title: e.target.value })}
+                                    className="w-full bg-slate-50 border-2 border-slate-100 rounded-[1.5rem] px-8 py-6 text-xl font-black text-slate-800 focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-200"
+                                    placeholder="Enter Compelling Headline..."
                                 />
                             </div>
-                        </div>
 
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-4">Short Excerpt (Hook)</label>
-                            <textarea
-                                required
-                                rows={2}
-                                value={formData.excerpt}
-                                onChange={e => setFormData({ ...formData, excerpt: e.target.value })}
-                                className="w-full bg-slate-50 border-slate-100 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-orange-300 focus:bg-white transition-all text-sm leading-relaxed text-slate-600"
-                                placeholder="A brief summary that hooks the reader..."
-                            />
-                        </div>
-
-                        <div className="space-y-2">
-                            <div className="flex items-center justify-between ml-4">
-                                <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Main Content (Markdown)</label>
-                                <span className="text-[10px] text-slate-400 italic">Supports full markdown formatting</span>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                <div className="space-y-4">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-2 text-center block">Category Cluster</label>
+                                    <div className="relative group">
+                                        <select
+                                            value={formData.category}
+                                            onChange={e => setFormData({ ...formData, category: e.target.value })}
+                                            className="w-full appearance-none bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-xs font-black uppercase tracking-widest text-slate-600 focus:outline-none focus:border-orange-500 transition-all cursor-pointer"
+                                        >
+                                            <option>Technology</option>
+                                            <option>Data Science</option>
+                                            <option>AI & Machine Learning</option>
+                                            <option>Business</option>
+                                            <option>Engineering</option>
+                                        </select>
+                                        <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none transition-transform group-hover:translate-y-[-40%]" />
+                                    </div>
+                                </div>
+                                <div className="space-y-4">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-2 text-center block">Lead Author</label>
+                                    <select
+                                        required
+                                        value={formData.authorId}
+                                        onChange={e => setFormData({ ...formData, authorId: e.target.value })}
+                                        className="w-full appearance-none bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-xs font-black uppercase tracking-widest text-slate-600 focus:outline-none focus:border-orange-500 transition-all"
+                                    >
+                                        <option value="" disabled>IDENTIFY AUTHOR</option>
+                                        {authors.map(author => (
+                                            <option key={author.id} value={author.id}>{author.name.toUpperCase()}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div className="space-y-4">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-2 text-center block">Time Optimization</label>
+                                    <div className="relative">
+                                        <Clock className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
+                                        <input
+                                            type="number" required min={1}
+                                            value={formData.readTime}
+                                            onChange={e => setFormData({ ...formData, readTime: parseInt(e.target.value) })}
+                                            className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl pl-14 pr-6 py-4 text-xs font-black text-slate-600 focus:outline-none focus:border-orange-500"
+                                        />
+                                        <span className="absolute right-6 top-1/2 -translate-y-1/2 text-[9px] font-black text-slate-300 uppercase tracking-widest">MINUTES</span>
+                                    </div>
+                                </div>
                             </div>
-                            <textarea
-                                required
-                                rows={10}
-                                value={formData.content}
-                                onChange={e => setFormData({ ...formData, content: e.target.value })}
-                                className="w-full bg-slate-50 border-slate-100 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-orange-300 focus:bg-white transition-all text-sm font-mono leading-loose text-slate-700"
-                                placeholder="# Write your article here..."
-                            />
-                        </div>
+
+                            <div className="space-y-4">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-2">Article Abstract (Hook)</label>
+                                <textarea
+                                    required rows={3}
+                                    value={formData.excerpt}
+                                    onChange={e => setFormData({ ...formData, excerpt: e.target.value })}
+                                    className="w-full bg-slate-50 border-2 border-slate-100 rounded-[2rem] px-8 py-6 text-sm font-medium focus:outline-none focus:border-orange-500 transition-all resize-none leading-relaxed text-slate-600"
+                                    placeholder="Synthesize the core message..."
+                                />
+                            </div>
+
+                            <div className="space-y-4">
+                                <div className="flex items-center justify-between px-2">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-900">Research Body (Markdown)</label>
+                                    <div className="flex items-center gap-2 text-[9px] font-bold text-slate-400 uppercase tracking-widest">
+                                        <Sparkles className="w-3 h-3 text-orange-500" /> Rich formatting active
+                                    </div>
+                                </div>
+                                <textarea
+                                    required rows={12}
+                                    value={formData.content}
+                                    onChange={e => setFormData({ ...formData, content: e.target.value })}
+                                    className="w-full bg-slate-50 border-2 border-slate-100 rounded-[2rem] px-8 py-8 text-sm font-mono leading-loose text-slate-700 focus:outline-none focus:border-orange-500 transition-all custom-scrollbar"
+                                    placeholder="# START TYPING ARCHITECTURE..."
+                                />
+                            </div>
+
+                            {/* Switches */}
+                            <div className="flex items-center gap-8 bg-slate-50 p-8 rounded-[2rem] border-2 border-slate-100 group/status">
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, published: !formData.published })}
+                                    className={cn(
+                                        "w-12 h-12 rounded-2xl flex items-center justify-center transition-all border-2",
+                                        formData.published ? "bg-emerald-600 border-emerald-600 shadow-lg shadow-emerald-500/20" : "bg-white border-slate-200"
+                                    )}
+                                >
+                                    <Globe className={cn("w-6 h-6", formData.published ? "text-white animate-pulse" : "text-slate-300")} />
+                                </button>
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">Public Environment Broadcast</span>
+                                    <span className="text-[9px] font-bold text-slate-400 mt-1">{formData.published ? 'ACTIVE SIGNAL' : 'OFFLINE DRAFT'}</span>
+                                </div>
+                            </div>
+                        </form>
                     </div>
 
-                    <div className="flex items-center gap-3 ml-4">
-                        <button
-                            type="button"
-                            onClick={() => setFormData({ ...formData, published: !formData.published })}
-                            className={`w-12 h-6 rounded-full transition-all relative ${formData.published ? 'bg-orange-500' : 'bg-slate-200'}`}
+                    <div className="p-8 md:px-12 bg-slate-50/50 border-t border-slate-100 flex justify-end gap-5 shrink-0">
+                        <button 
+                            type="button" onClick={onClose} 
+                            className="px-8 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-red-500 transition-all"
                         >
-                            <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-all ${formData.published ? 'translate-x-6' : ''}`} />
+                            Abort
                         </button>
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Live Publication Status</span>
+                        <button
+                            disabled={loading}
+                            onClick={handleSubmit}
+                            className="inline-flex items-center justify-center gap-3 bg-slate-950 text-white px-12 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-orange-600 transition-all shadow-2xl shadow-slate-300 active:scale-95 disabled:opacity-50 min-w-[200px]"
+                        >
+                            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                            <span>{loading ? "Transmitting..." : post ? "Update Core" : "Launch Insight"}</span>
+                        </button>
                     </div>
-                </form>
-
-                <div className="px-8 py-6 bg-slate-50 border-t border-slate-100 flex justify-end gap-3 shrink-0">
-                    <button type="button" onClick={onClose} className="px-6 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-100 italic transition-all">Cancel</button>
-                    <button
-                        disabled={loading}
-                        onClick={handleSubmit}
-                        className="px-8 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-orange-600 transition-all shadow-xl disabled:opacity-50 flex items-center gap-2"
-                    >
-                        {loading && <Loader2 className="w-4 h-4 animate-spin text-white" />}
-                        {loading ? "Optimizing..." : post ? "Update Publication" : "Launch Insight"}
-                    </button>
                 </div>
-            </div>
+            </motion.div>
         </div>
-    </div>
     );
 }
+

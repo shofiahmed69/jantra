@@ -5,18 +5,20 @@ import api from "@/lib/api";
 import {
     Search,
     Filter,
-    MoreVertical,
     ExternalLink,
     ChevronLeft,
     ChevronRight,
     Mail,
-    User,
     Calendar,
     MessageSquare,
     Trash2,
-    X
+    X,
+    Eye,
+    ArrowUpRight,
+    Target
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Lead {
     id: string;
@@ -70,7 +72,7 @@ export default function LeadsPage() {
     const updateStatus = async (id: string, newStatus: string) => {
         try {
             await api.patch(`/leads/admin/${id}`, { status: newStatus });
-            fetchLeads();
+            setLeads(leads.map(l => l.id === id ? { ...l, status: newStatus } : l));
             if (selectedLead?.id === id) {
                 setSelectedLead(prev => prev ? { ...prev, status: newStatus } : null);
             }
@@ -80,121 +82,136 @@ export default function LeadsPage() {
     };
 
     const deleteLead = async (leadId: string) => {
-        if (!confirm('Are you sure you want to delete this lead?')) return;
-
+        if (!confirm('Archive this signal permanently?')) return;
         try {
             await api.delete(`/leads/admin/${leadId}`);
-            // Remove from local state
             setLeads(leads.filter(lead => lead.id !== leadId));
-            alert('Lead deleted successfully');
-            if (selectedLead?.id === leadId) {
-                setSelectedLead(null);
-            }
+            if (selectedLead?.id === leadId) setSelectedLead(null);
         } catch (error) {
             alert('Failed to delete lead');
-            console.error(error);
         }
     };
 
     return (
-        <div className="space-y-6">
-            <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-10 pb-20">
+            <motion.header 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex flex-col md:flex-row md:items-end justify-between gap-6"
+            >
                 <div>
-                    <h2 className="text-2xl font-bold text-slate-800 tracking-tight">Lead Intelligence</h2>
-                    <p className="text-sm text-slate-500">Manage incoming signals and conversion pipeline.</p>
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="w-8 h-1 bg-orange-500 rounded-full" />
+                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-orange-500">Pipeline Intelligence</span>
+                    </div>
+                    <h2 className="text-4xl font-black text-slate-900 tracking-tighter uppercase whitespace-pre-line leading-none">
+                        Lead<br/>Signals
+                    </h2>
                 </div>
 
-                <div className="flex items-center gap-3">
-                    <form onSubmit={handleSearch} className="relative">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <div className="flex flex-wrap items-center gap-3">
+                    <form onSubmit={handleSearch} className="relative group">
+                        <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-orange-500 transition-colors" />
                         <input
                             type="text"
-                            placeholder="Search leads..."
+                            placeholder="Identify prospect..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
-                            className="bg-white border-0 glass-panel rounded-2xl pl-11 pr-5 py-2.5 text-sm focus:ring-2 focus:ring-orange-300 w-full sm:w-64 transition-all"
+                            className="bg-white border-slate-100 rounded-[1.5rem] pl-12 pr-6 py-4 text-sm focus:ring-2 focus:ring-orange-300 w-full sm:w-64 transition-all shadow-sm font-medium"
                         />
                     </form>
-                    <div className="relative">
-                        <Filter className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <div className="relative group">
+                        <Filter className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-hover:text-orange-500 transition-colors pointer-events-none" />
                         <select
                             value={status}
                             onChange={(e) => setStatus(e.target.value)}
-                            className="bg-white border-0 glass-panel rounded-2xl pl-11 pr-10 py-2.5 text-sm focus:ring-2 focus:ring-orange-300 appearance-none cursor-pointer"
+                            className="bg-white border-slate-100 rounded-[1.5rem] pl-12 pr-10 py-4 text-sm focus:ring-2 focus:ring-orange-300 appearance-none cursor-pointer shadow-sm font-bold text-slate-700 w-full sm:w-48"
                         >
-                            <option value="">All Status</option>
-                            <option value="NEW">New</option>
-                            <option value="CONTACTED">Contacted</option>
-                            <option value="QUALIFIED">Qualified</option>
-                            <option value="REJECTED">Rejected</option>
+                            <option value="">All Vectors</option>
+                            <option value="NEW">New Signal</option>
+                            <option value="CONTACTED">Engaged</option>
+                            <option value="QUALIFIED">High-Value</option>
+                            <option value="REJECTED">Archived</option>
                         </select>
                     </div>
                 </div>
-            </header>
+            </motion.header>
 
-            {/* Desktop Table View */}
-            <div className="hidden md:block glass-panel overflow-hidden border-white/60 shadow-xl rounded-[2.5rem]">
+            <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="bg-white border border-slate-100 overflow-hidden shadow-2xl shadow-slate-200/50 rounded-[3rem]"
+            >
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left">
+                    <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="border-b border-white/20 bg-slate-900/5">
-                                <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Prospect</th>
-                                <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Service / Budget</th>
-                                <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Signal Date</th>
-                                <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Status</th>
-                                <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Actions</th>
+                            <tr className="bg-slate-900/[0.02] border-b border-slate-100">
+                                <th className="px-10 py-8 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Prospect Identity</th>
+                                <th className="px-10 py-8 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Service Vector</th>
+                                <th className="px-10 py-8 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Signal Date</th>
+                                <th className="px-10 py-8 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Status Node</th>
+                                <th className="px-10 py-8 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Tactical Actions</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/10">
+                        <tbody className="divide-y divide-slate-50 italic-none">
                             {loading && !leads.length ? (
                                 <tr>
-                                    <td colSpan={5} className="px-8 py-20 text-center">
-                                        <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto" />
+                                    <td colSpan={5} className="px-10 py-32 text-center">
+                                        <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto shadow-xl" />
                                     </td>
                                 </tr>
                             ) : leads.length === 0 ? (
                                 <tr>
-                                    <td colSpan={5} className="px-8 py-20 text-center text-slate-400 text-sm">
-                                        No leads matching your current filters.
+                                    <td colSpan={5} className="px-10 py-32 text-center">
+                                        <Target className="w-12 h-12 text-slate-100 mx-auto mb-4" />
+                                        <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">No Active Signals Detected</p>
                                     </td>
                                 </tr>
                             ) : (
-                                leads.map((lead) => (
-                                    <tr key={lead.id} className="hover:bg-white/40 transition-colors group cursor-pointer" onClick={() => setSelectedLead(lead)}>
-                                        <td className="px-8 py-6">
-                                            <div className="flex items-center gap-4">
-                                                <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold uppercase text-xs">
+                                leads.map((lead, i) => (
+                                    <motion.tr 
+                                        key={lead.id} 
+                                        initial={{ opacity: 0, x: -10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: i * 0.03 }}
+                                        className="hover:bg-slate-50/50 transition-colors group cursor-pointer" 
+                                        onClick={() => setSelectedLead(lead)}
+                                    >
+                                        <td className="px-10 py-8">
+                                            <div className="flex items-center gap-5">
+                                                <div className="w-14 h-14 rounded-2xl bg-slate-900 flex items-center justify-center text-white font-black text-xl shadow-xl group-hover:bg-orange-500 transition-colors">
                                                     {lead.name[0]}
                                                 </div>
                                                 <div>
-                                                    <p className="font-bold text-slate-800 text-sm">{lead.name}</p>
-                                                    <p className="text-xs text-slate-500 flex items-center gap-1">
-                                                        <Mail className="w-3 h-3" /> {lead.email}
+                                                    <p className="font-extrabold text-slate-900 text-lg tracking-tight">{lead.name}</p>
+                                                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1 flex items-center gap-1.5 group-hover:text-slate-600 transition-colors">
+                                                        <Mail className="w-3 h-3 text-orange-500" /> {lead.email}
                                                     </p>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="px-8 py-6">
-                                            <p className="text-sm font-medium text-slate-700">{lead.service}</p>
-                                            <p className="text-xs text-slate-500">{lead.budget || 'Unspecified'}</p>
+                                        <td className="px-10 py-8 text-sm">
+                                            <p className="font-black text-slate-800 tracking-tight">{lead.service}</p>
+                                            <p className="text-[10px] font-black text-orange-500 uppercase tracking-widest mt-1">{lead.budget || 'UNDISCLOSED'}</p>
                                         </td>
-                                        <td className="px-8 py-6">
-                                            <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
-                                                <Calendar className="w-3.5 h-3.5" />
-                                                {new Date(lead.createdAt).toLocaleDateString()}
+                                        <td className="px-10 py-8">
+                                            <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                                <Calendar className="w-3.5 h-3.5 text-slate-300" />
+                                                {new Date(lead.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                                             </div>
                                         </td>
-                                        <td className="px-8 py-6" onClick={(e) => e.stopPropagation()}>
-                                            <div className="relative group/status">
+                                        <td className="px-10 py-8" onClick={(e) => e.stopPropagation()}>
+                                            <div className="relative group/status flex items-center gap-2">
                                                 <div className={cn(
-                                                    "text-[10px] font-bold px-4 py-1.5 rounded-full border border-white/20 shadow-sm flex items-center gap-2",
-                                                    lead.status === 'NEW' ? 'bg-orange-500/10 text-orange-600' :
-                                                        lead.status === 'CONTACTED' ? 'bg-blue-500/10 text-blue-600' :
-                                                            lead.status === 'QUALIFIED' ? 'bg-emerald-500/10 text-emerald-600' :
-                                                                'bg-slate-500/10 text-slate-500'
+                                                    "text-[9px] font-black px-4 py-2 rounded-full border shadow-sm transition-all flex items-center gap-1.5",
+                                                    lead.status === 'NEW' ? 'bg-orange-500/5 text-orange-600 border-orange-200' :
+                                                        lead.status === 'CONTACTED' ? 'bg-blue-500/5 text-blue-600 border-blue-200' :
+                                                            lead.status === 'QUALIFIED' ? 'bg-emerald-500/5 text-emerald-600 border-emerald-200' :
+                                                                'bg-slate-500/5 text-slate-500 border-slate-200 opacity-50'
                                                 )}>
-                                                    <div className={cn("w-1.5 h-1.5 rounded-full animate-pulse", 
-                                                        lead.status === 'NEW' ? 'bg-orange-500' :
+                                                    <div className={cn("w-1.5 h-1.5 rounded-full", 
+                                                        lead.status === 'NEW' ? 'bg-orange-500 animate-pulse' :
                                                         lead.status === 'CONTACTED' ? 'bg-blue-500' :
                                                         lead.status === 'QUALIFIED' ? 'bg-emerald-500' : 'bg-slate-500'
                                                     )} />
@@ -203,194 +220,169 @@ export default function LeadsPage() {
                                                 <select
                                                     value={lead.status}
                                                     onChange={(e) => updateStatus(lead.id, e.target.value)}
-                                                    className="absolute inset-0 opacity-0 cursor-pointer w-full"
+                                                    className="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-900 transition-all text-[8px] bg-white cursor-pointer shadow-sm"
                                                 >
                                                     <option value="NEW">NEW</option>
-                                                    <option value="CONTACTED">CONTACTED</option>
-                                                    <option value="QUALIFIED">QUALIFIED</option>
-                                                    <option value="REJECTED">REJECTED</option>
+                                                    <option value="CONTACTED">ENGAGED</option>
+                                                    <option value="QUALIFIED">VALUED</option>
+                                                    <option value="REJECTED">VOID</option>
                                                 </select>
                                             </div>
                                         </td>
-                                        <td className="px-8 py-6">
-                                            <div className="flex items-center gap-2">
-                                                <button className="p-2 hover:bg-white rounded-xl transition-all text-slate-400 hover:text-blue-600 shadow-sm border border-transparent hover:border-blue-100">
-                                                    <ExternalLink className="w-4 h-4" />
+                                        <td className="px-10 py-8">
+                                            <div className="flex items-center gap-3">
+                                                <button className="p-3 bg-white border border-slate-100 rounded-2xl text-slate-400 hover:text-orange-500 hover:shadow-lg transition-all">
+                                                    <Eye className="w-4 h-4" />
                                                 </button>
                                                 <button
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         deleteLead(lead.id);
                                                     }}
-                                                    className="p-2 hover:bg-red-50 rounded-xl transition-all text-slate-400 hover:text-red-500 shadow-sm border border-transparent hover:border-red-100"
+                                                    className="p-3 bg-white border border-slate-100 rounded-2xl text-slate-400 hover:text-red-500 hover:shadow-lg transition-all"
                                                 >
                                                     <Trash2 className="w-4 h-4" />
                                                 </button>
                                             </div>
                                         </td>
-                                    </tr>
+                                    </motion.tr>
                                 ))
                             )}
                         </tbody>
                     </table>
                 </div>
-            </div>
 
-            {/* Mobile Card View */}
-            <div className="block md:hidden space-y-4">
-                {loading && !leads.length ? (
-                    <div className="flex justify-center py-10">
-                        <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin" />
+                <div className="px-10 py-8 bg-slate-900/[0.02] flex items-center justify-between border-t border-slate-100">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">
+                        Vector Sequence <span className="text-slate-900">{page}</span> // Total Capacitance <span className="text-slate-900">{totalPages}</span>
+                    </p>
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={() => setPage(prev => Math.max(1, prev - 1))}
+                            disabled={page === 1}
+                            className="p-3 rounded-2xl bg-white border border-slate-200 disabled:opacity-30 hover:bg-orange-500 hover:text-white transition-all shadow-sm"
+                        >
+                            <ChevronLeft className="w-5 h-5" />
+                        </button>
+                        <button
+                            onClick={() => setPage(prev => Math.min(totalPages, prev + 1))}
+                            disabled={page === totalPages}
+                            className="p-3 rounded-2xl bg-white border border-slate-200 disabled:opacity-30 hover:bg-orange-500 hover:text-white transition-all shadow-sm"
+                        >
+                            <ChevronRight className="w-5 h-5" />
+                        </button>
                     </div>
-                ) : leads.length === 0 ? (
-                    <p className="text-center text-slate-500 py-10">No leads found.</p>
-                ) : (
-                    leads.map(lead => (
-                        <div key={lead.id} className="glass-panel p-6 rounded-3xl border-white/60 shadow-lg" onClick={() => setSelectedLead(lead)}>
-                            <div className="flex justify-between items-start mb-4">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-2xl bg-orange-100 flex items-center justify-center text-orange-600 font-bold uppercase text-xs">
-                                        {lead.name[0]}
-                                    </div>
-                                    <div>
-                                        <h3 className="font-bold text-slate-800">{lead.name}</h3>
-                                        <p className="text-xs text-slate-500">{lead.email}</p>
-                                    </div>
-                                </div>
-                                <span className={cn(
-                                    "text-[10px] font-bold px-3 py-1 rounded-full",
-                                    lead.status === 'NEW' ? 'bg-orange-100 text-orange-600' : 'bg-slate-100 text-slate-500'
-                                )}>
-                                    {lead.status}
-                                </span>
-                            </div>
-                            <div className="space-y-2 mb-4">
-                                <p className="text-sm text-slate-600 font-medium">Service: {lead.service}</p>
-                                <p className="text-xs text-slate-400">Date: {new Date(lead.createdAt).toLocaleDateString()}</p>
-                            </div>
-                            <div className="flex gap-2">
-                                <button className="flex-1 py-2.5 bg-slate-900 text-white rounded-xl text-xs font-bold shadow-lg shadow-slate-200">
-                                    View Details
-                                </button>
-                                <button
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        deleteLead(lead.id);
-                                    }}
-                                    className="flex-1 py-2.5 bg-red-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-red-100"
-                                >
-                                    Delete
-                                </button>
-                            </div>
-                        </div>
-                    ))
-                )}
-            </div>
-            {/* Pagination */}
-            <div className="px-8 py-6 bg-slate-900/5 flex items-center justify-between border-t border-white/20">
-                <p className="text-xs text-slate-500 font-medium">
-                    Showing page <span className="text-slate-900">{page}</span> of <span className="text-slate-900">{totalPages}</span>
-                </p>
-                <div className="flex items-center gap-2">
-                    <button
-                        onClick={() => setPage(prev => Math.max(1, prev - 1))}
-                        disabled={page === 1}
-                        className="p-2 rounded-xl bg-white border border-slate-200 disabled:opacity-50 hover:bg-orange-50 transition-all"
-                    >
-                        <ChevronLeft className="w-4 h-4" />
-                    </button>
-                    <button
-                        onClick={() => setPage(prev => Math.min(totalPages, prev + 1))}
-                        disabled={page === totalPages}
-                        className="p-2 rounded-xl bg-white border border-slate-200 disabled:opacity-50 hover:bg-orange-50 transition-all"
-                    >
-                        <ChevronRight className="w-4 h-4" />
-                    </button>
                 </div>
-                {/* Lead Detail Modal */}
+            </motion.div>
+
+            <AnimatePresence>
                 {selectedLead && (
-                    <div className="fixed inset-0 z-[200] overflow-y-auto bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200 custom-scrollbar">
-                        <div className="flex min-h-screen items-center justify-center p-4 sm:p-6 text-center">
-                            <div 
-                                className="w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col text-left align-middle relative transition-all animate-in zoom-in-95 duration-300 max-h-[calc(100vh-4rem)]"
-                                onClick={(e) => e.stopPropagation()}
-                            >
-                                <div className="px-8 py-6 bg-slate-900 border-b border-white/10 shrink-0 flex items-center justify-between">
-                                    <div className="flex items-center gap-4 text-white">
-                                        <div className="w-12 h-12 rounded-2xl bg-orange-500/20 flex items-center justify-center text-xl font-bold text-orange-500 shadow-inner">
-                                            {selectedLead.name[0]}
+                    <div className="fixed inset-0 z-[200] overflow-y-auto bg-slate-900/60 backdrop-blur-xl flex items-center justify-center p-4">
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            className="w-full max-w-4xl bg-white rounded-[3.5rem] shadow-[0_32px_128px_-16px_rgba(0,0,0,0.5)] overflow-hidden flex flex-col md:flex-row relative max-h-[90vh]"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="w-full md:w-80 bg-slate-950 p-10 text-white shrink-0 relative flex flex-col justify-between">
+                                <div className="absolute top-0 right-0 p-8 opacity-10">
+                                    <Target className="w-32 h-32 rotate-12" />
+                                </div>
+                                <div className="relative z-10">
+                                    <div className="w-20 h-20 rounded-[2rem] bg-orange-500 flex items-center justify-center text-3xl font-black shadow-2xl mb-8">
+                                        {selectedLead.name[0]}
+                                    </div>
+                                    <h3 className="text-3xl font-black tracking-tighter uppercase leading-none mb-3">{selectedLead.name}</h3>
+                                    <div className="flex items-center gap-2 mb-8">
+                                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-500">Live Connection</span>
+                                    </div>
+
+                                    <div className="space-y-6">
+                                        <div>
+                                            <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Signal Source</p>
+                                            <p className="text-xs font-bold text-slate-300 italic opacity-80">{selectedLead.referral || 'Direct Infrastructure'}</p>
                                         </div>
                                         <div>
-                                            <h3 className="text-xl font-bold tracking-tight">{selectedLead.name}</h3>
-                                            <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Signal Intelligence</p>
+                                            <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Network Identity</p>
+                                            <p className="text-xs font-bold text-slate-300 flex items-center gap-2">
+                                                <Mail className="w-3.5 h-3.5 text-orange-500" /> {selectedLead.email}
+                                            </p>
                                         </div>
                                     </div>
-                                    <button
-                                        onClick={() => setSelectedLead(null)}
-                                        className="p-2 hover:bg-white/10 rounded-full transition-colors text-white/60 hover:text-white"
-                                    >
-                                        <X className="w-5 h-5" />
+                                </div>
+
+                                <button onClick={() => setSelectedLead(null)} className="absolute top-8 left-8 p-3 hover:bg-white/10 rounded-full transition-colors text-white/40 hover:text-white md:hidden">
+                                    <X className="w-6 h-6" />
+                                </button>
+                            </div>
+
+                            <div className="flex-1 p-8 md:p-12 overflow-y-auto custom-scrollbar bg-slate-50/50 flex flex-col">
+                                <div className="flex items-center justify-between mb-8 shrink-0">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
+                                        <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Signal Reconstruction</h4>
+                                    </div>
+                                    <button onClick={() => setSelectedLead(null)} className="p-3 hover:bg-slate-200/50 rounded-full transition-colors text-slate-400 hover:text-slate-900 hidden md:block">
+                                        <X className="w-6 h-6" />
                                     </button>
                                 </div>
 
-                                <div className="p-8 overflow-y-auto custom-scrollbar flex-1 space-y-8">
-                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                                        <div className="p-4 rounded-3xl bg-slate-50 border border-slate-100">
-                                            <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-1 font-bold">Company</p>
-                                            <p className="text-sm font-bold text-slate-800">{selectedLead.company || 'Personal'}</p>
-                                        </div>
-                                        <div className="p-4 rounded-3xl bg-slate-50 border border-slate-100">
-                                            <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-1 font-bold">Country</p>
-                                            <p className="text-sm font-bold text-slate-800">{selectedLead.country || 'Global'}</p>
-                                        </div>
-                                        <div className="p-4 rounded-3xl bg-slate-50 border border-slate-100">
-                                            <p className="text-[10px] uppercase tracking-widest text-slate-400 mb-1 font-bold">Budget</p>
-                                            <p className="text-sm font-bold text-orange-600">{selectedLead.budget || 'Open'}</p>
-                                        </div>
+                                <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-10 shrink-0">
+                                    <div className="p-5 rounded-[2rem] bg-white border border-slate-100 shadow-sm relative overflow-hidden group">
+                                        <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-2">Company Vector</p>
+                                        <p className="text-base font-black text-slate-900 tracking-tight leading-none truncate">{selectedLead.company || 'Personal Node'}</p>
                                     </div>
+                                    <div className="p-5 rounded-[2rem] bg-white border border-slate-100 shadow-sm relative overflow-hidden group">
+                                        <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-2">Geographic Node</p>
+                                        <p className="text-base font-black text-slate-900 tracking-tight leading-none truncate">{selectedLead.country || 'Global Grid'}</p>
+                                    </div>
+                                    <div className="p-5 rounded-[2rem] bg-white border border-slate-100 shadow-sm relative overflow-hidden group">
+                                        <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-2">Resource Budget</p>
+                                        <p className="text-base font-black text-orange-600 tracking-tight leading-none">{selectedLead.budget || 'Undetermined'}</p>
+                                    </div>
+                                </div>
 
-                                    <div className="space-y-4">
-                                        <div className="flex items-center gap-2">
+                                <div className="space-y-8 flex-1">
+                                    <div className="flex flex-col h-full min-h-[300px]">
+                                        <div className="flex items-center gap-3 mb-4 shrink-0">
                                             <MessageSquare className="w-4 h-4 text-orange-500" />
-                                            <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Inbound Description</h3>
+                                            <h3 className="text-[10px] font-black text-slate-900 uppercase tracking-widest">Inbound Transmission</h3>
                                         </div>
-                                        <div className="p-6 rounded-[2rem] bg-slate-50 border border-slate-100 text-sm text-slate-600 leading-relaxed whitespace-pre-wrap min-h-[120px]">
+                                        <div className="p-8 rounded-[2.5rem] bg-white border border-slate-100 text-slate-700 text-sm leading-relaxed whitespace-pre-wrap shadow-inner-xl flex-1 font-medium opacity-90 overflow-y-auto custom-scrollbar border-dashed">
                                             {selectedLead.description}
                                         </div>
                                     </div>
 
-                                    {selectedLead.referral && (
-                                        <div className="flex items-center gap-3 p-4 rounded-2xl bg-blue-50/50 border border-blue-100 text-blue-700 text-xs font-medium">
-                                            <div className="w-2 h-2 rounded-full bg-blue-500" />
-                                            Source: {selectedLead.referral}
+                                    <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-8 border-t border-slate-200 shrink-0">
+                                        <div className="text-center sm:text-left">
+                                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Signal Timestamp</p>
+                                            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-none">
+                                                {new Date(selectedLead.createdAt).toLocaleString(undefined, { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                                            </p>
                                         </div>
-                                    )}
-                                </div>
-
-                                <div className="px-8 py-6 bg-slate-50 border-t border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4 shrink-0">
-                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-                                        Received: {new Date(selectedLead.createdAt).toLocaleDateString()}
-                                    </p>
-                                    <div className="flex gap-2">
-                                        <button
-                                            onClick={() => deleteLead(selectedLead.id)}
-                                            className="px-6 py-2.5 rounded-xl text-slate-600 font-bold text-xs hover:bg-red-50 hover:text-red-600 transition-all border border-transparent hover:border-red-100"
-                                        >
-                                            Archive Signal
-                                        </button>
-                                        <a
-                                            href={`mailto:${selectedLead.email}`}
-                                            className="px-8 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-orange-600 transition-all shadow-lg shadow-slate-200 flex items-center gap-2"
-                                        >
-                                            Initiate Contact
-                                        </a>
+                                        <div className="flex gap-3 w-full sm:w-auto">
+                                            <button
+                                                onClick={() => deleteLead(selectedLead.id)}
+                                                className="flex-1 sm:flex-none px-6 py-3 rounded-2xl bg-white border border-slate-200 text-slate-400 font-black text-[9px] uppercase tracking-widest hover:bg-red-50 hover:text-red-500 hover:border-red-100 transition-all"
+                                            >
+                                                Archive
+                                            </button>
+                                            <a
+                                                href={`mailto:${selectedLead.email}`}
+                                                className="flex-1 sm:flex-none px-8 py-3 rounded-2xl bg-slate-950 text-white font-black text-[9px] uppercase tracking-[0.2em] hover:bg-orange-600 transition-all shadow-2xl flex items-center justify-center gap-2 group"
+                                            >
+                                                Respond <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </motion.div>
                     </div>
                 )}
-            </div>
+            </AnimatePresence>
         </div>
     );
 }

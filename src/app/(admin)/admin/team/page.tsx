@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import api from "@/lib/api";
 import {
     Plus,
@@ -10,8 +10,22 @@ import {
     User,
     Upload,
     Loader2,
-    Check
+    Check,
+    Linkedin,
+    Twitter,
+    Sparkles,
+    Shield,
+    Users,
+    Search,
+    ChevronLeft,
+    ChevronRight,
+    Camera,
+    LayoutGrid,
+    MoveUpRight,
+    ExternalLink
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 interface TeamMember {
     id: string;
@@ -31,16 +45,12 @@ export default function TeamManagementPage() {
     const [showModal, setShowModal] = useState(false);
     const [editingMember, setEditingMember] = useState<TeamMember | null>(null);
     const [deletingId, setDeletingId] = useState<string | null>(null);
+    const [searchQuery, setSearchQuery] = useState("");
 
     const fetchTeam = async () => {
         setLoading(true);
         try {
             const response = await api.get("/team");
-            // Backend might return published:true only by default, so we might need an admin endpoint 
-            // but for now we'll use the public one and assume admin shows all if we had an admin route.
-            // Actually, /team route in backend lists published:true. 
-            // Let's check if there's an admin list route. In team.js there isn't.
-            // I'll add one if needed, but for now let's use what we have.
             setTeam(response.data || []);
         } catch (error) {
             console.error("Failed to fetch team", error);
@@ -53,141 +63,236 @@ export default function TeamManagementPage() {
         fetchTeam();
     }, []);
 
-    const handleDelete = (id: string) => {
-        setDeletingId(id);
-    };
-
     const confirmDelete = async () => {
         if (!deletingId) return;
         try {
             await api.delete(`/team/${deletingId}`);
             fetchTeam();
         } catch (error) {
-            alert("Failed to delete team member");
+            console.error("Failed to delete team member", error);
         } finally {
             setDeletingId(null);
         }
     };
 
+    const filteredTeam = useMemo(() => {
+        return team.filter(m => 
+            m.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+            m.role.toLowerCase().includes(searchQuery.toLowerCase())
+        ).sort((a, b) => a.order - b.order);
+    }, [team, searchQuery]);
+
     return (
-        <div className="space-y-6">
-            <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h2 className="text-2xl font-bold text-slate-800 tracking-tight">Architectural Team</h2>
-                    <p className="text-sm text-slate-500">Manage the senior engineers and researchers representing JANTRA.</p>
+        <div className="space-y-8 pb-24">
+            {/* Command Header */}
+            <motion.header 
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex flex-col lg:flex-row lg:items-center justify-between gap-6"
+            >
+                <div className="space-y-1">
+                    <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-3">
+                        <Shield className="w-8 h-8 text-orange-500" />
+                        Human Infrastructure
+                    </h2>
+                    <p className="text-slate-500 font-medium leading-relaxed">Managing the senior architecture team and technical leadership nodes.</p>
                 </div>
 
-                <button
-                    onClick={() => { setEditingMember(null); setShowModal(true); }}
-                    className="inline-flex items-center gap-2 bg-slate-900 text-white px-6 py-3 rounded-2xl font-bold hover:bg-orange-600 transition-all shadow-lg active:scale-95 text-sm"
-                >
-                    <Plus className="w-4 h-4" /> Add Architect
-                </button>
-            </header>
+                <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="relative group">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-orange-500 transition-colors" />
+                        <input 
+                            type="text" 
+                            placeholder="Identify architect..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="bg-white border border-slate-200 rounded-2xl pl-11 pr-4 py-3 text-sm focus:outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all w-full sm:w-64 shadow-sm font-medium"
+                        />
+                    </div>
+                    
+                    <button
+                        onClick={() => { setEditingMember(null); setShowModal(true); }}
+                        className="inline-flex items-center justify-center gap-2 bg-slate-900 text-white px-8 py-3 rounded-2xl font-bold hover:bg-orange-600 transition-all shadow-xl shadow-slate-200 active:scale-95 text-sm group"
+                    >
+                        <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" /> 
+                        <span>Onboard Architect</span>
+                    </button>
+                </div>
+            </motion.header>
 
-            <div className="glass-panel overflow-hidden border-white/60 shadow-xl rounded-[2.5rem]">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left">
+            {/* Datagrid Container */}
+            <motion.div 
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.1 }}
+                className="bg-white border border-slate-200 shadow-2xl shadow-slate-200/50 rounded-[2.5rem] overflow-hidden"
+            >
+                <div className="overflow-x-auto custom-scrollbar">
+                    <table className="w-full text-left border-separate border-spacing-0">
                         <thead>
-                            <tr className="border-b border-white/20 bg-slate-900/5">
-                                <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Architect</th>
-                                <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Role / Designation</th>
-                                <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400">Status</th>
-                                <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-slate-400 text-right">Actions</th>
+                            <tr className="bg-slate-50/50 border-b border-slate-100">
+                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Identity Profile</th>
+                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Positioning</th>
+                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-center">Network Visibility</th>
+                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-right">Operations</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/10">
+                        <tbody className="divide-y divide-slate-50">
                             {loading ? (
                                 <tr>
-                                    <td colSpan={4} className="px-8 py-20 text-center">
-                                        <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto" />
+                                    <td colSpan={4} className="px-8 py-32 text-center">
+                                        <div className="flex flex-col items-center gap-4">
+                                            <Loader2 className="w-10 h-10 text-orange-500 animate-spin" />
+                                            <p className="text-sm font-bold text-slate-400 tracking-widest uppercase">Scanning Biosignatures...</p>
+                                        </div>
                                     </td>
                                 </tr>
-                            ) : team.length === 0 ? (
+                            ) : filteredTeam.length === 0 ? (
                                 <tr>
-                                    <td colSpan={4} className="px-8 py-20 text-center text-slate-400 text-sm">
-                                        No architects added yet.
+                                    <td colSpan={4} className="px-8 py-32 text-center">
+                                        <div className="flex flex-col items-center gap-4 opacity-40">
+                                            <Users className="w-16 h-16 text-slate-300" />
+                                            <p className="text-slate-400 font-bold uppercase tracking-widest">No leadership nodes identified</p>
+                                        </div>
                                     </td>
                                 </tr>
                             ) : (
-                                team.map((member) => (
-                                    <tr key={member.id} className="hover:bg-white/40 transition-colors group">
+                                filteredTeam.map((member, index) => (
+                                    <motion.tr 
+                                        key={member.id}
+                                        initial={{ opacity: 0, x: -10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: index * 0.05 }}
+                                        className="hover:bg-orange-50/20 transition-colors group"
+                                    >
                                         <td className="px-8 py-6">
-                                            <div className="flex items-center gap-4">
-                                                <div className="w-12 h-12 rounded-2xl bg-slate-100 overflow-hidden border border-slate-200 shadow-sm flex items-center justify-center">
-                                                    {member.avatar ? (
-                                                        <img src={member.avatar} alt={member.name} className="w-full h-full object-cover" />
-                                                    ) : (
-                                                        <User className="w-6 h-6 text-slate-300" />
-                                                    )}
+                                            <div className="flex items-center gap-6">
+                                                <div className="relative w-16 h-16 shrink-0">
+                                                    <div className="absolute inset-0 bg-orange-500/10 rounded-2xl rotate-6 group-hover:rotate-0 transition-transform" />
+                                                    <div className="relative w-full h-full rounded-2xl bg-white border-2 border-slate-100 overflow-hidden group-hover:border-orange-200 transition-colors">
+                                                        {member.avatar ? (
+                                                            <img src={member.avatar} alt={member.name} className="w-full h-full object-cover" />
+                                                        ) : (
+                                                            <div className="w-full h-full flex items-center justify-center bg-slate-50">
+                                                                <User className="w-6 h-6 text-slate-200" />
+                                                            </div>
+                                                        )}
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <p className="font-bold text-slate-800 text-sm">{member.name}</p>
-                                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Architect #{member.order}</p>
+                                                <div className="space-y-1">
+                                                    <h3 className="font-bold text-slate-900 group-hover:text-orange-600 transition-colors">{member.name}</h3>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Architect #{member.order.toString().padStart(3, '0')}</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td className="px-8 py-6">
-                                            <span className="text-sm font-medium text-slate-600 bg-white/50 px-3 py-1.5 rounded-full border border-slate-100 shadow-sm">
-                                                {member.role}
-                                            </span>
+                                            <div className="space-y-2">
+                                                <span className="inline-flex text-[10px] bg-slate-900 text-white px-3 py-1.5 rounded-lg font-black uppercase tracking-widest shadow-lg shadow-slate-200">
+                                                    {member.role}
+                                                </span>
+                                                <div className="flex items-center gap-3">
+                                                    {member.linkedIn && (
+                                                        <a href={member.linkedIn} target="_blank" rel="noopener noreferrer" className="p-1.5 bg-white border border-slate-100 rounded-lg text-[#0077b5] hover:bg-[#0077b5] hover:text-white transition-all shadow-sm">
+                                                            <Linkedin className="w-3 h-3" />
+                                                        </a>
+                                                    )}
+                                                    {member.twitter && (
+                                                        <a href={member.twitter} target="_blank" rel="noopener noreferrer" className="p-1.5 bg-white border border-slate-100 rounded-lg text-slate-900 hover:bg-slate-900 hover:text-white transition-all shadow-sm">
+                                                            <Twitter className="w-3 h-3" />
+                                                        </a>
+                                                    )}
+                                                </div>
+                                            </div>
                                         </td>
                                         <td className="px-8 py-6">
-                                            <span className={`text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest ${member.published ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-400'}`}>
-                                                {member.published ? 'Active' : 'Private'}
-                                            </span>
+                                            <div className="flex items-center justify-center">
+                                                <div className={cn(
+                                                    "inline-flex items-center gap-2 px-4 py-2 rounded-2xl border text-[10px] font-black uppercase tracking-widest transition-all",
+                                                    member.published 
+                                                        ? "bg-emerald-50 text-emerald-600 border-emerald-100" 
+                                                        : "bg-slate-50 text-slate-400 border-slate-100"
+                                                )}>
+                                                    <div className={cn("w-1.5 h-1.5 rounded-full", member.published ? "bg-emerald-500 animate-pulse" : "bg-slate-300")} />
+                                                    {member.published ? 'Active Node' : 'Private Mode'}
+                                                </div>
+                                            </div>
                                         </td>
-                                        <td className="px-8 py-6 text-right">
-                                            <div className="flex items-center justify-end gap-2">
-                                                <button
+                                        <td className="px-8 py-6">
+                                            <div className="flex items-center justify-end gap-3">
+                                                <button 
                                                     onClick={() => { setEditingMember(member); setShowModal(true); }}
-                                                    className="p-2 hover:bg-white rounded-xl transition-all text-slate-400 hover:text-blue-600 shadow-sm border border-transparent hover:border-blue-100"
+                                                    className="p-3 bg-white hover:bg-slate-950 hover:text-white border border-slate-200 rounded-2xl transition-all shadow-sm active:scale-90"
                                                 >
                                                     <Edit3 className="w-4 h-4" />
                                                 </button>
                                                 <button
-                                                    onClick={() => handleDelete(member.id)}
-                                                    className="p-2 hover:bg-white rounded-xl transition-all text-slate-400 hover:text-red-500 shadow-sm border border-transparent hover:border-red-100"
+                                                    onClick={() => setDeletingId(member.id)}
+                                                    className="p-3 bg-white hover:bg-red-500 hover:text-white border border-slate-200 hover:border-red-500 rounded-2xl transition-all shadow-sm active:scale-90"
                                                 >
                                                     <Trash2 className="w-4 h-4" />
                                                 </button>
                                             </div>
                                         </td>
-                                    </tr>
+                                    </motion.tr>
                                 ))
                             )}
                         </tbody>
                     </table>
                 </div>
-            </div>
+            </motion.div>
 
-            {/* TeamMember Modal */}
-            {showModal && (
-                <TeamMemberModal
-                    member={editingMember}
-                    onClose={() => setShowModal(false)}
-                    onSuccess={() => { fetchTeam(); setShowModal(false); }}
-                />
-            )}
+            {/* Premium Modals */}
+            <AnimatePresence>
+                {showModal && (
+                    <TeamMemberModal
+                        member={editingMember}
+                        onClose={() => setShowModal(false)}
+                        onSuccess={() => { fetchTeam(); setShowModal(false); }}
+                    />
+                )}
 
-            {/* Delete Confirmation Modal */}
-            {deletingId && (
-                <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md animate-in fade-in duration-300">
-                    <div className="relative w-full max-w-sm bg-white rounded-[2rem] shadow-2xl p-8 border border-slate-200 text-center animate-in zoom-in-95 duration-200">
-                        <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
-                            <Trash2 className="w-8 h-8" />
-                        </div>
-                        <h3 className="text-xl font-bold text-slate-800 mb-2">Confirm Removal</h3>
-                        <p className="text-sm text-slate-500 mb-8 leading-relaxed">
-                            Removing this architect will withdraw them from the public About page. Continue?
-                        </p>
-                        <div className="flex gap-3">
-                            <button onClick={() => setDeletingId(null)} className="flex-1 py-3 rounded-xl bg-slate-100 text-slate-600 font-bold text-xs hover:bg-slate-200 transition-all font-bold">Keep</button>
-                            <button onClick={confirmDelete} className="flex-1 py-3 rounded-xl bg-red-500 text-white font-bold text-xs hover:bg-red-600 transition-all shadow-lg shadow-red-200 font-bold">Delete</button>
-                        </div>
+                {deletingId && (
+                    <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4">
+                        <motion.div 
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setDeletingId(null)}
+                            className="absolute inset-0 bg-slate-950/80 backdrop-blur-md"
+                        />
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                            className="relative w-full max-w-md bg-white rounded-[3rem] shadow-2xl p-12 border border-white/20 text-center"
+                        >
+                            <div className="w-20 h-20 bg-red-50 text-red-500 rounded-[2rem] flex items-center justify-center mx-auto mb-8">
+                                <Trash2 className="w-10 h-10" />
+                            </div>
+                            <h3 className="text-2xl font-black text-slate-900 tracking-tight mb-4">Decommission Node?</h3>
+                            <p className="text-slate-500 font-medium leading-relaxed mb-10">
+                                This will remove the architect from the public interface. Biosignature records will remain in the secure archive.
+                            </p>
+                            <div className="flex gap-4">
+                                <button
+                                    onClick={() => setDeletingId(null)}
+                                    className="flex-1 py-4 rounded-2xl bg-slate-50 text-slate-400 font-black text-[10px] uppercase tracking-[0.2em] hover:bg-slate-100 transition-all"
+                                >
+                                    Abort
+                                </button>
+                                <button
+                                    onClick={confirmDelete}
+                                    className="flex-1 py-4 rounded-2xl bg-red-600 text-white font-black text-[10px] uppercase tracking-[0.2em] hover:bg-red-700 transition-all shadow-xl shadow-red-200"
+                                >
+                                    Confirm Wipe
+                                </button>
+                            </div>
+                        </motion.div>
                     </div>
-                </div>
-            )}
+                )}
+            </AnimatePresence>
         </div>
     );
 }
@@ -220,7 +325,7 @@ function TeamMemberModal({ member, onClose, onSuccess }: { member: TeamMember | 
             });
             setFormData(prev => ({ ...prev, avatar: response.data.url }));
         } catch (error) {
-            alert("Image upload failed. Please try a smaller image (max 2MB).");
+             console.error("Upload failed", error);
         } finally {
             setUploading(false);
         }
@@ -234,112 +339,210 @@ function TeamMemberModal({ member, onClose, onSuccess }: { member: TeamMember | 
             else await api.post("/team", formData);
             onSuccess();
         } catch (error) {
-            alert("Failed to save team member.");
+             console.error("Save error", error);
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="fixed inset-0 z-[200] overflow-y-auto bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200 custom-scrollbar">
-            <div className="flex min-h-screen items-center justify-center p-4 sm:p-6 text-center">
-                <div 
-                    className="w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col text-left align-middle relative transition-all animate-in zoom-in-95 duration-300 max-h-[calc(100vh-4rem)]"
-                    onClick={(e) => e.stopPropagation()}
-                >
-                <div className="bg-slate-900 px-8 py-6 flex items-center justify-between text-white shrink-0">
-                    <div>
-                        <h3 className="text-xl font-bold tracking-tight">{member ? "Optimize Individual" : "Onboard New Architect"}</h3>
-                        <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Personnel Infrastructure</p>
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+            <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={onClose}
+                className="absolute inset-0 bg-slate-950/80 backdrop-blur-md"
+            />
+            
+            <motion.div 
+                initial={{ opacity: 0, scale: 0.9, y: 30 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 30 }}
+                className="relative w-full max-w-5xl bg-white rounded-[3rem] shadow-2xl border border-white/20 overflow-hidden flex flex-col md:flex-row max-h-[90vh]"
+            >
+                {/* Visual Context Panel */}
+                <div className="hidden md:flex md:w-1/3 bg-slate-950 p-12 flex-col justify-between text-white shrink-0">
+                    <div className="space-y-12">
+                        <div className="inline-flex items-center gap-3 bg-white/10 px-4 py-2 rounded-xl backdrop-blur-md">
+                            <Sparkles className="w-4 h-4 text-orange-500" />
+                            <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">Identity Config</span>
+                        </div>
+                        
+                        <div>
+                            <h3 className="text-4xl font-black tracking-tight leading-tight mb-4">
+                                {member ? "Calibrate Leadership Node" : "Synchronize New Architect"}
+                            </h3>
+                            <p className="text-slate-400 text-sm font-medium leading-relaxed italic opacity-60">
+                                Engineering the human element of industrial excellence.
+                            </p>
+                        </div>
+
+                        {/* Order Indicator */}
+                        <div className="bg-white/5 border border-white/10 p-8 rounded-[2.5rem] backdrop-blur-sm">
+                            <div className="flex items-center justify-between">
+                                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Global Order</span>
+                                <span className="text-2xl font-black text-orange-500">#{formData.order.toString().padStart(2, '0')}</span>
+                            </div>
+                        </div>
                     </div>
-                    <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full transition-colors text-white/60 hover:text-white">
-                        <X className="w-5 h-5" />
-                    </button>
+                    
+                    <div className="flex items-center gap-4">
+                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                        <span className="text-[10px] font-black text-slate-600 tracking-[0.4em] uppercase">Status: Connected</span>
+                    </div>
                 </div>
 
-                <form onSubmit={handleSubmit} className="p-8 overflow-y-auto custom-scrollbar flex-1 space-y-8">
-                    {/* Avatar Upload */}
-                    <div className="flex flex-col items-center justify-center py-4 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-200 relative group overflow-hidden">
-                        {formData.avatar ? (
-                            <div className="relative w-32 h-32 rounded-3xl overflow-hidden shadow-xl border-4 border-white group">
-                                <img src={formData.avatar} className="w-full h-full object-cover" alt="Preview" />
-                                <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center">
-                                    <label className="cursor-pointer text-white text-xs font-bold uppercase tracking-widest">Change</label>
-                                    <input type="file" onChange={handleImageUpload} className="hidden" accept="image/*" />
-                                </div>
-                            </div>
-                        ) : (
-                            <>
-                                <div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center shadow-sm text-slate-300 mb-4 group-hover:scale-105 transition-transform">
-                                    {uploading ? <Loader2 className="w-8 h-8 animate-spin text-orange-500" /> : <Upload className="w-8 h-8" />}
-                                </div>
-                                <label className="cursor-pointer bg-slate-900 text-white px-6 py-2.5 rounded-xl text-xs font-bold hover:bg-orange-600 transition-all active:scale-95 shadow-lg">
-                                    Upload Headshot
-                                    <input type="file" onChange={handleImageUpload} className="hidden" accept="image/*" />
-                                </label>
-                                <p className="text-[10px] text-slate-400 mt-3 font-medium">Recommended: Square, PNG/JPG, Max 2MB</p>
-                            </>
-                        )}
-                        {uploading && (
-                            <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center">
-                                <Loader2 className="w-10 h-10 animate-spin text-orange-500 mb-2" />
-                                <p className="text-xs font-bold text-slate-800 tracking-widest uppercase">Uploading...</p>
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-4">Full Name</label>
-                            <input required value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} className="w-full bg-slate-50 border-slate-100 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-orange-300 focus:bg-white transition-all text-sm font-bold text-slate-800" />
-                        </div>
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-4">Role / Designation</label>
-                            <input required value={formData.role} onChange={e => setFormData({ ...formData, role: e.target.value })} className="w-full bg-slate-50 border-slate-100 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-orange-300 focus:bg-white transition-all text-sm font-medium text-slate-800" placeholder="e.g. Lead Systems Architect" />
-                        </div>
-                    </div>
-
-                    <div className="space-y-2">
-                        <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-4">Professional Bio</label>
-                        <textarea required rows={3} value={formData.bio} onChange={e => setFormData({ ...formData, bio: e.target.value })} className="w-full bg-slate-50 border-slate-100 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-orange-300 focus:bg-white transition-all text-sm leading-relaxed text-slate-600" />
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-4">LinkedIn Profile (URL)</label>
-                            <input value={formData.linkedIn} onChange={e => setFormData({ ...formData, linkedIn: e.target.value })} className="w-full bg-slate-50 border-slate-100 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-orange-300 focus:bg-white transition-all text-xs font-medium" />
-                        </div>
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-bold uppercase tracking-widest text-slate-400 ml-4">Display Order</label>
-                            <input type="number" value={formData.order} onChange={e => setFormData({ ...formData, order: parseInt(e.target.value) })} className="w-full bg-slate-50 border-slate-100 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-orange-300 focus:bg-white transition-all text-sm font-bold" />
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-3 ml-4">
-                        <button
-                            type="button"
-                            onClick={() => setFormData({ ...formData, published: !formData.published })}
-                            className={`w-12 h-6 rounded-full transition-all relative ${formData.published ? 'bg-orange-500' : 'bg-slate-200'}`}
-                        >
-                            <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-all ${formData.published ? 'translate-x-6' : ''}`} />
+                {/* Main Interaction Area */}
+                <div className="flex-1 flex flex-col bg-white min-w-0">
+                    <div className="flex items-center justify-between p-8 border-b border-slate-100 shrink-0">
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Architect Specification</span>
+                        <button onClick={onClose} className="p-3 bg-slate-50 hover:bg-slate-900 hover:text-white rounded-2xl transition-all">
+                            <X className="w-5 h-5" />
                         </button>
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Enable Public Visibility</span>
                     </div>
-                </form>
 
-                <div className="px-8 py-6 bg-slate-50 border-t border-slate-100 flex justify-end gap-3 shrink-0">
-                    <button type="button" onClick={onClose} className="px-6 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-100 italic transition-all">Cancel</button>
-                    <button
-                        disabled={loading || uploading}
-                        onClick={handleSubmit}
-                        className="px-8 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-orange-600 transition-all shadow-xl disabled:opacity-50 flex items-center gap-2"
-                    >
-                        {loading && <Loader2 className="w-4 h-4 animate-spin text-white" />}
-                        {loading ? "Optimizing..." : member ? "Update Profile" : "Register Architect"}
-                    </button>
+                    <div className="flex-1 overflow-y-auto custom-scrollbar p-8 md:p-12">
+                        <form onSubmit={handleSubmit} className="space-y-12">
+                            {/* Avatar Upload Core */}
+                            <div className="space-y-6">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-4 block text-center md:text-left">Biosignature (Image)</label>
+                                <div className="flex flex-col md:flex-row items-center gap-8 bg-slate-50 p-8 rounded-[2.5rem] border-2 border-slate-100 group">
+                                    <div className="relative w-32 h-32 shrink-0">
+                                        <div className="absolute inset-0 bg-orange-500/10 rounded-[2rem] scale-110 rotate-6 group-hover:rotate-0 transition-transform" />
+                                        <div className="relative w-full h-full rounded-[2rem] bg-white border-4 border-white shadow-xl overflow-hidden flex items-center justify-center">
+                                            {formData.avatar ? (
+                                                <img src={formData.avatar} className="w-full h-full object-cover" alt="Preview" />
+                                            ) : (
+                                                <User className="w-10 h-10 text-slate-200" />
+                                            )}
+                                            {uploading && (
+                                                <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center">
+                                                    <Loader2 className="w-8 h-8 animate-spin text-orange-500" />
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="flex-1 space-y-4 text-center md:text-left">
+                                        <h4 className="text-sm font-black text-slate-900 uppercase tracking-widest">Transmit New File</h4>
+                                        <p className="text-[10px] text-slate-400 font-medium leading-relaxed italic">JPG/PNG encoded data limited to 2MB. Recommendation: Transparent PNG or Corporate Backdrop.</p>
+                                        <label className="inline-flex items-center gap-3 bg-slate-950 text-white px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-orange-600 transition-all cursor-pointer shadow-lg active:scale-95">
+                                            <Camera className="w-4 h-4" />
+                                            Select Asset
+                                            <input type="file" onChange={handleImageUpload} className="hidden" accept="image/*" />
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                <div className="space-y-4">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-4">Full Identity</label>
+                                    <input 
+                                        required value={formData.name} 
+                                        onChange={e => setFormData({ ...formData, name: e.target.value })} 
+                                        className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-5 text-sm font-bold text-slate-800 focus:outline-none focus:border-orange-500 transition-all"
+                                        placeholder="Full Legal Name"
+                                    />
+                                </div>
+                                <div className="space-y-4">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-4">Corporate Role</label>
+                                    <input 
+                                        required value={formData.role} 
+                                        onChange={e => setFormData({ ...formData, role: e.target.value })} 
+                                        className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-5 text-sm font-bold text-slate-800 focus:outline-none focus:border-orange-500 transition-all"
+                                        placeholder="Lead Systems Designer"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-4">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-4">Strategic Narrative (Bio)</label>
+                                <textarea 
+                                    required rows={4} 
+                                    value={formData.bio} 
+                                    onChange={e => setFormData({ ...formData, bio: e.target.value })} 
+                                    className="w-full bg-slate-50 border-2 border-slate-100 rounded-[2rem] px-8 py-6 text-sm font-medium leading-relaxed text-slate-600 focus:outline-none focus:border-orange-500 transition-all resize-none"
+                                    placeholder="Describe their strategic impact..."
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                <div className="space-y-4">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-4 lg:text-center block">LinkedIn Link</label>
+                                    <div className="relative">
+                                        <Linkedin className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-[#0077b5]" />
+                                        <input 
+                                            value={formData.linkedIn} 
+                                            onChange={e => setFormData({ ...formData, linkedIn: e.target.value })} 
+                                            className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl pl-14 pr-4 py-4 text-[10px] font-bold focus:outline-none focus:border-orange-500 transition-all"
+                                            placeholder="linkedin.com/in/..."
+                                        />
+                                    </div>
+                                </div>
+                                <div className="space-y-4">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-4 lg:text-center block">X (Twitter)</label>
+                                    <div className="relative">
+                                        <Twitter className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-900" />
+                                        <input 
+                                            value={formData.twitter} 
+                                            onChange={e => setFormData({ ...formData, twitter: e.target.value })} 
+                                            className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl pl-14 pr-4 py-4 text-[10px] font-bold focus:outline-none focus:border-orange-500 transition-all"
+                                            placeholder="x.com/..."
+                                        />
+                                    </div>
+                                </div>
+                                <div className="space-y-4">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-4 lg:text-center block">Global Order</label>
+                                    <input 
+                                        type="number" 
+                                        value={formData.order} 
+                                        onChange={e => setFormData({ ...formData, order: parseInt(e.target.value) })} 
+                                        className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-4 text-sm font-black text-slate-900 focus:outline-none focus:border-orange-500 transition-all text-center"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Visibility Toggle */}
+                            <div className="flex items-center gap-8 bg-slate-50 p-8 rounded-[2.5rem] border-2 border-slate-100 group/status">
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, published: !formData.published })}
+                                    className={cn(
+                                        "w-12 h-12 rounded-2xl flex items-center justify-center transition-all border-2",
+                                        formData.published ? "bg-orange-500 border-orange-500 shadow-xl shadow-orange-500/20" : "bg-white border-slate-200"
+                                    )}
+                                >
+                                    <MoveUpRight className={cn("w-6 h-6", formData.published ? "text-white" : "text-slate-300")} />
+                                </button>
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">Broadcast Profile to Network</span>
+                                    <span className="text-[9px] font-bold text-slate-400 mt-1 uppercase tracking-widest">{formData.published ? 'Active Deployment' : 'Restricted Draft'}</span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    {/* Sticky Footer */}
+                    <div className="p-8 md:px-12 bg-slate-50/50 border-t border-slate-100 flex justify-end gap-5 shrink-0">
+                        <button 
+                            type="button" onClick={onClose} 
+                            className="px-8 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-red-500 transition-all"
+                        >
+                            Abort Process
+                        </button>
+                        <button
+                            disabled={loading || uploading}
+                            onClick={handleSubmit}
+                            className="inline-flex items-center justify-center gap-3 bg-slate-950 text-white px-12 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-orange-600 transition-all shadow-2xl shadow-slate-300 active:scale-95 disabled:opacity-50 min-w-[220px]"
+                        >
+                            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Shield className="w-4 h-4" />}
+                            <span>{loading ? "Synchronizing..." : member ? "Update Node" : "Confirm Onboarding"}</span>
+                        </button>
+                    </div>
                 </div>
-            </div>
+            </motion.div>
         </div>
-    </div>
     );
 }
+
