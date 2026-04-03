@@ -259,15 +259,15 @@ export default function WorkManagementPage() {
     }, [projects, searchQuery]);
 
     return (
-        <div className="space-y-8 pb-20">
+        <div className="space-y-8 pb-24 md:pb-20">
             {/* Header Section */}
             <motion.header 
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex flex-col lg:flex-row lg:items-center justify-between gap-6"
+                className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 md:gap-6"
             >
                 <div className="space-y-1">
-                    <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-3">
+                    <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-3">
                         <LayoutGrid className="w-8 h-8 text-orange-500" />
                         Portfolio Management
                     </h2>
@@ -307,7 +307,113 @@ export default function WorkManagementPage() {
                 transition={{ delay: 0.1 }}
                 className="bg-white border border-slate-200 shadow-2xl shadow-slate-200/50 rounded-[2.5rem] overflow-hidden"
             >
-                <div className="overflow-x-auto custom-scrollbar">
+                <div className="md:hidden p-4 space-y-4 bg-slate-50/40">
+                    {loading ? (
+                        <div className="px-6 py-20 text-center">
+                            <div className="flex flex-col items-center gap-4">
+                                <Loader2 className="w-10 h-10 text-orange-500 animate-spin" />
+                                <p className="text-sm font-bold text-slate-400 tracking-widest uppercase">Initializing Datagrid...</p>
+                            </div>
+                        </div>
+                    ) : filteredProjects.length === 0 ? (
+                        <div className="px-6 py-20 text-center">
+                            <div className="flex flex-col items-center gap-4 opacity-40">
+                                <LayoutGrid className="w-16 h-16 text-slate-300" />
+                                <p className="text-slate-400 font-bold uppercase tracking-widest">No matching infrastructure found</p>
+                            </div>
+                        </div>
+                    ) : (
+                        filteredProjects.map((project, index) => (
+                            <motion.div
+                                key={project.id}
+                                initial={{ opacity: 0, y: 8 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.04 }}
+                                className="rounded-[1.75rem] border border-slate-200 bg-white p-4 shadow-sm"
+                            >
+                                <div className="flex gap-4">
+                                    <div className="relative w-16 h-16 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 shrink-0 shadow-inner">
+                                        {project.thumbnail ? (
+                                            <img src={project.thumbnail} alt="" className="w-full h-full object-cover" />
+                                        ) : (
+                                            <div className="flex items-center justify-center w-full h-full text-slate-300">
+                                                <ImageIcon className="w-6 h-6" />
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                        <div className="flex items-start justify-between gap-3">
+                                            <div className="min-w-0">
+                                                <h3 className="font-bold text-slate-900 truncate">{project.title}</h3>
+                                                <p className="text-[10px] text-slate-400 font-mono tracking-tight truncate">/{project.slug}</p>
+                                            </div>
+                                            {project.featured && (
+                                                <span className="flex items-center gap-1 text-[8px] bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-black uppercase shrink-0">
+                                                    <Zap className="w-2 h-2 fill-current" /> Premium
+                                                </span>
+                                            )}
+                                        </div>
+                                        <p className="text-sm font-semibold text-slate-700 mt-2">{project.client}</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex flex-wrap gap-1.5 mt-4">
+                                    {project.category.map((cat, i) => (
+                                        <span key={i} className="text-[9px] bg-slate-100/80 text-slate-500 px-2.5 py-1 rounded-lg font-bold tracking-tight border border-slate-200">
+                                            {cat}
+                                        </span>
+                                    ))}
+                                </div>
+
+                                <div className="flex flex-wrap gap-2 mt-4">
+                                    <button
+                                        onClick={() => handleTogglePublish(project.id)}
+                                        className={cn(
+                                            "flex items-center gap-2 px-3 py-2 rounded-xl border transition-all text-[10px] font-black uppercase tracking-widest",
+                                            project.published
+                                                ? "bg-emerald-50 text-emerald-600 border-emerald-100"
+                                                : "bg-orange-50 text-orange-600 border-orange-100"
+                                        )}
+                                    >
+                                        {project.published ? <Globe className="w-3 h-3" /> : <Monitor className="w-3 h-3" />}
+                                        {project.published ? "Live" : "Draft"}
+                                    </button>
+                                    <button
+                                        onClick={() => handleToggleFeatured(project.id)}
+                                        className={cn(
+                                            "p-2 rounded-xl border transition-all",
+                                            project.featured
+                                                ? "bg-purple-50 text-purple-600 border-purple-100"
+                                                : "bg-slate-50 text-slate-300 border-slate-100"
+                                        )}
+                                        title={project.featured ? "Featured" : "Regular"}
+                                    >
+                                        <Zap className={cn("w-4 h-4", project.featured && "fill-current")} />
+                                    </button>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-2 mt-4">
+                                    <button
+                                        onClick={() => handleEdit(project)}
+                                        className="inline-flex items-center justify-center gap-2 p-3 bg-white hover:bg-slate-900 hover:text-white border border-slate-200 rounded-2xl transition-all shadow-sm active:scale-95"
+                                    >
+                                        <Edit3 className="w-4 h-4" />
+                                        Edit
+                                    </button>
+                                    <button
+                                        onClick={() => handleDelete(project.id)}
+                                        className="inline-flex items-center justify-center gap-2 p-3 bg-white hover:bg-red-500 hover:text-white border border-slate-200 hover:border-red-500 rounded-2xl transition-all shadow-sm active:scale-95"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                        Delete
+                                    </button>
+                                </div>
+                            </motion.div>
+                        ))
+                    )}
+                </div>
+
+                <div className="hidden md:block overflow-x-auto custom-scrollbar">
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-slate-50/50 border-b border-slate-100">
@@ -439,7 +545,7 @@ export default function WorkManagementPage() {
 
             {/* Professional Modal System */}
             {isMounted && modalOpen && createPortal(
-                    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
+                    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-3 md:p-4">
                         {/* Backdrop */}
                         <motion.div 
                             initial={{ opacity: 0 }}
@@ -454,7 +560,7 @@ export default function WorkManagementPage() {
                             initial={{ opacity: 0, scale: 0.9, y: 20 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                            className="relative w-full max-w-5xl bg-white rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] border border-white/20 overflow-hidden flex flex-col md:flex-row max-h-[90vh]"
+                            className="relative w-full max-w-5xl bg-white rounded-[2rem] md:rounded-[3rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.3)] border border-white/20 overflow-hidden flex flex-col md:flex-row max-h-[92vh]"
                         >
                             {/* Left Side: Visual/Context */}
                             <div className="hidden md:flex md:w-1/3 bg-slate-900 p-12 flex-col justify-between text-white relative overflow-hidden shrink-0">
@@ -493,7 +599,7 @@ export default function WorkManagementPage() {
 
                             {/* Right Side: Form */}
                             <div className="flex-1 flex flex-col min-w-0 bg-white">
-                                <div className="flex items-center justify-between p-8 md:px-12 border-b border-slate-100 shrink-0">
+                                <div className="flex items-center justify-between p-5 sm:p-6 md:px-12 border-b border-slate-100 shrink-0">
                                     <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Project Parameters</span>
                                     <button 
                                         onClick={() => setModalOpen(false)}
@@ -503,7 +609,7 @@ export default function WorkManagementPage() {
                                     </button>
                                 </div>
 
-                                <div className="flex-1 overflow-y-auto custom-scrollbar p-8 md:p-12 space-y-10">
+                                <div className="flex-1 overflow-y-auto custom-scrollbar p-5 sm:p-6 md:p-12 space-y-8 md:space-y-10">
                                     <form id="project-form" onSubmit={handleAddProject} className="space-y-10">
                                         {/* Core Identity */}
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -753,11 +859,11 @@ export default function WorkManagementPage() {
                                     </form>
                                 </div>
 
-                                <div className="p-8 md:px-12 bg-slate-50/50 border-t border-slate-100 flex items-center justify-end gap-5 shrink-0">
+                                <div className="p-5 sm:p-6 md:px-12 bg-slate-50/50 border-t border-slate-100 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3 sm:gap-5 shrink-0">
                                     <button
                                         type="button"
                                         onClick={() => setModalOpen(false)}
-                                        className="px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-red-500 transition-all active:scale-95"
+                                        className="w-full sm:w-auto px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-red-500 transition-all active:scale-95"
                                     >
                                         Abort
                                     </button>
@@ -765,7 +871,7 @@ export default function WorkManagementPage() {
                                         type="submit"
                                         form="project-form"
                                         disabled={isSubmitting}
-                                        className="inline-flex items-center justify-center gap-3 bg-slate-950 text-white px-12 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-orange-600 transition-all shadow-2xl shadow-slate-300 active:scale-95 disabled:opacity-50 disabled:pointer-events-none min-w-[200px]"
+                                        className="inline-flex w-full sm:w-auto items-center justify-center gap-3 bg-slate-950 text-white px-12 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-orange-600 transition-all shadow-2xl shadow-slate-300 active:scale-95 disabled:opacity-50 disabled:pointer-events-none min-w-[200px]"
                                     >
                                         {isSubmitting ? (
                                             <>

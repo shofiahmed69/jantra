@@ -99,13 +99,12 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
                 </div>
             </aside>
 
-            <nav className="fixed bottom-0 left-0 right-0 
-  bg-white border-t border-gray-200 
-  flex md:hidden z-50">
+            <nav className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-gray-200 flex md:hidden z-50 pb-[max(env(safe-area-inset-bottom),0px)]">
                 <a href="/admin/dashboard"
-                    className="flex-1 flex flex-col items-center 
-    justify-center py-3 text-xs text-gray-500 
-    hover:text-orange-500">
+                    className={cn(
+                        "flex-1 flex flex-col items-center justify-center py-3 text-[10px] font-semibold transition-colors",
+                        pathname === "/admin/dashboard" ? "text-orange-500" : "text-gray-500 hover:text-orange-500"
+                    )}>
                     <svg className="w-5 h-5 mb-1" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round"
@@ -115,9 +114,10 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
                     <span>Home</span>
                 </a>
                 <a href="/admin/leads"
-                    className="flex-1 flex flex-col items-center 
-    justify-center py-3 text-xs text-gray-500 
-    hover:text-orange-500">
+                    className={cn(
+                        "flex-1 flex flex-col items-center justify-center py-3 text-[10px] font-semibold transition-colors",
+                        pathname === "/admin/leads" ? "text-orange-500" : "text-gray-500 hover:text-orange-500"
+                    )}>
                     <svg className="w-5 h-5 mb-1" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round"
@@ -126,10 +126,11 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
                     </svg>
                     <span>Leads</span>
                 </a>
-                <a href="/admin/applications"
-                    className="flex-1 flex flex-col items-center 
-    justify-center py-3 text-xs text-gray-500 
-    hover:text-orange-500">
+                <a href="/admin/careers"
+                    className={cn(
+                        "flex-1 flex flex-col items-center justify-center py-3 text-[10px] font-semibold transition-colors",
+                        pathname === "/admin/careers" ? "text-orange-500" : "text-gray-500 hover:text-orange-500"
+                    )}>
                     <svg className="w-5 h-5 mb-1" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round"
@@ -138,10 +139,24 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
                     </svg>
                     <span>Apps</span>
                 </a>
+                <a href="/admin/work"
+                    className={cn(
+                        "flex-1 flex flex-col items-center justify-center py-3 text-[10px] font-semibold transition-colors",
+                        pathname === "/admin/work" ? "text-orange-500" : "text-gray-500 hover:text-orange-500"
+                    )}>
+                    <svg className="w-5 h-5 mb-1" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M3 7h18M6 7V5a2 2 0 012-2h8a2 2 0 012 2v2m-1 0v11a2 2 0 01-2 2H8a2 2 0 01-2-2V7h10z" />
+                    </svg>
+                    <span>Work</span>
+                </a>
                 <a href="/admin/blog"
-                    className="flex-1 flex flex-col items-center 
-    justify-center py-3 text-xs text-gray-500 
-    hover:text-orange-500">
+                    className={cn(
+                        "flex-1 flex flex-col items-center justify-center py-3 text-[10px] font-semibold transition-colors",
+                        pathname === "/admin/blog" ? "text-orange-500" : "text-gray-500 hover:text-orange-500"
+                    )}>
                     <svg className="w-5 h-5 mb-1" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round"
@@ -150,51 +165,37 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
                     </svg>
                     <span>Blog</span>
                 </a>
-                <a href="/admin/team"
-                    className="flex-1 flex flex-col items-center 
-    justify-center py-3 text-xs text-gray-500 
-    hover:text-orange-500">
-                    <svg className="w-5 h-5 mb-1" fill="none"
-                        stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                    <span>Team</span>
-                </a>
             </nav>
 
 
             {/* Main Content */}
-            <main className="flex-1 md:ml-72 p-4 md:p-8 pb-20 md:pb-0">
-                <header className="flex md:hidden items-center 
-  justify-between px-4 py-3 bg-white 
-  border-b sticky top-0 z-40">
-                    <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 bg-orange-500 rounded-lg" />
-                        <span className="font-bold text-sm">JANTRA Admin</span>
+            <main className="flex-1 md:ml-72 p-4 md:p-8 pb-24 md:pb-0">
+                <header className="flex md:hidden items-center justify-between px-4 py-3 bg-white/90 backdrop-blur-xl rounded-[1.25rem] border border-white sticky top-3 z-40 mb-4 shadow-lg shadow-slate-200/40">
+                    <div className="flex items-center gap-2 min-w-0">
+                        <div className="w-7 h-7 bg-orange-500 rounded-lg shrink-0" />
+                        <span className="font-bold text-sm truncate">JANTRA Admin</span>
                     </div>
                     <a href="/admin/dashboard"
-                        className="text-xs text-gray-500">
+                        className="text-xs text-gray-500 shrink-0">
                         Dashboard
                     </a>
                 </header>
                 {/* Modernized Global Header */}
-                <header className="mb-10 flex items-center justify-between bg-white/40 backdrop-blur-3xl p-6 rounded-[2rem] border border-white/60 shadow-lg shadow-slate-200/40">
-                    <div className="flex items-center gap-5">
-                        <div className="relative group">
+                <header className="mb-6 md:mb-10 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between bg-white/40 backdrop-blur-3xl p-4 sm:p-6 rounded-[1.75rem] md:rounded-[2rem] border border-white/60 shadow-lg shadow-slate-200/40">
+                    <div className="flex items-start sm:items-center gap-4 sm:gap-5 min-w-0">
+                        <div className="relative group shrink-0">
                             <div className="absolute inset-0 bg-orange-500 rounded-2xl blur-lg opacity-20 group-hover:opacity-40 transition-opacity" />
-                            <div className="relative w-14 h-14 rounded-2xl bg-slate-900 flex items-center justify-center text-white text-xl font-black shadow-2xl border border-white/10 group-hover:scale-105 transition-transform">
+                            <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-slate-900 flex items-center justify-center text-white text-lg sm:text-xl font-black shadow-2xl border border-white/10 group-hover:scale-105 transition-transform">
                                 {user?.email?.[0].toUpperCase()}
                             </div>
                             <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white rounded-full" />
                         </div>
-                        <div className="space-y-0.5">
-                            <div className="flex items-center gap-2">
-                                <h1 className="text-xl font-black text-slate-900 tracking-tight">MISSION CONTROL</h1>
+                        <div className="space-y-0.5 min-w-0">
+                            <div className="flex flex-wrap items-center gap-2">
+                                <h1 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight">MISSION CONTROL</h1>
                                 <span className="text-[10px] bg-orange-500 text-white px-2 py-0.5 rounded-full font-black tracking-widest">v4.0</span>
                             </div>
-                            <p className="text-xs text-slate-500 font-bold uppercase tracking-widest opacity-60">Welcome Back, <span className="text-slate-900">{user?.email}</span></p>
+                            <p className="text-[10px] sm:text-xs text-slate-500 font-bold uppercase tracking-widest opacity-60 break-all">Welcome Back, <span className="text-slate-900">{user?.email}</span></p>
                         </div>
                     </div>
 
