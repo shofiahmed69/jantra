@@ -45,6 +45,12 @@ interface Project {
 
 const AVAILABLE_CATEGORIES = ["Web", "Mobile", "AI", "SaaS", "Automation", "Embedded", "Cloud"];
 
+const normalizeUrl = (value: string) => {
+    const trimmed = value.trim();
+    if (!trimmed) return "";
+    return /^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(trimmed) ? trimmed : `https://${trimmed}`;
+};
+
 export default function WorkManagementPage() {
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
@@ -131,10 +137,15 @@ export default function WorkManagementPage() {
         e.preventDefault();
         setIsSubmitting(true);
         try {
+            const payload = {
+                ...formData,
+                liveUrl: normalizeUrl(formData.liveUrl),
+            };
+
             if (editingId) {
-                await api.put(`/admin/work/${editingId}`, formData);
+                await api.put(`/admin/work/${editingId}`, payload);
             } else {
-                await api.post("/admin/work", formData);
+                await api.post("/admin/work", payload);
             }
             setModalOpen(false);
             setEditingId(null);
@@ -549,9 +560,11 @@ export default function WorkManagementPage() {
                                                 <div className="relative">
                                                      <Globe className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 w-4 h-4" />
                                                     <input
-                                                        type="url"
+                                                        type="text"
+                                                        inputMode="url"
                                                         value={formData.liveUrl}
                                                         onChange={(e) => setFormData({ ...formData, liveUrl: e.target.value })}
+                                                        onBlur={(e) => setFormData({ ...formData, liveUrl: normalizeUrl(e.target.value) })}
                                                         className="w-full bg-slate-50 border-2 border-slate-100 rounded-[1.5rem] pl-12 pr-5 py-4 text-sm font-bold focus:outline-none focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 transition-all font-mono text-slate-500"
                                                         placeholder="https://cloud.engine.com"
                                                     />

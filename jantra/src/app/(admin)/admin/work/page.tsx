@@ -27,6 +27,12 @@ interface Project {
     createdAt: string;
 }
 
+const normalizeUrl = (value: string) => {
+    const trimmed = value.trim();
+    if (!trimmed) return "";
+    return /^[a-zA-Z][a-zA-Z\d+\-.]*:\/\//.test(trimmed) ? trimmed : `https://${trimmed}`;
+};
+
 export default function WorkManagementPage() {
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
@@ -167,7 +173,7 @@ export default function WorkManagementPage() {
         e.preventDefault();
         setIsSubmitting(true);
         try {
-            let thumbnailUrl = formData.thumbnail;
+            let thumbnailUrl = normalizeUrl(formData.thumbnail);
             if (imageFile) {
                 const uploadedUrl = await uploadImage();
                 if (uploadedUrl) thumbnailUrl = uploadedUrl;
@@ -176,6 +182,8 @@ export default function WorkManagementPage() {
             const payload = {
                 ...formData,
                 thumbnail: thumbnailUrl,
+                liveUrl: normalizeUrl(formData.liveUrl),
+                githubUrl: normalizeUrl(formData.githubUrl),
                 category: formData.categories
                     .split(",")
                     .map((c) => c.trim())
@@ -403,10 +411,12 @@ export default function WorkManagementPage() {
                                 <div className="space-y-1">
                                     <label className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Or paste image URL</label>
                                     <input
-                                        type="url"
+                                        type="text"
+                                        inputMode="url"
                                         placeholder="https://example.com/image.jpg"
                                         value={formData.thumbnail}
                                         onChange={(e) => setFormData({ ...formData, thumbnail: e.target.value })}
+                                        onBlur={(e) => setFormData({ ...formData, thumbnail: normalizeUrl(e.target.value) })}
                                         className={inputClassName}
                                     />
                                 </div>
@@ -464,10 +474,12 @@ export default function WorkManagementPage() {
                                 <div className="space-y-1">
                                     <label className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">Live Project URL</label>
                                     <input
-                                        type="url"
+                                        type="text"
+                                        inputMode="url"
                                         placeholder="https://yourproject.com"
                                         value={formData.liveUrl}
                                         onChange={(e) => setFormData({ ...formData, liveUrl: e.target.value })}
+                                        onBlur={(e) => setFormData({ ...formData, liveUrl: normalizeUrl(e.target.value) })}
                                         className={inputClassName}
                                     />
                                 </div>
@@ -476,10 +488,12 @@ export default function WorkManagementPage() {
                                 <div className="space-y-1">
                                     <label className="text-xs font-bold text-slate-500 uppercase tracking-widest px-1">GitHub URL (optional)</label>
                                     <input
-                                        type="url"
+                                        type="text"
+                                        inputMode="url"
                                         placeholder="https://github.com/yourrepo"
                                         value={formData.githubUrl}
                                         onChange={(e) => setFormData({ ...formData, githubUrl: e.target.value })}
+                                        onBlur={(e) => setFormData({ ...formData, githubUrl: normalizeUrl(e.target.value) })}
                                         className={inputClassName}
                                     />
                                 </div>
