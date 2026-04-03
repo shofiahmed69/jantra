@@ -27,6 +27,8 @@ interface TeamMember {
     role: string;
     department?: string;
     teamId?: string | null;
+    workEmail?: string | null;
+    employeeActive?: boolean;
     bio: string;
     avatar?: string;
     linkedIn?: string;
@@ -334,6 +336,9 @@ function TeamMemberModal({ member, onClose, onSuccess }: { member: TeamMember | 
         role: member?.role || "",
         department: member?.department || "Operations",
         teamId: member?.teamId || "",
+        workEmail: member?.workEmail || "",
+        employeePassword: "",
+        employeeActive: member?.employeeActive ?? true,
         bio: member?.bio || "",
         avatar: member?.avatar || "",
         linkedIn: member?.linkedIn || "",
@@ -510,6 +515,29 @@ function TeamMemberModal({ member, onClose, onSuccess }: { member: TeamMember | 
                                 </div>
                             </div>
 
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                <div className="space-y-4">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-4">Employee Login Email</label>
+                                    <input
+                                        type="email"
+                                        value={formData.workEmail}
+                                        onChange={e => setFormData({ ...formData, workEmail: e.target.value })}
+                                        className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-5 text-sm font-bold text-slate-800 focus:outline-none focus:border-orange-500 transition-all"
+                                        placeholder="employee@jantra.com"
+                                    />
+                                </div>
+                                <div className="space-y-4">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-4">{member ? "Reset Employee Password" : "Employee Password"}</label>
+                                    <input
+                                        type="password"
+                                        value={formData.employeePassword}
+                                        onChange={e => setFormData({ ...formData, employeePassword: e.target.value })}
+                                        className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-5 text-sm font-bold text-slate-800 focus:outline-none focus:border-orange-500 transition-all"
+                                        placeholder={member ? "Leave blank to keep current password" : "Minimum 6 characters"}
+                                    />
+                                </div>
+                            </div>
+
                             <div className="space-y-4">
                                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-4">Strategic Narrative (Bio)</label>
                                 <textarea 
@@ -572,6 +600,23 @@ function TeamMemberModal({ member, onClose, onSuccess }: { member: TeamMember | 
                                 <div className="flex flex-col">
                                     <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">Broadcast Profile to Network</span>
                                     <span className="text-[9px] font-bold text-slate-400 mt-1 uppercase tracking-widest">{formData.published ? 'Active Deployment' : 'Restricted Draft'}</span>
+                                </div>
+                            </div>
+
+                            <div className="flex items-center gap-8 bg-slate-50 p-8 rounded-[2.5rem] border-2 border-slate-100 group/status">
+                                <button
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, employeeActive: !formData.employeeActive })}
+                                    className={cn(
+                                        "w-12 h-12 rounded-2xl flex items-center justify-center transition-all border-2",
+                                        formData.employeeActive ? "bg-emerald-500 border-emerald-500 shadow-xl shadow-emerald-500/20" : "bg-white border-slate-200"
+                                    )}
+                                >
+                                    <Shield className={cn("w-6 h-6", formData.employeeActive ? "text-white" : "text-slate-300")} />
+                                </button>
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">Employee Report Access</span>
+                                    <span className="text-[9px] font-bold text-slate-400 mt-1 uppercase tracking-widest">{formData.employeeActive ? 'Enabled For Login' : 'Access Disabled'}</span>
                                 </div>
                             </div>
                         </form>
