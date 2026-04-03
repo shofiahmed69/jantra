@@ -151,8 +151,6 @@ export default function WorkManagementPage() {
                 features: normalizeTextList(formData.features),
                 techStack: normalizeTextList(formData.techStack),
                 results: formData.results.trim(),
-                liveUrl: normalizeUrl(formData.liveUrl),
-                githubUrl: "",
                 featured: formData.featured,
                 published: formData.published,
                 order: 0,
