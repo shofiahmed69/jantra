@@ -8,21 +8,15 @@ import {
     Trash2,
     X,
     User,
-    Upload,
     Loader2,
-    Check,
     Linkedin,
     Twitter,
     Sparkles,
     Shield,
     Users,
     Search,
-    ChevronLeft,
-    ChevronRight,
     Camera,
-    LayoutGrid,
-    MoveUpRight,
-    ExternalLink
+    MoveUpRight
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -31,12 +25,28 @@ interface TeamMember {
     id: string;
     name: string;
     role: string;
+    department?: string;
+    teamId?: string | null;
     bio: string;
     avatar?: string;
     linkedIn?: string;
     twitter?: string;
     order: number;
     published: boolean;
+    reportStats?: {
+        reportCount: number;
+        approvedCount: number;
+        latestStatus: string;
+        latestSubmittedAt?: string | null;
+    };
+    latestReport?: {
+        id: string;
+        title: string;
+        periodType: string;
+        status: string;
+        blockers?: string;
+        submittedAt?: string | null;
+    } | null;
 }
 
 export default function TeamManagementPage() {
@@ -50,8 +60,8 @@ export default function TeamManagementPage() {
     const fetchTeam = async () => {
         setLoading(true);
         try {
-            const response = await api.get("/team");
-            setTeam(response.data || []);
+            const response = await api.get("/reports/team-overview");
+            setTeam(response.data.team || []);
         } catch (error) {
             console.error("Failed to fetch team", error);
         } finally {
@@ -78,7 +88,8 @@ export default function TeamManagementPage() {
     const filteredTeam = useMemo(() => {
         return team.filter(m => 
             m.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-            m.role.toLowerCase().includes(searchQuery.toLowerCase())
+            m.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (m.department || "").toLowerCase().includes(searchQuery.toLowerCase())
         ).sort((a, b) => a.order - b.order);
     }, [team, searchQuery]);
 
@@ -133,7 +144,7 @@ export default function TeamManagementPage() {
                             <tr className="bg-slate-50/50 border-b border-slate-100">
                                 <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Identity Profile</th>
                                 <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Positioning</th>
-                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-center">Network Visibility</th>
+                                <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-center">WorkStream</th>
                                 <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-right">Operations</th>
                             </tr>
                         </thead>
@@ -192,6 +203,16 @@ export default function TeamManagementPage() {
                                                 <span className="inline-flex text-[10px] bg-slate-900 text-white px-3 py-1.5 rounded-lg font-black uppercase tracking-widest shadow-lg shadow-slate-200">
                                                     {member.role}
                                                 </span>
+                                                <div className="flex flex-wrap gap-2">
+                                                    <span className="text-[9px] bg-orange-50 text-orange-700 px-2.5 py-1 rounded-full font-black uppercase tracking-widest">
+                                                        {member.department || "Operations"}
+                                                    </span>
+                                                    {member.teamId && (
+                                                        <span className="text-[9px] bg-slate-100 text-slate-500 px-2.5 py-1 rounded-full font-black uppercase tracking-widest">
+                                                            {member.teamId}
+                                                        </span>
+                                                    )}
+                                                </div>
                                                 <div className="flex items-center gap-3">
                                                     {member.linkedIn && (
                                                         <a href={member.linkedIn} target="_blank" rel="noopener noreferrer" className="p-1.5 bg-white border border-slate-100 rounded-lg text-[#0077b5] hover:bg-[#0077b5] hover:text-white transition-all shadow-sm">
@@ -208,14 +229,24 @@ export default function TeamManagementPage() {
                                         </td>
                                         <td className="px-8 py-6">
                                             <div className="flex items-center justify-center">
-                                                <div className={cn(
-                                                    "inline-flex items-center gap-2 px-4 py-2 rounded-2xl border text-[10px] font-black uppercase tracking-widest transition-all",
-                                                    member.published 
-                                                        ? "bg-emerald-50 text-emerald-600 border-emerald-100" 
-                                                        : "bg-slate-50 text-slate-400 border-slate-100"
-                                                )}>
-                                                    <div className={cn("w-1.5 h-1.5 rounded-full", member.published ? "bg-emerald-500 animate-pulse" : "bg-slate-300")} />
-                                                    {member.published ? 'Active Node' : 'Private Mode'}
+                                                <div className="rounded-[1.5rem] bg-slate-50 border border-slate-100 px-4 py-3 min-w-[220px]">
+                                                    <div className="flex items-center justify-between gap-3">
+                                                        <span className={cn(
+                                                            "inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest transition-all",
+                                                            member.latestReport?.status === "APPROVED" && "bg-emerald-50 text-emerald-700",
+                                                            member.latestReport?.status === "SUBMITTED" && "bg-orange-50 text-orange-700",
+                                                            member.latestReport?.status === "NEEDS_REVISION" && "bg-red-50 text-red-700",
+                                                            !member.latestReport && "bg-slate-100 text-slate-500"
+                                                        )}>
+                                                            {member.latestReport?.status?.replace("_", " ") || "No Reports"}
+                                                        </span>
+                                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                                            {member.reportStats?.reportCount || 0} Total
+                                                        </span>
+                                                    </div>
+                                                    <p className="mt-3 text-xs font-semibold text-slate-700 line-clamp-2">
+                                                        {member.latestReport?.title || "No report activity recorded yet."}
+                                                    </p>
                                                 </div>
                                             </div>
                                         </td>
@@ -301,6 +332,8 @@ function TeamMemberModal({ member, onClose, onSuccess }: { member: TeamMember | 
     const [formData, setFormData] = useState({
         name: member?.name || "",
         role: member?.role || "",
+        department: member?.department || "Operations",
+        teamId: member?.teamId || "",
         bio: member?.bio || "",
         avatar: member?.avatar || "",
         linkedIn: member?.linkedIn || "",
@@ -456,6 +489,27 @@ function TeamMemberModal({ member, onClose, onSuccess }: { member: TeamMember | 
                                 </div>
                             </div>
 
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                <div className="space-y-4">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-4">Department</label>
+                                    <input
+                                        required value={formData.department}
+                                        onChange={e => setFormData({ ...formData, department: e.target.value })}
+                                        className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-5 text-sm font-bold text-slate-800 focus:outline-none focus:border-orange-500 transition-all"
+                                        placeholder="Operations"
+                                    />
+                                </div>
+                                <div className="space-y-4">
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-4">Team ID</label>
+                                    <input
+                                        value={formData.teamId}
+                                        onChange={e => setFormData({ ...formData, teamId: e.target.value })}
+                                        className="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl px-6 py-5 text-sm font-bold text-slate-800 focus:outline-none focus:border-orange-500 transition-all"
+                                        placeholder="alpha-core"
+                                    />
+                                </div>
+                            </div>
+
                             <div className="space-y-4">
                                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-4">Strategic Narrative (Bio)</label>
                                 <textarea 
@@ -545,4 +599,3 @@ function TeamMemberModal({ member, onClose, onSuccess }: { member: TeamMember | 
         </div>
     );
 }
-

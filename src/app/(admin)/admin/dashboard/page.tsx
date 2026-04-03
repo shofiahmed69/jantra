@@ -12,10 +12,10 @@ import {
     ArrowRight,
     Mail,
     MessageSquare,
-    X
+    X,
+    ShieldAlert
 } from "lucide-react";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
 
 interface DashboardStats {
     counts: {
@@ -23,14 +23,47 @@ interface DashboardStats {
         blogs: number;
         projects: number;
         applications: number;
+        reports: number;
     };
-    recentLeads: any[];
+    recentLeads: LeadRecord[];
+    recentReports: ReportSummary[];
+    reportAnalytics: {
+        summary: {
+            pendingReports: number;
+            criticalBlockers: number;
+        };
+        organizationHealth: {
+            complianceRate: number;
+            averageApprovalHours: number;
+        };
+    };
+}
+
+interface LeadRecord {
+    id: string;
+    name: string;
+    email: string;
+    service: string;
+    status: string;
+    company?: string | null;
+    country?: string | null;
+    budget?: string | null;
+    description: string;
+    referral?: string | null;
+    createdAt: string;
+}
+
+interface ReportSummary {
+    id: string;
+    title: string;
+    status: string;
+    createdAt: string;
 }
 
 export default function DashboardPage() {
     const [stats, setStats] = useState<DashboardStats | null>(null);
     const [loading, setLoading] = useState(true);
-    const [selectedLead, setSelectedLead] = useState<any | null>(null);
+    const [selectedLead, setSelectedLead] = useState<LeadRecord | null>(null);
 
     useEffect(() => {
         const fetchStats = async () => {
@@ -59,6 +92,7 @@ export default function DashboardPage() {
         { label: "Applicants", value: stats?.counts.applications || 0, icon: Users, color: "text-blue-600", bg: "bg-blue-100" },
         { label: "Blog Posts", value: stats?.counts.blogs || 0, icon: FileText, color: "text-emerald-600", bg: "bg-emerald-100" },
         { label: "Projects", value: stats?.counts.projects || 0, icon: Briefcase, color: "text-purple-600", bg: "bg-purple-100" },
+        { label: "Work Reports", value: stats?.counts.reports || 0, icon: ShieldAlert, color: "text-slate-900", bg: "bg-slate-100" },
     ];
 
     return (
@@ -69,7 +103,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4 md:gap-6">
                 {statCards.map((stat, i) => (
                     <div key={i} className="relative group p-[1px] rounded-[2rem] md:rounded-[2.5rem] bg-gradient-to-br from-white via-white to-slate-200 shadow-xl shadow-slate-200/50 hover:-translate-y-2 transition-all duration-500 overflow-hidden">
                         <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -109,7 +143,7 @@ export default function DashboardPage() {
                                 <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">No Recent Signals</p>
                             </div>
                         ) : (
-                            stats?.recentLeads.map((lead: any, i: number) => (
+                            stats?.recentLeads.map((lead: LeadRecord, i: number) => (
                                 <div
                                     key={i}
                                     onClick={() => setSelectedLead(lead)}
@@ -145,6 +179,16 @@ export default function DashboardPage() {
                         <div className="w-12 h-1 h-1.5 bg-orange-500 rounded-full mb-8" />
                         <h3 className="text-2xl font-black text-white mb-8">System<br/>Diagnostics</h3>
                         <div className="space-y-6">
+                            <Link
+                                href="/admin/report"
+                                className="flex items-center justify-between rounded-[1.6rem] border border-orange-400/20 bg-orange-500/10 px-4 py-4 transition hover:bg-orange-500/15"
+                            >
+                                <div>
+                                    <p className="text-[10px] font-black uppercase tracking-[0.25em] text-orange-300">WorkStream</p>
+                                    <p className="mt-2 text-sm font-semibold text-white">Open reporting command center</p>
+                                </div>
+                                <ArrowRight className="w-4 h-4 text-orange-300" />
+                            </Link>
                             <div className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm">
                                 <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">API Engine</span>
                                 <span className="text-[10px] font-black text-emerald-400 flex items-center gap-2 uppercase tracking-widest">
@@ -160,11 +204,21 @@ export default function DashboardPage() {
                                 </span>
                             </div>
                             <div className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-sm">
-                                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">SMTP Network</span>
-                                <span className="text-[10px] font-black text-emerald-400 flex items-center gap-2 uppercase tracking-widest">
-                                    <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]" />
-                                    Active
+                                <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Review Queue</span>
+                                <span className="text-[10px] font-black text-orange-300 flex items-center gap-2 uppercase tracking-widest">
+                                    <div className="w-2 h-2 rounded-full bg-orange-300 shadow-[0_0_10px_rgba(253,186,116,0.8)]" />
+                                    {stats?.reportAnalytics?.summary.pendingReports || 0} Pending
                                 </span>
+                            </div>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                                    <p className="text-[9px] font-black uppercase tracking-[0.25em] text-slate-500">Compliance</p>
+                                    <p className="mt-2 text-xl font-black text-white">{stats?.reportAnalytics?.organizationHealth.complianceRate || 0}%</p>
+                                </div>
+                                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                                    <p className="text-[9px] font-black uppercase tracking-[0.25em] text-slate-500">Critical</p>
+                                    <p className="mt-2 text-xl font-black text-white">{stats?.reportAnalytics?.summary.criticalBlockers || 0}</p>
+                                </div>
                             </div>
                         </div>
                     </div>

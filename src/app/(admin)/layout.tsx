@@ -47,6 +47,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
     const menuItems = [
         { label: "Overview", href: "/admin/dashboard", icon: LayoutDashboard },
         { label: "Leads", href: "/admin/leads", icon: Bell },
+        { label: "Work Reports", href: "/admin/report", icon: Box },
         { label: "Architecture", href: "/admin/architecture", icon: Server },
         { label: "Team Management", href: "/admin/team", icon: User },
         { label: "Applications", href: "/admin/careers", icon: Users },
@@ -130,10 +131,10 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
                     </svg>
                     <span>Leads</span>
                 </a>
-                <a href="/admin/careers"
+                <a href="/admin/report"
                     className={cn(
                         "flex min-w-0 flex-1 flex-col items-center justify-center rounded-[1.4rem] px-2 py-2 text-[10px] font-semibold transition-all",
-                        pathname === "/admin/careers"
+                        pathname === "/admin/report"
                             ? "bg-slate-900 text-orange-400 shadow-lg shadow-slate-900/20"
                             : "text-gray-500 hover:bg-orange-50 hover:text-orange-500"
                     )}>
@@ -143,7 +144,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
                             strokeWidth={2}
                             d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                     </svg>
-                    <span>Apps</span>
+                    <span>Reports</span>
                 </a>
                 <a href="/admin/work"
                     className={cn(
