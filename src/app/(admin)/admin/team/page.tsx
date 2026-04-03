@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useMemo } from "react";
 import api from "@/lib/api";
+import axios from "axios";
 import {
     Plus,
     Edit3,
@@ -348,6 +349,7 @@ function TeamMemberModal({ member, onClose, onSuccess }: { member: TeamMember | 
     });
     const [loading, setLoading] = useState(false);
     const [uploading, setUploading] = useState(false);
+    const [submitError, setSubmitError] = useState("");
 
     const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -372,12 +374,22 @@ function TeamMemberModal({ member, onClose, onSuccess }: { member: TeamMember | 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
+        setSubmitError("");
         try {
             if (member) await api.put(`/team/${member.id}`, formData);
             else await api.post("/team", formData);
             onSuccess();
-        } catch (error) {
+        } catch (error: unknown) {
              console.error("Save error", error);
+             if (axios.isAxiosError(error)) {
+                const fieldErrors = (error.response?.data as { errors?: Record<string, string[]>; error?: string } | undefined)?.errors;
+                const message = fieldErrors
+                    ? Object.values(fieldErrors).flat().filter(Boolean).join(" ")
+                    : (error.response?.data as { error?: string } | undefined)?.error;
+                setSubmitError(message || "Unable to save employee.");
+             } else {
+                setSubmitError("Unable to save employee.");
+             }
         } finally {
             setLoading(false);
         }
@@ -540,7 +552,7 @@ function TeamMemberModal({ member, onClose, onSuccess }: { member: TeamMember | 
 
                             <div className="space-y-4">
                                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-4">Strategic Narrative (Bio)</label>
-                                <textarea 
+                                <textarea
                                     required rows={4} 
                                     value={formData.bio} 
                                     onChange={e => setFormData({ ...formData, bio: e.target.value })} 
@@ -548,6 +560,12 @@ function TeamMemberModal({ member, onClose, onSuccess }: { member: TeamMember | 
                                     placeholder="Describe their strategic impact..."
                                 />
                             </div>
+
+                            {submitError && (
+                                <div className="rounded-[1.75rem] border border-red-100 bg-red-50 px-5 py-4 text-sm font-semibold text-red-600">
+                                    {submitError}
+                                </div>
+                            )}
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                                 <div className="space-y-4">
