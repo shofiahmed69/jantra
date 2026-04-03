@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useMemo } from "react";
+import { createPortal } from "react-dom";
 import api from "@/lib/api";
 import {
     Plus,
@@ -48,6 +49,7 @@ export default function WorkManagementPage() {
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
 
@@ -85,6 +87,11 @@ export default function WorkManagementPage() {
 
     useEffect(() => {
         fetchProjects();
+    }, []);
+
+    useEffect(() => {
+        setIsMounted(true);
+        return () => setIsMounted(false);
     }, []);
 
     // Auto-slug generation
@@ -386,7 +393,7 @@ export default function WorkManagementPage() {
 
             {/* Professional Modal System */}
             <AnimatePresence>
-                {modalOpen && (
+                {isMounted && modalOpen && createPortal(
                     <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
                         {/* Backdrop */}
                         <motion.div 
@@ -674,10 +681,10 @@ export default function WorkManagementPage() {
                                 </div>
                             </div>
                         </motion.div>
-                    </div>
+                    </div>,
+                    document.body
                 )}
             </AnimatePresence>
         </div>
     );
 }
-

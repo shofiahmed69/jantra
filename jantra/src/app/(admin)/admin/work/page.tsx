@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import api from "@/lib/api";
 import {
     Plus,
@@ -30,6 +31,7 @@ export default function WorkManagementPage() {
     const [projects, setProjects] = useState<Project[]>([]);
     const [loading, setLoading] = useState(true);
     const [modalOpen, setModalOpen] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState("");
@@ -66,6 +68,11 @@ export default function WorkManagementPage() {
 
     useEffect(() => {
         fetchProjects();
+    }, []);
+
+    useEffect(() => {
+        setIsMounted(true);
+        return () => setIsMounted(false);
     }, []);
 
     const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -338,7 +345,7 @@ export default function WorkManagementPage() {
             </div>
 
             {/* Add Project Modal */}
-            {modalOpen && (
+            {isMounted && modalOpen && createPortal(
                 <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-200">
                     <div className="w-full max-w-2xl bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh]">
                         <div className="flex items-center justify-between px-8 py-6 bg-slate-50 border-b border-slate-100">
@@ -573,7 +580,8 @@ export default function WorkManagementPage() {
                             </button>
                         </div>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
         </div>
     );
