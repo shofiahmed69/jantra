@@ -22,7 +22,7 @@ import {
     Monitor,
     Smartphone
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface Project {
@@ -403,8 +403,7 @@ export default function WorkManagementPage() {
             </motion.div>
 
             {/* Professional Modal System */}
-            <AnimatePresence>
-                {isMounted && modalOpen && createPortal(
+            {isMounted && modalOpen && createPortal(
                     <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
                         {/* Backdrop */}
                         <motion.div 
@@ -697,7 +696,6 @@ export default function WorkManagementPage() {
                     </div>,
                     document.body
                 )}
-            </AnimatePresence>
         </div>
     );
 }
