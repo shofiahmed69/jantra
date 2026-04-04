@@ -87,6 +87,13 @@ export default function WorkPage() {
         return `${cleanBase}${cleanPath}`;
     };
 
+    const getCardDescription = (description?: string) => {
+        if (!description) return "";
+        const normalized = description.trim();
+        if (normalized.length <= 120) return normalized;
+        return `${normalized.slice(0, 117).trimEnd()}...`;
+    };
+
     return (
         <main className="relative w-full min-h-screen bg-white overflow-hidden pb-32">
             <div className="absolute top-[5%] left-0 w-full overflow-hidden opacity-[0.03] pointer-events-none select-none z-0">
@@ -168,7 +175,7 @@ export default function WorkPage() {
                                             initial={{ opacity: 0, scale: 0.98 }}
                                             animate={{ opacity: 1, scale: 1 }}
                                             transition={{ delay: i * 0.05 }}
-                                            className="group relative rounded-[3.5rem] bg-white border border-slate-100 p-6 flex flex-col transition-all duration-700 hover:shadow-2xl hover:border-slate-200"
+                                            className="group relative h-full rounded-[3.5rem] bg-white border border-slate-100 p-6 flex flex-col transition-all duration-700 hover:shadow-2xl hover:border-slate-200"
                                         >
                                             <div className="absolute inset-x-24 -bottom-5 h-20 bg-orange-500/10 blur-[70px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
                                             
@@ -201,7 +208,7 @@ export default function WorkPage() {
                                                  </div>
                                             </div>
 
-                                            <div className="px-4 pb-4 space-y-4 relative z-10 text-left">
+                                            <div className="relative z-10 flex flex-1 flex-col px-4 pb-4 text-left">
                                                 <div className="flex items-center justify-between">
                                                     <div className="flex items-center gap-3">
                                                         <div className="px-3 py-1 bg-orange-100 rounded-lg">
@@ -212,16 +219,23 @@ export default function WorkPage() {
                                                     </div>
                                                 </div>
                                                 
-                                                <div className="space-y-4">
-                                                    <h3 className="text-3xl font-black text-slate-900 tracking-tighter leading-none group-hover:text-orange-600 transition-colors uppercase truncate">
+                                                <div className="min-h-[10.5rem] pt-4">
+                                                    <h3 className="min-h-[4rem] text-3xl font-black text-slate-900 tracking-tighter leading-none group-hover:text-orange-600 transition-colors uppercase">
                                                         {project.title}
                                                     </h3>
-                                                    <p className="text-[13px] text-slate-500 font-medium leading-relaxed line-clamp-2 max-w-xl">
-                                                        {project.description}
+                                                    <p
+                                                        className="mt-4 min-h-[3.5rem] max-w-xl text-[13px] text-slate-500 font-medium leading-relaxed overflow-hidden"
+                                                        style={{
+                                                            display: "-webkit-box",
+                                                            WebkitLineClamp: 3,
+                                                            WebkitBoxOrient: "vertical"
+                                                        }}
+                                                    >
+                                                        {getCardDescription(project.description)}
                                                     </p>
                                                 </div>
 
-                                                <div className="pt-6 border-t border-slate-50 flex items-center justify-between">
+                                                <div className="mt-auto flex items-center justify-between border-t border-slate-50 pt-6">
                                                     <Link href={`/work/${project.slug}`} className="flex items-center gap-3 text-[10px] font-black text-slate-900 uppercase tracking-widest hover:text-orange-500 transition-colors pointer-events-auto">
                                                         Expand Analysis <ArrowRight className="w-4 h-4" />
                                                     </Link>
