@@ -1,0 +1,56 @@
+
+> jantra@0.1.0 build
+> next build
+
+▲ Next.js 16.1.6 (Turbopack)
+- Environments: .env.local
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 4.5s
+  Running TypeScript ...
+  Collecting page data using 15 workers ...
+[API] Base URL: http://localhost:4000/api
+[API] Base URL: http://localhost:4000/api
+[API] Base URL: http://localhost:4000/api
+  Generating static pages using 15 workers (0/26) ...
+[API] Base URL: http://localhost:4000/api
+[API] Base URL: http://localhost:4000/api
+  Generating static pages using 15 workers (6/26) 
+  Generating static pages using 15 workers (12/26) 
+  Generating static pages using 15 workers (19/26) 
+✓ Generating static pages using 15 workers (26/26) in 345.4ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /about
+├ ○ /admin
+├ ○ /admin/architecture
+├ ○ /admin/blog
+├ ○ /admin/careers
+├ ○ /admin/dashboard
+├ ○ /admin/leads
+├ ○ /admin/login
+├ ○ /admin/report
+├ ○ /admin/team
+├ ○ /admin/work
+├ ○ /blog
+├ ƒ /blog/[slug]
+├ ○ /blog/submit
+├ ○ /careers
+├ ○ /checkout
+├ ○ /contact
+├ ○ /pricing
+├ ○ /privacy
+├ ○ /report
+├ ○ /services
+├ ƒ /services/[slug]
+├ ○ /terms
+├ ○ /work
+└ ƒ /work/[slug]
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

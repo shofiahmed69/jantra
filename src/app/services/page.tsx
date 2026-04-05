@@ -51,7 +51,7 @@ export default function ServicesPage() {
                             {/* LOTTIE AREA */}
                             <div className="w-full md:w-1/3 aspect-square max-w-[200px] flex items-center justify-center p-4">
                                 <LottiePlayer 
-                                    src={service.animationSrc} 
+                                    src={service.animationSrc!} 
                                     className="w-full h-full opacity-100 group-hover:scale-110 transition-transform duration-1000" 
                                 />
                             </div>
