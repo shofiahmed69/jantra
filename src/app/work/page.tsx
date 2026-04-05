@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowRight, Loader2 } from "lucide-center"; // Fixed icon import if needed, but 'lucide-react' is standard
 import { ArrowRight as ArrowIcon, Loader2 as LoaderIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import api from "@/lib/api";
