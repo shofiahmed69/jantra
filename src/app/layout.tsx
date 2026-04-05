@@ -4,6 +4,11 @@ import "./globals.css";
 import ClientLayout from '@/components/ClientLayout'
 import BackgroundOrbs from "@/components/BackgroundOrbs";
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://jantra.soft";
+const siteTitle = "JANTRA - Enterprise Software, Reimagined";
+const siteDescription =
+  "Experience the next generation of spatial computing for business. Modular, intuitive, and designed for the visionaries of tomorrow.";
+
 const bodyFont = DM_Sans({
   variable: "--font-body",
   subsets: ["latin"],
@@ -15,10 +20,32 @@ const headingFont = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "JANTRA - Enterprise Software, Reimagined",
-  description: "Experience the next generation of spatial computing for business. Modular, intuitive, and designed for the visionaries of tomorrow.",
+  metadataBase: new URL(siteUrl),
+  title: siteTitle,
+  description: siteDescription,
   icons: {
     icon: "/favicon.svg",
+  },
+  openGraph: {
+    title: siteTitle,
+    description: siteDescription,
+    type: "website",
+    siteName: "JANTRA",
+    url: siteUrl,
+    images: [
+      {
+        url: "/social-preview.png",
+        width: 1200,
+        height: 630,
+        alt: "JANTRA logo and brand preview",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteTitle,
+    description: siteDescription,
+    images: ["/social-preview.png"],
   },
 };
 

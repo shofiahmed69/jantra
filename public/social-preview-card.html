@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JANTRA Social Preview</title>
+    <style>
+      :root {
+        color-scheme: light;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(249, 115, 22, 0.24), transparent 32%),
+          linear-gradient(135deg, #fff8f1 0%, #fffdf9 48%, #f8fafc 100%);
+        color: #0f172a;
+      }
+
+      body::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(135deg, rgba(249, 115, 22, 0.08), transparent 28%, transparent 72%, rgba(15, 23, 42, 0.04));
+      }
+
+      .card {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 100%;
+        height: 100%;
+        padding: 56px 64px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+      }
+
+      .mark {
+        width: 116px;
+        height: 116px;
+        flex: 0 0 116px;
+        border-radius: 28px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.92);
+        box-shadow: 0 22px 60px rgba(15, 23, 42, 0.12);
+        border: 1px solid rgba(249, 115, 22, 0.16);
+      }
+
+      .mark img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .eyebrow {
+        font-size: 18px;
+        font-weight: 800;
+        letter-spacing: 0.55em;
+        text-transform: uppercase;
+        color: #ea580c;
+      }
+
+      .wordmark {
+        margin-top: 8px;
+        font-size: 68px;
+        font-weight: 900;
+        letter-spacing: -0.06em;
+      }
+
+      .wordmark span {
+        color: #f97316;
+      }
+
+      .content {
+        max-width: 920px;
+      }
+
+      h1 {
+        margin: 0 0 18px;
+        font-size: 72px;
+        line-height: 0.98;
+        letter-spacing: -0.06em;
+      }
+
+      p {
+        margin: 0;
+        max-width: 980px;
+        font-size: 27px;
+        line-height: 1.32;
+        color: #475569;
+      }
+
+      .footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+      }
+
+      .chips {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .chip {
+        padding: 12px 20px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(249, 115, 22, 0.18);
+        color: #334155;
+        font-size: 20px;
+        font-weight: 700;
+      }
+
+      .domain {
+        font-size: 22px;
+        font-weight: 800;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <section class="brand">
+        <div class="mark" aria-hidden="true">
+          <img src="./social-logo.png" alt="" />
+        </div>
+
+        <div>
+          <div class="eyebrow">Enterprise Software Studio</div>
+          <div class="wordmark">JANTRA<span>.</span></div>
+        </div>
+      </section>
+
+      <section class="content">
+        <h1>Customized software, websites, AI workflow agents, and mobile apps for your business.</h1>
+        <p>
+          Jantra is a software company that builds customized software, websites, AI workflow agents, mobile apps, and business systems tailored to how your company actually works.
+        </p>
+      </section>
+
+      <footer class="footer">
+        <div class="chips">
+          <div class="chip">Custom Software</div>
+          <div class="chip">AI Agents</div>
+          <div class="chip">Automation</div>
+        </div>
+
+        <div class="domain">jantra.soft</div>
+      </footer>
+    </main>
+  </body>
+</html>
