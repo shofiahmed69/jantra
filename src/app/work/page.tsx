@@ -92,12 +92,8 @@ export default function WorkPage() {
                         </h1>
                     </div>
 
-                    {/* CATEGORY NAV - PREMIUM PILLS WITH CORNER FADE */}
+                    {/* CATEGORY NAV - PREMIUM PILLS */}
                     <div className="w-full lg:w-auto -mx-5 px-5 lg:mx-0 lg:px-0 relative group/nav">
-                        {/* Edge Fades [Mobile Only] */}
-                        <div className="lg:hidden absolute left-4 top-0 bottom-4 w-12 bg-gradient-to-r from-white via-white/80 to-transparent z-20 pointer-events-none" />
-                        <div className="lg:hidden absolute right-4 top-0 bottom-4 w-12 bg-gradient-to-l from-white via-white/80 to-transparent z-20 pointer-events-none" />
-
                         <div className="flex lg:flex-wrap gap-2 overflow-x-auto pb-4 lg:pb-0 scrollbar-none relative z-10">
                             {WORK_CATEGORIES.map((cat) => (
                                 <button
