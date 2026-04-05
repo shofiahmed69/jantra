@@ -48,8 +48,8 @@ export default function ContactPage() {
         {
             icon: MessageCircle,
             label: "WhatsApp",
-            value: "+880 1700 000000",
-            href: "https://wa.me/8801700000000",
+            value: "+880 1625 027956",
+            href: "https://wa.me/8801625027956",
             color: "bg-emerald-50 text-emerald-600"
         },
         {
@@ -69,8 +69,8 @@ export default function ContactPage() {
         {
             icon: Phone,
             label: "Call us",
-            value: "+880 1700 000000",
-            href: "tel:+8801700000000",
+            value: "+880 1625 027956",
+            href: "tel:+8801625027956",
             color: "bg-orange-50 text-orange-600"
         },
         {
