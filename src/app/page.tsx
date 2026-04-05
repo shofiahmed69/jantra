@@ -417,8 +417,8 @@ function DesktopHero() {
   const current = services[index];
 
   return (
-    <section className="hidden lg:block relative h-screen overflow-hidden bg-[#f8fafc]">
-      <div className="mx-auto max-w-[1400px] h-full flex items-center relative z-10">
+    <section className="hidden lg:block relative pt-40 pb-12 px-8 overflow-hidden bg-[#f8fafc]">
+      <div className="mx-auto max-w-[1400px] relative z-10">
         <div className="grid grid-cols-12 items-center gap-12">
 
           <div className="col-span-7 space-y-8 animate-fade-up">
@@ -489,21 +489,21 @@ function DesktopHero() {
                   transition={{ duration: 1, ease: [0.2, 1, 0.3, 1] }}
                   className="absolute flex flex-col items-center w-full"
                 >
-                  <div className="w-[720px] h-[720px]">
-                    <LottiePlayer src={current.animationSrc!} className="w-full h-full drop-shadow-[0_0_120px_rgba(249,115,22,0.45)] scale-140" />
+                  <div className="w-[540px] h-[540px]">
+                    <LottiePlayer src={current.animationSrc!} className="w-full h-full drop-shadow-[0_0_80px_rgba(249,115,22,0.3)] scale-110" />
                   </div>
                   <div className="mt-2 flex flex-col items-center">
                     <motion.div
-                      className="flex items-center gap-8 px-12 py-7 rounded-[2rem] bg-white/50 backdrop-blur-2xl border border-slate-100 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.08)] ring-1 ring-white/60"
+                      className="flex items-center gap-6 px-10 py-5 rounded-[1.5rem] bg-white/40 backdrop-blur-xl border border-slate-100 shadow-[0_15px_45px_-10px_rgba(0,0,0,0.05)] ring-1 ring-white/50"
                       initial={{ opacity: 0, y: 15 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.4 }}
                     >
-                      <div className="text-5xl font-black text-orange-500 opacity-20 select-none leading-none">0{index + 1}</div>
-                      <div className="h-10 w-[1px] bg-slate-200" />
+                      <div className="text-4xl font-black text-orange-500 opacity-20 select-none leading-none">0{index + 1}</div>
+                      <div className="h-8 w-[1px] bg-slate-200" />
                       <div className="text-left">
                         <p className="text-[9px] font-black text-orange-600 uppercase tracking-[0.6em] mb-1">Service Platform</p>
-                        <h4 className="text-2xl font-black text-slate-900 uppercase tracking-[0.3em] leading-none">
+                        <h4 className="text-xl font-black text-slate-900 uppercase tracking-[0.25em] leading-none">
                           {current.title}
                         </h4>
                       </div>
