@@ -115,12 +115,12 @@ export default function ServicesPage() {
                             <motion.div 
                                 key={service.slug} 
                                 whileHover={{ y: -4 }}
-                                className="group relative rounded-[2.5rem] bg-slate-50 border border-slate-100 p-6 flex flex-col items-stretch transition-all duration-700 hover:bg-white hover:border-slate-200"
+                                className="group relative rounded-3xl sm:rounded-[2.5rem] bg-slate-50 border border-slate-100 p-4 sm:p-6 flex flex-col items-stretch transition-all duration-700 hover:bg-white hover:border-slate-200"
                             >
                                 {/* RADIANT UNDERGLOW */}
                                 <div className="absolute inset-x-12 -bottom-5 h-16 bg-orange-500/10 blur-[50px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
                                 
-                                <div className="flex justify-between items-center mb-6 relative z-10">
+                                <div className="flex justify-between items-center mb-4 sm:mb-6 relative z-10">
                                    <div className="flex items-center gap-2">
                                         <div className="w-8 h-8 rounded-lg bg-white border border-slate-100 flex items-center justify-center text-orange-500 group-hover:bg-slate-950 group-hover:text-white transition-colors duration-500">
                                             <service.icon className="w-4 h-4" />
@@ -132,24 +132,26 @@ export default function ServicesPage() {
                                    </Link>
                                 </div>
 
-                                <div className="relative aspect-[16/10] rounded-[2rem] bg-white border border-slate-100/50 flex items-center justify-center p-6 mb-6 overflow-hidden">
+                                <div className="relative aspect-[16/10] rounded-2xl sm:rounded-[2rem] bg-white border border-slate-100/50 flex items-center justify-center p-4 sm:p-6 mb-4 sm:mb-6 overflow-hidden">
                                     <LottiePlayer src={service.lottieSrc} className="w-full h-full grayscale-0 opacity-80 group-hover:opacity-100 transition-all duration-1000" />
                                 </div>
 
-                                <div className="space-y-3">
-                                    <h3 className="text-xl font-black text-slate-900 tracking-tighter leading-none group-hover:text-orange-600 transition-colors duration-500 uppercase">{service.title}</h3>
-                                    <p className="text-[12px] text-slate-500 font-medium leading-relaxed line-clamp-2">{service.description}</p>
+                                <div className="space-y-4">
+                                    <h3 className="h-[2.5rem] text-[18px] sm:text-xl font-black text-slate-900 tracking-tighter leading-[0.9] group-hover:text-orange-600 transition-colors duration-500 uppercase overflow-hidden line-clamp-2">{service.title}</h3>
+                                    <div className="h-[2.5rem] overflow-hidden">
+                                        <p className="text-[11px] sm:text-[12px] text-slate-500 font-medium leading-relaxed line-clamp-2">{service.description}</p>
+                                    </div>
                                     
                                     <div className="pt-3 border-t border-slate-100 flex flex-wrap gap-1.5">
                                         {service.features.map((feat, fIdx) => (
-                                            <span key={fIdx} className="text-[7px] font-black uppercase tracking-widest text-slate-400 px-2.5 py-1 rounded-full bg-white border border-slate-100 group-hover:text-slate-950 group-hover:border-slate-200">
+                                            <span key={fIdx} className="text-[7px] font-black uppercase tracking-widest text-slate-400 px-2 py-0.5 rounded-full bg-white border border-slate-100 group-hover:text-slate-950 group-hover:border-slate-200">
                                                 {feat}
                                             </span>
                                         ))}
                                     </div>
                                 </div>
 
-                                <Link href={`/services/${service.slug}`} className="mt-6 py-3.5 rounded-xl bg-orange-50/50 text-orange-600 border border-orange-100 flex items-center justify-center gap-2 group-hover:bg-orange-600 group-hover:text-white transition-all duration-500 shadow-sm">
+                                <Link href={`/services/${service.slug}`} className="mt-6 py-3 rounded-xl bg-orange-50/50 text-orange-600 border border-orange-100 flex items-center justify-center gap-2 group-hover:bg-orange-600 group-hover:text-white transition-all duration-500 shadow-sm">
                                     <span className="text-[8px] font-black uppercase tracking-[0.3em]">Learn More</span>
                                     <ArrowRight className="w-3 h-3" />
                                 </Link>

@@ -81,34 +81,36 @@ function ProjectCarousel({ projects }: { projects: any[] }) {
           </div>
 
           {/* Content Column — High Density Fine Typography */}
-          <div className="lg:w-[45%] p-8 sm:p-14 lg:p-20 flex flex-col justify-center bg-white">
-            <div className="space-y-8 sm:space-y-12">
+          <div className="lg:w-[45%] p-6 sm:p-10 lg:p-12 flex flex-col justify-center bg-white">
+            <div className="space-y-4 sm:space-y-8">
               <div className="flex items-center gap-4 group/cat">
-                <div className="h-[2px] w-12 bg-orange-500 origin-left group-hover/cat:scale-x-125 transition-transform duration-500" />
-                <span className="text-[10px] font-black uppercase tracking-[0.6em] text-orange-600">
+                <div className="h-[2.5px] w-8 bg-orange-500 origin-left group-hover/cat:scale-x-125 transition-transform duration-500" />
+                <span className="text-[9px] font-black uppercase tracking-[0.6em] text-orange-600">
                   {Array.isArray(project.category) ? project.category[0] : (project.category || "Case Study")}
                 </span>
               </div>
 
-              <div className="space-y-4 sm:space-y-6">
-                <h4 className="text-4xl sm:text-6xl lg:text-7xl font-black text-slate-900 leading-[0.85] tracking-tighter">
+              <div className="space-y-2 sm:space-y-4 min-h-[3.5rem] sm:min-h-[6rem] lg:min-h-[10rem] flex flex-col justify-end">
+                <h4 className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 leading-[0.95] tracking-tighter line-clamp-2 uppercase">
                   {project.title}
                 </h4>
-                <div className="flex flex-wrap gap-2 pt-2">
+                <div className="flex flex-wrap gap-1.5 pt-1.5">
                   {(project.tags || []).slice(0, 3).map((t: string) => (
-                    <span key={t} className="text-[8px] sm:text-[9px] font-black text-slate-400 uppercase tracking-[0.4em] border border-slate-50 px-4 py-2 rounded-full bg-slate-50/50">
+                    <span key={t} className="text-[7px] sm:text-[9px] font-black text-slate-400 uppercase tracking-[0.4em] border border-slate-50 px-3 py-1.5 rounded-full bg-slate-50/50">
                       {t}
                     </span>
                   ))}
                 </div>
               </div>
 
-              <p className="text-base sm:text-lg lg:text-xl text-slate-500 font-medium leading-relaxed max-w-md">
-                {project.description}
-              </p>
+              <div className="h-[3.5rem] sm:h-[6rem] overflow-hidden">
+                <p className="text-[12px] sm:text-base lg:text-lg text-slate-500 font-medium leading-relaxed max-w-md line-clamp-3">
+                  {project.description}
+                </p>
+              </div>
 
               {/* Precision Command Unit — Fixed Overflow & Redesigned */}
-              <div className="pt-8 sm:pt-10">
+              <div className="pt-3 sm:pt-6">
                 <div className="inline-flex flex-col sm:flex-row items-stretch sm:items-center p-1.5 sm:p-2 bg-slate-50 border border-slate-100 rounded-[2rem] sm:rounded-full shadow-inner">
                   {/* Primary Unit */}
                   <Link 
@@ -289,7 +291,7 @@ function MobileLottieHero() {
       <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-orange-400/40 to-transparent" />
 
       {/* ── FULL-BLEED LOTTIE ── */}
-      <div className="relative flex items-center justify-center pt-36 pb-6">
+      <div className="relative flex items-center justify-center pt-24 pb-4">
         <AnimatePresence mode="wait">
           <motion.div
             key={current.title}
@@ -298,7 +300,7 @@ function MobileLottieHero() {
             exit={{ scale: 0.82, opacity: 0, filter: "blur(16px)", y: -20 }}
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
             className="relative"
-            style={{ width: "min(94vw, 400px)", height: "min(94vw, 400px)" }}
+            style={{ width: "min(80vw, 320px)", height: "min(80vw, 320px)" }}
           >
             <div className="w-full h-full [filter:drop-shadow(0_0_80px_rgba(249,115,22,0.4))]">
               <LottiePlayer
@@ -311,28 +313,28 @@ function MobileLottieHero() {
       </div>
 
       {/* ── Indicators ── */}
-      <div className="flex justify-center gap-2 pb-5">
+      <div className="flex justify-center gap-2 pb-3">
         {services.map((_, i) => (
           <button
             key={i}
             onClick={() => setIndex(i)}
-            className={`rounded-full transition-all duration-700 ${i === index ? "bg-orange-500 w-8 h-1.5" : "bg-orange-200/50 w-1.5 h-1.5"}`}
+            className={`rounded-full transition-all duration-700 ${i === index ? "bg-orange-500 w-8 h-1" : "bg-orange-200/50 w-1 h-1"}`}
           />
         ))}
       </div>
 
-      <div className="flex justify-center pb-8 relative z-20">
+      <div className="flex justify-center pb-5 relative z-20">
         <AnimatePresence mode="wait">
           <motion.div
             key={current.title}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="flex items-center gap-3 px-5 py-3 rounded-xl border border-orange-200/25 bg-white/50 backdrop-blur-2xl shadow-sm"
+            className="flex items-center gap-3 px-4 py-2 rounded-xl border border-orange-200/25 bg-white/50 backdrop-blur-2xl shadow-sm"
           >
-            <span className="text-lg font-black text-orange-500/30 leading-none">0{index + 1}</span>
+            <span className="text-base font-black text-orange-500/30 leading-none">0{index + 1}</span>
             <div className="w-[1px] h-3 bg-orange-500/20" />
-            <span className="text-[10px] font-black text-slate-900 uppercase tracking-[0.3em] whitespace-nowrap leading-none">{current.title}</span>
+            <span className="text-[9px] font-black text-slate-900 uppercase tracking-[0.3em] whitespace-nowrap leading-none">{current.title}</span>
           </motion.div>
         </AnimatePresence>
       </div>
@@ -342,7 +344,7 @@ function MobileLottieHero() {
         className="absolute left-0 right-0 pointer-events-none"
         style={{
           bottom: "0",
-          height: "50%",
+          height: "40%",
           background: "linear-gradient(to bottom, transparent 0%, rgba(248,250,252,0.7) 40%, #f8fafc 85%)"
         }}
       />
@@ -355,11 +357,11 @@ function MobileLottieHero() {
           transition={{ delay: 0.2, duration: 0.8 }}
           className="w-full"
         >
-          <p className="text-[8px] font-black text-orange-600/80 uppercase tracking-[0.5em] mb-3">Precision Engineering Studio</p>
-          <h1 className="text-[3.5rem] font-black text-slate-900 leading-[0.8] tracking-tighter mb-4">
+          <p className="text-[8px] font-black text-orange-600/80 uppercase tracking-[0.5em] mb-2">Precision Engineering Studio</p>
+          <h1 className="text-[2.8rem] font-black text-slate-900 leading-[0.85] tracking-tighter mb-3">
             Precision Built<span className="text-orange-500">.</span>
           </h1>
-          <p className="text-[14px] text-slate-500 font-bold uppercase tracking-[0.4em] mb-10">
+          <p className="text-[12px] text-slate-500 font-bold uppercase tracking-[0.3em] mb-6">
             Elite Engineering Studio
           </p>
 
@@ -367,7 +369,7 @@ function MobileLottieHero() {
           <div className="flex flex-row gap-3 w-full px-2">
             <button
               onClick={() => document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' })}
-              className="flex-[1.2] button-primary rounded-xl py-3.5 text-[12px] font-black flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform"
+              className="flex-[1.2] button-primary rounded-xl py-4 text-[12px] font-black flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform"
             >
               Our Work <ArrowRight className="w-3.5 h-3.5" />
             </button>

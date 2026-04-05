@@ -170,81 +170,81 @@ export default function WorkPage() {
                                     
                                     return (
                                         <motion.div 
-                                            key={project.id}
-                                            whileHover={{ y: -6 }}
-                                            initial={{ opacity: 0, scale: 0.98 }}
-                                            animate={{ opacity: 1, scale: 1 }}
-                                            transition={{ delay: i * 0.05 }}
-                                            className="group relative h-full rounded-[3.5rem] bg-white border border-slate-100 p-6 flex flex-col transition-all duration-700 hover:shadow-2xl hover:border-slate-200"
-                                        >
-                                            <div className="absolute inset-x-24 -bottom-5 h-20 bg-orange-500/10 blur-[70px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-                                            
-                                            <div 
-                                                className="relative w-full rounded-[2.5rem] overflow-hidden bg-slate-50 mb-8 border border-slate-100/50 flex items-center justify-center p-8 transition-all duration-700 group-hover:bg-white"
-                                                style={{ aspectRatio: "17 / 9" }}
-                                            >
-                                                 <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/grid-me.png')] opacity-[0.03]" />
-                                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/5 to-transparent" />
-                                                 
-                                                 {imgUrl ? (
-                                                     <img 
-                                                        src={imgUrl} 
-                                                        alt={project.title} 
-                                                        className="max-w-full max-h-full object-contain relative z-10 transition-transform duration-1000 group-hover:scale-[1.03] drop-shadow-2xl"
-                                                        onError={(e) => {
-                                                            (e.target as HTMLImageElement).style.opacity = '0';
-                                                        }}
-                                                     />
-                                                 ) : (
-                                                     <div className="text-slate-200 select-none">
-                                                          <Binary className="w-16 h-16 opacity-20" />
-                                                     </div>
-                                                 )}
-
-                                                 <div className="absolute inset-0 z-20 flex items-center justify-center bg-slate-950/0 group-hover:bg-slate-950/5 transition-colors">
-                                                      <div className="w-16 h-16 rounded-full bg-slate-950 text-white flex items-center justify-center opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 shadow-2xl">
-                                                          <ExternalLink className="w-6 h-6" />
+                                             key={project.id}
+                                             whileHover={{ y: -6 }}
+                                             initial={{ opacity: 0, scale: 0.98 }}
+                                             animate={{ opacity: 1, scale: 1 }}
+                                             transition={{ delay: i * 0.05 }}
+                                              className="group relative h-full rounded-3xl sm:rounded-[2rem] bg-white border border-slate-100 p-3 sm:p-4 flex flex-col transition-all duration-700 hover:shadow-2xl hover:border-slate-200"
+                                         >
+                                             <div className="absolute inset-x-24 -bottom-5 h-16 bg-orange-500/10 blur-[70px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+                                             
+                                             <div 
+                                                 className="relative w-full rounded-2xl sm:rounded-[1.5rem] overflow-hidden bg-slate-50 mb-4 sm:mb-6 border border-slate-100/50 flex items-center justify-center p-4 sm:p-6 transition-all duration-700 group-hover:bg-white"
+                                                 style={{ aspectRatio: "17 / 9" }}
+                                             >
+                                                  <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/grid-me.png')] opacity-[0.03]" />
+                                                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/5 to-transparent" />
+                                                  
+                                                  {imgUrl ? (
+                                                      <img 
+                                                         src={imgUrl} 
+                                                         alt={project.title} 
+                                                         className="max-w-full max-h-[90%] object-contain relative z-10 transition-transform duration-1000 group-hover:scale-[1.02] drop-shadow-2xl"
+                                                         onError={(e) => {
+                                                             (e.target as HTMLImageElement).style.opacity = '0';
+                                                         }}
+                                                      />
+                                                  ) : (
+                                                      <div className="text-slate-200 select-none">
+                                                           <Binary className="w-10 h-10 opacity-20" />
                                                       </div>
+                                                  )}
+
+                                                  <div className="absolute inset-0 z-20 flex items-center justify-center bg-slate-950/0 group-hover:bg-slate-950/5 transition-colors">
+                                                       <div className="w-10 h-10 rounded-full bg-slate-950 text-white flex items-center justify-center opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 shadow-2xl">
+                                                           <ExternalLink className="w-4 h-4" />
+                                                       </div>
+                                                  </div>
+                                             </div>
+
+                                             <div className="relative z-10 flex flex-1 flex-col px-2 pb-2 text-left">
+                                                 <div className="flex items-center justify-between">
+                                                     <div className="flex items-center gap-2">
+                                                         <div className="px-2 py-0.5 bg-orange-100 rounded-md">
+                                                             <span className="text-[8px] font-black text-orange-600 uppercase tracking-widest">{categoryLabel}</span>
+                                                         </div>
+                                                         <div className="w-1 h-1 rounded-full bg-slate-200" />
+                                                         <span className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest">Case Study</span>
+                                                     </div>
                                                  </div>
-                                            </div>
+                                                 
+                                                 <div className="flex-1 pt-3 sm:pt-4 flex flex-col">
+                                                     <h3 className="h-[2.8rem] sm:h-[3.2rem] text-[18px] sm:text-2xl font-black text-slate-900 tracking-tighter leading-[0.95] group-hover:text-orange-600 transition-colors uppercase line-clamp-2 overflow-hidden mb-2">
+                                                         {project.title}
+                                                     </h3>
+                                                     <p
+                                                         className="h-[3.2rem] sm:h-[3.5rem] text-[11px] sm:text-[12px] text-slate-500 font-medium leading-relaxed overflow-hidden"
+                                                         style={{
+                                                             display: "-webkit-box",
+                                                             WebkitLineClamp: 3,
+                                                             WebkitBoxOrient: "vertical"
+                                                         }}
+                                                     >
+                                                         {getCardDescription(project.description)}
+                                                     </p>
+                                                 </div>
 
-                                            <div className="relative z-10 flex flex-1 flex-col px-4 pb-4 text-left">
-                                                <div className="flex items-center justify-between">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="px-3 py-1 bg-orange-100 rounded-lg">
-                                                            <span className="text-[9px] font-black text-orange-600 uppercase tracking-widest">{categoryLabel}</span>
-                                                        </div>
-                                                        <div className="w-1.5 h-1.5 rounded-full bg-slate-200" />
-                                                        <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Case Study</span>
-                                                    </div>
-                                                </div>
-                                                
-                                                <div className="min-h-[10.5rem] pt-4">
-                                                    <h3 className="min-h-[4rem] text-3xl font-black text-slate-900 tracking-tighter leading-none group-hover:text-orange-600 transition-colors uppercase">
-                                                        {project.title}
-                                                    </h3>
-                                                    <p
-                                                        className="mt-4 min-h-[3.5rem] max-w-xl text-[13px] text-slate-500 font-medium leading-relaxed overflow-hidden"
-                                                        style={{
-                                                            display: "-webkit-box",
-                                                            WebkitLineClamp: 3,
-                                                            WebkitBoxOrient: "vertical"
-                                                        }}
-                                                    >
-                                                        {getCardDescription(project.description)}
-                                                    </p>
-                                                </div>
+                                                 <div className="mt-4 sm:mt-6 flex items-center justify-between border-t border-slate-50 pt-4">
+                                                     <Link href={`/work/${project.slug}`} className="flex items-center gap-3 text-[8.5px] sm:text-[9.2px] font-black text-slate-900 uppercase tracking-widest hover:text-orange-500 transition-colors pointer-events-auto">
+                                                         View Detail <ArrowRight className="w-3.5 h-3.5" />
+                                                     </Link>
+                                                     <span className="text-[7px] font-black text-slate-300 uppercase tracking-[.4em]">v.2026</span>
+                                                 </div>
+                                             </div>
 
-                                                <div className="mt-auto flex items-center justify-between border-t border-slate-50 pt-6">
-                                                    <Link href={`/work/${project.slug}`} className="flex items-center gap-3 text-[10px] font-black text-slate-900 uppercase tracking-widest hover:text-orange-500 transition-colors pointer-events-auto">
-                                                        Expand Analysis <ArrowRight className="w-4 h-4" />
-                                                    </Link>
-                                                    <span className="text-[8px] font-black text-slate-300 uppercase tracking-[.4em]">DEPLOYED-2026</span>
-                                                </div>
-                                            </div>
-
-                                            <Link href={`/work/${project.slug}`} className="absolute inset-0 z-30" />
-                                        </motion.div>
+                                             <Link href={`/work/${project.slug}`} className="absolute inset-0 z-30" />
+                                         </motion.div>
                                     );
                                 })}
                             </div>
