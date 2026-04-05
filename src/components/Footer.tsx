@@ -1,53 +1,45 @@
 "use client";
 
 import Link from 'next/link';
+import { Mail, Linkedin, Facebook, MessageCircle } from 'lucide-react';
 import Logo from '@/components/Logo';
 
 export default function Footer() {
     return (
-        <footer className="bg-slate-900 text-white pt-16 pb-8 px-6 md:px-12">
-            <div className="max-w-6xl mx-auto">
+        <footer className="bg-slate-950 text-white pt-20 pb-10 px-6 md:px-12 border-t border-white/5">
+            <div className="max-w-[1440px] mx-auto">
                 {/* Top section */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-white/10">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 pb-16 border-b border-white/5">
                     {/* Brand column */}
                     <div className="lg:col-span-2">
-                        <Link href="/" className="flex items-center gap-2 mb-4">
-                            <Logo className="w-8 h-8" />
-                            <span className="text-xl font-bold tracking-wide">
-                                JANTRA
+                        <Link href="/" className="flex items-center gap-3 mb-6">
+                            <Logo className="w-10 h-10" />
+                            <span className="text-2xl font-black tracking-tighter uppercase italic">
+                                JANTRA<span className="text-orange-500">.</span>
                             </span>
                         </Link>
-                        <p className="text-slate-400 text-sm leading-relaxed max-w-xs">
-                            Building digital excellence through custom software, AI agents, and workflow automation.
+                        <p className="text-slate-400 text-sm font-medium leading-relaxed max-w-sm mb-8 opacity-80 uppercase tracking-tight">
+                            Architecting digital excellence through elite <span className="text-white">software engineering</span>, <span className="text-white">AI agents</span>, and <span className="text-white">autonomous workflows</span>.
                         </p>
-                        <p className="text-slate-500 text-xs mt-4">
-                            Dhaka, Bangladesh 🇧🇩<br />
-                            Mon–Fri, 9AM–6PM (GMT+6)
-                        </p>
-                        {/* Social links */}
-                        <div className="flex gap-3 mt-6">
-                            {/* LinkedIn */}
-                            <a
-                                href="https://www.linkedin.com/company/jantra-soft/"
-                                target="_blank"
-                                rel="noreferrer"
-                                className="w-9 h-9 rounded-lg bg-white/10 
-                                flex items-center justify-center 
-                                hover:bg-orange-500 transition text-white 
-                                text-xs font-bold">
-                                in
-                            </a>
-                            {/* Facebook */}
-                            <a
-                                href="https://www.facebook.com/profile.php?id=61578641909784"
-                                target="_blank"
-                                rel="noreferrer"
-                                className="w-9 h-9 rounded-lg bg-white/10 
-                                flex items-center justify-center 
-                                hover:bg-orange-500 transition text-white 
-                                text-xs font-bold">
-                                f
-                            </a>
+                        
+                        {/* Social links - PREMIUM ICONS */}
+                        <div className="flex flex-wrap gap-3">
+                            {[
+                                { icon: Linkedin, href: "https://www.linkedin.com/company/112998098", label: "LinkedIn" },
+                                { icon: Facebook, href: "https://www.facebook.com/profile.php?id=61578641909784", label: "Facebook" },
+                                { icon: MessageCircle, href: "https://wa.me/8801625027956", label: "WhatsApp" },
+                                { icon: Mail, href: "mailto:jantrasoftinfo@gmail.com", label: "Email" }
+                            ].map((social) => (
+                                <a
+                                    key={social.label}
+                                    href={social.href}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="w-10 h-10 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center hover:bg-orange-600 hover:border-orange-500 transition-all duration-500 group"
+                                >
+                                    <social.icon className="w-4 h-4 text-slate-400 group-hover:text-white transition-colors" />
+                                </a>
+                            ))}
                         </div>
                     </div>
 

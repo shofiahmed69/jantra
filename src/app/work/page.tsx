@@ -102,37 +102,37 @@ export default function WorkPage() {
                 </div>
             </div>
 
-            <div className="max-w-[1540px] mx-auto px-6 sm:px-12 pt-28 sm:pt-36 relative z-10">
-                <div className="grid lg:grid-cols-12 gap-12 items-start mb-12">
+            <div className="max-w-[1540px] mx-auto px-6 sm:px-12 pt-20 sm:pt-36 relative z-10">
+                <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start mb-12">
                     
                     {/* LEFT SIDEBAR HERO */}
-                    <div className="lg:col-span-3 space-y-12 sticky top-36">
-                        <div className="flex flex-col gap-6">
+                    <div className="lg:col-span-3 space-y-8 lg:space-y-12 lg:sticky lg:top-36">
+                        <div className="flex flex-col gap-4 lg:gap-6">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-[2px] bg-orange-500" />
-                                <span className="text-[9px] font-black uppercase tracking-[0.4em] text-orange-600">Our Portfolio</span>
+                                <div className="w-8 lg:w-10 h-[2px] bg-orange-500" />
+                                <span className="text-[8px] lg:text-[9px] font-black uppercase tracking-[0.4em] text-orange-600">Our Portfolio</span>
                             </div>
-                            <h1 className="text-5xl sm:text-6xl font-black text-slate-900 leading-[0.85] tracking-tighter uppercase whitespace-nowrap">
-                                Selected <br />
+                            <h1 className="text-4xl lg:text-5xl xl:text-6xl font-black text-slate-900 leading-[0.85] tracking-tighter uppercase">
+                                Selected <br className="hidden lg:block" />
                                 <span className="text-transparent" style={{ WebkitTextStroke: "1px #0f172a" }}>Work</span>
                                 <span className="text-orange-500">.</span>
                             </h1>
                         </div>
 
-                        {/* FIXED CATEGORY FILTER HUB */}
-                        <div className="space-y-6">
+                        {/* CATEGORY FILTER HUB (HORIZONTAL SCROLL ON MOBILE) */}
+                        <div className="space-y-4 lg:space-y-6">
                              <div className="flex items-center gap-3">
                                 <Sparkles className="w-3 h-3 text-orange-500" />
-                                <span className="text-[10px] font-black uppercase tracking-[.4em] text-slate-400">Project Sectors</span>
+                                <span className="text-[9px] lg:text-[10px] font-black uppercase tracking-[.4em] text-slate-400">Sectors</span>
                              </div>
-                             <div className="flex flex-wrap gap-2">
+                             <div className="flex lg:flex-wrap gap-2 overflow-x-auto pb-4 lg:pb-0 no-scrollbar -mx-6 px-6 lg:mx-0 lg:px-0">
                                 {WORK_CATEGORIES.map((cat) => (
                                     <button
                                         key={cat}
                                         onClick={() => setFilter(cat)}
-                                        className={`px-5 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${
+                                        className={`whitespace-nowrap px-4 lg:px-5 py-2 lg:py-2.5 rounded-xl text-[8.5px] lg:text-[9px] font-black uppercase tracking-widest transition-all ${
                                             filter === cat 
-                                            ? "bg-slate-950 text-white shadow-2xl" 
+                                            ? "bg-slate-950 text-white shadow-xl" 
                                             : "bg-slate-50 text-slate-400 border border-slate-200 hover:bg-white hover:text-slate-950"
                                         }`}
                                     >
@@ -142,7 +142,8 @@ export default function WorkPage() {
                              </div>
                         </div>
 
-                        <div className="p-8 rounded-[3rem] bg-orange-50/50 border border-orange-100/50 space-y-6 relative overflow-hidden group">
+                        {/* HIDDEN ON MOBILE TO SAVE SPACE */}
+                        <div className="hidden lg:block p-8 rounded-[3rem] bg-orange-50/50 border border-orange-100/50 space-y-6 relative overflow-hidden group">
                              <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 blur-[50px] rounded-full" />
                              <p className="text-[12px] font-bold text-orange-900 leading-relaxed uppercase tracking-tight relative z-10">Deploy your professional engineering solution today.</p>
                              <Link href="/contact" className="relative z-10 w-full py-4 rounded-xl bg-slate-950 text-white text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-orange-600 transition-all shadow-xl active:scale-95">
