@@ -290,8 +290,8 @@ function MobileLottieHero() {
 
       <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-orange-400/40 to-transparent" />
 
-      {/* ── COMPACT LOTTIE HERO ── */}
-      <div className="relative flex items-center justify-center pt-14 pb-1">
+      {/* ── CINEMATIC LOTTIE HERO ── */}
+      <div className="relative flex items-center justify-center pt-20 pb-4">
         <AnimatePresence mode="wait">
           <motion.div
             key={current.title}
@@ -300,9 +300,9 @@ function MobileLottieHero() {
             exit={{ scale: 0.82, opacity: 0, filter: "blur(16px)", y: -20 }}
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
             className="relative"
-            style={{ width: "min(65vw, 240px)", height: "min(65vw, 240px)" }}
+            style={{ width: "min(75vw, 280px)", height: "min(75vw, 280px)" }}
           >
-            <div className="w-full h-full [filter:drop-shadow(0_0_60px_rgba(249,115,22,0.3))]">
+            <div className="w-full h-full [filter:drop-shadow(0_0_80px_rgba(249,115,22,0.35))]">
               <LottiePlayer
                 src={current.animationSrc!}
                 className="w-full h-full"
@@ -313,28 +313,28 @@ function MobileLottieHero() {
       </div>
 
       {/* ── Indicators ── */}
-      <div className="flex justify-center gap-2 pb-2">
+      <div className="flex justify-center gap-2 pb-4">
         {services.map((_, i) => (
           <button
             key={i}
             onClick={() => setIndex(i)}
-            className={`rounded-full transition-all duration-700 ${i === index ? "bg-orange-500 w-6 h-1" : "bg-orange-200/50 w-1 h-1"}`}
+            className={`rounded-full transition-all duration-700 ${i === index ? "bg-orange-500 w-8 h-1" : "bg-orange-200/50 w-1 h-1"}`}
           />
         ))}
       </div>
 
-      <div className="flex justify-center pb-3 relative z-20">
+      <div className="flex justify-center pb-5 relative z-20">
         <AnimatePresence mode="wait">
           <motion.div
             key={current.title}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl border border-orange-200/25 bg-white/50 backdrop-blur-2xl shadow-sm"
+            className="flex items-center gap-3 px-4 py-2 rounded-xl border border-orange-200/25 bg-white/50 backdrop-blur-2xl shadow-sm"
           >
-            <span className="text-sm font-black text-orange-500/30 leading-none">0{index + 1}</span>
-            <div className="w-[1px] h-2.5 bg-orange-500/20" />
-            <span className="text-[8px] font-black text-slate-900 uppercase tracking-[0.3em] whitespace-nowrap leading-none">{current.title}</span>
+            <span className="text-base font-black text-orange-500/30 leading-none">0{index + 1}</span>
+            <div className="w-[1px] h-3 bg-orange-500/20" />
+            <span className="text-[9px] font-black text-slate-900 uppercase tracking-[0.3em] whitespace-nowrap leading-none">{current.title}</span>
           </motion.div>
         </AnimatePresence>
       </div>
@@ -344,56 +344,56 @@ function MobileLottieHero() {
         className="absolute left-0 right-0 pointer-events-none"
         style={{
           bottom: "0",
-          height: "35%",
-          background: "linear-gradient(to bottom, transparent 0%, rgba(248,250,252,0.7) 30%, #f8fafc 80%)"
+          height: "40%",
+          background: "linear-gradient(to bottom, transparent 0%, rgba(248,250,252,0.7) 40%, #f8fafc 85%)"
         }}
       />
 
-      {/* ── CONTENT — tightly integrated ── */}
-      <div className="relative z-10 px-6 pb-10 flex flex-col items-center text-center">
+      {/* ── CONTENT — Elite formatting ── */}
+      <div className="relative z-10 px-6 pb-12 pt-0 flex flex-col items-center text-center">
         <motion.div
-          initial={{ opacity: 0, y: 25 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.8 }}
           className="w-full"
         >
-          <p className="text-[7.5px] font-black text-orange-600/80 uppercase tracking-[0.5em] mb-1.5">Engineering Excellence</p>
-          <h1 className="text-[2.4rem] font-black text-slate-900 leading-[0.85] tracking-tighter mb-2">
+          <p className="text-[8px] font-black text-orange-600/80 uppercase tracking-[0.5em] mb-2">Architecting Production Excellence</p>
+          <h1 className="text-[2.8rem] font-black text-slate-900 leading-[0.85] tracking-tighter mb-3">
             Precision Built<span className="text-orange-500">.</span>
           </h1>
-          <p className="text-[10px] text-slate-500 font-bold uppercase tracking-[0.3em] mb-5">
-            Elite Digital Solutions
+          <p className="text-[12px] text-slate-500 font-bold uppercase tracking-[0.3em] mb-6">
+            Elite Engineering Studio
           </p>
 
           {/* CTAs — Optimized Visibility */}
-          <div className="flex flex-row gap-3 w-full px-1">
+          <div className="flex flex-row gap-3 w-full px-2">
             <button
               onClick={() => document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' })}
-              className="flex-[1.1] button-primary rounded-xl py-3.5 text-[11px] font-black flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform"
+              className="flex-[1.2] button-primary rounded-xl py-4 text-[12px] font-black flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform"
             >
-              Our Work <ArrowRight className="w-3 h-3" />
+              Our Work <ArrowRight className="w-3.5 h-3.5" />
             </button>
             <Link
               href="/contact"
-              className="flex-1 rounded-xl py-3 text-[11px] font-black text-slate-800 text-center border border-slate-200 bg-white shadow-sm active:scale-95 transition-transform"
+              className="flex-1 rounded-xl py-3.5 text-[12px] font-black text-slate-800 text-center border border-slate-200 bg-white/100 active:scale-95 transition-transform shadow-sm"
             >
-              Join Us
+              Hire Us
             </Link>
           </div>
 
-          {/* Social Proof — Minimized */}
-          <div className="flex items-center justify-center gap-3 mt-5 pt-4 border-t border-slate-100/60">
+          {/* Social Proof — Super Compact */}
+          <div className="flex items-center justify-center gap-3 mt-6 pt-5 border-t border-slate-100/60">
             <div className="flex -space-x-1.5">
               {[1, 2, 3].map(i => (
-                <img key={i} src={`https://i.pravatar.cc/60?u=jantra_fix${i}`} className="w-5 h-5 rounded-full border-2 border-white shadow-sm" alt="User" />
+                <img key={i} src={`https://i.pravatar.cc/80?u=jantra_elite${i}`} className="w-6 h-6 rounded-full border-2 border-white shadow-sm" alt="User" />
               ))}
             </div>
             <div className="text-left leading-none">
-              <p className="text-[9px] font-black text-slate-800">150+ Shipped</p>
+              <p className="text-[10px] font-black text-slate-800">150+ Projects</p>
             </div>
-            <div className="ml-1 flex items-center gap-1 bg-orange-50 border border-orange-100 px-1.5 py-0.5 rounded-full">
-              <Star className="w-2 h-2 fill-orange-500 text-orange-500" />
-              <span className="text-[9px] font-black text-orange-800">4.9</span>
+            <div className="ml-1 flex items-center gap-1 bg-orange-50 border border-orange-100 px-2 py-1 rounded-full">
+              <Star className="w-2.5 h-2.5 fill-orange-500 text-orange-500" />
+              <span className="text-[10px] font-black text-orange-800">4.9</span>
             </div>
           </div>
         </motion.div>
