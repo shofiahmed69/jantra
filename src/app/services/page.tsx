@@ -6,67 +6,26 @@ import { motion } from "framer-motion";
 import { 
     ArrowRight, 
     Code, Smartphone, Bot, Workflow, 
-    Cloud, BarChart
+    Cloud, Layout, Cpu, Database
 } from "lucide-react";
-
-const services = [
-    {
-        title: "Software Eng",
-        slug: "custom-software",
-        description: "Scale high-performance enterprise systems with production-grade infra.",
-        icon: Code,
-        lottieSrc: "/lottie/software-development-green.json",
-        features: ["Scalable", "Pro Quality"],
-        id: "01"
-    },
-    {
-        title: "AI Solutions",
-        slug: "ai-agent",
-        description: "Autonomous intelligent agents and deep learning automation.",
-        icon: Bot,
-        lottieSrc: "/lottie/assistant-bot.json",
-        features: ["AI Logic", "Automation"],
-        id: "02"
-    },
-    {
-        title: "Mobile App",
-        slug: "mobile-app",
-        description: "Premium native experiences for iOS and Android ecosystems.",
-        icon: Smartphone,
-        lottieSrc: "/lottie/app-development.json",
-        features: ["iOS", "Android"],
-        id: "03"
-    },
-    {
-        title: "Automation",
-        slug: "workflow-automation",
-        description: "Strategic workflow optimization and process engineering.",
-        icon: Workflow,
-        lottieSrc: "/lottie/automatic.json",
-        features: ["API", "Logic"],
-        id: "04"
-    },
-    {
-        title: "Cloud Infra",
-        slug: "saas",
-        description: "Secure foundations for global SaaS and platform delivery.",
-        icon: Cloud,
-        lottieSrc: "/lottie/saas.json",
-        features: ["Cloud", "Security"],
-        id: "05"
-    },
-    {
-        title: "BI Analytics",
-        slug: "business-intelligence",
-        description: "Data-driven visualization and strategic market insights.",
-        icon: BarChart,
-        lottieSrc: "/lottie/bpo-3d.json",
-        features: ["Data", "Reports"],
-        id: "06"
-    }
-];
+import { homeServicePreview } from "@/content/site";
 
 export default function ServicesPage() {
+    // Map the homeServicePreview data to our services grid
+    const services = homeServicePreview.map((s, i) => ({
+        ...s,
+        id: `0${i + 1}`,
+        // Map common icons based on title keywords
+        icon: s.title.toLowerCase().includes('mobile') ? Smartphone :
+              s.title.toLowerCase().includes('ai') ? Bot :
+              s.title.toLowerCase().includes('automation') ? Workflow :
+              s.title.toLowerCase().includes('cloud') ? Cloud :
+              s.title.toLowerCase().includes('saas') ? Cpu :
+              s.title.toLowerCase().includes('software') ? Code :
+              s.title.toLowerCase().includes('interface') ? Layout : Database,
+        slug: s.title.toLowerCase().replace(/ & /g, '-').replace(/\s+/g, '-')
+    }));
+
     return (
         <main className="relative w-full min-h-screen bg-white pb-32">
             {/* ── BG SYMBOLS [UNOBTRUSIVE] ── */}
@@ -82,7 +41,7 @@ export default function ServicesPage() {
                             <span className="text-[9px] font-black uppercase tracking-[0.4em] text-orange-600">Expertise</span>
                         </div>
                         <h1 className="text-4xl sm:text-7xl lg:text-8xl font-black text-slate-900 leading-[0.85] tracking-tighter uppercase">
-                            Digital <br />
+                            Our <br />
                             <span className="text-transparent" style={{ WebkitTextStroke: "1px #0f172a" }}>Expertise</span>
                             <span className="text-orange-500">.</span>
                         </h1>
@@ -120,7 +79,16 @@ export default function ServicesPage() {
                                         </div>
                                     </div>
                                     
-                                    <LottiePlayer src={service.lottieSrc} className="w-full h-full max-w-[120px] sm:max-w-[240px] opacity-100 group-hover:scale-110 transition-transform duration-1000" />
+                                    {service.animationSrc ? (
+                                        <LottiePlayer 
+                                            src={service.animationSrc} 
+                                            className="w-full h-full max-w-[120px] sm:max-w-[240px] opacity-100 group-hover:scale-110 transition-transform duration-1000" 
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center opacity-10 transition-opacity">
+                                            <service.icon className="w-20 h-20" />
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="px-1 sm:px-4 text-left flex-1 flex flex-col">
@@ -145,7 +113,7 @@ export default function ServicesPage() {
                     </div>
                 </div>
 
-                {/* ── MOBILE CTA [STUNNING & STICKY BOTTOM ATTEMPT — FLOATING] ── */}
+                {/* ── MOBILE CTA ── */}
                 <div className="lg:hidden mt-20 p-8 rounded-[2rem] bg-orange-600 text-white space-y-4 text-center shadow-2xl shadow-orange-500/30">
                      <h2 className="text-2xl font-black tracking-tighter uppercase leading-none">Global Delivery</h2>
                      <Link href="/contact" className="w-full py-4 rounded-xl bg-white text-slate-900 text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-3 active:scale-95 transition-transform">
