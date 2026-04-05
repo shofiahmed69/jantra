@@ -1,22 +1,18 @@
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, CheckCircle2, LayoutTemplate, Layers, Cpu, ShieldCheck, BarChart4, Send } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, LayoutTemplate, Layers, Cpu, ShieldCheck, Sparkles, Send, Binary } from "lucide-react";
 import LottiePlayer from "@/components/LottiePlayer";
 import api from "@/lib/api";
 
 export default async function ServiceDetailPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
-    // A robust mapping of slugs to specific content for the 10 services.
+    
     const serviceDataMap: Record<string, { title: string, category: string, lottie: string, description: string, descBg: string }> = {
-        "custom-software": { title: "Custom Software Development", category: "Core Service", lottie: "/lottie/software-development-green.json", description: "End-to-end bespoke software solutions built for scale and performance. We engineer systems that fit your exact business logic rather than forcing you to conform to off-the-shelf products.", descBg: "bg-orange-100" },
-        "mobile-app": { title: "Mobile App Development", category: "Core Service", lottie: "/lottie/app-development.json", description: "High-performance native and cross-platform mobile applications that users love. We build seamless experiences for iOS and Android.", descBg: "bg-slate-200" },
-        "ai-agent": { title: "AI Agent Development", category: "Core Service", lottie: "/lottie/assistant-bot.json", description: "Deploy autonomous AI agents that think, act, and execute complex business tasks 24/7. Transform operational efficiency with independent agents.", descBg: "bg-orange-100" },
-        "ai-chatbot": { title: "AI Chatbots & Virtual Assistants", category: "Core Service", lottie: "/lottie/live-chatbot.json", description: "Intelligent conversational interfaces that support customers and drive sales. Human-level interaction to scale your support indefinitely.", descBg: "bg-slate-200" },
-        "workflow-automation": { title: "Agentic Workflow Automation", category: "Core Service", lottie: "/lottie/automatic.json", description: "Eliminate manual operational bottlenecks with intelligent, end-to-end automated workflows that adapt to unexpected changes.", descBg: "bg-orange-100" },
-        "saas": { title: "SaaS Product Development", category: "Core Service", lottie: "/lottie/saas.json", description: "From architecture to deployment, we build scalable Software-as-a-Service platforms designed for massive parallel tenant usage.", descBg: "bg-slate-200" },
-        "api-microservices": { title: "API & Microservices Development", category: "Core Service", lottie: "/lottie/3d-web.json", description: "Robust backend systems and APIs to connect and power your digital ecosystem, built with high availability in mind.", descBg: "bg-orange-100" },
-        "business-intelligence": { title: "Business Intelligence Dashboards", category: "Core Service", lottie: "/lottie/bpo-3d.json", description: "Actionable insights through beautiful, real-time data visualization platforms. Turn raw data sets into executive-ready dashboards.", descBg: "bg-slate-200" },
-        "ui-ux-design": { title: "UI/UX & Product Design", category: "Core Service", lottie: "/lottie/uxui-d.json", description: "User-centric design that creates intuitive and engaging digital experiences, deeply rooted in human psychology and research.", descBg: "bg-orange-100" },
-        "cloud-migration": { title: "Cloud Migration & Management", category: "Core Service", lottie: "/lottie/cloud-animation.json", description: "Secure, efficient transition to cloud infrastructure with ongoing optimization, reducing your cloud spend while boosting availability.", descBg: "bg-slate-200" },
+        "custom-software-development": { title: "Custom Software", category: "Core Service", lottie: "/lottie/software-development-green.json", description: "End-to-end bespoke software solutions built for scale and performance. We engineer systems that fit your exact business logic rather than forcing you to conform to off-the-shelf products.", descBg: "bg-orange-50" },
+        "mobile-app-development": { title: "Mobile App Development", category: "Core Service", lottie: "/lottie/mobile-app-promo/animations/12345.json", description: "High-performance native and cross-platform mobile applications that users love. We build seamless experiences for iOS and Android.", descBg: "bg-slate-50" },
+        "ai-agent-development": { title: "AI Agent Development", category: "Core Service", lottie: "/lottie/ai-assistant-animation.json", description: "Deploy autonomous AI agents that think, act, and execute complex business tasks 24/7. Transform operational efficiency with independent agents.", descBg: "bg-orange-50" },
+        "workflow-automation": { title: "Workflow Automation", category: "Core Service", lottie: "/lottie/live_chatbot.json", description: "Eliminate manual operational bottlenecks with intelligent, end-to-end automated workflows that adapt to unexpected changes.", descBg: "bg-orange-50" },
+        "saas-product-development": { title: "SaaS Development", category: "Core Service", lottie: "/lottie/saas.json", description: "From architecture to deployment, we build scalable Software-as-a-Service platforms designed for massive parallel tenant usage.", descBg: "bg-slate-50" },
+        "cloud-api-systems": { title: "Cloud & API Systems", category: "Core Service", lottie: "/lottie/cloud.json", description: "Robust backend systems and APIs to connect and power your digital ecosystem, built with high availability in mind.", descBg: "bg-orange-50" },
     };
 
     let service = null;
@@ -30,201 +26,164 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
                 service = local ? { ...local, ...apiService } : apiService;
             }
         }
-    } catch {
-        // fallback
-    }
+    } catch { }
 
     if (!service) {
         service = serviceDataMap[slug] || {
-            title: "Service Not Found",
-            category: "Unknown",
+            title: "Expert Engineering",
+            category: "Core Service",
             lottie: "/lottie/cloud.json",
-            description: "The requested service could not be found.",
-            descBg: "bg-slate-100"
+            description: "High-performance technical solutions designed for global scale.",
+            descBg: "bg-slate-50"
         };
     }
 
     return (
-        <main className="relative w-full min-h-screen pt-24 pb-20 overflow-x-hidden">
-            <div className="max-w-7xl mx-auto px-6">
+        <main className="relative w-full min-h-screen bg-white pb-32">
+            {/* ── BACKGROUND SYMBOL ── */}
+            <div className="absolute top-[10%] right-0 w-[600px] h-[600px] bg-orange-500/5 blur-[120px] rounded-full pointer-events-none" />
 
-                {/* 1. Hero Introduction */}
-                <Link href="/services" className="inline-flex items-center gap-2 text-slate-500 hover:text-orange-600 font-medium text-sm transition-colors mb-8">
-                    <ArrowLeft className="w-4 h-4" /> Back to Services
+            <div className="max-w-[1540px] mx-auto px-4 sm:px-12 pt-24 sm:pt-36 relative z-10">
+                
+                {/* ── NAVIGATION ── */}
+                <Link href="/services" className="inline-flex items-center gap-3 text-[9px] font-black uppercase tracking-[0.4em] text-slate-400 hover:text-orange-600 transition-colors mb-12">
+                     <ArrowLeft className="w-3 h-3" /> Back to Registry
                 </Link>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 mb-20 items-center">
-                    <div className="text-center lg:text-left">
-                        <span className="text-orange-600 font-bold tracking-widest text-[10px] md:text-xs uppercase bg-orange-100/50 px-3 py-1.5 rounded-full inline-block mb-6">
-                            {service.category}
-                        </span>
-                        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-slate-900 tracking-tight leading-tight mb-6 md:mb-8">
-                            {service.title}
-                        </h1>
-                        <p className="text-slate-600 text-base md:text-lg lg:text-xl leading-relaxed max-w-2xl mx-auto lg:mx-0">
-                            {service.description}
-                        </p>
+                {/* ── HERO GRID ── */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center mb-24 sm:mb-40">
+                    <div className="lg:col-span-7 space-y-6 sm:space-y-10">
+                         <div className="flex items-center gap-3">
+                            <div className="w-10 h-[2px] bg-orange-500" />
+                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-orange-600">{service.category}</span>
+                         </div>
+                         <h1 className="text-4xl sm:text-7xl lg:text-[100px] font-black text-slate-900 leading-[0.85] tracking-tighter uppercase">
+                             {service.title.split(' ')[0]} <br />
+                             <span className="text-transparent" style={{ WebkitTextStroke: "1px #0f172a" }}>{service.title.split(' ').slice(1).join(' ')}</span>
+                             <span className="text-orange-500">.</span>
+                         </h1>
+                         <p className="text-slate-500 text-sm sm:text-2xl font-medium leading-[1.3] max-w-2xl border-l-[3px] border-orange-500/10 pl-8">
+                             {service.description}
+                         </p>
                     </div>
-                    <div className={`relative ${service.descBg} rounded-[2.5rem] p-4 flex items-center justify-center h-[350px] md:h-[500px] shadow-sm`}>
-                        <LottiePlayer src={service.lottie} className="w-[80%] h-[80%]" />
+
+                    <div className={`lg:col-span-5 relative aspect-square sm:aspect-video lg:aspect-square ${service.descBg} rounded-[2rem] sm:rounded-[4rem] border border-slate-100 flex items-center justify-center p-12 overflow-hidden group hover:bg-white hover:shadow-2xl transition-all duration-1000`}>
+                         <div className="absolute top-6 left-6 flex items-center gap-2">
+                             <div className="w-2 h-2 rounded-full bg-orange-600 animate-pulse" />
+                             <span className="text-[8px] font-black text-orange-950 uppercase tracking-widest">Active Render</span>
+                         </div>
+                         <LottiePlayer src={service.lottie} className="w-full h-full max-w-[400px] group-hover:scale-110 transition-transform duration-1000" />
                     </div>
                 </div>
 
-                {/* 2. What the service is */}
-                <section className="mb-24 max-w-4xl mx-auto text-center md:text-left">
-                    <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6">What this service is</h2>
-                    <p className="text-slate-600 leading-relaxed text-base md:text-lg px-4 md:px-0">
-                        This service is a comprehensive engineering partnership designed to solve your most complex digital challenges. We don't just deliver code; we deliver highly resilient, scalable systems tailored to integrate seamlessly with your existing infrastructure. By leveraging cutting-edge development paradigms and architectural best practices, we ensure your resulting platforms are robust, future-proof, and designed to perform exceptionally well under intense operational loads.
-                    </p>
-                </section>
-
-                {/* 3. Deliverables */}
-                <section className="mb-24">
-                    <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-8 md:mb-10 text-center md:text-left">Key Deliverables</h2>
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        {[
-                            { title: "Architecture Blueprints", desc: "Detailed system diagrams, data flow representations, and scaling matrices.", icon: LayoutTemplate },
-                            { title: "Production Code", desc: "Clean, documented, and fully tested source code repository.", icon: Layers },
-                            { title: "Infrastructure Configs", desc: "IaC pipelines, Dockerfiles, and CI/CD workflows ready for deployment.", icon: Cpu }
-                        ].map((del, i) => (
-                            <div key={i} className="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.05)]">
-                                <div className="w-12 h-12 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center mb-6">
-                                    <del.icon className="w-6 h-6" />
+                {/* ── CORE ARCHITECTURE [HIGH DENSITY] ── */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 sm:gap-20 mb-32">
+                    
+                    <div className="lg:col-span-4 space-y-8">
+                        <h2 className="text-3xl font-black text-slate-900 tracking-tighter uppercase leading-none">The <br />Architecture.</h2>
+                        <p className="text-[13px] font-medium text-slate-500 leading-relaxed uppercase tracking-tight">We build resilient, scalable systems tailored to integrate seamlessly with your existing infrastructure. By leveraging cutting-edge dev paradigms and architectural best practices, we ensure your platforms are future-proof.</p>
+                        <div className="grid grid-cols-2 gap-4 pt-4">
+                             {[
+                                { icon: Binary, val: "0% Leak" },
+                                { icon: Cpu, val: "H-F Node" }
+                             ].map((st, i) => (
+                                <div key={i} className="p-5 rounded-2xl bg-slate-50 border border-slate-100 flex flex-col gap-3">
+                                    <st.icon className="w-4 h-4 text-orange-500" />
+                                    <span className="text-[9px] font-black uppercase text-slate-900 tracking-widest">{st.val}</span>
                                 </div>
-                                <h3 className="font-bold text-slate-900 text-xl mb-3">{del.title}</h3>
-                                <p className="text-slate-600 text-sm leading-relaxed">{del.desc}</p>
-                            </div>
-                        ))}
+                             ))}
+                        </div>
                     </div>
-                </section>
 
-                {/* 4. Development Process */}
-                <section className="mb-24 bg-orange-600 text-white rounded-[3rem] p-8 md:p-12 lg:p-16 relative overflow-hidden shadow-xl">
-                    {/* Background abstract */}
-                    <div className="absolute top-0 right-0 w-full lg:w-1/2 h-full opacity-20 pointer-events-none"
-                        style={{ backgroundImage: 'radial-gradient(circle at 100% 0%, #ffffff 0%, transparent 50%)' }}></div>
-
-                    <h2 className="text-2xl md:text-3xl font-bold mb-10 md:mb-12 relative z-10 text-center md:text-left">Our Development Process</h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10 relative z-10">
+                    <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-8">
                         {[
-                            { num: "01", title: "Discovery & Arch", desc: "Mapping the requirements, drawing boundaries, and designing the schemas." },
-                            { num: "02", title: "Sprints & Dev", desc: "Two-week agile coding cycles with frequent artifact delivery." },
-                            { num: "03", title: "QA & Pen-Tests", desc: "Rigorous automated testing, manual QA, and security audits." },
-                            { num: "04", title: "Go-Live & Support", desc: "Zero-downtime deployment and continuous SLA support." }
-                        ].map((step, i) => (
-                            <div key={i} className="relative">
-                                <div className="text-5xl md:text-6xl font-black text-white/20 mb-3 text-center md:text-left">{step.num}</div>
-                                <h3 className="font-bold text-lg md:text-xl text-white mb-2 text-center md:text-left">{step.title}</h3>
-                                <p className="text-orange-100 text-sm md:text-base leading-relaxed text-center md:text-left">{step.desc}</p>
+                            { title: "Blueprints", desc: "Detailed system diagrams, data maps, and scaling matrices.", icon: LayoutTemplate },
+                            { title: "Production", desc: "Clean, documented, and fully tested source code repositories.", icon: Layers },
+                            { title: "Infrastructure", desc: "IaC pipelines, Dockerfiles, and CI/CD ready for deployment.", icon: ShieldCheck }
+                        ].map((del, i) => (
+                            <div key={i} className="group p-8 sm:p-10 rounded-[2.5rem] bg-white border border-slate-100 hover:border-orange-500/20 hover:shadow-2xl transition-all duration-700">
+                                <div className="w-12 h-12 bg-slate-900 text-white rounded-2xl flex items-center justify-center mb-6 group-hover:bg-orange-600 transition-colors duration-700">
+                                    <del.icon className="w-5 h-5" />
+                                </div>
+                                <h3 className="font-black text-slate-900 text-[11px] sm:text-lg uppercase tracking-tight mb-3">{del.title}</h3>
+                                <p className="text-slate-500 text-[10px] sm:text-[13px] font-medium leading-tight">{del.desc}</p>
                             </div>
                         ))}
                     </div>
+                </div>
+
+                {/* ── DEVELOPMENT PROTOCOL [ORANGE MODULE] ── */}
+                <section className="mb-32 bg-slate-950 text-white rounded-[2rem] sm:rounded-[4rem] p-8 sm:p-20 relative overflow-hidden shadow-2xl">
+                    <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-orange-600 opacity-10 blur-[140px] rounded-full translate-x-1/2 -translate-y-1/2" />
+                    
+                    <div className="grid lg:grid-cols-12 gap-12 items-start relative z-10">
+                        <div className="lg:col-span-4 space-y-4">
+                            <span className="text-[9px] font-black uppercase tracking-[0.4em] text-orange-500">Operation Pipeline</span>
+                            <h2 className="text-4xl sm:text-6xl font-black tracking-tighter leading-none uppercase">Studio <br />Protocol.</h2>
+                        </div>
+                        <div className="lg:col-span-8 grid grid-cols-2 sm:grid-cols-4 gap-6 sm:gap-10">
+                            {[
+                                { num: "01", title: "Discovery", desc: "Architecture design & schema mapping." },
+                                { num: "02", title: "Sprints", desc: "Focused 2-week coding iterations." },
+                                { num: "03", title: "QA/Audit", desc: "Pen-tests & automated validation." },
+                                { num: "04", title: "Go-Live", desc: "Zero-downtime deployment." }
+                            ].map((step, i) => (
+                                <div key={i} className="space-y-4">
+                                    <span className="text-4xl sm:text-6xl font-black text-white/10">{step.num}</span>
+                                    <h3 className="font-black text-[10px] sm:text-[13px] text-white uppercase tracking-widest">{step.title}</h3>
+                                    <p className="text-slate-400 text-[9px] sm:text-[11px] uppercase font-bold leading-tight">{step.desc}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </section>
 
-                {/* 5. Use Cases & 6. Tech Stack Side-by-Side */}
-                <section className="mb-24 grid grid-cols-1 lg:grid-cols-2 gap-16">
-                    {/* Use Cases */}
-                    <div>
-                        <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6 md:mb-8 text-center md:text-left">Primary Use Cases</h2>
-                        <ul className="space-y-4">
-                            {[
-                                "Modernizing legacy on-premise monolithic applications.",
-                                "Building high-concurrency fintech data platforms.",
-                                "Automating repetitive Tier 1 support via autonomous LLM agents.",
-                                "Creating custom enterprise resource planning (ERP) workflows."
-                            ].map((uc, i) => (
-                                <li key={i} className="flex items-start gap-4">
-                                    <CheckCircle2 className="w-6 h-6 shrink-0 text-orange-500 mt-0.5" />
-                                    <span className="text-slate-700 leading-relaxed font-medium">{uc}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    {/* Tech Stack */}
-                    <div>
-                        <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-6 md:mb-8 text-center md:text-left">Related Tech Stack</h2>
-                        <div className="flex flex-wrap gap-3 justify-center md:justify-start">
-                            {["React", "Next.js", "Node.js", "Python", "Rust", "PostgreSQL", "MongoDB", "Redis", "AWS", "Google Cloud", "Docker", "Kubernetes", "OpenAI"].map((tech, i) => (
-                                <span key={i} className="px-4 py-2 border border-slate-200 rounded-full text-slate-600 bg-slate-50 font-bold text-sm shadow-sm transition-all hover:border-orange-300 hover:text-orange-600">
+                {/* ── TECH CLOUD & PRICING [2 COLUMN] ── */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-20 items-start mb-32">
+                    
+                    {/* TECH STACK */}
+                    <div className="lg:col-span-4 space-y-8">
+                         <h2 className="text-3xl font-black text-slate-900 tracking-tighter uppercase leading-none">Primary <br />Stack.</h2>
+                         <div className="flex flex-wrap gap-2">
+                             {["React", "Next.js", "Node.js", "Python", "Rust", "PostgreSQL", "MongoDB", "Redis", "AWS", "Google Cloud", "Docker", "Kubernetes", "OpenAI"].map((tech, i) => (
+                                <span key={i} className="px-5 py-3 rounded-full bg-slate-50 border border-slate-100 text-[9px] font-black uppercase tracking-widest text-slate-500 hover:text-orange-600 hover:border-orange-500/20 transition-all cursor-crosshair">
                                     {tech}
                                 </span>
-                            ))}
-                        </div>
+                             ))}
+                         </div>
                     </div>
-                </section>
 
-                <section className="mb-24">
-                    <div className="text-center mb-10 md:mb-12">
-                        <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-3 md:mb-4">Pricing Engagements</h2>
-                        <p className="text-slate-600 text-sm md:text-base px-4">Scalable models depending on your exact requirements.</p>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-lg md:max-w-none mx-auto">
+                    {/* PRICING TIERS */}
+                    <div className="lg:col-span-8 grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-8">
                         {[
-                            { name: "Starter", price: "$5,000 USD", desc: "For straightforward MVPs and core foundational setups." },
-                            { name: "Growth", price: "$15,000 USD", desc: "For scaling platforms requiring complex integrations.", highlighted: true },
-                            { name: "Enterprise", price: "$30,000 USD", desc: "Mission-critical architectures with SLAs and dedicated teams." }
+                            { name: "Starter", price: "$5k", desc: "Base Foundational setups." },
+                            { name: "Growth", price: "$15k", desc: "Massive scaling & AI.", highlighted: true },
+                            { name: "Global", price: "$35k", desc: "SLA & Mission Critical." }
                         ].map((tier, i) => (
-                            <div key={i} className={`p-8 rounded-[2rem] border ${tier.highlighted ? "bg-slate-900 text-white border-slate-800 shadow-xl transform md:-translate-y-2" : "bg-white border-slate-200 text-slate-900 shadow-sm"}`}>
-                                <h3 className={`text-xl font-bold mb-2 ${tier.highlighted ? "text-white" : "text-slate-900"}`}>{tier.name}</h3>
-                                <div className="text-3xl font-black mb-4">{tier.price}</div>
-                                <p className={`text-sm leading-relaxed mb-6 ${tier.highlighted ? "text-slate-300" : "text-slate-600"}`}>{tier.desc}</p>
-                                <Link href="/contact" className={`block text-center w-full py-3 rounded-full font-bold transition-all ${tier.highlighted ? "bg-orange-500 hover:bg-orange-400 text-white" : "bg-slate-100 hover:bg-slate-200 text-slate-900"}`}>
-                                    Get a Quote
-                                </Link>
+                            <div key={i} className={`p-6 sm:p-10 rounded-[2rem] border h-full flex flex-col justify-between transition-all duration-700 ${tier.highlighted ? "bg-orange-600 border-orange-500 text-white shadow-2xl scale-105" : "bg-white border-slate-100 text-slate-900 hover:border-orange-500/20"}`}>
+                                <div className="space-y-4">
+                                    <h3 className={`text-[9px] font-black uppercase tracking-widest ${tier.highlighted ? "text-orange-200" : "text-slate-400"}`}>{tier.name}</h3>
+                                    <div className="text-3xl sm:text-5xl font-black tracking-tighter leading-none">{tier.price}</div>
+                                    <p className={`text-[9px] sm:text-[11px] font-bold uppercase tracking-tight leading-tight ${tier.highlighted ? "text-white" : "text-slate-500"}`}>{tier.desc}</p>
+                                </div>
+                                <button className={`mt-8 w-full py-4 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${tier.highlighted ? "bg-white text-orange-600" : "bg-slate-950 text-white hover:bg-orange-600"}`}>
+                                    Audit Req
+                                </button>
                             </div>
                         ))}
                     </div>
-                </section>
+                </div>
 
-                {/* 8. Case Study Teaser */}
-                <section className="mb-24 bg-orange-50 border border-orange-100 rounded-[3rem] p-8 md:p-12 lg:p-16 flex flex-col md:flex-row items-center gap-10">
-                    <div className="w-full md:w-1/3 aspect-square rounded-[2.5rem] relative overflow-hidden shadow-xl">
-                        <div className="w-full h-full bg-gradient-to-br from-orange-400 via-orange-500 to-red-600 flex items-center justify-center">
-                            <span className="text-white font-black opacity-20 select-none" style={{ fontSize: '8rem', lineHeight: 1 }}>
-                                L
-                            </span>
-                        </div>
-                    </div>
-                    <div className="w-full md:w-2/3 text-center md:text-left">
-                        <span className="text-orange-600 font-bold tracking-widest text-[10px] md:text-xs uppercase mb-3 block">Featured Case Study</span>
-                        <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4">Transforming logistics with agentic workflows</h2>
-                        <p className="text-slate-600 text-sm md:text-base leading-relaxed mb-6 md:mb-8">
-                            See how we helped a global logistics firm reduce manual processing errors by 98% and increase parallel routing efficiency using custom LLM agents and {service.title.toLowerCase()}.
+                {/* ── CTA PROTOCOL ── */}
+                <section className="bg-orange-600 rounded-[2rem] sm:rounded-[4rem] p-8 sm:p-20 text-center text-white shadow-2xl relative overflow-hidden">
+                    <div className="absolute inset-0 bg-slate-950/20 blur-[80px] mix-blend-overlay"></div>
+                    <div className="relative z-10 max-w-4xl mx-auto space-y-8">
+                        <h2 className="text-4xl sm:text-7xl font-black tracking-tighter leading-none uppercase">Initialize <br />Discovery Now?</h2>
+                        <p className="text-white/80 text-sm sm:text-2xl font-medium leading-tight uppercase tracking-tight">
+                            Let's get on an architectural audit to see if JANTRA's engineering team is the right fit.
                         </p>
-                        <Link href="/work/logichain-automation" className="inline-flex items-center justify-center md:justify-start gap-2 bg-slate-900 text-white px-8 py-3.5 md:py-4 rounded-full font-bold text-sm md:text-base hover:bg-orange-600 transition-colors shadow-md w-full sm:w-auto">
-                            Read the Case Study <ArrowRight className="w-4 h-4" />
-                        </Link>
-                    </div>
-                </section>
-
-                {/* 9. FAQ */}
-                <section className="mb-24 max-w-4xl mx-auto px-2 md:px-0">
-                    <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-8 md:mb-10 text-center">Frequently Asked Questions</h2>
-                    <div className="space-y-6">
-                        {[
-                            { q: "How quickly can we start the project?", a: "Once the Statement of Work (SOW) is signed, we usually kick off the discovery phase within 3-5 business days." },
-                            { q: "Who owns the intellectual property?", a: "Upon final payment, all custom code, designs, and architectural blueprints become your exclusive intellectual property." },
-                            { q: "Do you offer post-launch support and maintenance?", a: "Yes, every custom project comes with a 1-month warranty, and we offer dedicated Service Level Agreements (SLAs) for ongoing monitoring and updates." }
-                        ].map((faq, i) => (
-                            <div key={i} className="bg-white border border-slate-200 p-8 rounded-3xl shadow-sm">
-                                <h3 className="font-bold text-lg text-slate-900 mb-3">{faq.q}</h3>
-                                <p className="text-slate-600">{faq.a}</p>
-                            </div>
-                        ))}
-                    </div>
-                </section>
-
-                {/* 10. CTA */}
-                <section className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-[3rem] p-8 md:p-12 lg:p-16 text-center text-white shadow-xl relative overflow-hidden mx-2 md:mx-0">
-                    <div className="absolute inset-0 bg-white/10 blur-[50px] mix-blend-overlay"></div>
-                    <div className="relative z-10">
-                        <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6">Ready to engineer your future?</h2>
-                        <p className="text-white/90 text-sm md:text-lg lg:text-xl max-w-2xl mx-auto mb-8 md:mb-10 leading-relaxed">
-                            Let's get on a brief discovery call to see if JANTRA's engineering team is the right fit to execute your vision.
-                        </p>
-                        <Link href="/contact" className="inline-flex items-center justify-center gap-2 bg-slate-900 text-white px-6 md:px-10 py-4 md:py-5 rounded-full font-bold hover:bg-slate-800 transition-all shadow-[0_10px_30px_-10px_rgba(15,23,42,0.8)] active:scale-95 text-sm md:text-lg w-full sm:w-auto">
-                            <Send className="w-5 h-5" /> Start completely free consultation
+                        <Link href="/contact" className="inline-flex items-center gap-6 bg-slate-950 text-white px-10 py-5 sm:px-16 sm:py-8 rounded-[1.5rem] sm:rounded-[2.5rem] font-black uppercase tracking-[0.4em] hover:bg-white hover:text-slate-950 transition-all shadow-2xl active:scale-95 text-[10px] sm:text-[13px]">
+                             Start Consultation <Send className="w-5 h-5" />
                         </Link>
                     </div>
                 </section>
