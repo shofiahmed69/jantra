@@ -75,12 +75,12 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
                 </div>
 
                 {/* ── MAIN IMAGE ── */}
-                <div className="relative aspect-video sm:aspect-[21/9] rounded-[2.5rem] sm:rounded-[4rem] overflow-hidden bg-slate-900 mb-20 shadow-2xl ring-1 ring-black/5">
+                <div className="relative aspect-[16/10] sm:aspect-[16/7] rounded-[2.5rem] sm:rounded-[4rem] overflow-hidden bg-slate-900 mb-20 shadow-2xl ring-1 ring-black/5">
                     {project.thumbnail ? (
                         <img 
                             src={project.thumbnail} 
                             alt={project.title} 
-                            className="w-full h-full object-cover opacity-80"
+                            className="w-full h-full object-cover opacity-100 transition-all duration-700 hover:scale-105"
                         />
                     ) : (
                         <div className="w-full h-full flex items-center justify-center text-white/5 font-black text-8xl uppercase tracking-tighter">Jantra Archive</div>

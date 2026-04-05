@@ -270,7 +270,7 @@ function MobileLottieHero() {
 
   return (
     <section
-      className="lg:hidden relative min-h-screen overflow-hidden"
+      className="lg:hidden relative min-h-[90vh] overflow-hidden"
       style={{ background: "linear-gradient(160deg, #fffcf9 0%, #fffbf7 35%, #fffaf8 60%, #f8fafc 100%)" }}
     >
       {/* ── Background Moniker scrolling ── */}
@@ -350,7 +350,7 @@ function MobileLottieHero() {
       />
 
       {/* ── CONTENT — Elite formatting ── */}
-      <div className="relative z-10 px-6 pb-12 pt-0 flex flex-col items-center text-center">
+      <div className="relative z-10 px-6 pb-6 pt-0 flex flex-col items-center text-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -417,7 +417,7 @@ function DesktopHero() {
   const current = services[index];
 
   return (
-    <section className="hidden lg:block relative pt-40 pb-24 px-8 overflow-hidden bg-[#f8fafc]">
+    <section className="hidden lg:block relative pt-40 pb-6 px-8 overflow-hidden bg-[#f8fafc]">
       <div className="mx-auto max-w-[1400px] relative z-10">
         <div className="grid grid-cols-12 items-center gap-12">
 
@@ -568,7 +568,7 @@ export default function HomePage() {
       <DesktopHero />
 
       {/* ── TECH MARQUEE ──────────────────────────────────── */}
-      <section className="py-4 bg-white border-y border-orange-50/80 overflow-hidden relative z-30">
+      <section className="py-1 bg-white border-y border-orange-50/80 overflow-hidden relative z-30">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,white_0%,transparent_8%,transparent_92%,white_100%)] pointer-events-none z-20 w-full" />
         <div className="flex gap-4 whitespace-nowrap animate-marquee items-center px-4 relative z-10">
           {[
@@ -592,7 +592,7 @@ export default function HomePage() {
       </section>
 
       {/* ── STATS ─────────────────────────────────────────── */}
-      <section className="py-14 sm:py-24 lg:py-32 px-5 sm:px-8 bg-[#fcfaf8] border-y border-orange-50">
+      <section className="py-6 sm:py-12 lg:py-16 px-5 sm:px-8 bg-[#fcfaf8] border-y border-orange-50">
         <motion.div
           initial="hidden"
           whileInView="visible"
