@@ -4,7 +4,10 @@ const getBaseUrl = () => {
     let url = process.env.NEXT_PUBLIC_API_URL;
 
     if (!url) {
-        if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+        // Fallback for build time / server side
+        if (typeof window === 'undefined') {
+            url = 'https://jontro-backend.onrender.com';
+        } else if (window.location.hostname !== 'localhost') {
             url = 'https://jontro-backend.onrender.com';
         } else {
             url = 'http://localhost:4000';

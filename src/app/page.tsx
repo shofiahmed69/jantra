@@ -262,11 +262,13 @@ function MobileLottieHero() {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
+    if (services.length <= 1) return;
     const timer = setInterval(() => setIndex(p => (p + 1) % services.length), 4200);
     return () => clearInterval(timer);
   }, [services.length]);
 
   const current = services[index];
+  if (!current) return null;
 
   return (
     <section
@@ -410,11 +412,13 @@ function DesktopHero() {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
+    if (services.length <= 1) return;
     const timer = setInterval(() => setIndex(p => (p + 1) % services.length), 4500);
     return () => clearInterval(timer);
   }, [services.length]);
 
   const current = services[index];
+  if (!current) return null;
 
   return (
     <section className="hidden lg:block relative pt-40 pb-12 px-8 overflow-hidden bg-[#f8fafc]">
