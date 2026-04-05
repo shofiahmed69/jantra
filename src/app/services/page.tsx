@@ -11,11 +11,9 @@ import {
 import { homeServicePreview } from "@/content/site";
 
 export default function ServicesPage() {
-    // Map the homeServicePreview data to our services grid
     const services = homeServicePreview.map((s, i) => ({
         ...s,
         id: `0${i + 1}`,
-        // Map common icons based on title keywords
         icon: s.title.toLowerCase().includes('mobile') ? Smartphone :
               s.title.toLowerCase().includes('ai') ? Bot :
               s.title.toLowerCase().includes('automation') ? Workflow :
@@ -27,97 +25,64 @@ export default function ServicesPage() {
     }));
 
     return (
-        <main className="relative w-full min-h-screen bg-white pb-32">
-            {/* ── BG SYMBOLS [UNOBTRUSIVE] ── */}
-            <div className="absolute top-[10%] right-0 w-[500px] h-[500px] bg-orange-500/5 blur-[120px] rounded-full pointer-events-none" />
-
-            <div className="max-w-[1540px] mx-auto px-4 sm:px-12 pt-24 sm:pt-36 relative z-10">
+        <main className="w-full min-h-screen bg-white pb-32">
+            <div className="max-w-[1280px] mx-auto px-6 sm:px-12 pt-28 sm:pt-40">
                 
-                {/* ── COMPACT HEADER ── */}
-                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-12 sm:mb-16">
-                    <div className="space-y-3 sm:space-y-4">
-                        <div className="flex items-center gap-2">
-                            <div className="w-8 h-[2px] bg-orange-500" />
-                            <span className="text-[9px] font-black uppercase tracking-[0.4em] text-orange-600">Expertise</span>
-                        </div>
-                        <h1 className="text-4xl sm:text-7xl lg:text-8xl font-black text-slate-900 leading-[0.85] tracking-tighter uppercase">
-                            Our <br />
-                            <span className="text-transparent" style={{ WebkitTextStroke: "1px #0f172a" }}>Expertise</span>
-                            <span className="text-orange-500">.</span>
-                        </h1>
-                    </div>
+                {/* ── HEADER ── */}
+                <div className="max-w-2xl mb-16 sm:mb-24">
+                    <span className="text-orange-600 font-bold tracking-widest text-xs uppercase mb-6 block">EXPERTISE Registry</span>
+                    <h1 className="text-5xl sm:text-7xl font-black text-slate-900 leading-[0.9] tracking-tighter uppercase mb-8">
+                        Our <br /> Expertise <span className="text-orange-500">.</span>
+                    </h1>
+                    <p className="text-slate-500 text-lg font-medium leading-relaxed">
+                        High-performance engineering solutions designed to solve complex industrial digital challenges.
+                    </p>
                 </div>
 
-                {/* ── HIGH-DENSITY GRID ── */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-10">
-                    
-                    {/* SIDEBAR [HIDDEN ON MOBILE] */}
-                    <div className="hidden lg:block lg:col-span-3 sticky top-36 h-fit">
-                        <div className="p-10 rounded-[2.5rem] bg-slate-950 text-white space-y-6 relative overflow-hidden group">
-                             <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 blur-[50px] rounded-full" />
-                             <h4 className="text-xl font-black tracking-tighter uppercase relative z-10">Scale Today.</h4>
-                             <Link href="/contact" className="relative z-10 w-full py-4 rounded-xl bg-orange-600 text-white text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-white hover:text-slate-950 transition-all active:scale-95">
-                                Talk To Us <ArrowRight className="w-4 h-4" />
-                             </Link>
-                        </div>
-                    </div>
+                {/* ── SIMPLE CLEAN GRID: 1-COL MOBILE, 2-COL DESKTOP ── */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12">
+                    {services.map((service) => (
+                        <motion.div 
+                            key={service.slug} 
+                            initial={{ opacity: 0, y: 15 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="group relative bg-slate-50 border border-slate-100 rounded-[2.5rem] p-8 sm:p-12 flex flex-col md:flex-row items-center gap-10 hover:bg-white hover:border-slate-300 hover:shadow-2xl transition-all duration-700"
+                        >
+                            {/* LOTTIE AREA */}
+                            <div className="w-full md:w-1/3 aspect-square max-w-[200px] flex items-center justify-center p-4">
+                                <LottiePlayer 
+                                    src={service.animationSrc} 
+                                    className="w-full h-full opacity-100 group-hover:scale-110 transition-transform duration-1000" 
+                                />
+                            </div>
 
-                    {/* DENSE SERVICE GRID - 2 COLUMN ON ALL SCREENS */}
-                    <div className="lg:col-span-9 grid grid-cols-2 gap-3 sm:gap-8">
-                        {services.map((service, i) => (
-                            <motion.div 
-                                key={service.slug} 
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: i * 0.05, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                                className="group relative flex flex-col transition-all duration-700 h-full"
-                            >
-                                <div className="relative aspect-square sm:aspect-[16/10] rounded-[1.5rem] sm:rounded-[2rem] bg-slate-50 border border-slate-100 flex items-center justify-center p-4 sm:p-10 mb-4 sm:mb-6 overflow-hidden group-hover:bg-white group-hover:shadow-xl transition-all duration-700">
-                                    <div className="absolute top-4 left-4 z-20">
-                                        <div className="w-8 h-8 rounded-lg bg-white border border-slate-100 flex items-center justify-center text-orange-500 group-hover:bg-slate-950 group-hover:text-white transition-all shadow-sm">
-                                            <service.icon className="w-4 h-4 sm:w-5 s:h-5 " />
-                                        </div>
+                            {/* CONTENT AREA */}
+                            <div className="flex-1 space-y-4 text-center md:text-left">
+                                <div className="flex items-center justify-center md:justify-start gap-4">
+                                    <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center text-orange-600">
+                                        <service.icon className="w-5 h-5" />
                                     </div>
-                                    
-                                    {service.animationSrc ? (
-                                        <LottiePlayer 
-                                            src={service.animationSrc} 
-                                            className="w-full h-full max-w-[120px] sm:max-w-[240px] opacity-100 group-hover:scale-110 transition-transform duration-1000" 
-                                        />
-                                    ) : (
-                                        <div className="w-full h-full flex items-center justify-center opacity-10 transition-opacity">
-                                            <service.icon className="w-20 h-20" />
-                                        </div>
-                                    )}
+                                    <span className="text-[10px] font-black text-orange-400 uppercase tracking-widest">#{service.id}</span>
                                 </div>
-
-                                <div className="px-1 sm:px-4 text-left flex-1 flex flex-col">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <span className="text-[7px] font-black text-orange-500/40 uppercase tracking-widest">#{service.id}</span>
-                                        <div className="h-[1px] flex-1 bg-slate-100" />
-                                    </div>
-                                    <h3 className="text-base sm:text-3xl font-black text-slate-900 tracking-tighter leading-[0.95] uppercase mb-2 group-hover:text-orange-600 transition-colors">
-                                        {service.title}
-                                    </h3>
-                                    <p className="hidden sm:block text-[11px] sm:text-[13px] text-slate-500 font-medium leading-tight mb-4 flex-1">
-                                        {service.description}
-                                    </p>
-                                    
-                                    <Link href={`/services/${service.slug}`} className="group-hover:translate-x-1 transition-transform inline-flex items-center gap-2 text-[8px] sm:text-[10px] font-black text-slate-950 uppercase tracking-widest mt-auto pb-4">
-                                        Explore <ArrowRight className="w-3 h-3 text-orange-500" />
-                                    </Link>
-                                </div>
-                                <Link href={`/services/${service.slug}`} className="absolute inset-0 z-30" />
-                            </motion.div>
-                        ))}
-                    </div>
+                                <h3 className="text-3xl font-black text-slate-950 tracking-tighter uppercase leading-none">{service.title}</h3>
+                                <p className="text-[13px] text-slate-500 font-medium leading-relaxed line-clamp-2">{service.description}</p>
+                                <Link href={`/services/${service.slug}`} className="inline-flex items-center gap-2 text-[10px] font-black text-slate-950 uppercase tracking-widest pt-2 group-hover:text-orange-600 transition-colors">
+                                    Explore Protocol <ArrowRight className="w-4 h-4" />
+                                </Link>
+                            </div>
+                            <Link href={`/services/${service.slug}`} className="absolute inset-0 z-20" />
+                        </motion.div>
+                    ))}
                 </div>
 
-                {/* ── MOBILE CTA ── */}
-                <div className="lg:hidden mt-20 p-8 rounded-[2rem] bg-orange-600 text-white space-y-4 text-center shadow-2xl shadow-orange-500/30">
-                     <h2 className="text-2xl font-black tracking-tighter uppercase leading-none">Global Delivery</h2>
-                     <Link href="/contact" className="w-full py-4 rounded-xl bg-white text-slate-900 text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-3 active:scale-95 transition-transform">
-                        Hire Team <ArrowRight className="w-3 h-3" />
+                {/* ── BOTTOM CTA BOX ── */}
+                <div className="mt-24 p-12 sm:p-16 rounded-[4rem] bg-slate-950 text-white flex flex-col md:flex-row items-center justify-between gap-12">
+                     <div className="space-y-4 text-center md:text-left">
+                         <h2 className="text-4xl font-black tracking-tighter uppercase">Ready to Start?</h2>
+                         <p className="text-slate-400 text-sm font-medium leading-relaxed max-w-sm uppercase tracking-tight">Our squad operates across time zones to ensure elite project delivery speed.</p>
+                     </div>
+                     <Link href="/contact" className="px-12 py-6 rounded-2xl bg-orange-600 text-white text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-white hover:text-slate-950 transition-all shadow-xl active:scale-95">
+                        Initialize Discovery <ArrowRight className="w-5 h-5" />
                      </Link>
                 </div>
             </div>
