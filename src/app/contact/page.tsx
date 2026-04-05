@@ -56,7 +56,7 @@ export default function ContactPage() {
             icon: Linkedin,
             label: "LinkedIn",
             value: "Jantra Soft",
-            href: "https://linkedin.com/company/jantro-soft",
+            href: "https://www.linkedin.com/company/112998098",
             color: "bg-indigo-50 text-indigo-600"
         },
         {
