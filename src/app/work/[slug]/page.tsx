@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2, ChevronRight, BarChart, ExternalLink } from "lucide-react";
-import { getProjectBySlug, getProjectGradient, projects as staticProjects } from "@/data/projects";
+import { ArrowLeft, CheckCircle2, ChevronRight, BarChart, ExternalLink, Globe, Cpu, Zap } from "lucide-react";
+import { getProjectBySlug, projects as staticProjects } from "@/data/projects";
 import { notFound } from "next/navigation";
 import api from "@/lib/api";
 
@@ -14,9 +14,15 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
         const response = await api.get("/work");
         const data = response.data?.data || response.data || [];
         if (Array.isArray(data) && data.length > 0) {
-            allProjects = data.sort((a: any, b: any) => a.order - b.order).map((apiP: any) => {
+            allProjects = data.map((apiP: any) => {
                 const local = staticProjects.find(l => l.slug === apiP.slug);
-                return { ...local, ...apiP, tags: local?.tags || apiP.techStack || [] };
+                return { 
+                    ...local, 
+                    ...apiP, 
+                    title: apiP.title || apiP.name || local?.title,
+                    description: apiP.description || apiP.summary || local?.description,
+                    tags: local?.tags || apiP.techStack || [] 
+                };
             });
             project = allProjects.find((p: any) => p.slug === slug);
         } else {
@@ -37,179 +43,134 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
     const nextProject = hasNext ? allProjects[currentIndex + 1] : null;
 
     return (
-        <main className="relative w-full min-h-screen pt-32 pb-24 overflow-x-hidden bg-[#fcfcfc]">
-            <div className="max-w-7xl mx-auto px-6">
+        <main className="w-full min-h-screen bg-white pb-32">
+            
+            <div className="max-w-[1280px] mx-auto px-6 sm:px-12 pt-28 sm:pt-40">
+                
+                {/* ── BREADCRUMB ── */}
+                <Link href="/work" className="inline-flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-orange-600 transition-colors mb-12 uppercase tracking-widest">
+                     <ArrowLeft className="w-4 h-4" /> Portfolio Index
+                </Link>
 
-                {/* Back Link — Floating Navigation */}
-                <div className="mb-12">
-                   <Link href="/work" className="inline-flex items-center gap-3 text-slate-400 hover:text-orange-600 font-black text-[10px] uppercase tracking-[0.3em] transition-all group">
-                       <div className="w-10 h-10 rounded-full border border-slate-100 flex items-center justify-center group-hover:border-orange-200 group-hover:bg-orange-50 transition-all">
-                          <ArrowLeft className="w-4 h-4" /> 
-                       </div>
-                       Portfolio Index
-                   </Link>
-                </div>
-
-                {/* Hero Section — Massive Editorial Layout */}
-                <header className="mb-16 grid grid-cols-1 lg:grid-cols-12 items-end gap-12">
+                {/* ── HERO ── */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:items-end mb-20 sm:mb-32">
                     <div className="lg:col-span-8 space-y-6">
                         <div className="flex items-center gap-3">
-                            <div className="w-12 h-[2px] bg-orange-500" />
-                            <span className="text-orange-600 font-black uppercase tracking-[0.5em] text-[10px]">
-                                {Array.isArray(project.category) ? project.category[0] : project.category}
+                            <span className="text-[10px] font-black uppercase tracking-widest text-orange-600 bg-orange-50 px-4 py-2 rounded-full border border-orange-100">
+                                {Array.isArray(project.category) ? project.category[0] : project.category || "Case Study"}
                             </span>
+                            <div className="w-12 h-[1px] bg-slate-200" />
                         </div>
-                        <h1 className="text-6xl md:text-8xl lg:text-9xl font-black text-slate-900 tracking-[calc(-0.04em)] leading-[0.85]">
-                           {project.title.split(' ')[0]} <br/>
-                           <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-orange-400">
-                              {project.title.split(' ').slice(1).join(' ') || "Delivery"}
-                           </span>
+                        <h1 className="text-4xl sm:text-6xl lg:text-8xl font-black text-slate-900 tracking-tighter uppercase leading-[0.9]">
+                            {project.title} <span className="text-orange-500">.</span>
                         </h1>
+                        <p className="text-slate-500 text-lg sm:text-2xl font-medium leading-relaxed max-w-2xl border-l-4 border-orange-500/20 pl-8">
+                            {project.description}
+                        </p>
                     </div>
-                    <div className="lg:col-span-4 lg:pb-2">
-                       <p className="text-lg font-bold text-slate-400 uppercase tracking-[0.4em] mb-3">Timeline</p>
-                       <p className="text-2xl font-black text-slate-900 uppercase tracking-tighter">{project.duration || "Spring 2024"}</p>
-                    </div>
-                </header>
-
-                {/* Imagery — Architectural Display */}
-                <div className="relative w-full aspect-[21/9] rounded-[3rem] overflow-hidden bg-slate-900 mb-20 flex items-center justify-center group shadow-[0_50px_100px_-30px_rgba(0,0,0,0.15)] ring-1 ring-black/5">
-                    
-                    {/* Background Ambient Glow */}
-                    {project.thumbnail && (
-                       <img 
-                         src={project.thumbnail} 
-                         className="absolute inset-0 w-full h-full object-cover blur-3xl scale-150 opacity-40 saturate-200" 
-                         alt="" 
-                       />
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-tr from-slate-900/80 via-slate-900/20 to-transparent z-10" />
-
-                    {/* Foreground Uncropped Image */}
-                    <div className="relative z-20 w-fit h-fit max-w-[90%] max-h-[85%] p-6 bg-white/5 backdrop-blur-xl rounded-3xl border border-white/10 shadow-2xl flex items-center justify-center transition-transform duration-700 group-hover:scale-[1.02]">
-                       {project.thumbnail ? (
-                          <img 
-                             src={project.thumbnail} 
-                             alt={project.title}
-                             className="max-w-full max-h-[500px] object-contain rounded-xl shadow-2xl"
-                          />
-                       ) : (
-                          <span className="text-white font-black opacity-10 select-none text-[15vw] leading-none">
-                              {project.title.charAt(0)}
-                          </span>
-                       )}
+                    <div className="lg:col-span-4 space-y-2">
+                        <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">TIMELINE</span>
+                        <p className="text-xl font-black text-slate-900 uppercase tracking-tight">{project.duration || "48 Wks Cycle"}</p>
                     </div>
                 </div>
 
-                {/* Content Architecture */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 relative">
+                {/* ── MAIN IMAGE ── */}
+                <div className="relative aspect-video sm:aspect-[21/9] rounded-[2.5rem] sm:rounded-[4rem] overflow-hidden bg-slate-900 mb-20 shadow-2xl ring-1 ring-black/5">
+                    {project.thumbnail ? (
+                        <img 
+                            src={project.thumbnail} 
+                            alt={project.title} 
+                            className="w-full h-full object-cover opacity-80"
+                        />
+                    ) : (
+                        <div className="w-full h-full flex items-center justify-center text-white/5 font-black text-8xl uppercase tracking-tighter">Jantra Archive</div>
+                    )}
+                </div>
+
+                {/* ── SPECIFICATIONS GRID ── */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 mb-32 items-start">
                     
-                    {/* Floating Vertical Label (Desktop Only) */}
-                    <div className="hidden lg:block absolute -left-16 top-0 bottom-0 pointer-events-none">
-                       <span className="sticky top-40 text-[10px] font-black uppercase tracking-[1em] text-slate-200 [writing-mode:vertical-rl] rotate-180">
-                          CASE STUDY SPECIFICATIONS
-                       </span>
-                    </div>
-
-                    {/* Main Content (Left) */}
-                    <div className="lg:col-span-7 space-y-24">
-                        <section className="space-y-6">
-                            <h2 className="text-[10px] font-black uppercase tracking-[0.6em] text-orange-600 flex items-center gap-4">
-                               <div className="w-8 h-[1px] bg-orange-600/30" /> Project Brief
-                            </h2>
-                            <p className="text-2xl sm:text-3xl font-black text-slate-800 leading-[1.2] tracking-tight">{project.description}</p>
-                        </section>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-12 pt-8">
-                           <section className="space-y-6">
-                               <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">The Challenge</h3>
-                               <p className="text-base text-slate-600 leading-relaxed font-medium">{project.challenge}</p>
-                           </section>
-
-                           <section className="space-y-6">
-                               <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Our Strategy</h3>
-                               <p className="text-base text-slate-600 leading-relaxed font-medium">{project.approach}</p>
-                           </section>
+                    {/* LEFT CONTENT */}
+                    <div className="lg:col-span-7 space-y-20">
+                        
+                        <div className="grid sm:grid-cols-2 gap-12">
+                             <div className="space-y-4">
+                                <h3 className="text-[10px] font-black text-orange-600 uppercase tracking-[0.4em]">The Challenge</h3>
+                                <p className="text-slate-500 text-sm sm:text-base leading-relaxed font-semibold uppercase tracking-tight">{project.challenge}</p>
+                             </div>
+                             <div className="space-y-4">
+                                <h3 className="text-[10px] font-black text-orange-600 uppercase tracking-[0.4em]">The Solution</h3>
+                                <p className="text-slate-500 text-sm sm:text-base leading-relaxed font-semibold uppercase tracking-tight">{project.approach}</p>
+                             </div>
                         </div>
 
-                        <section className="bg-white rounded-[2.5rem] p-10 sm:p-14 border border-slate-100 shadow-[0_30px_70px_-20px_rgba(0,0,0,0.04)] relative overflow-hidden group">
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/5 blur-[80px] rounded-full pointer-events-none" />
-                            
-                            <h2 className="text-3xl font-black text-slate-900 mb-10 flex items-center gap-4">
-                                <CheckCircle2 className="w-8 h-8 text-orange-500" /> Key Features
-                            </h2>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-6">
-                                {project.features && project.features.map((feature: string, i: number) => (
-                                    <div key={i} className="flex items-start gap-4 group/item">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-orange-500 mt-2.5 transition-all group-hover/item:scale-150" />
-                                        <span className="text-slate-800 font-bold uppercase tracking-widest text-[11px] leading-relaxed transition-all group-hover/item:text-orange-600">{feature}</span>
+                        <div className="p-8 sm:p-14 bg-slate-50 rounded-[3rem] border border-slate-100 space-y-10">
+                            <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tighter flex items-center gap-4">
+                                <CheckCircle2 className="w-6 h-6 text-orange-600" /> Key Features
+                            </h3>
+                            <div className="grid sm:grid-cols-2 gap-6">
+                                {project.features && project.features.map((feat: string, i: number) => (
+                                    <div key={i} className="flex items-center gap-4 group">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-orange-600 group-hover:scale-150 transition-all" />
+                                        <span className="text-[10px] font-black uppercase text-slate-950 tracking-widest">{feat}</span>
                                     </div>
                                 ))}
                             </div>
-                        </section>
+                        </div>
                     </div>
 
-                    {/* Sidebar — Precision Specs (Right) */}
-                    <div className="lg:col-span-5 space-y-12">
-                        
-                        {/* Tech Stack Card */}
-                        <div className="bg-slate-950 rounded-[2.5rem] p-10 lg:p-12 text-white shadow-2xl relative overflow-hidden group">
-                            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                            <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-10">Technology Protocol</h3>
-                            <div className="flex flex-wrap gap-3">
-                                {project.techStack && project.techStack.map((tech: string, i: number) => (
-                                    <span key={i} className="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-[9px] font-black uppercase tracking-[0.3em] text-white hover:bg-white/10 hover:border-orange-500/30 transition-all cursor-default">
-                                        {tech}
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
+                    {/* RIGHT SIDEBAR */}
+                    <div className="lg:col-span-5 space-y-8">
+                         
+                         {/* TECH STACK */}
+                         <div className="bg-slate-950 p-10 sm:p-14 rounded-[3rem] text-white space-y-10">
+                             <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em]">Technology Hub</h3>
+                             <div className="flex flex-wrap gap-2">
+                                 {project.techStack && project.techStack.map((tech: string, i: number) => (
+                                     <span key={i} className="px-5 py-3 rounded-xl bg-white/5 border border-white/10 text-[9px] font-black uppercase tracking-widest text-slate-300">
+                                         {tech}
+                                     </span>
+                                 ))}
+                             </div>
+                         </div>
 
-                        {/* Results Card */}
-                        <div className="bg-orange-50 rounded-[2.5rem] p-10 lg:p-12 border border-orange-100/50">
-                            <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-orange-600/60 mb-10 flex items-center gap-3">
-                                <BarChart className="w-4 h-4" /> Performance Metrics
-                            </h3>
-                            <p className="text-2xl font-black text-slate-900 leading-[1.3] tracking-tight">
-                                &ldquo;{project.results}&rdquo;
-                            </p>
-                        </div>
+                         {/* METRIC CARD */}
+                         <div className="p-10 sm:p-14 bg-orange-600 rounded-[3rem] text-white space-y-6">
+                             <div className="flex items-center gap-3">
+                                <BarChart className="w-5 h-5 text-white/60" />
+                                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/60">Registry Metrics</span>
+                             </div>
+                             <p className="text-xl sm:text-2xl font-black leading-tight uppercase tracking-tighter">
+                                 &ldquo;{project.results}&rdquo;
+                             </p>
+                         </div>
 
-                        {/* Action Link */}
-                        {project.liveUrl && (
-                            <Link
-                                href={project.liveUrl}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="group relative flex items-center justify-center gap-4 rounded-full bg-slate-900 py-8 text-[11px] font-black uppercase tracking-[.4em] text-white transition-all hover:bg-orange-600 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] active:scale-95"
-                            >
-                                Launch Platform <ExternalLink className="h-4 w-4 group-hover:rotate-12 transition-transform" />
-                            </Link>
-                        )}
+                         {/* LIVE LINK */}
+                         {project.liveUrl && (
+                             <Link href={project.liveUrl} target="_blank" className="flex items-center justify-center gap-4 w-full py-8 rounded-[2rem] bg-slate-950 text-white font-black uppercase tracking-[0.4em] text-[11px] hover:bg-orange-600 transition-all shadow-2xl active:scale-95">
+                                Visit Protocol <ExternalLink className="w-4 h-4" />
+                             </Link>
+                         )}
                     </div>
                 </div>
 
-                {/* Footer Navigation — Cinematic Transition */}
-                <div className="mt-48 border-t border-slate-100 pt-20">
-                    <div className="flex flex-col sm:flex-row justify-between items-center gap-12">
-                        <Link href="/work" className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-300 hover:text-slate-900 transition-colors">
-                            Portfolio Full Index
+                {/* ── NEXT PROJECT TRANSITION ── */}
+                <div className="pt-20 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-12">
+                     <Link href="/work" className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-300 hover:text-slate-950 transition-colors">
+                        All Cases Registry
+                     </Link>
+
+                     {hasNext && nextProject && (
+                        <Link href={`/work/${nextProject.slug}`} className="group flex flex-col items-end text-right gap-4">
+                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Next Case Study</span>
+                            <div className="flex items-center gap-8">
+                                 <h2 className="text-4xl sm:text-7xl font-black text-slate-950 tracking-tighter uppercase leading-none group-hover:text-orange-600 transition-all">{nextProject.title}</h2>
+                                 <div className="w-14 h-14 rounded-full border border-slate-100 flex items-center justify-center group-hover:bg-slate-950 group-hover:text-white transition-all">
+                                     <ChevronRight className="w-6 h-6" />
+                                 </div>
+                            </div>
                         </Link>
-                        
-                        {hasNext && nextProject && (
-                            <Link href={`/work/${nextProject.slug}`} className="group flex flex-col items-end text-right gap-4">
-                                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Next Case Study</span>
-                                <div className="flex items-center gap-6">
-                                   <p className="text-4xl sm:text-6xl font-black text-slate-900 tracking-tighter leading-none transition-all group-hover:text-orange-600">
-                                      {nextProject.title}
-                                   </p>
-                                   <div className="w-14 h-14 rounded-full bg-white border border-slate-100 flex items-center justify-center group-hover:bg-slate-900 group-hover:text-white transition-all shadow-sm">
-                                      <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-                                   </div>
-                                </div>
-                            </Link>
-                        )}
-                    </div>
+                     )}
                 </div>
             </div>
         </main>
