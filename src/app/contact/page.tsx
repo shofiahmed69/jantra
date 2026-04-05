@@ -3,9 +3,8 @@
 import { useState } from "react";
 import { 
     Mail, Linkedin, Facebook, Phone, 
-    MessageSquare, CheckCircle2, ArrowRight,
-    Send, Sparkles, MessageCircle, ExternalLink,
-    MapPin, Globe, Instagram
+    ArrowRight, Sparkles, MessageCircle, 
+    Instagram, MapPin
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
@@ -24,212 +23,218 @@ export default function ContactPage() {
         e.preventDefault();
         setStatus("sending");
         
-        // Simulating API call
-        setTimeout(() => {
-            setStatus("success");
-            setFormData({ name: "", email: "", subject: "", message: "" });
-        }, 2000);
-
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/leads`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(formData)
-        }).catch(() => {});
+        })
+        .then(() => {
+            setStatus("success");
+            setFormData({ name: "", email: "", subject: "", message: "" });
+        })
+        .catch(() => {
+             setStatus("idle");
+        });
     };
 
     const contactMethods = [
         {
             icon: Mail,
-            label: "Email us",
-            value: "jantrasoftinfo@gmail.com",
+            label: "Email",
+            value: "info@jantrasoft.com",
             href: "mailto:jantrasoftinfo@gmail.com",
-            color: "bg-blue-50 text-blue-600"
         },
         {
             icon: MessageCircle,
             label: "WhatsApp",
             value: "+880 1625 027956",
             href: "https://wa.me/8801625027956",
-            color: "bg-emerald-50 text-emerald-600"
         },
         {
             icon: Linkedin,
             label: "LinkedIn",
             value: "Jantra Soft",
             href: "https://www.linkedin.com/company/112998098",
-            color: "bg-indigo-50 text-indigo-600"
-        },
-        {
-            icon: Facebook,
-            label: "Facebook",
-            value: "Jantra Soft",
-            href: "https://www.facebook.com/profile.php?id=61578641909784",
-            color: "bg-sky-50 text-sky-600"
-        },
-        {
-            icon: Phone,
-            label: "Call us",
-            value: "+880 1625 027956",
-            href: "tel:+8801625027956",
-            color: "bg-orange-50 text-orange-600"
         },
         {
             icon: Instagram,
             label: "Instagram",
             value: "@jantra.soft",
             href: "https://instagram.com/jantra.soft",
-            color: "bg-rose-50 text-rose-600"
+        },
+        {
+            icon: Facebook,
+            label: "Facebook",
+            value: "Jantra Soft",
+            href: "https://www.facebook.com/profile.php?id=61578641909784",
+        },
+        {
+            icon: Phone,
+            label: "Call",
+            value: "+880 1625 027956",
+            href: "tel:+8801625027956",
         }
     ];
 
     return (
-        <main className="relative w-full min-h-screen bg-white selection:bg-orange-500 selection:text-white pb-20">
-            {/* ── AMBIENT GLASS BACKGROUND ── */}
-            <div className="absolute top-0 left-0 w-full h-[600px] bg-gradient-to-b from-slate-50 to-transparent -z-10" />
-            <div className="absolute top-40 right-[10%] w-96 h-96 bg-orange-500/5 blur-[120px] rounded-full -z-10" />
-            
-            <div className="max-w-[1280px] mx-auto px-6 sm:px-12 pt-16 sm:pt-24 relative z-10">
+        <main className="relative w-full min-h-screen bg-white pb-32">
+            {/* ── BACKGROUND ACCENT [DESKTOP ONLY] ── */}
+            <div className="hidden lg:block absolute top-[5%] left-0 w-full overflow-hidden opacity-[0.02] pointer-events-none select-none z-0">
+                <div className="flex whitespace-nowrap animate-marquee-slow">
+                    <span className="text-[12rem] font-black tracking-tighter leading-none mr-24 uppercase">CONNECTION. DISCOVERY. PARTNERSHIP. SCALE.</span>
+                </div>
+            </div>
+
+            <div className="max-w-[1540px] mx-auto px-4 sm:px-12 pt-24 sm:pt-36 relative z-10">
                 
                 {/* ── HEADER SECTION ── */}
-                <div className="text-center max-w-[800px] mx-auto mb-12 sm:mb-16">
-                    <motion.div 
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-orange-50 border border-orange-100 mb-6"
-                    >
-                        <div className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
-                        <span className="text-[9px] font-black uppercase tracking-[0.4em] text-orange-600">Available for projects</span>
-                    </motion.div>
-                    
-                    <motion.h1 
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="text-4xl sm:text-6xl font-black text-slate-900 leading-[0.9] tracking-tighter uppercase mb-6"
-                    >
-                        Say <span className="text-orange-500">Hello</span><span className="text-slate-200">.</span>
-                    </motion.h1>
-                    
-                    <motion.p 
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1 }}
-                        className="text-[13px] sm:text-[15px] text-slate-500 font-bold uppercase tracking-widest max-w-lg mx-auto opacity-70"
-                    >
-                        Let's bring your creative vision to life.
-                    </motion.p>
+                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 mb-12 sm:mb-20">
+                    <div className="space-y-4 sm:space-y-6 text-left">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-[2px] bg-orange-500" />
+                            <span className="text-[9px] font-black uppercase tracking-[0.4em] text-orange-600">Initialize Protocol</span>
+                        </div>
+                        <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black text-slate-900 leading-[0.85] tracking-tighter uppercase">
+                            Start <br />
+                            <span className="text-transparent" style={{ WebkitTextStroke: "1px #0f172a" }}>Building</span>
+                            <span className="text-orange-500">.</span>
+                        </h1>
+                    </div>
+
+                    <div className="hidden lg:flex items-center gap-12">
+                         <div className="space-y-1">
+                             <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Base Operations</p>
+                             <p className="text-xl font-black text-slate-900 tracking-tighter flex items-center gap-2">
+                                <MapPin className="w-4 h-4 text-orange-500" /> Dhaka, BD
+                             </p>
+                         </div>
+                    </div>
                 </div>
 
-                <div className="flex flex-col gap-8 sm:gap-12">
+                {/* ── MAIN CONTENT GRID ── */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
                     
-                    {/* ── CONTACT METHODS GRID (FIRST & COMPACT) ── */}
-                    <div className="w-full">
-                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                    {/* LEFT SIDEBAR: CONTACT METHODS GRID - 2 COLUMN ON ALL SCREENS */}
+                    <div className="lg:col-span-5 space-y-8">
+                        <div className="grid grid-cols-2 gap-3 sm:gap-6">
                             {contactMethods.map((method, i) => (
                                 <motion.a
-                                    key={method.label}
+                                    key={i}
                                     href={method.href}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    initial={{ opacity: 0, y: 15 }}
-                                    animate={{ opacity: 1, y: 0 }}
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
                                     transition={{ delay: i * 0.05 }}
-                                    className="group relative p-4 rounded-2xl bg-slate-50/50 border border-slate-100 flex flex-col items-center justify-center text-center transition-all duration-500 hover:bg-white hover:border-slate-200 hover:shadow-xl hover:shadow-slate-200/40"
+                                    className="group relative flex flex-col p-6 sm:p-10 rounded-[1.5rem] sm:rounded-[3rem] bg-slate-50 border border-slate-100 transition-all duration-700 hover:bg-white hover:shadow-2xl h-full"
                                 >
-                                    <div className={`w-10 h-10 rounded-xl ${method.color} flex items-center justify-center mb-3 transition-all duration-700 group-hover:scale-110 group-hover:rotate-12`}>
-                                        <method.icon className="w-5 h-5" />
-                                    </div>
-                                    <div className="space-y-0.5">
-                                        <h3 className="text-[7.5px] font-black uppercase tracking-widest text-slate-400 group-hover:text-orange-500 transition-colors">{method.label}</h3>
-                                        <p className="text-[10px] font-black text-slate-900 tracking-tight truncate px-1">{method.value}</p>
-                                    </div>
+                                     <div className="w-10 h-10 sm:w-16 sm:h-16 rounded-xl sm:rounded-3xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-orange-500 transition-all duration-700 mb-6">
+                                         <method.icon className="w-5 h-5 sm:w-8 sm:h-8" />
+                                     </div>
+                                     <div className="space-y-1">
+                                         <span className="text-[8px] sm:text-[10px] font-black uppercase text-slate-300 tracking-widest leading-none">{method.label}</span>
+                                         <p className="text-xs sm:text-lg font-black text-slate-950 uppercase tracking-tight leading-tight group-hover:text-orange-600 transition-colors line-clamp-1">{method.value}</p>
+                                     </div>
                                 </motion.a>
                             ))}
                         </div>
+
+                        <div className="p-10 rounded-[3rem] bg-slate-950 text-white relative overflow-hidden hidden lg:block">
+                             <div className="absolute top-0 right-0 w-32 h-32 bg-orange-600/20 blur-[60px] rounded-full" />
+                             <h4 className="text-xl font-black tracking-tighter uppercase relative z-10">Global Scale.</h4>
+                             <p className="text-slate-400 text-sm mt-4 font-medium relative z-10 leading-relaxed uppercase tracking-tight">Our squad operates across time zones to ensure elite project delivery speed.</p>
+                        </div>
                     </div>
 
-                    {/* ── CONTACT FORM ── */}
-                    <div className="w-full max-w-4xl mx-auto">
+                    {/* RIGHT FORM: EDITORIAL DISCOURSE */}
+                    <div className="lg:col-span-7">
                         <motion.div 
-                            initial={{ opacity: 0, y: 30 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.3 }}
-                            className="p-6 sm:p-10 rounded-[2.5rem] bg-white border border-slate-100 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)]"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            className="bg-white rounded-[2rem] sm:rounded-[4rem] border border-slate-100 p-8 sm:p-16 relative overflow-hidden"
                         >
-                            <AnimatePresence mode="wait">
-                                {status === "success" ? (
-                                    <motion.div 
-                                        key="success"
-                                        initial={{ opacity: 0, scale: 0.95 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        className="py-12 text-center flex flex-col items-center justify-center"
+                            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-orange-500/5 blur-[120px] rounded-full" />
+                            
+                            {status === "success" ? (
+                                <motion.div 
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    className="flex flex-col items-center justify-center py-20 text-center space-y-6"
+                                >
+                                    <div className="w-20 h-20 rounded-full bg-orange-50 flex items-center justify-center">
+                                        <Sparkles className="w-10 h-10 text-orange-500" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <h2 className="text-3xl font-black text-slate-950 uppercase tracking-tighter">Transmission Successful</h2>
+                                        <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Your protocol has been logged. Our squad will intersect shortly.</p>
+                                    </div>
+                                    <button 
+                                        onClick={() => setStatus("idle")}
+                                        className="px-10 py-4 bg-slate-950 text-white rounded-full font-black uppercase text-[10px] tracking-widest hover:bg-orange-600 transition-all active:scale-95"
                                     >
-                                        <div className="w-16 h-16 bg-emerald-50 text-emerald-500 rounded-2xl flex items-center justify-center mb-6">
-                                            <CheckCircle2 className="w-8 h-8" />
-                                        </div>
-                                        <h2 className="text-3xl font-black text-slate-900 tracking-tighter uppercase mb-4">Message Sent!</h2>
-                                        <p className="text-slate-500 font-bold text-[11px] uppercase tracking-widest mb-8">We'll get back to you shortly.</p>
-                                        <button 
-                                            onClick={() => setStatus("idle")}
-                                            className="px-10 py-4 bg-slate-950 text-white rounded-xl font-black uppercase tracking-widest text-[10px] hover:bg-orange-600 transition-all active:scale-95 flex items-center gap-3"
-                                        >
-                                            Reset <ArrowRight className="w-4 h-4" />
-                                        </button>
-                                    </motion.div>
-                                ) : (
-                                    <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-                                        <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
-                                            <div className="space-y-1.5">
-                                                <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-2">Name</label>
-                                                <input 
-                                                    required
-                                                    type="text"
-                                                    value={formData.name}
-                                                    onChange={(e) => setFormData({...formData, name: e.target.value})}
-                                                    placeholder="Full name"
-                                                    className="w-full bg-slate-50 border border-slate-100 rounded-xl px-5 py-3.5 text-slate-900 font-bold uppercase text-[11px] outline-none focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
-                                                />
-                                            </div>
-                                            <div className="space-y-1.5">
-                                                <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-2">Email</label>
-                                                <input 
-                                                    required
-                                                    type="email"
-                                                    value={formData.email}
-                                                    onChange={(e) => setFormData({...formData, email: e.target.value})}
-                                                    placeholder="Email address"
-                                                    className="w-full bg-slate-50 border border-slate-100 rounded-xl px-5 py-3.5 text-slate-900 font-bold uppercase text-[11px] outline-none focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-300"
-                                                />
-                                            </div>
-                                        </div>
-                                        
-                                        <div className="space-y-1.5">
-                                            <label className="text-[9px] font-black uppercase tracking-widest text-slate-400 ml-2">How can we help?</label>
-                                            <textarea 
+                                        Send Another
+                                    </button>
+                                </motion.div>
+                            ) : (
+                                <form onSubmit={handleSubmit} className="space-y-8 sm:space-y-12 relative z-10">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                                        <div className="space-y-3">
+                                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">Full Identity</label>
+                                            <input 
                                                 required
-                                                rows={4}
-                                                value={formData.message}
-                                                onChange={(e) => setFormData({...formData, message: e.target.value})}
-                                                placeholder="Tell us about your goals..."
-                                                className="w-full bg-slate-50 border border-slate-100 rounded-xl px-5 py-3.5 text-slate-900 font-bold uppercase text-[11px] outline-none focus:border-orange-500 focus:bg-white transition-all resize-none placeholder:text-slate-300 min-h-[120px]"
+                                                type="text" 
+                                                placeholder="NAME / CORPORATE ENTITY"
+                                                className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-5 text-[11px] font-black uppercase tracking-widest focus:bg-white focus:ring-1 focus:ring-orange-500 outline-none transition-all placeholder:text-slate-200"
+                                                value={formData.name}
+                                                onChange={(e) => setFormData({...formData, name: e.target.value})}
                                             />
                                         </div>
-
-                                        <div className="pt-2">
-                                            <button 
-                                                disabled={status === "sending"}
-                                                type="submit" 
-                                                className="w-full py-4 bg-orange-600 text-white rounded-xl font-black uppercase tracking-[0.4em] text-[11px] hover:bg-slate-950 transition-all shadow-xl shadow-orange-500/10 active:scale-95 disabled:opacity-50 flex items-center justify-center gap-4 group"
-                                            >
-                                                {status === "sending" ? "Sending..." : "Send Message"}
-                                                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                                            </button>
+                                        <div className="space-y-3">
+                                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">Digital Coordinate</label>
+                                            <input 
+                                                required
+                                                type="email" 
+                                                placeholder="EMAIL@SATELLITE.NET"
+                                                className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-5 text-[11px] font-black uppercase tracking-widest focus:bg-white focus:ring-1 focus:ring-orange-500 outline-none transition-all placeholder:text-slate-200"
+                                                value={formData.email}
+                                                onChange={(e) => setFormData({...formData, email: e.target.value})}
+                                            />
                                         </div>
-                                    </form>
-                                )}
-                            </AnimatePresence>
+                                    </div>
+                                    <div className="space-y-3">
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">Subject Vector</label>
+                                        <input 
+                                            required
+                                            type="text" 
+                                            placeholder="NATURE OF DISCOURSE"
+                                            className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-5 text-[11px] font-black uppercase tracking-widest focus:bg-white focus:ring-1 focus:ring-orange-500 outline-none transition-all placeholder:text-slate-200"
+                                            value={formData.subject}
+                                            onChange={(e) => setFormData({...formData, subject: e.target.value})}
+                                        />
+                                    </div>
+                                    <div className="space-y-3">
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-4">Archive Content</label>
+                                        <textarea 
+                                            required
+                                            rows={6} 
+                                            placeholder="DETAILED SPECS / ARCHITECTURE REQS..."
+                                            className="w-full bg-slate-50 border border-slate-100 rounded-3xl px-6 py-6 text-[11px] font-black uppercase tracking-widest focus:bg-white focus:ring-1 focus:ring-orange-500 outline-none transition-all placeholder:text-slate-200 resize-none"
+                                            value={formData.message}
+                                            onChange={(e) => setFormData({...formData, message: e.target.value})}
+                                        />
+                                    </div>
+                                    <button 
+                                        type="submit"
+                                        disabled={status === "sending"}
+                                        className="w-full py-6 sm:py-8 bg-slate-950 text-white rounded-[1.5rem] sm:rounded-[2.5rem] font-black uppercase tracking-[0.4em] text-[10px] sm:text-[13px] flex items-center justify-center gap-6 group hover:bg-orange-600 transition-all shadow-2xl active:scale-95 disabled:opacity-50"
+                                    >
+                                        {status === "sending" ? "TRANSMITTING..." : "INITIALIZE PROTOCOL"}
+                                        <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+                                    </button>
+                                </form>
+                            )}
                         </motion.div>
                     </div>
-
                 </div>
             </div>
         </main>
