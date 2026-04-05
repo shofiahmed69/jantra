@@ -4,10 +4,10 @@ import "./globals.css";
 import ClientLayout from '@/components/ClientLayout'
 import BackgroundOrbs from "@/components/BackgroundOrbs";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://jantra.soft";
-const siteTitle = "JANTRA - Enterprise Software, Reimagined";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://jantra.vercel.app";
+const siteTitle = "JANTRA | Custom Software, Websites, AI Agents, and Mobile Apps";
 const siteDescription =
-  "Experience the next generation of spatial computing for business. Modular, intuitive, and designed for the visionaries of tomorrow.";
+  "Jantra builds customized software, websites, AI workflow agents, mobile apps, and tailored business systems for growing companies.";
 
 const bodyFont = DM_Sans({
   variable: "--font-body",
