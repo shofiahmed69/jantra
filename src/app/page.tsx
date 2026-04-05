@@ -270,7 +270,7 @@ function MobileLottieHero() {
 
   return (
     <section
-      className="lg:hidden relative min-h-[90vh] overflow-hidden"
+      className="lg:hidden relative h-[100dvh] flex flex-col justify-between pt-20 pb-4 overflow-hidden"
       style={{ background: "linear-gradient(160deg, #fffcf9 0%, #fffbf7 35%, #fffaf8 60%, #f8fafc 100%)" }}
     >
       {/* ── Background Moniker scrolling ── */}
@@ -291,7 +291,7 @@ function MobileLottieHero() {
       <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-orange-400/40 to-transparent" />
 
       {/* ── CINEMATIC LOTTIE HERO ── */}
-      <div className="relative flex items-center justify-center pt-20 pb-4">
+      <div className="relative flex items-center justify-center py-2">
         <AnimatePresence mode="wait">
           <motion.div
             key={current.title}
@@ -300,7 +300,7 @@ function MobileLottieHero() {
             exit={{ scale: 0.82, opacity: 0, filter: "blur(16px)", y: -20 }}
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
             className="relative"
-            style={{ width: "min(75vw, 280px)", height: "min(75vw, 280px)" }}
+            style={{ width: "min(95vw, 400px)", height: "min(95vw, 400px)" }}
           >
             <div className="w-full h-full [filter:drop-shadow(0_0_80px_rgba(249,115,22,0.35))]">
               <LottiePlayer
@@ -323,18 +323,18 @@ function MobileLottieHero() {
         ))}
       </div>
 
-      <div className="flex justify-center pb-5 relative z-20">
+      <div className="flex justify-center pb-2 relative z-20">
         <AnimatePresence mode="wait">
           <motion.div
             key={current.title}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="flex items-center gap-3 px-4 py-2 rounded-xl border border-orange-200/25 bg-white/50 backdrop-blur-2xl shadow-sm"
+            className="flex items-center gap-4 px-5 py-3 rounded-2xl border border-orange-200/40 bg-white/60 backdrop-blur-3xl shadow-md ring-1 ring-white/50"
           >
-            <span className="text-base font-black text-orange-500/30 leading-none">0{index + 1}</span>
-            <div className="w-[1px] h-3 bg-orange-500/20" />
-            <span className="text-[9px] font-black text-slate-900 uppercase tracking-[0.3em] whitespace-nowrap leading-none">{current.title}</span>
+            <span className="text-xl font-black text-orange-500/40 leading-none">0{index + 1}</span>
+            <div className="w-[1px] h-4 bg-orange-500/30" />
+            <span className="text-[10px] font-black text-slate-900 uppercase tracking-[0.4em] whitespace-nowrap leading-none">{current.title}</span>
           </motion.div>
         </AnimatePresence>
       </div>
@@ -350,7 +350,7 @@ function MobileLottieHero() {
       />
 
       {/* ── CONTENT — Elite formatting ── */}
-      <div className="relative z-10 px-6 pb-6 pt-0 flex flex-col items-center text-center">
+      <div className="relative z-10 px-6 pb-0 pt-0 flex flex-col items-center text-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -382,7 +382,7 @@ function MobileLottieHero() {
           </div>
 
           {/* Social Proof — Super Compact */}
-          <div className="flex items-center justify-center gap-3 mt-6 pt-5 border-t border-slate-100/60">
+          <div className="flex items-center justify-center gap-3 mt-1 pt-3 border-t border-slate-100/60">
             <div className="flex -space-x-1.5">
               {[1, 2, 3].map(i => (
                 <img key={i} src={`https://i.pravatar.cc/80?u=jantra_elite${i}`} className="w-6 h-6 rounded-full border-2 border-white shadow-sm" alt="User" />
@@ -417,8 +417,8 @@ function DesktopHero() {
   const current = services[index];
 
   return (
-    <section className="hidden lg:block relative pt-40 pb-6 px-8 overflow-hidden bg-[#f8fafc]">
-      <div className="mx-auto max-w-[1400px] relative z-10">
+    <section className="hidden lg:block relative h-screen overflow-hidden bg-[#f8fafc]">
+      <div className="mx-auto max-w-[1400px] h-full flex items-center relative z-10">
         <div className="grid grid-cols-12 items-center gap-12">
 
           <div className="col-span-7 space-y-8 animate-fade-up">
@@ -447,7 +447,7 @@ function DesktopHero() {
             </div>
 
             {/* Added back: Trust Row for Desktop */}
-            <div className="flex items-center gap-5 pt-6 opacity-0 animate-fade-up" style={{ animationDelay: '0.4s', animationFillMode: 'forwards' }}>
+            <div className="flex items-center gap-5 pt-1 opacity-0 animate-fade-up" style={{ animationDelay: '0.4s', animationFillMode: 'forwards' }}>
               <div className="flex -space-x-3">
                 {[1, 2, 3, 4, 5].map(i => (
                   <motion.img
@@ -489,21 +489,21 @@ function DesktopHero() {
                   transition={{ duration: 1, ease: [0.2, 1, 0.3, 1] }}
                   className="absolute flex flex-col items-center w-full"
                 >
-                  <div className="w-[540px] h-[540px]">
-                    <LottiePlayer src={current.animationSrc!} className="w-full h-full drop-shadow-[0_0_85px_rgba(249,115,22,0.3)] scale-110" />
+                  <div className="w-[720px] h-[720px]">
+                    <LottiePlayer src={current.animationSrc!} className="w-full h-full drop-shadow-[0_0_120px_rgba(249,115,22,0.45)] scale-140" />
                   </div>
                   <div className="mt-2 flex flex-col items-center">
                     <motion.div
-                      className="flex items-center gap-6 px-10 py-5 rounded-[1.5rem] bg-white/40 backdrop-blur-xl border border-slate-100 shadow-[0_15px_45px_-10px_rgba(0,0,0,0.05)] ring-1 ring-white/50"
+                      className="flex items-center gap-8 px-12 py-7 rounded-[2rem] bg-white/50 backdrop-blur-2xl border border-slate-100 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.08)] ring-1 ring-white/60"
                       initial={{ opacity: 0, y: 15 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.4 }}
                     >
-                      <div className="text-4xl font-black text-orange-500 opacity-20 select-none leading-none">0{index + 1}</div>
-                      <div className="h-8 w-[1px] bg-slate-200" />
+                      <div className="text-5xl font-black text-orange-500 opacity-20 select-none leading-none">0{index + 1}</div>
+                      <div className="h-10 w-[1px] bg-slate-200" />
                       <div className="text-left">
                         <p className="text-[9px] font-black text-orange-600 uppercase tracking-[0.6em] mb-1">Service Platform</p>
-                        <h4 className="text-xl font-black text-slate-900 uppercase tracking-[0.25em] leading-none">
+                        <h4 className="text-2xl font-black text-slate-900 uppercase tracking-[0.3em] leading-none">
                           {current.title}
                         </h4>
                       </div>
