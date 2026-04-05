@@ -367,12 +367,12 @@ function MobileLottieHero() {
 
           {/* CTAs — Optimized Visibility */}
           <div className="flex flex-row gap-3 w-full px-2">
-            <button
-              onClick={() => document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' })}
+            <Link
+              href="/work"
               className="flex-[1.2] button-primary rounded-xl py-4 text-[12px] font-black flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform"
             >
               Our Work <ArrowRight className="w-3.5 h-3.5" />
-            </button>
+            </Link>
             <Link
               href="/contact"
               className="flex-1 rounded-xl py-3.5 text-[12px] font-black text-slate-800 text-center border border-slate-200 bg-white/100 active:scale-95 transition-transform shadow-sm"
@@ -435,12 +435,12 @@ function DesktopHero() {
               </p>
             </div>
             <div className="flex items-center gap-5 pt-2">
-              <button
-                onClick={() => document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' })}
+              <Link
+                href="/work"
                 className="button-primary rounded-full px-10 py-4 text-base font-bold flex items-center gap-3 shadow-lg hover:-translate-y-1 active:scale-95 transition-transform"
               >
                 Our Work <ArrowRight className="w-5 h-5" />
-              </button>
+              </Link>
               <Link href="/contact" className="button-outline rounded-full px-10 py-4 text-base font-bold hover:bg-slate-900 hover:text-white transition-all">
                 Get in Touch
               </Link>
