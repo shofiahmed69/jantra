@@ -41,8 +41,8 @@ export default function ContactPage() {
         {
             icon: Mail,
             label: "Email us",
-            value: "hello@jantra.soft",
-            href: "mailto:hello@jantra.soft",
+            value: "jantrasoftinfo@gmail.com",
+            href: "mailto:jantrasoftinfo@gmail.com",
             color: "bg-blue-50 text-blue-600"
         },
         {
