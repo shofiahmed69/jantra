@@ -140,7 +140,7 @@ export default function ContactPage() {
                                     </div>
                                     <div className="space-y-0.5">
                                         <h3 className="text-[7.5px] font-black uppercase tracking-widest text-slate-400 group-hover:text-orange-500 transition-colors">{method.label}</h3>
-                                        <p className="text-[10px] font-black text-slate-900 tracking-tight truncate max-w-[100px]">{method.value.split('@')[0].split('.')[0]}</p>
+                                        <p className="text-[10px] font-black text-slate-900 tracking-tight truncate px-1">{method.value}</p>
                                     </div>
                                 </motion.a>
                             ))}
