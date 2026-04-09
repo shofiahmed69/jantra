@@ -28,7 +28,7 @@ export default function Footer() {
                                 { icon: Linkedin, href: "https://www.linkedin.com/company/112998098", label: "LinkedIn" },
                                 { icon: Facebook, href: "https://www.facebook.com/profile.php?id=61578641909784", label: "Facebook" },
                                 { icon: MessageCircle, href: "https://wa.me/8801625027956", label: "WhatsApp" },
-                                { icon: Mail, href: "mailto:jantrasoftinfo@gmail.com", label: "Email" }
+                                { icon: Mail, href: "mailto:contact@jantrasoft.online", label: "Email" }
                             ].map((social) => (
                                 <a
                                     key={social.label}
