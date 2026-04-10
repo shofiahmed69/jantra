@@ -276,7 +276,7 @@ function MobileLottieHero() {
 
   return (
     <section
-      className="lg:hidden relative h-auto min-h-screen flex flex-col pt-20 pb-12 overflow-hidden"
+      className="lg:hidden relative h-[100dvh] flex flex-col justify-between pt-32 pb-4 overflow-hidden"
       style={{ background: "linear-gradient(160deg, #fffcf9 0%, #fffbf7 35%, #fffaf8 60%, #f8fafc 100%)" }}
     >
       {/* ── Background Moniker scrolling ── */}
@@ -304,10 +304,11 @@ function MobileLottieHero() {
             initial={{ scale: 0.8, opacity: 0, filter: "blur(16px)", y: 20 }}
             animate={{ scale: 1, opacity: 1, filter: "blur(0px)", y: 0 }}
             exit={{ scale: 0.82, opacity: 0, filter: "blur(16px)", y: -20 }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
             className="relative"
-            style={{ width: "min(75vw, 300px)", height: "min(75vw, 300px)" }}
+            style={{ width: "min(95vw, 400px)", height: "min(95vw, 400px)" }}
           >
-            <div className="w-full h-full [filter:drop-shadow(0_0_60px_rgba(249,115,22,0.3))]">
+            <div className="w-full h-full [filter:drop-shadow(0_0_80px_rgba(249,115,22,0.35))]">
               <LottiePlayer
                 src={current.animationSrc!}
                 className="w-full h-full"
@@ -328,69 +329,77 @@ function MobileLottieHero() {
         ))}
       </div>
 
-      <div className="flex justify-center -mt-4 pb-2 relative z-20 scale-90">
+      <div className="flex justify-center pb-2 relative z-20">
         <AnimatePresence mode="wait">
           <motion.div
             key={current.title}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="flex items-center gap-3 px-4 py-2 rounded-2xl border border-orange-200/40 bg-white/60 backdrop-blur-3xl shadow-md ring-1 ring-white/50"
+            className="flex items-center gap-4 px-5 py-3 rounded-2xl border border-orange-200/40 bg-white/60 backdrop-blur-3xl shadow-md ring-1 ring-white/50"
           >
             <span className="text-xl font-black text-orange-500/40 leading-none">0{index + 1}</span>
-            <div className="w-[1px] h-3.5 bg-orange-500/30" />
-            <span className="text-[9px] font-black text-slate-900 uppercase tracking-[0.4em] whitespace-nowrap leading-none">{current.title}</span>
+            <div className="w-[1px] h-4 bg-orange-500/30" />
+            <span className="text-[10px] font-black text-slate-900 uppercase tracking-[0.4em] whitespace-nowrap leading-none">{current.title}</span>
           </motion.div>
         </AnimatePresence>
       </div>
 
-
+      {/* ── SEAMLESS GRADIENT BLEND ── */}
+      <div
+        className="absolute left-0 right-0 pointer-events-none"
+        style={{
+          bottom: "0",
+          height: "40%",
+          background: "linear-gradient(to bottom, transparent 0%, rgba(248,250,252,0.7) 40%, #f8fafc 85%)"
+        }}
+      />
 
       {/* ── CONTENT — Elite formatting ── */}
-      <div className="relative z-10 px-6 pb-2 pt-0 flex flex-col items-center text-center">
+      <div className="relative z-10 px-6 pb-0 pt-0 flex flex-col items-center text-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.8 }}
           className="w-full"
         >
-          <p className="text-[8px] font-black text-orange-600/80 uppercase tracking-[0.5em] mb-1">Architecting Excellence</p>
-          <h1 className="text-[2.6rem] font-black text-slate-900 leading-[0.85] tracking-tighter mb-1">
+          <p className="text-[8px] font-black text-orange-600/80 uppercase tracking-[0.5em] mb-2">Architecting Production Excellence</p>
+          <h1 className="text-[2.8rem] font-black text-slate-900 leading-[0.85] tracking-tighter mb-3">
             Precision Built<span className="text-orange-500">.</span>
           </h1>
-          <p className="text-[11px] text-slate-500 font-bold uppercase tracking-[0.3em] mb-4">
+          <p className="text-[12px] text-slate-500 font-bold uppercase tracking-[0.3em] mb-6">
             Elite Engineering Studio
           </p>
 
-          {/* CTAs — Ultra Compact */}
-          <div className="flex flex-row gap-2 w-full px-2">
+          {/* CTAs — Optimized Visibility */}
+          <div className="flex flex-row gap-3 w-full px-2">
             <Link
               href="/work"
-              className="flex-[1.2] button-primary rounded-xl py-3.5 text-[11px] font-black flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform"
+              className="flex-[1.2] button-primary rounded-xl py-4 text-[12px] font-black flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform"
             >
-              Our Work <ArrowRight className="w-3 h-3" />
+              Our Work <ArrowRight className="w-3.5 h-3.5" />
             </Link>
             <Link
               href="/contact"
-              className="flex-1 rounded-xl py-3 text-[11px] font-black text-slate-800 text-center border border-slate-200 bg-white active:scale-95 transition-transform shadow-sm"
+              className="flex-1 rounded-xl py-3.5 text-[12px] font-black text-slate-800 text-center border border-slate-200 bg-white/100 active:scale-95 transition-transform shadow-sm"
             >
               Hire Us
             </Link>
           </div>
 
-          {/* ── TRUST BADGE — Compact Proof ── */}
-          <div className="flex items-center justify-center gap-3 mt-3.5 pt-4 border-t border-slate-100/60 w-full">
-            <div className="flex -space-x-2">
+          {/* Social Proof — Super Compact */}
+          <div className="flex items-center justify-center gap-3 mt-1 pt-3 border-t border-slate-100/60">
+            <div className="flex -space-x-1.5">
               {[1, 2, 3].map(i => (
-                <img key={i} src={`https://i.pravatar.cc/100?u=jantra_trust_${i}`} className="w-8 h-8 rounded-full border-2 border-white shadow-md" alt="Client" />
+                <img key={i} src={`https://i.pravatar.cc/80?u=jantra_elite${i}`} className="w-6 h-6 rounded-full border-2 border-white shadow-sm" alt="User" />
               ))}
             </div>
             <div className="text-left leading-none">
-              <p className="text-[14px] font-black text-slate-900 tracking-tighter">150+ Builds Delivered</p>
-              <div className="flex items-center gap-1.5 mt-1">
-                <Star className="w-2.5 h-2.5 fill-orange-500 text-orange-500" />
-                <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">Verified Elite Studio</span>
-              </div>
+              <p className="text-[10px] font-black text-slate-800">150+ Projects</p>
+            </div>
+            <div className="ml-1 flex items-center gap-1 bg-orange-50 border border-orange-100 px-2 py-1 rounded-full">
+              <Star className="w-2.5 h-2.5 fill-orange-500 text-orange-500" />
+              <span className="text-[10px] font-black text-orange-800">4.9</span>
             </div>
           </div>
         </motion.div>
@@ -593,7 +602,25 @@ export default function HomePage({ initialProjects = [] }: { initialProjects?: a
         </div>
       </section>
 
-
+      {/* ── STATS ─────────────────────────────────────────── */}
+      <section className="py-6 sm:py-12 lg:py-16 px-5 sm:px-8 bg-[#fcfaf8] border-y border-orange-50">
+        <div className="mx-auto max-w-[1400px] grid grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-8">
+          {homeStats.map(stat => (
+            <div key={stat.label} className="relative group">
+              <div className="absolute inset-0 rounded-[2rem] bg-orange-200/40 translate-x-2 translate-y-2 group-hover:translate-x-3.5 group-hover:translate-y-3.5 transition-transform duration-500" />
+              <div className="absolute inset-0 rounded-[2rem] bg-orange-100/25 translate-x-4 translate-y-4 group-hover:translate-x-6 group-hover:translate-y-6 transition-transform duration-500 delay-75" />
+              <div className="relative py-8 sm:py-12 px-4 sm:px-6 rounded-[2rem] bg-white border border-orange-100/60 shadow-sm group-hover:-translate-y-1 transition-transform duration-500 z-10 flex flex-col items-center text-center">
+                <div className="text-3xl sm:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-orange-500 to-orange-700 mb-2 group-hover:scale-105 transition-transform duration-500">
+                  {stat.value}
+                </div>
+                <div className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.25em] text-orange-950/60 group-hover:text-orange-900 transition-colors duration-500 leading-tight">
+                  {stat.label}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* ── SELECTED WORK CAROUSEL ───────────────────────────── */}
       <section id="work" className="py-10 sm:py-16 lg:py-20 bg-white overflow-hidden relative">
