@@ -276,7 +276,7 @@ function MobileLottieHero() {
 
   return (
     <section
-      className="lg:hidden relative h-[100dvh] flex flex-col pt-20 pb-10 overflow-hidden"
+      className="lg:hidden relative h-[90svh] min-h-[660px] flex flex-col pt-12 pb-4 overflow-hidden"
       style={{ background: "linear-gradient(160deg, #fffcf9 0%, #fffbf7 35%, #fffaf8 60%, #f8fafc 100%)" }}
     >
       {/* ── Background Moniker scrolling ── */}
@@ -305,9 +305,9 @@ function MobileLottieHero() {
             animate={{ scale: 1, opacity: 1, filter: "blur(0px)", y: 0 }}
             exit={{ scale: 0.82, opacity: 0, filter: "blur(16px)", y: -20 }}
             className="relative"
-            style={{ width: "min(85vw, 360px)", height: "min(85vw, 360px)" }}
+            style={{ width: "min(75vw, 300px)", height: "min(75vw, 300px)" }}
           >
-            <div className="w-full h-full [filter:drop-shadow(0_0_80px_rgba(249,115,22,0.35))]">
+            <div className="w-full h-full [filter:drop-shadow(0_0_60px_rgba(249,115,22,0.3))]">
               <LottiePlayer
                 src={current.animationSrc!}
                 className="w-full h-full"
@@ -328,17 +328,17 @@ function MobileLottieHero() {
         ))}
       </div>
 
-      <div className="flex justify-center -mt-2 pb-4 relative z-20">
+      <div className="flex justify-center -mt-4 pb-2 relative z-20 scale-90">
         <AnimatePresence mode="wait">
           <motion.div
             key={current.title}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="flex items-center gap-4 px-4 py-2.5 rounded-2xl border border-orange-200/40 bg-white/60 backdrop-blur-3xl shadow-md ring-1 ring-white/50"
+            className="flex items-center gap-3 px-4 py-2 rounded-2xl border border-orange-200/40 bg-white/60 backdrop-blur-3xl shadow-md ring-1 ring-white/50"
           >
             <span className="text-xl font-black text-orange-500/40 leading-none">0{index + 1}</span>
-            <div className="w-[1px] h-4 bg-orange-500/30" />
+            <div className="w-[1px] h-3.5 bg-orange-500/30" />
             <span className="text-[9px] font-black text-slate-900 uppercase tracking-[0.4em] whitespace-nowrap leading-none">{current.title}</span>
           </motion.div>
         </AnimatePresence>
@@ -354,47 +354,42 @@ function MobileLottieHero() {
           transition={{ delay: 0.2, duration: 0.8 }}
           className="w-full"
         >
-          <p className="text-[8px] font-black text-orange-600/80 uppercase tracking-[0.5em] mb-2">Architecting Production Excellence</p>
-          <h1 className="text-[2.8rem] font-black text-slate-900 leading-[0.85] tracking-tighter mb-3">
+          <p className="text-[8px] font-black text-orange-600/80 uppercase tracking-[0.5em] mb-1">Architecting Excellence</p>
+          <h1 className="text-[2.6rem] font-black text-slate-900 leading-[0.85] tracking-tighter mb-1">
             Precision Built<span className="text-orange-500">.</span>
           </h1>
-          <p className="text-[12px] text-slate-500 font-bold uppercase tracking-[0.3em] mb-6">
+          <p className="text-[11px] text-slate-500 font-bold uppercase tracking-[0.3em] mb-4">
             Elite Engineering Studio
           </p>
 
-          {/* CTAs — Optimized Visibility */}
-          <div className="flex flex-row gap-3 w-full px-2">
+          {/* CTAs — Ultra Compact */}
+          <div className="flex flex-row gap-2 w-full px-2">
             <Link
               href="/work"
-              className="flex-[1.2] button-primary rounded-xl py-4 text-[12px] font-black flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform"
+              className="flex-[1.2] button-primary rounded-xl py-3.5 text-[11px] font-black flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform"
             >
-              Our Work <ArrowRight className="w-3.5 h-3.5" />
+              Our Work <ArrowRight className="w-3 h-3" />
             </Link>
             <Link
               href="/contact"
-              className="flex-1 rounded-xl py-3.5 text-[12px] font-black text-slate-800 text-center border border-slate-200 bg-white/100 active:scale-95 transition-transform shadow-sm"
+              className="flex-1 rounded-xl py-3 text-[11px] font-black text-slate-800 text-center border border-slate-200 bg-white active:scale-95 transition-transform shadow-sm"
             >
               Hire Us
             </Link>
           </div>
 
-          {/* ── TRUST BADGE — Elite Social Proof ── */}
-          <div className="flex items-center justify-center gap-4 mt-6 pt-5 border-t border-slate-100/60 w-full">
-            <div className="flex -space-x-2.5">
-              {[1, 2, 3, 4].map(i => (
-                <img key={i} src={`https://i.pravatar.cc/100?u=jantra_trust_${i}`} className="w-9 h-9 rounded-full border-2 border-white shadow-lg" alt="Client" />
+          {/* ── TRUST BADGE — Compact Proof ── */}
+          <div className="flex items-center justify-center gap-3 mt-3.5 pt-4 border-t border-slate-100/60 w-full">
+            <div className="flex -space-x-2">
+              {[1, 2, 3].map(i => (
+                <img key={i} src={`https://i.pravatar.cc/100?u=jantra_trust_${i}`} className="w-8 h-8 rounded-full border-2 border-white shadow-md" alt="Client" />
               ))}
-              <div className="w-9 h-9 rounded-full bg-orange-600 border-2 border-white flex items-center justify-center shadow-lg relative z-10">
-                <span className="text-[11px] font-black text-white">★</span>
-              </div>
             </div>
             <div className="text-left leading-none">
-              <p className="text-[15px] font-black text-slate-900 tracking-tighter">150+ Production Builds</p>
+              <p className="text-[14px] font-black text-slate-900 tracking-tighter">150+ Builds Delivered</p>
               <div className="flex items-center gap-1.5 mt-1">
-                <div className="flex gap-0.5">
-                  {[1, 2, 3, 4, 5].map(i => <Star key={i} className="w-2.5 h-2.5 fill-orange-500 text-orange-500" />)}
-                </div>
-                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Verified Studio</span>
+                <Star className="w-2.5 h-2.5 fill-orange-500 text-orange-500" />
+                <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">Verified Elite Studio</span>
               </div>
             </div>
           </div>
