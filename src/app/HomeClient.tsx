@@ -276,7 +276,7 @@ function MobileLottieHero() {
 
   return (
     <section
-      className="lg:hidden relative h-[100dvh] flex flex-col justify-between pt-32 pb-4 overflow-hidden"
+      className="lg:hidden relative h-[100dvh] flex flex-col justify-between pt-24 pb-6 overflow-hidden"
       style={{ background: "linear-gradient(160deg, #fffcf9 0%, #fffbf7 35%, #fffaf8 60%, #f8fafc 100%)" }}
     >
       {/* ── Background Moniker scrolling ── */}
@@ -387,20 +387,18 @@ function MobileLottieHero() {
             </Link>
           </div>
 
-          {/* Social Proof — Super Compact */}
-          <div className="flex items-center justify-center gap-3 mt-1 pt-3 border-t border-slate-100/60">
-            <div className="flex -space-x-1.5">
-              {[1, 2, 3].map(i => (
-                <img key={i} src={`https://i.pravatar.cc/80?u=jantra_elite${i}`} className="w-6 h-6 rounded-full border-2 border-white shadow-sm" alt="User" />
-              ))}
-            </div>
-            <div className="text-left leading-none">
-              <p className="text-[10px] font-black text-slate-800">150+ Projects</p>
-            </div>
-            <div className="ml-1 flex items-center gap-1 bg-orange-50 border border-orange-100 px-2 py-1 rounded-full">
-              <Star className="w-2.5 h-2.5 fill-orange-500 text-orange-500" />
-              <span className="text-[10px] font-black text-orange-800">4.9</span>
-            </div>
+          {/* ── STATS GRID — Integrated Hero Module ── */}
+          <div className="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-slate-100/60 w-full px-1">
+            {homeStats.map(stat => (
+              <div key={stat.label} className="relative group p-3 rounded-2xl bg-white/40 border border-orange-100/30 backdrop-blur-sm">
+                <div className="text-sm font-black text-transparent bg-clip-text bg-gradient-to-br from-orange-600 to-orange-700 leading-none mb-1">
+                  {stat.value}
+                </div>
+                <div className="text-[7.5px] font-black uppercase tracking-[0.2em] text-slate-500/80 leading-none">
+                  {stat.label.split(' ')[0]}
+                </div>
+              </div>
+            ))}
           </div>
         </motion.div>
       </div>
@@ -603,7 +601,7 @@ export default function HomePage({ initialProjects = [] }: { initialProjects?: a
       </section>
 
       {/* ── STATS ─────────────────────────────────────────── */}
-      <section className="py-6 sm:py-12 lg:py-16 px-5 sm:px-8 bg-[#fcfaf8] border-y border-orange-50">
+      <section className="hidden lg:block py-6 sm:py-12 lg:py-16 px-5 sm:px-8 bg-[#fcfaf8] border-y border-orange-50">
         <motion.div
           initial="hidden"
           whileInView="visible"
