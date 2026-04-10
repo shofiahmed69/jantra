@@ -276,7 +276,7 @@ function MobileLottieHero() {
 
   return (
     <section
-      className="lg:hidden relative min-h-[100svh] flex flex-col justify-center pt-24 pb-6 overflow-hidden gap-4"
+      className="lg:hidden relative h-[100svh] flex flex-col justify-between pt-[5.5rem] pb-8 overflow-hidden"
       style={{ background: "linear-gradient(160deg, #fffcf9 0%, #fffbf7 35%, #fffaf8 60%, #f8fafc 100%)" }}
     >
       {/* ── Background Moniker scrolling ── */}
@@ -297,7 +297,7 @@ function MobileLottieHero() {
       <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-orange-400/40 to-transparent" />
 
       {/* ── CINEMATIC LOTTIE HERO ── */}
-      <div className="relative flex items-center justify-center py-2">
+      <div className="relative flex-1 flex flex-col items-center justify-center py-2 min-h-0">
         <AnimatePresence mode="wait">
           <motion.div
             key={current.title}
@@ -305,13 +305,13 @@ function MobileLottieHero() {
             animate={{ scale: 1, opacity: 1, filter: "blur(0px)", y: 0 }}
             exit={{ scale: 0.82, opacity: 0, filter: "blur(16px)", y: -20 }}
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="relative"
-            style={{ width: "min(75vw, 320px)", height: "min(75vw, 320px)" }}
+            className="relative flex-1 w-full max-h-[400px] flex items-center justify-center"
+            style={{ maxWidth: "85vw" }}
           >
-            <div className="w-full h-full [filter:drop-shadow(0_0_80px_rgba(249,115,22,0.35))]">
+            <div className="w-full h-full max-w-[320px] max-h-[320px] [filter:drop-shadow(0_0_80px_rgba(249,115,22,0.35))]">
               <LottiePlayer
                 src={current.animationSrc!}
-                className="w-full h-full"
+                className="w-full h-full object-contain"
               />
             </div>
           </motion.div>
@@ -356,45 +356,45 @@ function MobileLottieHero() {
       />
 
       {/* ── CONTENT — Elite formatting ── */}
-      <div className="relative z-10 px-6 pb-0 pt-0 flex flex-col items-center text-center">
+      <div className="relative z-10 px-5 flex flex-col items-center text-center pb-2 shrink-0">
         <div className="w-full">
-          <p className="text-[8px] font-black text-orange-600/80 uppercase tracking-[0.5em] mb-2">Architecting Production Excellence</p>
-          <h1 className="text-[2.8rem] font-black text-slate-900 leading-[0.85] tracking-tighter mb-3">
+          <p className="text-[8px] font-black text-orange-600/80 uppercase tracking-[0.5em] mb-1.5 ">Architecting Production Excellence</p>
+          <h1 className="text-[2.6rem] font-black text-slate-900 leading-[0.85] tracking-tighter mb-2.5">
             Precision Built<span className="text-orange-500">.</span>
           </h1>
-          <p className="text-[12px] text-slate-500 font-bold uppercase tracking-[0.3em] mb-6">
+          <p className="text-[11px] text-slate-500 font-bold uppercase tracking-[0.3em] mb-5">
             Elite Engineering Studio
           </p>
 
           {/* CTAs — Optimized Visibility */}
-          <div className="flex flex-row gap-3 w-full px-2">
+          <div className="flex flex-row gap-3 w-full">
             <Link
               href="/work"
-              className="flex-[1.2] button-primary rounded-xl py-4 text-[12px] font-black flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform"
+              className="flex-[1.2] button-primary rounded-xl py-3.5 text-[12px] font-black flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform"
             >
               Our Work <ArrowRight className="w-3.5 h-3.5" />
             </Link>
             <Link
               href="/contact"
-              className="flex-1 rounded-xl py-3.5 text-[12px] font-black text-slate-800 text-center border border-slate-200 bg-white/100 active:scale-95 transition-transform shadow-sm"
+              className="flex-1 rounded-xl py-3 text-[12px] font-black text-slate-800 text-center border border-slate-200 bg-white/100 active:scale-95 transition-transform shadow-sm flex items-center justify-center"
             >
               Hire Us
             </Link>
           </div>
 
           {/* Social Proof — Super Compact */}
-          <div className="flex items-center justify-center gap-3 mt-1 pt-3 border-t border-slate-100/60">
+          <div className="flex items-center justify-center gap-2 mt-4 pt-4 border-t border-slate-100/60">
             <div className="flex -space-x-1.5">
               {[1, 2, 3].map(i => (
-                <img key={i} src={`https://i.pravatar.cc/80?u=jantra_elite${i}`} className="w-6 h-6 rounded-full border-2 border-white shadow-sm" alt="User" />
+                <img key={i} src={`https://i.pravatar.cc/80?u=jantra_elite${i}`} className="w-5 h-5 rounded-full border border-white shadow-sm" alt="User" />
               ))}
             </div>
             <div className="text-left leading-none">
-              <p className="text-[10px] font-black text-slate-800">150+ Projects</p>
+              <p className="text-[9px] font-black text-slate-800">150+ Projects</p>
             </div>
-            <div className="ml-1 flex items-center gap-1 bg-orange-50 border border-orange-100 px-2 py-1 rounded-full">
-              <Star className="w-2.5 h-2.5 fill-orange-500 text-orange-500" />
-              <span className="text-[10px] font-black text-orange-800">4.9</span>
+            <div className="ml-0.5 flex items-center gap-1 bg-orange-50 border border-orange-100 px-1.5 py-0.5 rounded-full">
+              <Star className="w-2 h-2 fill-orange-500 text-orange-500" />
+              <span className="text-[9px] font-black text-orange-800">4.9</span>
             </div>
           </div>
         </div>
