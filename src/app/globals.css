@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
 :root {
   --background: #f8fafc;
@@ -71,6 +72,15 @@ h1, h2, h3, h4, h5, h6 {
   30% { opacity: 1; }
   70% { transform: translateY(12px); opacity: 0; }
   100% { transform: translateY(0); opacity: 0; }
+}
+
+@keyframes moveBackground {
+  from {
+    background-position: 0% 0%;
+  }
+  to {
+    background-position: 0% -1000%;
+  }
 }
 
 /* Premium Layout Utilities */

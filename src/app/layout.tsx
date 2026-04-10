@@ -4,10 +4,10 @@ import "./globals.css";
 import ClientLayout from '@/components/ClientLayout'
 import BackgroundOrbs from "@/components/BackgroundOrbs";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://jantra.vercel.app";
-const siteTitle = "JANTRA | Custom Software, Websites, AI Agents, and Mobile Apps";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://jantrasoft.online";
+const siteTitle = "JANTRA | Custom Software & AI Agent Studio";
 const siteDescription =
-  "Jantra builds customized software, websites, AI workflow agents, mobile apps, and tailored business systems for growing companies.";
+  "Jantra builds high-performance custom software, modern websites, AI agents, and mobile apps for visionary companies worldwide.";
 
 const bodyFont = DM_Sans({
   variable: "--font-body",
@@ -21,10 +21,17 @@ const headingFont = Space_Grotesk({
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: siteTitle,
+  title: {
+    default: siteTitle,
+    template: "%s | JANTRA",
+  },
   description: siteDescription,
+  keywords: ["Software Development", "AI Agents", "Next.js Development", "SaaS Engineering", "Custom Websites", "Jantra"],
   icons: {
     icon: "/favicon.svg",
+  },
+  verification: {
+    google: "72KPVrUPshP-PwkFkBl-_Ot5wohhpK7AIy78BzyNCqU",
   },
   openGraph: {
     title: siteTitle,

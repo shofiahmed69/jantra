@@ -12,11 +12,17 @@ export default function ClientLayout({
     const isAdmin = pathname?.startsWith('/admin')
     const isStandalonePortal = pathname?.startsWith('/report')
 
+    const showNav = !isAdmin && !isStandalonePortal;
+
     return (
         <>
-            {!isAdmin && !isStandalonePortal && <Navbar />}
-            {children}
-            {!isAdmin && !isStandalonePortal && <Footer />}
+            {showNav && <Navbar />}
+            <div className="relative z-0">
+                {children}
+            </div>
+            {showNav && <Footer />}
         </>
     )
 }
+
+

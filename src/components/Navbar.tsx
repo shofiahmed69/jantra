@@ -2,134 +2,266 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
-import { navItems } from "@/content/site";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
+import { ArrowRight, Menu, X, Sparkles } from "lucide-react";
 import Logo from "@/components/Logo";
-import { motion, AnimatePresence } from "framer-motion";
+import { navItems } from "@/content/site";
+import {
+  GlassButton,
+  GlassEffect,
+  GlassFilter,
+} from "@/components/ui/liquid-glass";
+import { cn } from "@/lib/utils";
 
 export default function Navbar() {
-    const pathname = usePathname();
-    const [mobileOpen, setMobileOpen] = useState(false);
-    const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const { scrollY } = useScroll();
 
-    useEffect(() => {
-        const handleScroll = () => {
-            setScrolled(window.scrollY > 10);
-        };
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
+  // Dynamic transforms based on scroll
+  // Dynamic transforms based on scroll - Optimized for performance
+  const navPadding = useTransform(scrollY, [0, 50], ["1.5rem", "1rem"]);
+  const navScale = useTransform(scrollY, [0, 50], [1, 1]); // Disabled scaling for smoother performance
 
-    return (
-        <nav
-            className={`fixed top-0 left-0 right-0 z-[100] px-4 pt-3 md:pt-5 transition-all duration-300 ${
-                scrolled ? "bg-white/90 backdrop-blur-2xl shadow-[0_4px_20px_-10px_rgba(0,0,0,0.1)] pb-3 md:pb-4" : "bg-transparent"
-            }`}
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  return (
+    <nav className="fixed inset-x-0 top-0 z-[100] transition-all duration-500">
+      <GlassFilter />
+      
+      <div className="mx-auto max-w-7xl px-4 pt-6 sm:px-6">
+        <motion.div
+          style={{ padding: navPadding, scale: navScale }}
+          className="relative group"
         >
-            <div className={`mx-auto max-w-6xl rounded-full px-4 sm:px-6 py-2 md:py-3 flex items-center justify-between relative transition-all duration-300 ${
-                scrolled ? "border-transparent bg-transparent shadow-none" : "glass-panel"
-            }`}>
-                {/* Logo */}
-                <div className="flex items-center gap-2 group cursor-pointer z-10">
-                    <Logo className="w-7 h-7 sm:w-8 sm:h-8 transition-transform duration-500 group-hover:rotate-12 group-hover:scale-110" />
-                    <Link href="/" className="text-base md:text-lg font-black tracking-tight text-slate-900 transition-colors duration-500 group-hover:text-orange-600">
-                        JANTRA<span className="text-orange-500 transition-transform duration-500 inline-block group-hover:translate-x-0.5">.</span>
-                    </Link>
+          <GlassEffect
+            className={cn(
+              "relative w-full rounded-[2.5rem] transition-all duration-700 ease-out",
+              // Desktop: Previous style | Mobile: Orbital style
+              scrolled
+                ? "bg-white/40 md:bg-white/40 ring-1 ring-white/40 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.15)] backdrop-blur-xl"
+                : "bg-white/25 md:bg-white/25 ring-1 ring-white/30 shadow-[0_20px_40px_-15px_rgba(249,115,22,0.25)] backdrop-blur-md",
+              "md:border-none border-t border-white/40" 
+            )}
+          >
+            <div className="relative z-10 flex items-center justify-between gap-4 px-2 py-1.5 sm:px-4 sm:py-1">
+              
+              {/* DESKTOP LOGO (Clean Floating Style) */}
+              <Link
+                href="/"
+                className="hidden md:flex group relative items-center gap-3 transition-all duration-500"
+              >
+                <div className="relative transition-all duration-500 group-hover:rotate-6 group-hover:scale-110">
+                  <Logo className="h-9 w-9" />
                 </div>
-
-                {/* Desktop nav */}
-                <div className="hidden md:flex items-center gap-6 text-xs md:text-sm font-medium text-slate-600">
-                    {navItems.map((item) => (
-                        <Link
-                            key={item.href}
-                            href={item.href}
-                            className={`relative px-1 py-2 transition-all duration-300 group ${
-                                pathname === item.href
-                                    ? "text-orange-600 font-semibold"
-                                    : "text-slate-600 hover:text-slate-900"
-                            }`}
-                        >
-                            <span className="relative z-10 transition-transform duration-300 group-hover:-translate-y-[1px] group-hover:text-orange-600 inline-block origin-center">
-                                {item.label}
-                            </span>
-                            {pathname === item.href && (
-                                <motion.div 
-                                    layoutId="nav-pill"
-                                    className="absolute -bottom-0.5 left-0 right-0 h-[2px] bg-orange-500 rounded-full"
-                                    transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-                                />
-                            )}
-                        </Link>
-                    ))}
+                <div className="flex flex-col">
+                  <span className="text-[0.65rem] font-bold uppercase tracking-[0.4em] text-slate-500 transition-colors group-hover:text-orange-500">
+                    Jantra
+                  </span>
+                  <span className="bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-base font-black tracking-tight text-transparent transition-all sm:text-lg">
+                    Enterprise Software
+                  </span>
                 </div>
+              </Link>
 
-                {/* Desktop CTA */}
-                <div className="hidden md:flex items-center pr-1 md:pr-2">
-                    <Link
-                        href="/#work"
-                        className="group relative overflow-hidden bg-slate-900 text-white px-5 py-2 md:py-2.5 rounded-full text-xs font-bold transition-all duration-500 active:scale-95 whitespace-nowrap shadow-[0_10px_20px_-8px_rgba(0,0,0,0.2)] hover:shadow-[0_15px_30px_-10px_rgba(249,115,22,0.4)]"
-                    >
-                        <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-orange-600 to-orange-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0" />
-                        <span className="relative z-10 flex items-center justify-center gap-2">
-                           View Our Work
-                           <span className="w-0 group-hover:w-4 -ml-1 transition-all duration-500 overflow-hidden opacity-0 group-hover:opacity-100 flex items-center justify-center">
-                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                           </span>
+              {/* MOBILE LOGO (Enhanced Visibility) */}
+              <Link
+                href="/"
+                className="md:hidden group/logo relative flex items-center gap-2.5 transition-all duration-500"
+              >
+                <div className="relative">
+                   <Logo className="h-10 w-10" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[0.7rem] font-black uppercase tracking-[0.35em] text-orange-600 leading-none">Jantra</span>
+                  <span className="text-[0.8rem] font-black tracking-tighter text-slate-900 uppercase leading-none mt-0.5">Enterprise Software</span>
+                </div>
+              </Link>
+
+              {/* Desktop Navigation (Previous style) */}
+              <div className="hidden min-w-0 flex-1 items-center justify-center md:flex">
+                <div className="flex items-center gap-1 rounded-full bg-slate-900/[0.03] p-1.5 ring-1 ring-slate-950/5">
+                  {navItems.map((item) => {
+                    const active =
+                      item.href === "/"
+                        ? pathname === item.href
+                        : pathname?.startsWith(item.href);
+
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className={cn(
+                          "relative rounded-full px-5 py-2.5 text-[0.85rem] font-bold transition-all duration-500",
+                          active
+                            ? "text-slate-950"
+                            : "text-slate-500 hover:text-slate-900 hover:bg-white/40",
+                        )}
+                      >
+                        {active && (
+                          <motion.div
+                            layoutId="nav-active-pill"
+                            className="absolute inset-0 rounded-full bg-white shadow-[0_2px_10px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,1)]"
+                            transition={{
+                              type: "spring",
+                              bounce: 0.25,
+                              duration: 0.6,
+                            }}
+                          />
+                        )}
+                        <span className="relative z-10 flex items-center gap-1.5">
+                          {item.label}
+                          {active && (
+                            <motion.span
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              className="h-1 w-1 rounded-full bg-orange-500"
+                            />
+                          )}
                         </span>
-                    </Link>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Action Terminal */}
+              <div className="flex items-center gap-3">
+                <div className="hidden lg:block">
+                   <GlassButton
+                    href="/contact"
+                    className="group border-none bg-orange-600/90 py-3.5 text-white transition-all duration-500 hover:bg-orange-600 hover:shadow-[0_10px_30px_-10px_rgba(249,115,22,0.5)]"
+                  >
+                    <span className="flex items-center gap-2 text-[0.85rem] font-black uppercase tracking-wider">
+                      Let's Build 
+                      <Sparkles className="h-4 w-4 transition-transform duration-500 group-hover:rotate-12 group-hover:scale-125" />
+                    </span>
+                  </GlassButton>
                 </div>
 
-                {/* Mobile hamburger */}
                 <button
-                    className="md:hidden flex flex-col gap-[5px] p-1.5 group hover:bg-slate-50 rounded-full transition-colors"
-                    onClick={() => setMobileOpen(!mobileOpen)}
-                    aria-label="Toggle menu"
+                  type="button"
+                  aria-label="Toggle menu"
+                  onClick={() => setMobileOpen((current) => !current)}
+                  className={cn(
+                    "group/menu relative flex h-11 w-11 items-center justify-center rounded-full transition-all duration-500 md:hidden",
+                    "bg-slate-50/80 backdrop-blur-md border border-slate-200 shadow-[0_2px_10px_rgba(0,0,0,0.05)]",
+                    "hover:border-orange-500/30 hover:shadow-[0_4px_15px_rgba(249,115,22,0.1)] active:scale-95",
+                    mobileOpen && "bg-orange-600 border-orange-600 text-white shadow-[0_10px_25px_rgba(249,115,22,0.4)]"
+                  )}
                 >
-                    <span className={`block w-4 h-[2px] bg-slate-800 transition-all duration-300 origin-center ${mobileOpen ? "rotate-45 translate-y-[7px]" : "group-hover:w-3"}`} />
-                    <span className={`block w-4 h-[2px] bg-slate-800 transition-opacity duration-300 ${mobileOpen ? "opacity-0" : "group-hover:opacity-50"}`} />
-                    <span className={`block w-4 h-[2px] bg-slate-800 transition-all duration-300 origin-center ${mobileOpen ? "-rotate-45 -translate-y-[7px]" : "group-hover:w-2"}`} />
+                   {/* Unique Segments inside a Proper Circular Button */}
+                   <div className="relative w-5 h-3 flex flex-col justify-between items-center transition-transform duration-500 group-hover/menu:scale-110">
+                      <motion.span 
+                        animate={mobileOpen ? { rotate: 45, y: 6, width: "100%", x: 0, backgroundColor: "#fff" } : { rotate: 0, y: 0, width: "60%", x: -4, backgroundColor: "#f97316" }}
+                        className="h-[2px] rounded-full transition-all duration-500" 
+                      />
+                      <motion.span 
+                        animate={mobileOpen ? { opacity: 0, scale: 0.5 } : { opacity: 1, scale: 1, x: 0, backgroundColor: "#f97316" }}
+                        className="h-[2px] w-full bg-orange-500/60 rounded-full transition-all duration-300"
+                      />
+                      <motion.span 
+                        animate={mobileOpen ? { rotate: -45, y: -6, width: "100%", x: 0, backgroundColor: "#fff" } : { rotate: 0, y: 0, width: "60%", x: 4, backgroundColor: "#f97316" }}
+                        className="h-[2px] rounded-full transition-all duration-500" 
+                      />
+                   </div>
                 </button>
+              </div>
             </div>
+          </GlassEffect>
+        </motion.div>
+      </div>
 
-            {/* Mobile dropdown */}
-            <AnimatePresence>
-                {mobileOpen && (
-                    <motion.div 
-                        initial={{ opacity: 0, y: -10, filter: "blur(5px)" }}
-                        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                        exit={{ opacity: 0, y: -10, filter: "blur(5px)" }}
-                        transition={{ duration: 0.3 }}
-                        className="md:hidden absolute top-full left-4 right-4 mt-2 bg-white/95 backdrop-blur-xl rounded-3xl p-6 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border border-slate-100 space-y-4 z-50 origin-top"
+      {/* Mobile Menu Overlay (Stunning Dropdown Style) */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="absolute inset-x-0 top-full mt-4 px-4 sm:px-6 md:hidden"
+          >
+            <GlassEffect className="overflow-hidden rounded-[2.5rem] bg-white/80 p-5 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.2)] backdrop-blur-3xl ring-1 ring-white/50 border border-white/20">
+              <div className="flex flex-col gap-2">
+                {navItems.map((item, index) => {
+                  const active =
+                    item.href === "/"
+                      ? pathname === item.href
+                      : pathname?.startsWith(item.href);
+
+                  return (
+                    <motion.div
+                      key={item.href}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
                     >
-                        {navItems.map((item, index) => (
-                            <Link
-                                key={item.href}
-                                href={item.href}
-                                onClick={() => setMobileOpen(false)}
-                                className={`group flex items-center justify-between p-3 rounded-2xl transition-all duration-300 ${
-                                    pathname === item.href
-                                    ? "bg-orange-50/50 text-orange-600 font-semibold shadow-sm"
-                                    : "text-slate-700 hover:bg-slate-50 hover:text-slate-900"
-                                }`}
-                            >
-                                <span className="translate-x-0 group-hover:translate-x-2 transition-transform duration-300">
-                                   {item.label}
-                                </span>
-                                <span className={`text-[10px] font-bold ${pathname === item.href ? "opacity-100" : "opacity-0 group-hover:opacity-40 transition-opacity duration-300"}`}>
-                                   0{index + 1}
-                                </span>
-                            </Link>
-                        ))}
-                        <Link
-                            href="/#work"
-                            onClick={() => setMobileOpen(false)}
-                            className="block w-full text-center bg-slate-900 text-white px-6 py-3 rounded-full text-sm font-semibold transition-all shadow-md mt-2 hover:shadow-[0_10px_20px_-5px_rgba(249,115,22,0.4)] hover:bg-orange-600 active:scale-95"
-                        >
-                            View Our Work
-                        </Link>
+                      <Link
+                        href={item.href}
+                        onClick={() => setMobileOpen(false)}
+                        className={cn(
+                          "group flex items-center justify-between rounded-[1.5rem] px-5 py-4 transition-all duration-300",
+                          active
+                            ? "bg-orange-600 text-white shadow-lg shadow-orange-500/20"
+                            : "text-slate-600 hover:bg-white hover:text-slate-950",
+                        )}
+                      >
+                        <div className="flex items-center gap-4">
+                          <span className={cn(
+                            "text-[8px] font-black uppercase tracking-[0.3em] transition-opacity",
+                            active ? "opacity-40" : "opacity-20"
+                          )}>
+                            0{index + 1}
+                          </span>
+                          <span className="text-base font-bold tracking-tight">
+                            {item.label}
+                          </span>
+                        </div>
+                        <div className={cn(
+                          "rounded-full p-2 transition-transform duration-500 group-hover:translate-x-1",
+                          active ? "bg-white/20" : "bg-slate-100"
+                        )}>
+                          <ArrowRight className="h-4 w-4" />
+                        </div>
+                      </Link>
                     </motion.div>
-                )}
-            </AnimatePresence>
-        </nav>
-    );
+                  );
+                })}
+                
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: navItems.length * 0.05 }}
+                  className="mt-2"
+                >
+                  <Link
+                    href="/contact"
+                    onClick={() => setMobileOpen(false)}
+                    className="flex items-center justify-center gap-3 rounded-[1.5rem] bg-slate-900 py-5 text-sm font-black uppercase tracking-widest text-white shadow-xl transition-all hover:bg-slate-800"
+                  >
+                    Start a Project
+                    <Sparkles className="h-4 w-4 text-orange-400" />
+                  </Link>
+                </motion.div>
+              </div>
+            </GlassEffect>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+    </nav>
+  );
 }
+
+
