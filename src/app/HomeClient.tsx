@@ -276,7 +276,7 @@ function MobileLottieHero() {
 
   return (
     <section
-      className="lg:hidden relative h-[90svh] min-h-[660px] flex flex-col pt-12 pb-4 overflow-hidden"
+      className="lg:hidden relative h-auto min-h-screen flex flex-col pt-20 pb-12 overflow-hidden"
       style={{ background: "linear-gradient(160deg, #fffcf9 0%, #fffbf7 35%, #fffaf8 60%, #f8fafc 100%)" }}
     >
       {/* ── Background Moniker scrolling ── */}
@@ -347,7 +347,7 @@ function MobileLottieHero() {
 
 
       {/* ── CONTENT — Elite formatting ── */}
-      <div className="mt-auto relative z-10 px-6 pb-2 pt-0 flex flex-col items-center text-center">
+      <div className="relative z-10 px-6 pb-2 pt-0 flex flex-col items-center text-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -593,49 +593,7 @@ export default function HomePage({ initialProjects = [] }: { initialProjects?: a
         </div>
       </section>
 
-      {/* ── STATS (Visible on all devices, smooth entry) ───────────────── */}
-      <section className="py-8 sm:py-16 lg:py-20 px-5 sm:px-8 bg-[#fcfaf8] border-y border-orange-50">
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-20px" }}
-          variants={{ 
-            hidden: {}, 
-            visible: { transition: { staggerChildren: 0.1 } } 
-          }}
-          className="mx-auto max-w-[1400px] grid grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-8"
-        >
-          {homeStats.map(stat => (
-            <motion.div
-              key={stat.label}
-              variants={{ 
-                hidden: { opacity: 0, y: 15, scale: 0.98 }, 
-                visible: { 
-                  opacity: 1, 
-                  y: 0, 
-                  scale: 1, 
-                  transition: { 
-                    duration: 0.9, 
-                    ease: [0.23, 1, 0.32, 1] // Smooth out-expo easing
-                  } 
-                } 
-              }}
-              className="relative group"
-            >
-              <div className="absolute inset-0 rounded-[2rem] bg-orange-200/40 translate-x-2 translate-y-2 group-hover:translate-x-3.5 group-hover:translate-y-3.5 transition-transform duration-500" />
-              <div className="absolute inset-0 rounded-[2rem] bg-orange-100/25 translate-x-4 translate-y-4 group-hover:translate-x-6 group-hover:translate-y-6 transition-transform duration-500 delay-75" />
-              <div className="relative py-8 sm:py-12 px-4 sm:px-6 rounded-[2rem] bg-white border border-orange-100/60 shadow-sm group-hover:-translate-y-1 transition-transform duration-500 z-10 flex flex-col items-center text-center">
-                <div className="text-3xl sm:text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-orange-500 to-orange-700 mb-2 group-hover:scale-105 transition-transform duration-500">
-                  {stat.value}
-                </div>
-                <div className="text-[9px] sm:text-[10px] font-black uppercase tracking-[0.25em] text-orange-950/60 group-hover:text-orange-900 transition-colors duration-500 leading-tight">
-                  {stat.label}
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-      </section>
+
 
       {/* ── SELECTED WORK CAROUSEL ───────────────────────────── */}
       <section id="work" className="py-10 sm:py-16 lg:py-20 bg-white overflow-hidden relative">
