@@ -276,7 +276,7 @@ function MobileLottieHero() {
 
   return (
     <section
-      className="lg:hidden relative h-[100dvh] flex flex-col justify-between pt-32 pb-4 overflow-hidden"
+      className="lg:hidden relative min-h-[100svh] flex flex-col justify-center pt-24 pb-6 overflow-hidden gap-4"
       style={{ background: "linear-gradient(160deg, #fffcf9 0%, #fffbf7 35%, #fffaf8 60%, #f8fafc 100%)" }}
     >
       {/* ── Background Moniker scrolling ── */}
@@ -306,7 +306,7 @@ function MobileLottieHero() {
             exit={{ scale: 0.82, opacity: 0, filter: "blur(16px)", y: -20 }}
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
             className="relative"
-            style={{ width: "min(95vw, 400px)", height: "min(95vw, 400px)" }}
+            style={{ width: "min(75vw, 320px)", height: "min(75vw, 320px)" }}
           >
             <div className="w-full h-full [filter:drop-shadow(0_0_80px_rgba(249,115,22,0.35))]">
               <LottiePlayer
