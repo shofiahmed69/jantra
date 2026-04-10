@@ -37,7 +37,7 @@ function ProjectCarousel({ projects }: { projects: any[] }) {
   );
 
   const project = projects[index];
-  const defaultImage = "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2070&auto=format&fit=crop";
+  const defaultImage = "https://images.unsplash.com/photo-1618761714954-0b8cd0026356?auto=format&fit=crop&q=80&w=2070"; // Modern abstract gradient instead of a black screen
   const projectImage = project.thumbnail || defaultImage;
 
   return (
@@ -276,7 +276,7 @@ function MobileLottieHero() {
 
   return (
     <section
-      className="lg:hidden relative h-[100svh] flex flex-col justify-between pt-[5.5rem] pb-8 overflow-hidden"
+      className="lg:hidden relative h-[100svh] flex flex-col justify-between pt-[5.5rem] pb-3 overflow-hidden"
       style={{ background: "linear-gradient(160deg, #fffcf9 0%, #fffbf7 35%, #fffaf8 60%, #f8fafc 100%)" }}
     >
       {/* ── Background Moniker scrolling ── */}
@@ -383,7 +383,7 @@ function MobileLottieHero() {
           </div>
 
           {/* Social Proof — Super Compact */}
-          <div className="flex items-center justify-center gap-2 mt-4 pt-4 border-t border-slate-100/60">
+          <div className="flex items-center justify-center gap-2 mt-3 pt-3 border-t border-slate-100/60">
             <div className="flex -space-x-1.5">
               {[1, 2, 3].map(i => (
                 <img key={i} src={`https://i.pravatar.cc/80?u=jantra_elite${i}`} className="w-5 h-5 rounded-full border border-white shadow-sm" alt="User" />
