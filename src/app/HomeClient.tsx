@@ -276,7 +276,7 @@ function MobileLottieHero() {
 
   return (
     <section
-      className="lg:hidden relative h-[100dvh] flex flex-col justify-between pt-24 pb-6 overflow-hidden"
+      className="lg:hidden relative h-[100dvh] flex flex-col pt-20 pb-10 overflow-hidden"
       style={{ background: "linear-gradient(160deg, #fffcf9 0%, #fffbf7 35%, #fffaf8 60%, #f8fafc 100%)" }}
     >
       {/* ── Background Moniker scrolling ── */}
@@ -304,9 +304,8 @@ function MobileLottieHero() {
             initial={{ scale: 0.8, opacity: 0, filter: "blur(16px)", y: 20 }}
             animate={{ scale: 1, opacity: 1, filter: "blur(0px)", y: 0 }}
             exit={{ scale: 0.82, opacity: 0, filter: "blur(16px)", y: -20 }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
             className="relative"
-            style={{ width: "min(95vw, 400px)", height: "min(95vw, 400px)" }}
+            style={{ width: "min(85vw, 360px)", height: "min(85vw, 360px)" }}
           >
             <div className="w-full h-full [filter:drop-shadow(0_0_80px_rgba(249,115,22,0.35))]">
               <LottiePlayer
@@ -329,34 +328,26 @@ function MobileLottieHero() {
         ))}
       </div>
 
-      <div className="flex justify-center pb-2 relative z-20">
+      <div className="flex justify-center -mt-2 pb-4 relative z-20">
         <AnimatePresence mode="wait">
           <motion.div
             key={current.title}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="flex items-center gap-4 px-5 py-3 rounded-2xl border border-orange-200/40 bg-white/60 backdrop-blur-3xl shadow-md ring-1 ring-white/50"
+            className="flex items-center gap-4 px-4 py-2.5 rounded-2xl border border-orange-200/40 bg-white/60 backdrop-blur-3xl shadow-md ring-1 ring-white/50"
           >
             <span className="text-xl font-black text-orange-500/40 leading-none">0{index + 1}</span>
             <div className="w-[1px] h-4 bg-orange-500/30" />
-            <span className="text-[10px] font-black text-slate-900 uppercase tracking-[0.4em] whitespace-nowrap leading-none">{current.title}</span>
+            <span className="text-[9px] font-black text-slate-900 uppercase tracking-[0.4em] whitespace-nowrap leading-none">{current.title}</span>
           </motion.div>
         </AnimatePresence>
       </div>
 
-      {/* ── SEAMLESS GRADIENT BLEND ── */}
-      <div
-        className="absolute left-0 right-0 pointer-events-none"
-        style={{
-          bottom: "0",
-          height: "40%",
-          background: "linear-gradient(to bottom, transparent 0%, rgba(248,250,252,0.7) 40%, #f8fafc 85%)"
-        }}
-      />
+
 
       {/* ── CONTENT — Elite formatting ── */}
-      <div className="relative z-10 px-6 pb-0 pt-0 flex flex-col items-center text-center">
+      <div className="mt-auto relative z-10 px-6 pb-2 pt-0 flex flex-col items-center text-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
