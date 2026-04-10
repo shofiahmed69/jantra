@@ -357,12 +357,7 @@ function MobileLottieHero() {
 
       {/* ── CONTENT — Elite formatting ── */}
       <div className="relative z-10 px-6 pb-0 pt-0 flex flex-col items-center text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.8 }}
-          className="w-full"
-        >
+        <div className="w-full">
           <p className="text-[8px] font-black text-orange-600/80 uppercase tracking-[0.5em] mb-2">Architecting Production Excellence</p>
           <h1 className="text-[2.8rem] font-black text-slate-900 leading-[0.85] tracking-tighter mb-3">
             Precision Built<span className="text-orange-500">.</span>
@@ -402,7 +397,7 @@ function MobileLottieHero() {
               <span className="text-[10px] font-black text-orange-800">4.9</span>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
@@ -453,7 +448,7 @@ function DesktopHero() {
             </div>
 
             {/* Added back: Trust Row for Desktop */}
-            <div className="flex items-center gap-5 pt-1 opacity-0 animate-fade-up" style={{ animationDelay: '0.4s', animationFillMode: 'forwards' }}>
+            <div className="flex items-center gap-5 pt-1">
               <div className="flex -space-x-3">
                 {[1, 2, 3, 4, 5].map(i => (
                   <motion.img
