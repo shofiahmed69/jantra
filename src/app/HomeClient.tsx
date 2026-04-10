@@ -387,18 +387,25 @@ function MobileLottieHero() {
             </Link>
           </div>
 
-          {/* ── STATS GRID — Integrated Hero Module ── */}
-          <div className="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-slate-100/60 w-full px-1">
-            {homeStats.map(stat => (
-              <div key={stat.label} className="relative group p-3 rounded-2xl bg-white/40 border border-orange-100/30 backdrop-blur-sm">
-                <div className="text-sm font-black text-transparent bg-clip-text bg-gradient-to-br from-orange-600 to-orange-700 leading-none mb-1">
-                  {stat.value}
-                </div>
-                <div className="text-[7.5px] font-black uppercase tracking-[0.2em] text-slate-500/80 leading-none">
-                  {stat.label.split(' ')[0]}
-                </div>
+          {/* ── TRUST BADGE — Elite Social Proof ── */}
+          <div className="flex items-center justify-center gap-4 mt-6 pt-5 border-t border-slate-100/60 w-full">
+            <div className="flex -space-x-2.5">
+              {[1, 2, 3, 4].map(i => (
+                <img key={i} src={`https://i.pravatar.cc/100?u=jantra_trust_${i}`} className="w-9 h-9 rounded-full border-2 border-white shadow-lg" alt="Client" />
+              ))}
+              <div className="w-9 h-9 rounded-full bg-orange-600 border-2 border-white flex items-center justify-center shadow-lg relative z-10">
+                <span className="text-[11px] font-black text-white">★</span>
               </div>
-            ))}
+            </div>
+            <div className="text-left leading-none">
+              <p className="text-[15px] font-black text-slate-900 tracking-tighter">150+ Production Builds</p>
+              <div className="flex items-center gap-1.5 mt-1">
+                <div className="flex gap-0.5">
+                  {[1, 2, 3, 4, 5].map(i => <Star key={i} className="w-2.5 h-2.5 fill-orange-500 text-orange-500" />)}
+                </div>
+                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest ml-1">Verified Studio</span>
+              </div>
+            </div>
           </div>
         </motion.div>
       </div>
@@ -600,8 +607,8 @@ export default function HomePage({ initialProjects = [] }: { initialProjects?: a
         </div>
       </section>
 
-      {/* ── STATS ─────────────────────────────────────────── */}
-      <section className="hidden lg:block py-6 sm:py-12 lg:py-16 px-5 sm:px-8 bg-[#fcfaf8] border-y border-orange-50">
+      {/* ── STATS (Visible on all devices, smooth entry) ───────────────── */}
+      <section className="py-8 sm:py-16 lg:py-20 px-5 sm:px-8 bg-[#fcfaf8] border-y border-orange-50">
         <motion.div
           initial="hidden"
           whileInView="visible"
