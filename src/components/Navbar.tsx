@@ -39,10 +39,10 @@ export default function Navbar() {
     <nav className="fixed inset-x-0 top-0 z-[100] transition-all duration-500">
       <GlassFilter />
       
-      <div className="mx-auto max-w-7xl px-4 pt-6 sm:px-6">
+      <div className="mx-auto max-w-7xl px-3 pt-3 sm:px-6 sm:pt-6 text-left">
         <motion.div
           style={{ padding: navPadding, scale: navScale }}
-          className="relative group"
+          className="relative group w-full"
         >
           <GlassEffect
             className={cn(
@@ -54,7 +54,7 @@ export default function Navbar() {
               "md:border-none border-t border-white/40" 
             )}
           >
-            <div className="relative z-10 flex items-center justify-between gap-4 px-2 py-1.5 sm:px-4 sm:py-1">
+            <div className="relative z-10 flex items-center justify-between gap-4 px-3 py-2 sm:px-4 sm:py-1 text-left">
               
               {/* DESKTOP LOGO (Clean Floating Style) */}
               <Link
@@ -77,14 +77,14 @@ export default function Navbar() {
               {/* MOBILE LOGO (Enhanced Visibility) */}
               <Link
                 href="/"
-                className="md:hidden group/logo relative flex items-center gap-2.5 transition-all duration-500"
+                className="md:hidden group/logo relative flex items-center gap-3 transition-all duration-500"
               >
                 <div className="relative">
-                   <Logo className="h-10 w-10" />
+                   <Logo className="h-11 w-11" />
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-[0.7rem] font-black uppercase tracking-[0.35em] text-orange-600 leading-none">Jantra</span>
-                  <span className="text-[0.8rem] font-black tracking-tighter text-slate-900 uppercase leading-none mt-0.5">Enterprise Software</span>
+                <div className="flex flex-col text-left">
+                  <span className="text-[0.8rem] font-black uppercase tracking-[0.35em] text-orange-600 leading-none">Jantra</span>
+                  <span className="text-[0.95rem] font-black tracking-tighter text-slate-900 uppercase leading-none mt-1">Enterprise Software</span>
                 </div>
               </Link>
 
@@ -154,7 +154,7 @@ export default function Navbar() {
                   aria-label="Toggle menu"
                   onClick={() => setMobileOpen((current) => !current)}
                   className={cn(
-                    "group/menu relative flex h-11 w-11 items-center justify-center rounded-full transition-all duration-500 md:hidden",
+                    "group/menu relative flex h-12 w-12 items-center justify-center rounded-full transition-all duration-500 md:hidden",
                     "bg-slate-50/80 backdrop-blur-md border border-slate-200 shadow-[0_2px_10px_rgba(0,0,0,0.05)]",
                     "hover:border-orange-500/30 hover:shadow-[0_4px_15px_rgba(249,115,22,0.1)] active:scale-95",
                     mobileOpen && "bg-orange-600 border-orange-600 text-white shadow-[0_10px_25px_rgba(249,115,22,0.4)]"
