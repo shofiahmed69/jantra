@@ -607,14 +607,28 @@ export default function HomePage({ initialProjects = [] }: { initialProjects?: a
         <motion.div
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-60px" }}
-          variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.12 } } }}
+          viewport={{ once: true, margin: "-20px" }}
+          variants={{ 
+            hidden: {}, 
+            visible: { transition: { staggerChildren: 0.1 } } 
+          }}
           className="mx-auto max-w-[1400px] grid grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-8"
         >
           {homeStats.map(stat => (
             <motion.div
               key={stat.label}
-              variants={{ hidden: { opacity: 0, y: 40, scale: 0.95 }, visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.7, ease: "easeOut" } } }}
+              variants={{ 
+                hidden: { opacity: 0, y: 15, scale: 0.98 }, 
+                visible: { 
+                  opacity: 1, 
+                  y: 0, 
+                  scale: 1, 
+                  transition: { 
+                    duration: 0.9, 
+                    ease: [0.23, 1, 0.32, 1] // Smooth out-expo easing
+                  } 
+                } 
+              }}
               className="relative group"
             >
               <div className="absolute inset-0 rounded-[2rem] bg-orange-200/40 translate-x-2 translate-y-2 group-hover:translate-x-3.5 group-hover:translate-y-3.5 transition-transform duration-500" />

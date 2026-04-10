@@ -153,7 +153,7 @@ export const homeHeroBadges: string[] = [
 ];
 
 export const homeStats: StatItem[] = [
-  { value: "50+", label: "Projects Delivered", icon: "rocket" },
+  { value: "150+", label: "Projects Delivered", icon: "rocket" },
   { value: "12+", label: "Countries Served", icon: "globe" },
   { value: "4.9★", label: "Client Rating", icon: "star" },
   { value: "6-15", label: "Core Team Members", icon: "users" },
