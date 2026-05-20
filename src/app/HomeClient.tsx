@@ -557,8 +557,6 @@ export default function HomePage({ initialProjects = [] }: { initialProjects?: a
         
         // Take top 4 for home if many projects
         setFeaturedProjects(formatted);
-      } catch (error) {
-        console.error("Failed to fetch projects:", error);
       } finally {
         setLoading(false);
       }

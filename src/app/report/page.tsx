@@ -63,7 +63,7 @@ const getEmployeeApiBaseUrl = () => {
 };
 
 const statusTone: Record<ReportStatus, string> = {
-    APPROVED: "bg-emerald-50 text-emerald-700 border-emerald-100",
+    APPROVED: "bg-orange-50 text-orange-700 border-orange-100",
     SUBMITTED: "bg-amber-50 text-amber-700 border-amber-100",
     NEEDS_REVISION: "bg-rose-50 text-rose-700 border-rose-100",
     DRAFT: "bg-slate-100 text-slate-600 border-slate-200"
@@ -349,7 +349,7 @@ export default function EmployeeReportPage() {
 
                 <section className="mt-6 grid gap-4 md:grid-cols-3">
                     {[
-                        { label: "Approved", value: approvedCount, icon: CheckCircle2, tone: "from-emerald-100 to-white text-emerald-700" },
+                        { label: "Approved", value: approvedCount, icon: CheckCircle2, tone: "from-orange-100 to-white text-orange-700" },
                         { label: "Needs Revision", value: revisionCount, icon: AlertTriangle, tone: "from-rose-100 to-white text-rose-700" },
                         { label: "Submission Volume", value: currentStreak, icon: Target, tone: "from-amber-100 to-white text-amber-700" }
                     ].map((card) => (

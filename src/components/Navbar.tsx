@@ -163,15 +163,15 @@ export default function Navbar() {
                    {/* Unique Segments inside a Proper Circular Button */}
                    <div className="relative w-5 h-3 flex flex-col justify-between items-center transition-transform duration-500 group-hover/menu:scale-110">
                       <motion.span 
-                        animate={mobileOpen ? { rotate: 45, y: 6, width: "100%", x: 0, backgroundColor: "#fff" } : { rotate: 0, y: 0, width: "60%", x: -4, backgroundColor: "#f97316" }}
+                        animate={mobileOpen ? { rotate: 45, y: 6, width: "100%", x: 0, backgroundColor: "#fff" } : { rotate: 0, y: 0, width: "60%", x: -4, backgroundColor: "#14b8a6" }}
                         className="h-[2px] rounded-full transition-all duration-500" 
                       />
                       <motion.span 
-                        animate={mobileOpen ? { opacity: 0, scale: 0.5 } : { opacity: 1, scale: 1, x: 0, backgroundColor: "#f97316" }}
+                        animate={mobileOpen ? { opacity: 0, scale: 0.5 } : { opacity: 1, scale: 1, x: 0, backgroundColor: "#14b8a6" }}
                         className="h-[2px] w-full bg-orange-500/60 rounded-full transition-all duration-300"
                       />
                       <motion.span 
-                        animate={mobileOpen ? { rotate: -45, y: -6, width: "100%", x: 0, backgroundColor: "#fff" } : { rotate: 0, y: 0, width: "60%", x: 4, backgroundColor: "#f97316" }}
+                        animate={mobileOpen ? { rotate: -45, y: -6, width: "100%", x: 0, backgroundColor: "#fff" } : { rotate: 0, y: 0, width: "60%", x: 4, backgroundColor: "#14b8a6" }}
                         className="h-[2px] rounded-full transition-all duration-500" 
                       />
                    </div>

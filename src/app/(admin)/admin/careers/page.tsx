@@ -30,6 +30,7 @@ interface Application {
     resumeUrl: string;
     coverLetter?: string;
     portfolioUrl?: string;
+    linkedIn?: string;
     status: string;
     createdAt: string;
     job: {
@@ -62,6 +63,13 @@ export default function AdminCareersPage() {
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [selectedApplication, setSelectedApplication] = useState<Application | null>(null);
+    const [applicationStats, setApplicationStats] = useState({
+        total: 0,
+        withResume: 0,
+        withLinkedIn: 0,
+        withCoverLetter: 0,
+        withPhone: 0
+    });
 
     const fetchApplications = async () => {
         setLoading(true);
@@ -71,10 +79,28 @@ export default function AdminCareersPage() {
             });
             setApplications(response.data.applications || []);
             setTotalPages(response.data.totalPages || 1);
-        } catch (error) {
-            console.error("Failed to fetch applications", error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchApplicationStats = async () => {
+        try {
+            const response = await api.get("/careers/admin/applications", {
+                params: { page: 1, limit: 1000 }
+            });
+
+            const rows: Application[] = response.data.applications || [];
+            const hasValue = (value?: string) => Boolean(value && value.trim().length > 0);
+
+            setApplicationStats({
+                total: response.data.total || rows.length,
+                withResume: rows.filter((r) => hasValue(r.resumeUrl)).length,
+                withLinkedIn: rows.filter((r) => hasValue(r.linkedIn)).length,
+                withCoverLetter: rows.filter((r) => hasValue(r.coverLetter)).length,
+                withPhone: rows.filter((r) => hasValue(r.phone)).length
+            });
+        } catch {
         }
     };
 
@@ -83,8 +109,6 @@ export default function AdminCareersPage() {
         try {
             const response = await api.get("/careers/admin/jobs");
             setJobs(response.data || []);
-        } catch (error) {
-            console.error("Failed to fetch jobs", error);
         } finally {
             setJobLoading(false);
         }
@@ -94,6 +118,10 @@ export default function AdminCareersPage() {
         if (activeTab === "applications") fetchApplications();
         else fetchJobs();
     }, [page, activeTab]);
+
+    useEffect(() => {
+        if (activeTab === "applications") fetchApplicationStats();
+    }, [activeTab]);
 
     const handleDeleteJob = async (id: string) => {
         setDeletingId(id);
@@ -105,7 +133,7 @@ export default function AdminCareersPage() {
         try {
             await api.delete(`/careers/admin/${deletingId}`);
             fetchJobs();
-        } catch (error) {
+        } catch {
             alert("Failed to delete job");
         } finally {
             setDeletingId(null);
@@ -147,8 +175,33 @@ export default function AdminCareersPage() {
                 </div>
             )}
 
+            {activeTab === "applications" && (
+                <div className="sticky top-3 z-20 grid grid-cols-2 lg:grid-cols-5 gap-3 rounded-2xl bg-slate-50/95 backdrop-blur px-2 py-2 border border-slate-200/70">
+                    <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+                        <p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Total Apply</p>
+                        <p className="mt-1 text-xl font-black text-slate-900">{applicationStats.total}</p>
+                    </div>
+                    <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+                        <p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">CV Attached</p>
+                        <p className="mt-1 text-xl font-black text-orange-600">{applicationStats.withResume}</p>
+                    </div>
+                    <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+                        <p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">LinkedIn</p>
+                        <p className="mt-1 text-xl font-black text-slate-900">{applicationStats.withLinkedIn}</p>
+                    </div>
+                    <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+                        <p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Cover Letter</p>
+                        <p className="mt-1 text-xl font-black text-slate-900">{applicationStats.withCoverLetter}</p>
+                    </div>
+                    <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3">
+                        <p className="text-[10px] uppercase tracking-widest text-slate-400 font-bold">Phone Added</p>
+                        <p className="mt-1 text-xl font-black text-slate-900">{applicationStats.withPhone}</p>
+                    </div>
+                </div>
+            )}
+
             <div className="glass-panel overflow-hidden border-white/60 shadow-xl rounded-[2.5rem]">
-                <div className="overflow-x-auto">
+                <div className="max-h-[65vh] overflow-y-auto overflow-x-auto custom-scrollbar">
                     <table className="w-full text-left">
                         <thead>
                             <tr className="border-b border-white/20 bg-slate-900/5">
@@ -250,7 +303,7 @@ export default function AdminCareersPage() {
                                                 </div>
                                             </td>
                                             <td className="px-8 py-6">
-                                                <span className={`text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest ${job.published ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-400'}`}>
+                                                <span className={`text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest ${job.published ? 'bg-orange-100 text-orange-600' : 'bg-slate-100 text-slate-400'}`}>
                                                     {job.published ? 'Active' : 'Draft'}
                                                 </span>
                                             </td>
@@ -316,7 +369,7 @@ export default function AdminCareersPage() {
                         >
                             <div className="bg-slate-900 px-8 py-6 flex items-center justify-between text-white shrink-0">
                                 <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold text-lg uppercase shadow-inner">
+                                    <div className="w-12 h-12 rounded-2xl bg-orange-500/20 flex items-center justify-center text-orange-400 font-bold text-lg uppercase shadow-inner">
                                         {selectedApplication.name[0]}
                                     </div>
                                     <div>
@@ -348,7 +401,7 @@ export default function AdminCareersPage() {
                                             </div>
                                             {selectedApplication.phone && (
                                                 <div className="flex items-center gap-3 p-3 rounded-2xl bg-white border border-slate-100 shadow-sm text-sm">
-                                                    <Phone className="w-4 h-4 text-emerald-500" /> {selectedApplication.phone}
+                                                    <Phone className="w-4 h-4 text-orange-500" /> {selectedApplication.phone}
                                                 </div>
                                             )}
                                         </div>
@@ -461,7 +514,6 @@ function JobModal({ job, onClose, onSuccess }: { job: Job | null, onClose: () =>
             if (job) await api.put(`/careers/admin/${job.id}`, data);
             else await api.post("/careers/admin", data);
             onSuccess();
-        } catch (error) {
             alert("Failed to save job listing");
         } finally {
             setLoading(false);

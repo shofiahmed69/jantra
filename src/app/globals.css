@@ -8,9 +8,9 @@
   --primary-hover: #ea580c;
   --accent: #fff7ed;
   
-  --jantra-orange: #fb923c;
-  --jantra-orange-dark: #f97316;
-  --jantra-orange-deep: #ea580c;
+  --jantra-orange: #f97316;
+  --jantra-orange-dark: #ea580c;
+  --jantra-orange-deep: #c2410c;
   --jantra-slate: #1e293b;
   
   --glass: rgba(255, 255, 255, 0.8);
@@ -106,14 +106,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .button-primary {
-  background: var(--jantra-orange-dark);
+  background: var(--jantra-orange);
   color: white;
   transition: all 0.3s ease;
   box-shadow: 0 10px 30px -10px rgba(249, 115, 22, 0.4);
 }
 
 .button-primary:hover {
-  background: var(--jantra-orange-deep);
+  background: var(--jantra-orange-dark);
   transform: translateY(-2px);
   box-shadow: 0 15px 40px -10px rgba(249, 115, 22, 0.5);
 }

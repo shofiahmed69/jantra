@@ -63,8 +63,7 @@ export default function BlogManagementPage() {
         try {
             const response = await api.get("/team");
             setAuthors(response.data || []);
-        } catch (error) {
-            console.error("Failed to fetch authors", error);
+        } catch {
         }
     };
 
@@ -76,8 +75,6 @@ export default function BlogManagementPage() {
             });
             setPosts(response.data.posts || []);
             setTotalPages(response.data.totalPages || 1);
-        } catch (error) {
-            console.error("Failed to fetch posts", error);
         } finally {
             setLoading(false);
         }
@@ -87,8 +84,7 @@ export default function BlogManagementPage() {
         try {
             await api.put(`/blog/${id}`, { published: true });
             setPosts(prev => prev.map(p => p.id === id ? { ...p, published: true } : p));
-        } catch (error) {
-            console.error("Failed to publish post", error);
+        } catch {
         }
     };
 
@@ -97,8 +93,6 @@ export default function BlogManagementPage() {
         try {
             await api.delete(`/blog/${deletingId}`);
             fetchPosts();
-        } catch (error) {
-            console.error("Failed to delete post", error);
         } finally {
             setDeletingId(null);
         }
@@ -234,7 +228,7 @@ export default function BlogManagementPage() {
                                                     className={cn(
                                                         "flex items-center gap-2 px-4 py-2 rounded-2xl border transition-all text-[10px] font-black uppercase tracking-widest",
                                                         post.published 
-                                                            ? "bg-emerald-50 text-emerald-600 border-emerald-100 hover:bg-emerald-100" 
+                                                            ? "bg-orange-50 text-orange-600 border-orange-100 hover:bg-orange-100" 
                                                             : "bg-slate-50 text-slate-400 border-slate-100 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-100"
                                                     )}
                                                 >
@@ -387,8 +381,6 @@ function BlogPostModal({ post, authors, onClose, onSuccess }: {
                 await api.post("/blog", formData);
             }
             onSuccess();
-        } catch (error: any) {
-             console.error("Transmision error", error);
         } finally {
             setLoading(false);
         }
@@ -429,7 +421,7 @@ function BlogPostModal({ post, authors, onClose, onSuccess }: {
                                 Markdown Capable
                             </div>
                             <div className="flex items-center gap-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">
-                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                <div className="w-1.5 h-1.5 rounded-full bg-orange-500" />
                                 Real-time Cache
                             </div>
                             <div className="flex items-center gap-4 text-[10px] font-black text-slate-500 uppercase tracking-widest">
@@ -545,7 +537,7 @@ function BlogPostModal({ post, authors, onClose, onSuccess }: {
                                     onClick={() => setFormData({ ...formData, published: !formData.published })}
                                     className={cn(
                                         "w-12 h-12 rounded-2xl flex items-center justify-center transition-all border-2",
-                                        formData.published ? "bg-emerald-600 border-emerald-600 shadow-lg shadow-emerald-500/20" : "bg-white border-slate-200"
+                                        formData.published ? "bg-orange-600 border-orange-600 shadow-lg shadow-orange-500/20" : "bg-white border-slate-200"
                                     )}
                                 >
                                     <Globe className={cn("w-6 h-6", formData.published ? "text-white animate-pulse" : "text-slate-300")} />
@@ -579,4 +571,3 @@ function BlogPostModal({ post, authors, onClose, onSuccess }: {
         </div>
     );
 }
-

@@ -103,10 +103,8 @@ export default function WorkManagementPage() {
     const fetchProjects = async () => {
         setLoading(true);
         try {
-            const response = await api.get("/admin/work/admin/all");
+            const response = await api.get("/admin/work/all");
             setProjects(response.data.data || []);
-        } catch (error) {
-            console.error("Failed to fetch projects", error);
         } finally {
             setLoading(false);
         }
@@ -147,8 +145,7 @@ export default function WorkManagementPage() {
             if (res.data.url) {
                 setFormData(prev => ({ ...prev, thumbnail: res.data.url }));
             }
-        } catch (error) {
-            console.error('Image upload failed:', error);
+        } catch {
         } finally {
             setUploadingImage(false);
         }
@@ -185,8 +182,6 @@ export default function WorkManagementPage() {
             setEditingId(null);
             fetchProjects();
             resetForm();
-        } catch (error: any) {
-            console.error("Save project error:", error.response?.data || error.message || error);
         } finally {
             setIsSubmitting(false);
         }
@@ -228,8 +223,7 @@ export default function WorkManagementPage() {
         try {
             await api.delete(`/admin/work/${id}`);
             fetchProjects();
-        } catch (error) {
-            console.error("Delete error:", error);
+        } catch {
         }
     };
 
@@ -237,8 +231,7 @@ export default function WorkManagementPage() {
         try {
             await api.patch(`/admin/work/${id}/publish`);
             setProjects(prev => prev.map(p => p.id === id ? { ...p, published: !p.published } : p));
-        } catch (error) {
-            console.error("Toggle publish error:", error);
+        } catch {
         }
     };
 
@@ -246,8 +239,7 @@ export default function WorkManagementPage() {
         try {
             await api.patch(`/admin/work/${id}/featured`);
             setProjects(prev => prev.map(p => p.id === id ? { ...p, featured: !p.featured } : p));
-        } catch (error) {
-            console.error("Toggle featured error:", error);
+        } catch {
         }
     };
 
@@ -371,7 +363,7 @@ export default function WorkManagementPage() {
                                         className={cn(
                                             "flex items-center gap-2 px-3 py-2 rounded-xl border transition-all text-[10px] font-black uppercase tracking-widest",
                                             project.published
-                                                ? "bg-emerald-50 text-emerald-600 border-emerald-100"
+                                                ? "bg-orange-50 text-orange-600 border-orange-100"
                                                 : "bg-orange-50 text-orange-600 border-orange-100"
                                         )}
                                     >
@@ -498,7 +490,7 @@ export default function WorkManagementPage() {
                                                     className={cn(
                                                         "group/status flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all text-[10px] font-black uppercase tracking-widest",
                                                         project.published 
-                                                            ? "bg-emerald-50 text-emerald-600 border-emerald-100 hover:bg-emerald-100" 
+                                                            ? "bg-orange-50 text-orange-600 border-orange-100 hover:bg-orange-100" 
                                                             : "bg-orange-50 text-orange-600 border-orange-100 hover:bg-orange-100"
                                                     )}
                                                 >
@@ -582,7 +574,7 @@ export default function WorkManagementPage() {
                                             AUTOGEN SLUG CAPABILITY
                                         </div>
                                         <div className="flex items-center gap-4 text-xs font-bold text-slate-400">
-                                            <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                                            <div className="w-2 h-2 rounded-full bg-orange-500" />
                                             REAL-TIME CLOUD UPLOAD
                                         </div>
                                         <div className="flex items-center gap-4 text-xs font-bold text-slate-400">
@@ -843,7 +835,7 @@ export default function WorkManagementPage() {
                                             <label className="flex items-center gap-3 cursor-pointer group">
                                                 <div className={cn(
                                                     "w-6 h-6 rounded-lg border-2 transition-all flex items-center justify-center",
-                                                    formData.published ? "bg-emerald-600 border-emerald-600 shadow-md" : "bg-white border-slate-300 group-hover:border-emerald-300"
+                                                    formData.published ? "bg-orange-600 border-orange-600 shadow-md" : "bg-white border-slate-300 group-hover:border-orange-300"
                                                 )}>
                                                     <input
                                                         type="checkbox"

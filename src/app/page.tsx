@@ -21,8 +21,7 @@ async function getFeaturedProjects() {
         return (a.order || 0) - (b.order || 0);
       })
       .slice(0, 4); // Keep Home page light
-  } catch (error) {
-    console.error("Failed to fetch featured projects server-side:", error);
+  } catch {
     return [];
   }
 }

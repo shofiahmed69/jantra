@@ -33,7 +33,6 @@ export default function SubmitBlogPage() {
             await api.post("/blog/submit", formData);
             setStatus("success");
         } catch (error: any) {
-            console.error("Submission error:", error);
             setStatus("error");
             setErrorMessage(error.response?.data?.error || "Failed to submit post. Please check all fields.");
         } finally {

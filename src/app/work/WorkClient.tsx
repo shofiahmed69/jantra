@@ -30,8 +30,6 @@ export default function WorkPage() {
                 const response = await api.get("/work");
                 const apiData = response.data?.data || response.data || [];
                 setProjects(Array.isArray(apiData) ? apiData : []);
-            } catch (error) {
-                console.error("Failed to fetch projects from /api/work", error);
             } finally {
                 setLoading(false);
             }

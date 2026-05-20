@@ -22,8 +22,6 @@ export default function AboutPage() {
             try {
                 const response = await api.get("/team");
                 setTeam(response.data || []);
-            } catch (error) {
-                console.error("Failed to fetch team", error);
             } finally {
                 setLoading(false);
             }

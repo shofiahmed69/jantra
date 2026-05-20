@@ -7,9 +7,9 @@ export default function ArchitecturePage() {
     const techStack = [
         { name: 'React 19', category: 'Frontend Engine', icon: Monitor, color: 'text-blue-500' },
         { name: 'Next.js 15', category: 'Orchestration', icon: Cpu, color: 'text-slate-900' },
-        { name: 'Tailwind 4', category: 'Design System', icon: Cloud, color: 'text-cyan-500' },
+        { name: 'Tailwind 4', category: 'Design System', icon: Cloud, color: 'text-amber-500' },
         { name: 'TypeScript', category: 'Logic Layer', icon: Shield, color: 'text-blue-600' },
-        { name: 'Node.js', category: 'Runtime', icon: Zap, color: 'text-emerald-500' },
+        { name: 'Node.js', category: 'Runtime', icon: Zap, color: 'text-orange-500' },
         { name: 'PostgreSQL', category: 'Data Vault', icon: Database, color: 'text-indigo-500' },
         { name: 'Prisma', category: 'ORM Bridge', icon: Network, color: 'text-slate-600' },
         { name: 'Gemini AI', category: 'Intelligence', icon: Sparkles, color: 'text-orange-500' },
@@ -67,7 +67,7 @@ export default function ArchitecturePage() {
                                 <div className={cn("p-4 bg-white rounded-2xl shadow-sm transition-transform group-hover:-rotate-6", tech.color)}>
                                     <tech.icon className="w-6 h-6" />
                                 </div>
-                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                <div className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
                             </div>
                             <p className="font-extrabold text-slate-900 text-xl tracking-tight mb-1">{tech.name}</p>
                             <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">{tech.category}</p>

@@ -52,8 +52,6 @@ export default function LeadsPage() {
             });
             setLeads(response.data.leads || []);
             setTotalPages(response.data.totalPages || 1);
-        } catch (error) {
-            console.error("Failed to fetch leads", error);
         } finally {
             setLoading(false);
         }
@@ -76,8 +74,7 @@ export default function LeadsPage() {
             if (selectedLead?.id === id) {
                 setSelectedLead(prev => prev ? { ...prev, status: newStatus } : null);
             }
-        } catch (error) {
-            console.error("Failed to update status", error);
+        } catch {
         }
     };
 
@@ -87,7 +84,7 @@ export default function LeadsPage() {
             await api.delete(`/leads/admin/${leadId}`);
             setLeads(leads.filter(lead => lead.id !== leadId));
             if (selectedLead?.id === leadId) setSelectedLead(null);
-        } catch (error) {
+        } catch {
             alert('Failed to delete lead');
         }
     };
@@ -207,13 +204,13 @@ export default function LeadsPage() {
                                                     "text-[9px] font-black px-4 py-2 rounded-full border shadow-sm transition-all flex items-center gap-1.5",
                                                     lead.status === 'NEW' ? 'bg-orange-500/5 text-orange-600 border-orange-200' :
                                                         lead.status === 'CONTACTED' ? 'bg-blue-500/5 text-blue-600 border-blue-200' :
-                                                            lead.status === 'QUALIFIED' ? 'bg-emerald-500/5 text-emerald-600 border-emerald-200' :
+                                                            lead.status === 'QUALIFIED' ? 'bg-orange-500/5 text-orange-600 border-orange-200' :
                                                                 'bg-slate-500/5 text-slate-500 border-slate-200 opacity-50'
                                                 )}>
                                                     <div className={cn("w-1.5 h-1.5 rounded-full", 
                                                         lead.status === 'NEW' ? 'bg-orange-500 animate-pulse' :
                                                         lead.status === 'CONTACTED' ? 'bg-blue-500' :
-                                                        lead.status === 'QUALIFIED' ? 'bg-emerald-500' : 'bg-slate-500'
+                                                        lead.status === 'QUALIFIED' ? 'bg-orange-500' : 'bg-slate-500'
                                                     )} />
                                                     {lead.status}
                                                 </div>
@@ -295,8 +292,8 @@ export default function LeadsPage() {
                                     </div>
                                     <h3 className="text-3xl font-black tracking-tighter uppercase leading-none mb-3">{selectedLead.name}</h3>
                                     <div className="flex items-center gap-2 mb-8">
-                                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-500">Live Connection</span>
+                                        <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+                                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-orange-500">Live Connection</span>
                                     </div>
 
                                     <div className="space-y-6">
@@ -386,5 +383,4 @@ export default function LeadsPage() {
         </div>
     );
 }
-
 

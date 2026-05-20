@@ -202,8 +202,6 @@ export default function ReportPage() {
             })));
             setSettings(settingsRes.data || defaultSettings);
             setAuditLog(auditRes.data || []);
-        } catch (error) {
-            console.error("Failed to load WorkStream data", error);
         } finally {
             setLoading(false);
         }
@@ -248,8 +246,6 @@ export default function ReportPage() {
                 status: "SUBMITTED"
             });
             await fetchAll();
-        } catch (error) {
-            console.error("Failed to submit report", error);
         } finally {
             setSubmitting(false);
         }
@@ -266,8 +262,6 @@ export default function ReportPage() {
             setSelectedReport(null);
             setReviewFeedback("");
             await fetchAll();
-        } catch (error) {
-            console.error("Failed to review report", error);
         } finally {
             setReviewing(false);
         }
@@ -278,8 +272,6 @@ export default function ReportPage() {
         try {
             await api.put("/reports/settings", settings);
             await fetchAll();
-        } catch (error) {
-            console.error("Failed to save settings", error);
         } finally {
             setSavingSettings(false);
         }
@@ -301,7 +293,7 @@ export default function ReportPage() {
         {
             label: "Compliance Rate",
             value: `${analytics.organizationHealth.complianceRate}%`,
-            tone: "from-emerald-500 to-emerald-400",
+            tone: "from-orange-500 to-orange-400",
             accent: "text-white"
         },
         {
@@ -386,8 +378,8 @@ export default function ReportPage() {
                             <AreaChart data={analytics.velocity}>
                                 <defs>
                                     <linearGradient id="submittedFill" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="0%" stopColor="#f97316" stopOpacity={0.45} />
-                                        <stop offset="100%" stopColor="#f97316" stopOpacity={0.02} />
+                                        <stop offset="0%" stopColor="#14b8a6" stopOpacity={0.45} />
+                                        <stop offset="100%" stopColor="#14b8a6" stopOpacity={0.02} />
                                     </linearGradient>
                                     <linearGradient id="approvedFill" x1="0" y1="0" x2="0" y2="1">
                                         <stop offset="0%" stopColor="#0f172a" stopOpacity={0.35} />
@@ -398,7 +390,7 @@ export default function ReportPage() {
                                 <XAxis dataKey="label" tick={{ fill: "#64748b", fontSize: 12 }} axisLine={false} tickLine={false} />
                                 <YAxis tick={{ fill: "#64748b", fontSize: 12 }} axisLine={false} tickLine={false} />
                                 <Tooltip />
-                                <Area type="monotone" dataKey="submitted" stroke="#f97316" fill="url(#submittedFill)" strokeWidth={3} />
+                                <Area type="monotone" dataKey="submitted" stroke="#14b8a6" fill="url(#submittedFill)" strokeWidth={3} />
                                 <Area type="monotone" dataKey="approved" stroke="#0f172a" fill="url(#approvedFill)" strokeWidth={3} />
                             </AreaChart>
                         </ResponsiveContainer>
@@ -488,7 +480,7 @@ export default function ReportPage() {
                                             </span>
                                             <span className={cn(
                                                 "rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-[0.25em]",
-                                                report.status === "APPROVED" && "bg-emerald-50 text-emerald-700",
+                                                report.status === "APPROVED" && "bg-orange-50 text-orange-700",
                                                 report.status === "SUBMITTED" && "bg-orange-50 text-orange-700",
                                                 report.status === "NEEDS_REVISION" && "bg-red-50 text-red-700",
                                                 report.status === "DRAFT" && "bg-slate-200 text-slate-700"
@@ -585,7 +577,7 @@ export default function ReportPage() {
                             <div className="grid grid-cols-1 gap-3">
                                 <button
                                     onClick={() => setSettings((current) => ({ ...current, emailNotifications: !current.emailNotifications }))}
-                                    className={cn("rounded-2xl px-4 py-3 text-left text-sm font-semibold transition", settings.emailNotifications ? "bg-emerald-50 text-emerald-700" : "bg-slate-50 text-slate-500")}
+                                    className={cn("rounded-2xl px-4 py-3 text-left text-sm font-semibold transition", settings.emailNotifications ? "bg-orange-50 text-orange-700" : "bg-slate-50 text-slate-500")}
                                 >
                                     Email Notifications: {settings.emailNotifications ? "On" : "Off"}
                                 </button>
@@ -812,7 +804,7 @@ export default function ReportPage() {
                                 <button
                                     onClick={() => handleReview("APPROVED")}
                                     disabled={reviewing}
-                                    className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-500 px-5 py-4 text-[10px] font-black uppercase tracking-[0.25em] text-white transition hover:bg-emerald-400 disabled:opacity-50"
+                                    className="inline-flex items-center justify-center gap-2 rounded-2xl bg-orange-500 px-5 py-4 text-[10px] font-black uppercase tracking-[0.25em] text-white transition hover:bg-orange-400 disabled:opacity-50"
                                 >
                                     {reviewing ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
                                     Approve Report

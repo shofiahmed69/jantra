@@ -75,7 +75,7 @@ export default function LoginPage() {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     className="w-full bg-white/40 border-0 rounded-2xl pl-12 pr-5 py-4 focus:ring-2 focus:ring-orange-300 placeholder:text-slate-400 text-sm transition-all"
-                                    placeholder="admin@jantra.com"
+                                    placeholder="admin@jontro.com"
                                     required
                                 />
                             </div>

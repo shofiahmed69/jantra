@@ -58,7 +58,6 @@ export default function ApplyModal({ jobId, jobTitle, onClose }: ApplyModalProps
             });
             setStatus("success");
         } catch (error: any) {
-            console.error("Application error:", error);
             setStatus("error");
             const serverError = error.response?.data;
             if (serverError?.errors) {

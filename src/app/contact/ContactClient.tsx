@@ -32,7 +32,6 @@ export default function ContactPage() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(formData)
         })
-        .catch(err => console.error("Contact sync error:", err));
     };
 
     const contactMethods = [
@@ -48,7 +47,7 @@ export default function ContactPage() {
             label: "WhatsApp",
             value: "+880 1625 027956",
             href: "https://wa.me/8801625027956",
-            color: "from-emerald-500/20 to-teal-500/10"
+            color: "from-orange-500/20 to-orange-500/10"
         },
         {
             icon: Linkedin,
@@ -178,8 +177,8 @@ export default function ContactPage() {
                                      </div>
                                  </div>
                                  <div className="flex items-center gap-2 pt-4 border-t border-white/5">
-                                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                                     <span className="text-[7px] font-black uppercase tracking-widest text-emerald-500">We are currently accepting new projects</span>
+                                     <div className="w-1.5 h-1.5 rounded-full bg-orange-500" />
+                                     <span className="text-[7px] font-black uppercase tracking-widest text-orange-500">We are currently accepting new projects</span>
                                  </div>
                              </div>
                         </motion.div>
@@ -194,10 +193,10 @@ export default function ContactPage() {
                                     initial={{ opacity: 0, scale: 0.95 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     exit={{ opacity: 0, scale: 0.95 }}
-                                    className="h-full min-h-[450px] flex flex-col items-center justify-center text-center p-8 bg-white rounded-[3rem] border border-emerald-100 shadow-xl relative overflow-hidden"
+                                    className="h-full min-h-[450px] flex flex-col items-center justify-center text-center p-8 bg-white rounded-[3rem] border border-orange-100 shadow-xl relative overflow-hidden"
                                 >
                                     <div className="relative z-10 space-y-6">
-                                        <div className="w-16 h-16 rounded-full bg-emerald-500 flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/20">
+                                        <div className="w-16 h-16 rounded-full bg-orange-500 flex items-center justify-center mx-auto shadow-lg shadow-orange-500/20">
                                             <CheckCircle2 className="w-8 h-8 text-white" />
                                         </div>
                                         <div>

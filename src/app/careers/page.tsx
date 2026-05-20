@@ -25,8 +25,6 @@ export default function CareersPage() {
             try {
                 const response = await api.get("/careers");
                 setJobs(response.data || []);
-            } catch (error) {
-                console.error("Failed to fetch jobs", error);
             } finally {
                 setLoading(false);
             }
@@ -34,10 +32,26 @@ export default function CareersPage() {
         fetchJobs();
     }, []);
 
+    useEffect(() => {
+        window.dispatchEvent(
+            new CustomEvent("jantra:overlay-state", {
+                detail: { open: Boolean(selectedJob) }
+            })
+        );
+
+        return () => {
+            window.dispatchEvent(
+                new CustomEvent("jantra:overlay-state", {
+                    detail: { open: false }
+                })
+            );
+        };
+    }, [selectedJob]);
+
     return (
         <main className="w-full min-h-screen bg-white pb-32">
             
-            <div className="max-w-[1280px] mx-auto px-6 sm:px-12 pt-28 sm:pt-40">
+            <div className="max-w-[1280px] mx-auto px-6 sm:px-12 pt-36 sm:pt-48">
                 
                 {/* ── HEADER ── */}
                 <div className="max-w-2xl mb-20 sm:mb-32 text-left">

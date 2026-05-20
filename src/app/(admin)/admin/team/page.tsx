@@ -65,8 +65,6 @@ export default function TeamManagementPage() {
         try {
             const response = await api.get("/reports/team-overview");
             setTeam(response.data.team || []);
-        } catch (error) {
-            console.error("Failed to fetch team", error);
         } finally {
             setLoading(false);
         }
@@ -81,8 +79,6 @@ export default function TeamManagementPage() {
         try {
             await api.delete(`/team/${deletingId}`);
             fetchTeam();
-        } catch (error) {
-            console.error("Failed to delete team member", error);
         } finally {
             setDeletingId(null);
         }
@@ -236,7 +232,7 @@ export default function TeamManagementPage() {
                                                     <div className="flex items-center justify-between gap-3">
                                                         <span className={cn(
                                                             "inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest transition-all",
-                                                            member.latestReport?.status === "APPROVED" && "bg-emerald-50 text-emerald-700",
+                                                            member.latestReport?.status === "APPROVED" && "bg-orange-50 text-orange-700",
                                                             member.latestReport?.status === "SUBMITTED" && "bg-orange-50 text-orange-700",
                                                             member.latestReport?.status === "NEEDS_REVISION" && "bg-red-50 text-red-700",
                                                             !member.latestReport && "bg-slate-100 text-slate-500"
@@ -364,8 +360,6 @@ function TeamMemberModal({ member, onClose, onSuccess }: { member: TeamMember | 
                 headers: { "Content-Type": "multipart/form-data" }
             });
             setFormData(prev => ({ ...prev, avatar: response.data.url }));
-        } catch (error) {
-             console.error("Upload failed", error);
         } finally {
             setUploading(false);
         }
@@ -379,17 +373,12 @@ function TeamMemberModal({ member, onClose, onSuccess }: { member: TeamMember | 
             if (member) await api.put(`/team/${member.id}`, formData);
             else await api.post("/team", formData);
             onSuccess();
-        } catch (error: unknown) {
-             console.error("Save error", error);
-             if (axios.isAxiosError(error)) {
-                const fieldErrors = (error.response?.data as { errors?: Record<string, string[]>; error?: string } | undefined)?.errors;
-                const message = fieldErrors
-                    ? Object.values(fieldErrors).flat().filter(Boolean).join(" ")
-                    : (error.response?.data as { error?: string } | undefined)?.error;
-                setSubmitError(message || "Unable to save employee.");
-             } else {
-                setSubmitError("Unable to save employee.");
-             }
+        } catch (error: any) {
+            const fieldErrors = error?.response?.data?.errors;
+            const message = fieldErrors
+                ? Object.values(fieldErrors).flat().filter(Boolean).join(" ")
+                : "";
+            setSubmitError(message || "Unable to save employee.");
         } finally {
             setLoading(false);
         }
@@ -438,7 +427,7 @@ function TeamMemberModal({ member, onClose, onSuccess }: { member: TeamMember | 
                     </div>
                     
                     <div className="flex items-center gap-4">
-                        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                        <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
                         <span className="text-[10px] font-black text-slate-600 tracking-[0.4em] uppercase">Status: Connected</span>
                     </div>
                 </div>
@@ -633,7 +622,7 @@ function TeamMemberModal({ member, onClose, onSuccess }: { member: TeamMember | 
                                     onClick={() => setFormData({ ...formData, employeeActive: !formData.employeeActive })}
                                     className={cn(
                                         "w-12 h-12 rounded-2xl flex items-center justify-center transition-all border-2",
-                                        formData.employeeActive ? "bg-emerald-500 border-emerald-500 shadow-xl shadow-emerald-500/20" : "bg-white border-slate-200"
+                                        formData.employeeActive ? "bg-orange-500 border-orange-500 shadow-xl shadow-orange-500/20" : "bg-white border-slate-200"
                                     )}
                                 >
                                     <Shield className={cn("w-6 h-6", formData.employeeActive ? "text-white" : "text-slate-300")} />

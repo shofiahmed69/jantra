@@ -165,7 +165,7 @@ export const homeServicePreview: FeatureItem[] = [
     description: "Business systems, internal tools, and client platforms built to scale cleanly.",
     icon: "code",
     animationSrc: "/lottie/software-development-green.json",
-    accentClassName: "border-emerald-200/70 bg-gradient-to-br from-emerald-50/80 via-white/80 to-orange-50/70",
+    accentClassName: "border-orange-200/70 bg-gradient-to-br from-orange-50/80 via-white/80 to-orange-50/70",
     eyebrow: "Software Systems",
   },
   {
@@ -173,7 +173,7 @@ export const homeServicePreview: FeatureItem[] = [
     description: "Autonomous agents that handle workflows, triage requests, and support decision-making.",
     icon: "spark",
     animationSrc: "/lottie/ai-assistant-animation.json",
-    accentClassName: "border-sky-200/70 bg-gradient-to-br from-sky-50/80 via-white/80 to-cyan-50/70",
+    accentClassName: "border-sky-200/70 bg-gradient-to-br from-sky-50/80 via-white/80 to-amber-50/70",
     eyebrow: "Autonomous Agents",
   },
   {
@@ -205,7 +205,7 @@ export const homeServicePreview: FeatureItem[] = [
     description: "Reliable backend services, integrations, and cloud infrastructure for modern products.",
     icon: "cloud",
     animationSrc: "/lottie/cloud.json",
-    accentClassName: "border-cyan-200/70 bg-gradient-to-br from-cyan-50/80 via-white/80 to-sky-50/70",
+    accentClassName: "border-amber-200/70 bg-gradient-to-br from-amber-50/80 via-white/80 to-sky-50/70",
     eyebrow: "Cloud Infrastructure",
   },
 ];

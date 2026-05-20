@@ -79,7 +79,6 @@ export default function LottiePlayer({
                     return;
                 }
 
-                console.error("Failed to load Lottie animation:", err);
             });
 
         return () => controller.abort();
