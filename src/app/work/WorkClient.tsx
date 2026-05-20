@@ -1,48 +1,98 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight as ArrowIcon, Loader2 as LoaderIcon } from "lucide-react";
 import { motion } from "framer-motion";
-import api from "@/lib/api";
+import { useRouter } from "next/navigation";
+import { PREFETCH_TTL_MS, prefetchStore } from "@/lib/prefetchStore";
 
 interface Project {
     id: string;
     title: string;
-    category: string[];
+    category: string[] | string;
     description: string;
-    thumbnail: string;
+    thumbnail?: string;
     slug: string;
-    tags: string[];
+    tags?: string[];
 }
 
 const CATEGORIES = ["All", "Web Design", "Web App", "Mobile App", "AI & ML", "Automation", "SaaS"];
 
-export default function WorkPage() {
-    const [projects, setProjects] = useState<Project[]>([]);
-    const [loading, setLoading] = useState(true);
+interface WorkClientProps {
+    initialProjects: Project[];
+}
+
+export default function WorkPage({ initialProjects }: WorkClientProps) {
+    const [projects] = useState<Project[]>(initialProjects);
+    const [loading] = useState(false);
     const [filter, setFilter] = useState("All");
+    const router = useRouter();
+    const prefetchedSlugsRef = useRef<Set<string>>(new Set());
+    const cardRefs = useRef<Map<string, HTMLElement>>(new Map());
+
+    const categoryMatches = (category: Project["category"], selectedFilter: string) => {
+        if (Array.isArray(category)) {
+            return category.some((cat) => cat.toLowerCase().includes(selectedFilter.toLowerCase()));
+        }
+        if (typeof category === "string") {
+            return category.toLowerCase().includes(selectedFilter.toLowerCase());
+        }
+        return false;
+    };
+
+    const filteredProjects = filter === "All"
+        ? projects
+        : projects.filter((p) => categoryMatches(p.category, filter));
+    const sortedForPrefetch = useMemo(() => filteredProjects.slice(0, 4), [filteredProjects]);
+
+    const prefetchProject = (project: Project) => {
+        if (!project?.slug) return;
+        if (prefetchedSlugsRef.current.has(project.slug)) return;
+
+        const key = `work:${project.slug}`;
+        if (!prefetchStore.fresh(key, PREFETCH_TTL_MS)) {
+            prefetchStore.set(key, project);
+        }
+        prefetchStore.set("work:list", projects);
+        prefetchedSlugsRef.current.add(project.slug);
+        router.prefetch(`/work/${project.slug}`);
+    };
 
     useEffect(() => {
-        const fetchProjects = async () => {
-            try {
-                // Correct endpoint is /work as per backend app.js
-                const response = await api.get("/work");
-                const apiData = response.data?.data || response.data || [];
-                setProjects(Array.isArray(apiData) ? apiData : []);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchProjects();
-    }, []);
+        for (const project of sortedForPrefetch) {
+            prefetchProject(project);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [sortedForPrefetch]);
 
-    const filteredProjects = filter === "All" 
-        ? projects 
-        : projects.filter(p => 
-            p.category?.some(cat => cat.toLowerCase().includes(filter.toLowerCase())) ||
-            (typeof p.category === 'string' && (p.category as string).toLowerCase().includes(filter.toLowerCase()))
+    useEffect(() => {
+        if (filteredProjects.length === 0) return;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                for (const entry of entries) {
+                    if (!entry.isIntersecting) continue;
+                    const slug = entry.target.getAttribute("data-project-slug");
+                    if (!slug) continue;
+                    const project = filteredProjects.find((p) => p.slug === slug);
+                    if (!project) continue;
+                    prefetchProject(project);
+                    observer.unobserve(entry.target);
+                }
+            },
+            { rootMargin: "250px 0px", threshold: 0.1 }
         );
+
+        for (const project of filteredProjects) {
+            const element = cardRefs.current.get(project.slug);
+            if (element) observer.observe(element);
+        }
+
+        return () => observer.disconnect();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [filteredProjects]);
 
     const getThumbnailUrl = (p: Project) => {
         if (!p.thumbnail) return null;
@@ -99,17 +149,34 @@ export default function WorkPage() {
                         {filteredProjects.map((project, i) => {
                             const thumbUrl = getThumbnailUrl(project);
                             return (
-                                <motion.div 
+                                <motion.article 
                                     key={project.id}
                                     layout
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: i * 0.1 }}
-                                    className="group relative flex flex-col transition-all duration-700 h-full"
+                                    className="group flex flex-col transition-all duration-700 h-full"
+                                    onMouseEnter={() => prefetchProject(project)}
+                                    onTouchStart={() => prefetchProject(project)}
+                                    data-project-slug={project.slug}
+                                    ref={(node) => {
+                                        if (!node) {
+                                            cardRefs.current.delete(project.slug);
+                                            return;
+                                        }
+                                        cardRefs.current.set(project.slug, node);
+                                    }}
                                 >
+                                    <Link href={`/work/${project.slug}`} prefetch className="contents">
                                     <div className="relative aspect-video rounded-[2.5rem] sm:rounded-[4rem] overflow-hidden bg-slate-900 border border-slate-100 mb-10 group-hover:shadow-2xl transition-all duration-700">
                                         {thumbUrl ? (
-                                            <img src={thumbUrl} alt={project.title} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" />
+                                            <Image
+                                                src={thumbUrl}
+                                                alt={project.title}
+                                                fill
+                                                sizes="(max-width: 1024px) 100vw, 50vw"
+                                                className="object-cover transition-transform duration-1000 group-hover:scale-110"
+                                            />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center text-white/5 font-black text-7xl uppercase">Jantra</div>
                                         )}
@@ -127,12 +194,12 @@ export default function WorkPage() {
                                         </div>
                                         <h3 className="text-3xl sm:text-5xl font-black text-slate-950 tracking-tighter uppercase leading-none group-hover:text-orange-600 transition-colors">{project.title}</h3>
                                         <p className="text-slate-500 text-sm sm:text-lg font-medium leading-relaxed line-clamp-2 uppercase tracking-tight">{project.description}</p>
-                                        <Link href={`/work/${project.slug}`} className="inline-flex items-center gap-4 text-[10px] font-black text-slate-950 uppercase tracking-widest pt-4 group-hover:translate-x-2 transition-transform">
+                                        <span className="inline-flex items-center gap-4 text-[10px] font-black text-slate-950 uppercase tracking-widest pt-4 group-hover:translate-x-2 transition-transform">
                                             Investigate <ArrowIcon className="w-5 h-5 text-orange-600" />
-                                        </Link>
+                                        </span>
                                     </div>
-                                    <Link href={`/work/${project.slug}`} className="absolute inset-0 z-30" />
-                                </motion.div>
+                                    </Link>
+                                </motion.article>
                             );
                         })}
                     </div>

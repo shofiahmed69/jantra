@@ -18,6 +18,51 @@ interface AnimationState {
     data: unknown;
 }
 
+function resolveLottieAssetBase(src: string) {
+    if (src.includes("/animations/")) {
+        return src.replace(/\/animations\/[^/]+$/, "/images/");
+    }
+
+    const lastSlashIndex = src.lastIndexOf("/");
+    if (lastSlashIndex === -1) {
+        return "/";
+    }
+
+    return `${src.slice(0, lastSlashIndex + 1)}`;
+}
+
+function normalizeLottieAssetPaths(raw: unknown, src: string) {
+    if (!raw || typeof raw !== "object") {
+        return raw;
+    }
+
+    const animation = structuredClone(raw) as { assets?: Array<{ p?: string; u?: string }> };
+
+    if (!Array.isArray(animation.assets)) {
+        return animation;
+    }
+
+    const assetBase = resolveLottieAssetBase(src);
+
+    animation.assets = animation.assets.map((asset) => {
+        if (!asset || typeof asset !== "object" || typeof asset.p !== "string") {
+            return asset;
+        }
+
+        const isAbsolute = asset.p.startsWith("/") || asset.p.startsWith("http://") || asset.p.startsWith("https://");
+        if (isAbsolute) {
+            return asset;
+        }
+
+        return {
+            ...asset,
+            u: assetBase,
+        };
+    });
+
+    return animation;
+}
+
 export default function LottiePlayer({
     src,
     className = "",
@@ -71,8 +116,9 @@ export default function LottiePlayer({
         fetch(src, { signal: controller.signal })
             .then((res) => res.json())
             .then((data) => {
-                animationCache.set(src, data);
-                setAnimationState({ src, data });
+                const normalized = normalizeLottieAssetPaths(data, src);
+                animationCache.set(src, normalized);
+                setAnimationState({ src, data: normalized });
             })
             .catch((err: unknown) => {
                 if (err instanceof DOMException && err.name === "AbortError") {

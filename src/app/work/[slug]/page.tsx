@@ -1,42 +1,26 @@
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2, ChevronRight, BarChart, ExternalLink, Globe, Cpu, Zap } from "lucide-react";
-import { getProjectBySlug, projects as staticProjects } from "@/data/projects";
+import { ArrowLeft, CheckCircle2, ChevronRight, BarChart, ExternalLink } from "lucide-react";
 import { notFound } from "next/navigation";
-import api from "@/lib/api";
+import { getWorkProjects } from "@/lib/work-data";
 
 export default async function CaseStudyPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
-    
-    let allProjects: any[] = [];
-    let project = null;
 
-    try {
-        const response = await api.get("/work");
-        const data = response.data?.data || response.data || [];
-        if (Array.isArray(data) && data.length > 0) {
-            allProjects = data.map((apiP: any) => {
-                const local = staticProjects.find(l => l.slug === apiP.slug);
-                return { 
-                    ...local, 
-                    ...apiP, 
-                    title: apiP.title || apiP.name || local?.title,
-                    description: apiP.description || apiP.summary || local?.description,
-                    tags: local?.tags || apiP.techStack || [] 
-                };
-            });
-            project = allProjects.find((p: any) => p.slug === slug);
-        } else {
-            allProjects = staticProjects;
-            project = getProjectBySlug(slug);
-        }
-    } catch {
-        allProjects = staticProjects;
-        project = getProjectBySlug(slug);
-    }
+    const allProjects = await getWorkProjects();
+    const project = allProjects.find((p) => p.slug === slug) || null;
 
     if (!project) {
         return notFound();
     }
+
+    const getThumbnailUrl = (thumbnail?: string) => {
+        if (!thumbnail) return "";
+        if (thumbnail.startsWith("http")) return thumbnail;
+        const baseUrl = (process.env.NEXT_PUBLIC_API_URL || "https://jontro-backend.onrender.com/api").replace(/\/api$/, "");
+        const cleanBase = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;
+        const cleanPath = thumbnail.startsWith("/") ? thumbnail : `/${thumbnail}`;
+        return `${cleanBase}${cleanPath}`;
+    };
 
     const currentIndex = allProjects.findIndex(p => p.slug === slug);
     const hasNext = currentIndex !== -1 && currentIndex < allProjects.length - 1;
@@ -78,7 +62,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
                 <div className="relative aspect-[16/10] sm:aspect-[16/7] rounded-[2.5rem] sm:rounded-[4rem] overflow-hidden bg-slate-900 mb-20 shadow-2xl ring-1 ring-black/5">
                     {project.thumbnail ? (
                         <img 
-                            src={project.thumbnail} 
+                            src={getThumbnailUrl(project.thumbnail)} 
                             alt={project.title} 
                             className="w-full h-full object-cover opacity-100 transition-all duration-700 hover:scale-105"
                         />

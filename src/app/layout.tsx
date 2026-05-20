@@ -59,6 +59,11 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${bodyFont.variable} ${headingFont.variable}`}>
+      <head>
+        <link rel="preconnect" href="https://jontro-backend.onrender.com" />
+        <link rel="dns-prefetch" href="https://jontro-backend.onrender.com" />
+        <link rel="preconnect" href="https://jantrasoft.online" />
+      </head>
       <body className="bg-slate-50 antialiased text-slate-900 selection:bg-orange-200">
         <BackgroundOrbs />
         <ClientLayout>

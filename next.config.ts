@@ -6,6 +6,18 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
+        hostname: "jantrasoft.online",
+      },
+      {
+        protocol: "https",
+        hostname: "jontro-backend.onrender.com",
+      },
+      {
+        protocol: "https",
+        hostname: "zhfmyrumuagbkwxoyryc.supabase.co",
+      },
+      {
+        protocol: "https",
         hostname: "images.unsplash.com",
       },
       {
