@@ -129,9 +129,12 @@ const FAQS = [
 type CurrencyCode = "USD" | "EUR" | "BDT";
 
 const resolveServiceVisualUrl = (service: any) => {
-    const raw = service?.banner || service?.image || serviceImages[service?.slug] || "";
+    const localFallback = serviceImages[service?.slug] || "";
+    const raw = service?.banner || service?.image || localFallback;
     if (!raw) return "";
     if (raw.startsWith("http")) return raw;
+    // Keep built-in pricing card assets on the frontend origin.
+    if (raw === localFallback) return raw;
 
     const apiBase = (process.env.NEXT_PUBLIC_API_URL || "https://jontro-backend.onrender.com/api").replace(/\/api\/?$/, "");
     const cleanBase = apiBase.endsWith("/") ? apiBase.slice(0, -1) : apiBase;
@@ -233,7 +236,8 @@ const renderServiceBanner = (service: any) => {
 
 export default function PricingPage() {
     const [services, setServices] = useState<any[]>(FALLBACK_SERVICES);
-    const [readyVisuals, setReadyVisuals] = useState<Record<string, string>>({});
+    const [loadedVisuals, setLoadedVisuals] = useState<Record<string, boolean>>({});
+    const [failedVisuals, setFailedVisuals] = useState<Record<string, boolean>>({});
     const [selectedService, setSelectedService] = useState<any | null>(null);
     const [leadName, setLeadName] = useState("");
     const [leadEmail, setLeadEmail] = useState("");
@@ -309,52 +313,13 @@ export default function PricingPage() {
     }, []);
 
     useEffect(() => {
-        const persisted = localStorage.getItem("jantra_currency_pref") as CurrencyCode | null;
-        if (persisted === "USD" || persisted === "EUR" || persisted === "BDT") {
-            setCurrency(persisted);
-            return;
-        }
-
         const cookieMatch = document.cookie.match(/(?:^|;\s*)currency_pref_auto=(USD|EUR|BDT)/);
         if (cookieMatch?.[1]) {
             setCurrency(cookieMatch[1] as CurrencyCode);
+        } else {
+            setCurrency("USD");
         }
     }, []);
-
-    const setCurrencyAndPersist = (next: CurrencyCode) => {
-        setCurrency(next);
-        localStorage.setItem("jantra_currency_pref", next);
-    };
-
-    useEffect(() => {
-        let cancelled = false;
-
-        // Keep existing successful visuals and only add new successfully preloaded URLs.
-        const nextReady: Record<string, string> = {};
-        const tasks = services.map((service) => {
-            const visualUrl = resolveServiceVisualUrl(service);
-            if (!visualUrl || !service?.id) return Promise.resolve();
-
-            return new Promise<void>((resolve) => {
-                const image = new window.Image();
-                image.onload = () => {
-                    if (!cancelled) nextReady[service.id] = visualUrl;
-                    resolve();
-                };
-                image.onerror = () => resolve();
-                image.src = visualUrl;
-            });
-        });
-
-        Promise.all(tasks).then(() => {
-            if (cancelled) return;
-            setReadyVisuals((prev) => ({ ...prev, ...nextReady }));
-        });
-
-        return () => {
-            cancelled = true;
-        };
-    }, [services]);
 
     const formatCompactPrice = (amount: number, code: CurrencyCode) => {
         if (code === "BDT") {
@@ -414,21 +379,6 @@ export default function PricingPage() {
                     <p className="text-slate-500 text-sm font-medium leading-relaxed max-w-lg">
                         Choose a pricing tier that aligns with your product goals. No hidden fees, clear deliverables, and robust code quality.
                     </p>
-                    <div className="mt-5 inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white p-1.5 shadow-sm">
-                        {(["USD", "EUR", "BDT"] as CurrencyCode[]).map((code) => (
-                            <button
-                                key={code}
-                                onClick={() => setCurrencyAndPersist(code)}
-                                className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-colors ${
-                                    currency === code
-                                        ? "bg-orange-600 text-white"
-                                        : "text-slate-500 hover:bg-slate-100"
-                                }`}
-                            >
-                                {code}
-                            </button>
-                        ))}
-                    </div>
                 </div>
 
                 {/* ── PRICING GRID ── */}
@@ -436,6 +386,9 @@ export default function PricingPage() {
                     {services.map((service, i) => {
                         const range = getCurrencyRange(service, currency);
                         const hasAnyPrice = range.min !== null || range.max !== null;
+                        const localVisual = serviceImages[service.slug] || "";
+                        const visualUrl = resolveServiceVisualUrl(service);
+                        const canRenderImage = Boolean(visualUrl) && !failedVisuals[service.id];
                         return (
                             <motion.div
                                 key={service.id}
@@ -450,14 +403,35 @@ export default function PricingPage() {
                                 <div>
                                     {/* Service Photo Banner (Proper 16:9 Aspect Ratio) */}
                                     <div className="relative w-full aspect-[16/9] overflow-hidden rounded-[1.25rem] mb-6 border border-slate-200/10 bg-slate-950 shadow-inner shrink-0">
-                                        {readyVisuals[service.id] ? (
+                                        {localVisual ? (
                                             <img
-                                                src={readyVisuals[service.id]}
-                                                alt={service.title || "Service Banner"}
-                                                className="w-full h-full object-cover"
-                                                loading="lazy"
+                                                src={localVisual}
+                                                alt=""
+                                                aria-hidden="true"
+                                                className="absolute inset-0 w-full h-full object-cover"
+                                                loading="eager"
                                             />
-                                        ) : renderServiceBanner(service)}
+                                        ) : (
+                                            renderServiceBanner(service)
+                                        )}
+                                        {canRenderImage && (
+                                            <img
+                                                src={visualUrl}
+                                                alt={service.title || "Service Banner"}
+                                                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-150 ${
+                                                    loadedVisuals[service.id] ? "opacity-100" : "opacity-0"
+                                                }`}
+                                                loading={i < 3 ? "eager" : "lazy"}
+                                                fetchPriority={i < 3 ? "high" : "auto"}
+                                                decoding="async"
+                                                onLoad={() =>
+                                                    setLoadedVisuals((prev) => ({ ...prev, [service.id]: true }))
+                                                }
+                                                onError={() =>
+                                                    setFailedVisuals((prev) => ({ ...prev, [service.id]: true }))
+                                                }
+                                            />
+                                        )}
                                     </div>
 
                                     {/* Minimal Side-by-Side Header */}
@@ -679,9 +653,8 @@ export default function PricingPage() {
                                                     />
                                                 </div>
                                                 <div className="space-y-1">
-                                                    <label className="text-[9px] font-bold uppercase tracking-wider text-slate-400 ml-1">Budget *</label>
+                                                    <label className="text-[9px] font-bold uppercase tracking-wider text-slate-400 ml-1">Budget (Optional)</label>
                                                     <input
-                                                        required
                                                         type="text"
                                                         placeholder="e.g. Budget range in your preferred currency"
                                                         value={leadBudget}
