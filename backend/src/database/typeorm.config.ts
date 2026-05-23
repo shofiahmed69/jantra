@@ -1,3 +1,4 @@
+import { join } from 'path';
 import type { DataSourceOptions } from 'typeorm';
 import { Owner } from '../common/entities/owner.entity';
 import { Category } from '../common/entities/category.entity';
@@ -35,7 +36,7 @@ export function buildTypeOrmOptions(): DataSourceOptions {
     type: 'postgres' as const,
     entities,
     synchronize: process.env.DB_SYNC === 'true',
-    migrations: ['dist/database/migrations/*.js'],
+    migrations: [join(__dirname, 'migrations', '*.{ts,js}')],
     migrationsRun: process.env.DB_MIGRATIONS_RUN === 'true',
   };
 
