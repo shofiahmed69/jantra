@@ -170,3 +170,24 @@ h1, h2, h3, h4, h5, h6 {
   0%, 100% { transform: translateX(0); opacity: 0.4; }
   50% { transform: translateX(10px); opacity: 0.8; }
 }
+
+/* Background orb base */
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(150px);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Orb animation */
+.orb-animate {
+  animation: orbFloat 20s infinite alternate ease-in-out;
+}
+
+/* Orb float keyframes (with translate + scale) */
+@keyframes orbFloat {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(50px, -30px) scale(1.1); }
+  100% { transform: translate(-20px, 40px) scale(0.9); }
+}

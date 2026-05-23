@@ -20,7 +20,7 @@ export default function PrivacyPage() {
 
                 <article className="prose prose-slate prose-lg max-w-none prose-headings:font-bold prose-headings:text-slate-900 prose-a:text-orange-600">
                     <p className="lead text-xl text-slate-600 mb-10">
-                        At JANTRA ("we", "us", "our"), we respect your privacy and are committed to protecting the personal data of our users and enterprise partners.
+                        At JANTRA (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;), we respect your privacy and are committed to protecting the personal data of our users and enterprise partners.
                     </p>
 
                     <h2>1. Data Collection Practices</h2>

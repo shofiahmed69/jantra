@@ -8,11 +8,13 @@ import {
     Briefcase,
     FileText,
     LayoutDashboard,
+    Layers,
     LogOut,
     Server,
     ShieldCheck,
     Users,
-    UserSquare2
+    UserSquare2,
+    DollarSign
 } from "lucide-react";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
@@ -20,6 +22,8 @@ import Logo from "@/components/Logo";
 
 const menuItems = [
     { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
+    { label: "Services", href: "/admin/services", icon: Layers },
+    { label: "Pricing", href: "/admin/pricing", icon: DollarSign },
     { label: "Leads", href: "/admin/leads", icon: Bell },
     { label: "Reports", href: "/admin/report", icon: ShieldCheck },
     { label: "Architecture", href: "/admin/architecture", icon: Server },

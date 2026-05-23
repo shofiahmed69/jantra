@@ -1,4 +1,4 @@
- "use client";
+"use client";
 
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
@@ -29,10 +29,10 @@ function ProjectCarousel({ projects }: { projects: any[] }) {
   if (!projects || projects.length === 0) return (
     <div className="w-full h-[400px] sm:h-[600px] bg-slate-50 rounded-[3rem] border border-slate-100 flex flex-col items-center justify-center gap-6 group overflow-hidden relative">
       <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-       <div className="text-center space-y-2 relative z-10">
-          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-orange-600/50">Gallery Archive</p>
-          <p className="text-slate-400 font-medium text-sm">Case studies are being indexed...</p>
-       </div>
+      <div className="text-center space-y-2 relative z-10">
+        <p className="text-[10px] font-black uppercase tracking-[0.4em] text-orange-600/50">Gallery Archive</p>
+        <p className="text-slate-400 font-medium text-sm">Case studies are being indexed...</p>
+      </div>
     </div>
   );
 
@@ -119,27 +119,27 @@ function ProjectCarousel({ projects }: { projects: any[] }) {
               <div className="pt-3 sm:pt-6">
                 <div className="inline-flex flex-col sm:flex-row items-stretch sm:items-center p-1.5 sm:p-2 bg-slate-50 border border-slate-100 rounded-[2rem] sm:rounded-full shadow-inner">
                   {/* Primary Unit */}
-                  <Link 
-                     href={`/work/${project.slug}`}
-                     className="group/btn flex items-center justify-between sm:justify-start gap-4 px-8 py-4 sm:py-3.5 bg-slate-900 text-white rounded-[1.5rem] sm:rounded-full hover:bg-orange-600 transition-all duration-700 shadow-xl shadow-slate-900/10 active:scale-95"
+                  <Link
+                    href={`/work/${project.slug}`}
+                    className="group/btn flex items-center justify-between sm:justify-start gap-4 px-8 py-4 sm:py-3.5 bg-orange-600 text-white rounded-[1.5rem] sm:rounded-full hover:bg-slate-950 transition-all duration-700 shadow-xl shadow-orange-500/10 active:scale-95"
                   >
-                     <span className="text-[10px] font-black uppercase tracking-[0.4em]">Case Study</span>
-                     <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center group-hover/btn:bg-white/20 transition-colors">
-                        <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 transition-transform" />
-                     </div>
+                    <span className="text-[10px] font-black uppercase tracking-[0.4em]">Case Study</span>
+                    <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center group-hover/btn:bg-white/20 transition-colors">
+                      <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 transition-transform" />
+                    </div>
                   </Link>
 
                   {/* Aesthetic Divider — Desktop Only */}
                   <div className="hidden sm:block w-[1px] h-6 bg-slate-200 mx-4" />
 
                   {/* Secondary Unit */}
-                  <Link 
+                  <Link
                     href={project.liveUrl || `/work/${project.slug}`}
                     target={project.liveUrl ? "_blank" : undefined}
                     className="flex-1 sm:flex-none group/live flex items-center justify-center sm:justify-start gap-4 px-8 py-5 sm:py-3.5 text-slate-500 hover:text-slate-900 transition-colors active:scale-95"
                   >
-                     <span className="text-[10px] font-black uppercase tracking-[0.4em]">Live Preview</span>
-                     <ExternalLink className="w-3.5 h-3.5 opacity-40 group-hover/live:opacity-100 transition-opacity" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.4em]">Live Preview</span>
+                    <ExternalLink className="w-3.5 h-3.5 opacity-40 group-hover/live:opacity-100 transition-opacity" />
                   </Link>
                 </div>
               </div>
@@ -187,36 +187,34 @@ function ReviewCarousel({ testimonials }: { testimonials: any[] }) {
           animate={{ opacity: 1, x: 0, scale: 1 }}
           exit={{ opacity: 0, x: -20, scale: 0.98 }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="relative min-h-[380px] sm:min-h-[420px] rounded-[3rem] overflow-hidden bg-white border border-slate-100 flex flex-col md:flex-row items-stretch shadow-[0_50px_100px_-30px_rgba(0,0,0,0.04)]"
+          className="relative min-h-[300px] sm:min-h-[340px] rounded-[2rem] overflow-hidden bg-white border border-slate-100 flex flex-col md:flex-row items-stretch shadow-[0_24px_60px_-30px_rgba(0,0,0,0.2)]"
         >
-          {/* Identity Side — High Fidelity Branding */}
-          <div className="md:w-[35%] bg-slate-900 p-10 flex flex-col items-center justify-center text-center relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-transparent pointer-events-none" />
-            <div className="relative space-y-6">
+          {/* Identity Side */}
+          <div className="md:w-[34%] bg-slate-900 p-6 sm:p-8 flex flex-col items-center justify-center text-center relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/15 to-transparent pointer-events-none" />
+            <div className="relative space-y-4">
               <div className="relative inline-block">
-                <div className="absolute inset-0 bg-orange-500 blur-[16px] opacity-40 rounded-full" />
-                <div className="relative w-20 h-20 rounded-full border-4 border-white/10 overflow-hidden ring-4 ring-slate-900">
+                <div className="absolute inset-0 bg-orange-500 blur-[12px] opacity-35 rounded-full" />
+                <div className="relative w-16 h-16 rounded-full border-2 border-white/10 overflow-hidden ring-2 ring-slate-900">
                   <img src={`https://i.pravatar.cc/150?u=jantra_rev_main_${index}`} className="w-full h-full object-cover" alt={t.author} />
                 </div>
               </div>
               <div className="space-y-1">
-                <h5 className="text-lg font-black text-white tracking-tight leading-none">{t.author}</h5>
-                <p className="text-[9px] font-black text-orange-400 uppercase tracking-[0.4em]">{t.role}</p>
-                <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pt-2">@{t.company}</p>
+                <h5 className="text-base font-black text-white tracking-tight leading-none">{t.author}</h5>
+                <p className="text-[9px] font-black text-orange-400 uppercase tracking-[0.28em]">{t.role}</p>
+                <p className="text-[10px] font-semibold text-slate-300 tracking-wide pt-1">{t.company}</p>
               </div>
-              {/* Trust Chip */}
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/5 backdrop-blur-md">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
                 <div className="w-1 h-1 rounded-full bg-green-500" />
-                <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Verified Client</span>
+                <span className="text-[8px] font-black text-slate-300 uppercase tracking-wider">Verified Review</span>
               </div>
             </div>
           </div>
 
-          {/* Quote Side — Architectural Typography */}
-          <div className="md:w-[65%] p-10 sm:p-16 lg:p-20 flex flex-col justify-center relative bg-white">
-            {/* Architectural backdrop quote icon */}
-            <div className="absolute top-10 left-10 pointer-events-none">
-              <span className="text-8xl sm:text-[10rem] font-black text-slate-50 select-none leading-none">“</span>
+          {/* Quote Side */}
+          <div className="md:w-[66%] p-6 sm:p-8 lg:p-10 flex flex-col justify-center relative bg-white">
+            <div className="absolute top-4 left-4 pointer-events-none">
+              <span className="text-6xl sm:text-7xl font-black text-slate-100 select-none leading-none">“</span>
             </div>
 
             <motion.div
@@ -225,18 +223,17 @@ function ReviewCarousel({ testimonials }: { testimonials: any[] }) {
               transition={{ delay: 0.3 }}
               className="relative z-10"
             >
-              <blockquote className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-800 leading-[1.3] tracking-tight mb-8">
+              <blockquote className="text-base sm:text-lg lg:text-xl font-semibold text-slate-800 leading-relaxed tracking-tight mb-5">
                 &ldquo;{t.quote}&rdquo;
               </blockquote>
 
-              <div className="flex items-center gap-5">
+              <div className="flex items-center gap-3">
                 <div className="flex gap-1">
                   {[1, 2, 3, 4, 5].map(i => (
-                    <Star key={i} className="w-3.5 h-3.5 fill-orange-500 text-orange-500" />
+                    <Star key={i} className="w-3 h-3 fill-orange-500 text-orange-500" />
                   ))}
                 </div>
-                <div className="h-[1px] w-12 bg-slate-100" />
-                <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em]">Review Integrity Certified</span>
+                <span className="text-[10px] font-bold text-slate-500 tracking-wide">Client feedback</span>
               </div>
             </motion.div>
           </div>
@@ -244,14 +241,14 @@ function ReviewCarousel({ testimonials }: { testimonials: any[] }) {
       </AnimatePresence>
 
       {/* High Fidelity Timer/Nav Dots */}
-      <div className="flex justify-center gap-4 mt-12 pb-2">
+      <div className="flex justify-center gap-3 mt-6 pb-1">
         {testimonials.map((_, i) => (
           <button
             key={i}
             onClick={() => setIndex(i)}
             className="group relative py-2"
           >
-            <div className={`h-[3px] transition-all duration-700 ${index === i ? 'w-16 bg-orange-500' : 'w-4 bg-slate-200 group-hover:bg-slate-300'}`} />
+            <div className={`h-[3px] transition-all duration-700 ${index === i ? 'w-10 bg-orange-500' : 'w-3 bg-slate-200 group-hover:bg-slate-300'}`} />
             {index === i && (
               <div className="absolute inset-0 bg-orange-500/10 blur-[6px] -z-10" />
             )}
@@ -276,13 +273,13 @@ function MobileLottieHero() {
 
   return (
     <section
-      className="lg:hidden relative h-[100svh] flex flex-col justify-between pt-[5.5rem] pb-3 overflow-hidden"
+      className="lg:hidden relative min-h-[640px] h-[100svh] flex flex-col justify-between pt-24 sm:pt-28 pb-5 sm:pb-6 overflow-hidden"
       style={{ background: "linear-gradient(160deg, #fffcf9 0%, #fffbf7 35%, #fffaf8 60%, #f8fafc 100%)" }}
     >
       {/* ── Background Moniker scrolling ── */}
-      <div className="absolute top-[15%] left-0 w-full overflow-hidden opacity-[0.04] pointer-events-none select-none z-0">
+      <div className="absolute top-[12%] left-0 w-full overflow-hidden opacity-[0.03] pointer-events-none select-none z-0">
         <div className="flex whitespace-nowrap animate-marquee-slow">
-          <span className="text-[12rem] font-black tracking-tighter leading-none mr-12">JANTRA STUDIO. JANTRA STUDIO. JANTRA STUDIO.</span>
+          <span className="text-[8rem] font-black tracking-tighter leading-none mr-12">JANTRA STUDIO. JANTRA STUDIO. JANTRA STUDIO.</span>
         </div>
       </div>
 
@@ -297,7 +294,7 @@ function MobileLottieHero() {
       <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-orange-400/40 to-transparent" />
 
       {/* ── CINEMATIC LOTTIE HERO ── */}
-      <div className="relative flex-1 flex flex-col items-center justify-center py-2 min-h-0">
+      <div className="relative flex-1 flex flex-col items-center justify-center py-3 sm:py-4 min-h-0">
         <AnimatePresence mode="wait">
           <motion.div
             key={current.title}
@@ -305,10 +302,10 @@ function MobileLottieHero() {
             animate={{ scale: 1, opacity: 1, filter: "blur(0px)", y: 0 }}
             exit={{ scale: 0.82, opacity: 0, filter: "blur(16px)", y: -20 }}
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="relative flex-1 w-full max-h-[400px] flex items-center justify-center"
-            style={{ maxWidth: "85vw" }}
+            className="relative flex-1 w-full max-h-[clamp(220px,34vh,360px)] flex items-center justify-center"
+            style={{ maxWidth: "min(88vw, 520px)" }}
           >
-            <div className="w-full h-full max-w-[320px] max-h-[320px] [filter:drop-shadow(0_0_80px_rgba(249,115,22,0.35))]">
+            <div className="w-full h-full max-w-[min(78vw,390px)] max-h-[min(36vh,390px)] aspect-square [filter:drop-shadow(0_0_60px_rgba(249,115,22,0.3))]">
               <LottiePlayer
                 src={current.animationSrc!}
                 className="w-full h-full object-contain"
@@ -319,7 +316,7 @@ function MobileLottieHero() {
       </div>
 
       {/* ── Indicators ── */}
-      <div className="flex justify-center gap-2 pb-4">
+      <div className="flex justify-center gap-2 pb-2">
         {services.map((_, i) => (
           <button
             key={i}
@@ -336,11 +333,11 @@ function MobileLottieHero() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="flex items-center gap-4 px-5 py-3 rounded-2xl border border-orange-200/40 bg-white/60 backdrop-blur-3xl shadow-md ring-1 ring-white/50"
+            className="flex items-center gap-4 px-4 py-2.5 rounded-xl border border-orange-200/40 bg-white/60 backdrop-blur-3xl shadow-sm ring-1 ring-white/50"
           >
-            <span className="text-xl font-black text-orange-500/40 leading-none">0{index + 1}</span>
-            <div className="w-[1px] h-4 bg-orange-500/30" />
-            <span className="text-[10px] font-black text-slate-900 uppercase tracking-[0.4em] whitespace-nowrap leading-none">{current.title}</span>
+            <span className="text-lg font-black text-orange-500/40 leading-none">0{index + 1}</span>
+            <div className="w-[1px] h-3 bg-orange-500/30" />
+            <span className="text-[9px] font-black text-slate-900 uppercase tracking-[0.4em] whitespace-nowrap leading-none">{current.title}</span>
           </motion.div>
         </AnimatePresence>
       </div>
@@ -355,47 +352,30 @@ function MobileLottieHero() {
         }}
       />
 
-      {/* ── CONTENT — Elite formatting ── */}
-      <div className="relative z-10 px-5 flex flex-col items-center text-center pb-2 shrink-0">
+      {/* ── CONTENT ── */}
+      <div className="relative z-10 px-5 sm:px-6 flex flex-col items-center text-center pb-5 sm:pb-6 shrink-0">
         <div className="w-full">
-          <p className="text-[8px] font-black text-orange-600/80 uppercase tracking-[0.5em] mb-1.5 ">Architecting Production Excellence</p>
-          <h1 className="text-[2.6rem] font-black text-slate-900 leading-[0.85] tracking-tighter mb-2.5">
-            Precision Built<span className="text-orange-500">.</span>
-          </h1>
-          <p className="text-[11px] text-slate-500 font-bold uppercase tracking-[0.3em] mb-5">
-            Elite Engineering Studio
+          <h2 className="text-[clamp(1.9rem,7.5vw,2.8rem)] font-black text-slate-900 leading-[1.15] tracking-tight mb-3 uppercase">
+            Building Custom Software <br />& AI <span className="text-orange-500">Solutions.</span>
+          </h2>
+          <p className="text-[9px] text-slate-400 font-semibold uppercase tracking-[0.2em] mb-5 max-w-xs mx-auto leading-relaxed">
+            Jantra Software | Custom SaaS, AI Agents, & Enterprise Automation
           </p>
 
-          {/* CTAs — Optimized Visibility */}
+          {/* CTAs */}
           <div className="flex flex-row gap-3 w-full">
             <Link
               href="/work"
-              className="flex-[1.2] button-primary rounded-xl py-3.5 text-[12px] font-black flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform"
+              className="flex-[1.2] button-primary rounded-xl py-3.5 text-[11px] font-black flex items-center justify-center gap-2 shadow-lg active:scale-95 transition-transform"
             >
               Our Work <ArrowRight className="w-3.5 h-3.5" />
             </Link>
             <Link
               href="/contact"
-              className="flex-1 rounded-xl py-3 text-[12px] font-black text-slate-800 text-center border border-slate-200 bg-white/100 active:scale-95 transition-transform shadow-sm flex items-center justify-center"
+              className="flex-1 rounded-xl py-3.5 text-[11px] font-black text-slate-800 text-center border border-slate-200 bg-white/100 active:scale-95 transition-transform shadow-sm flex items-center justify-center"
             >
               Hire Us
             </Link>
-          </div>
-
-          {/* Social Proof — Super Compact */}
-          <div className="flex items-center justify-center gap-2 mt-3 pt-3 border-t border-slate-100/60">
-            <div className="flex -space-x-1.5">
-              {[1, 2, 3].map(i => (
-                <img key={i} src={`https://i.pravatar.cc/80?u=jantra_elite${i}`} className="w-5 h-5 rounded-full border border-white shadow-sm" alt="User" />
-              ))}
-            </div>
-            <div className="text-left leading-none">
-              <p className="text-[9px] font-black text-slate-800">150+ Projects</p>
-            </div>
-            <div className="ml-0.5 flex items-center gap-1 bg-orange-50 border border-orange-100 px-1.5 py-0.5 rounded-full">
-              <Star className="w-2 h-2 fill-orange-500 text-orange-500" />
-              <span className="text-[9px] font-black text-orange-800">4.9</span>
-            </div>
           </div>
         </div>
       </div>
@@ -403,9 +383,7 @@ function MobileLottieHero() {
   );
 }
 
-
-
-// ─── Desktop Hero (Unchanged compact split-grid) ───────────────────────────────
+// ─── Desktop Hero ─────────────────────────────────────────────────────────────
 function DesktopHero() {
   const services = useMemo(() => homeServicePreview.filter(s => s.animationSrc), []);
   const [index, setIndex] = useState(0);
@@ -418,101 +396,84 @@ function DesktopHero() {
   const current = services[index];
 
   return (
-    <section className="hidden lg:block relative pt-48 pb-12 px-8 overflow-hidden bg-[#f8fafc]">
-      <div className="mx-auto max-w-[1400px] relative z-10">
-        <div className="grid grid-cols-12 items-center gap-12">
+    <section className="hidden lg:flex flex-col justify-between relative h-[100svh] min-h-[760px] max-h-[1120px] pt-28 xl:pt-32 pb-0 overflow-hidden bg-[linear-gradient(180deg,#fffaf5_0%,#fff8f2_45%,#f8fafc_100%)]">
+      {/* Subtle background glow */}
+      <div className="absolute top-1/2 right-0 w-[500px] h-[500px] bg-orange-500/10 blur-[80px] rounded-full -translate-y-1/2 -z-10" />
 
-          <div className="col-span-7 space-y-8 animate-fade-up">
-            <p className="text-[10px] font-black uppercase tracking-[0.45em] text-orange-600">The Future of Engineering</p>
-            <div className="relative">
-              <div className="absolute -left-10 top-2 bottom-2 w-[4px] bg-gradient-to-b from-orange-500 via-orange-500/20 to-transparent opacity-40 rounded-full" />
-              <h1 className="text-9xl xl:text-[11rem] font-black leading-[0.78] tracking-tighter text-slate-900">
-                Precision <br /><span className="text-orange-500">Built.</span>
+      {/* Main Grid Content */}
+      <div className="flex-1 flex items-center px-8 xl:px-14 w-full max-w-[1560px] mx-auto relative z-10 min-h-0">
+        <div className="grid grid-cols-12 items-center gap-8 xl:gap-12 w-full">
+
+          <div className="col-span-7 animate-fade-up">
+            <div className="relative pl-8 sm:pl-12 py-2 space-y-6 xl:space-y-8">
+              {/* Single accent line spanning the entire text block */}
+              <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-orange-500 via-orange-500/40 to-transparent rounded-full" />
+              
+              <h1 className="text-[clamp(3.1rem,4.4vw,4.8rem)] 2xl:text-[clamp(4.2rem,4.5vw,5.6rem)] font-black leading-[1.1] tracking-tight text-slate-900 uppercase">
+                Building Custom Software <br />& AI <span className="text-orange-500">Solutions.</span>
               </h1>
-            </div>
-            <div className="pt-2">
-              <p className="text-2xl font-black text-slate-400 uppercase tracking-[0.5em]">
-                Elite Software & AI Agents
-              </p>
-            </div>
-            <div className="flex items-center gap-5 pt-2">
-              <Link
-                href="/work"
-                className="button-primary rounded-full px-10 py-4 text-base font-bold flex items-center gap-3 shadow-lg hover:-translate-y-1 active:scale-95 transition-transform"
-              >
-                Our Work <ArrowRight className="w-5 h-5" />
-              </Link>
-              <Link href="/contact" className="button-outline rounded-full px-10 py-4 text-base font-bold hover:bg-slate-900 hover:text-white transition-all">
-                Get in Touch
-              </Link>
-            </div>
 
-            {/* Added back: Trust Row for Desktop */}
-            <div className="flex items-center gap-5 pt-1">
-              <div className="flex -space-x-3">
-                {[1, 2, 3, 4, 5].map(i => (
-                  <motion.img
-                    whileHover={{ y: -5, scale: 1.1 }}
-                    key={i}
-                    src={`https://i.pravatar.cc/100?u=jantra_desktop${i}`}
-                    className="w-10 h-10 rounded-full border-2 border-white shadow-lg cursor-pointer"
-                    alt="User"
-                  />
-                ))}
-              </div>
-              <div className="flex flex-col">
-                <div className="flex items-center gap-2">
-                  <p className="text-sm font-black text-slate-900">150+ Projects Shipped</p>
-                  <div className="flex items-center gap-1 text-orange-500">
-                    <Star className="w-3.5 h-3.5 fill-current" />
-                    <span className="text-xs font-bold text-slate-700">4.9/5 Rating</span>
-                  </div>
-                </div>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Engineering Elite Solutions Globally</p>
+              <p className="text-[clamp(0.8rem,0.95vw,1.1rem)] font-semibold text-slate-400 uppercase tracking-[0.24em] leading-relaxed max-w-xl">
+                Jantra Software | Custom SaaS, AI Agents, & Enterprise Automation
+              </p>
+
+              <div className="flex items-center gap-4 pt-2">
+                <Link
+                  href="/work"
+                  className="rounded-full px-7 py-3.5 text-xs xl:text-sm font-bold flex items-center gap-2.5 shadow-lg shadow-orange-500/10 hover:-translate-y-0.5 active:scale-95 transition-transform bg-orange-600 text-white hover:bg-orange-500"
+                >
+                  Our Work <ArrowRight className="w-4 h-4" />
+                </Link>
+                <Link 
+                  href="/contact" 
+                  className="rounded-full px-7 py-3.5 text-xs xl:text-sm font-bold border border-orange-200 text-orange-700 bg-white/80 hover:bg-orange-50 transition-all active:scale-95 hover:-translate-y-0.5"
+                >
+                  Get in Touch
+                </Link>
               </div>
             </div>
           </div>
 
-          <div className="col-span-5 animate-fade-up" style={{ animationDelay: '0.2s' }}>
-            <div className="relative h-[680px] flex flex-col items-center justify-center">
+          <div className="col-span-5 animate-fade-up flex flex-col items-center" style={{ animationDelay: '0.2s' }}>
+            <div className="relative flex flex-col items-center justify-center min-h-0 w-full">
               <motion.div
-                animate={{ scale: [1, 1.4, 1], opacity: [0.4, 0.75, 0.4], rotate: [0, 90, 0] }}
+                animate={{ scale: [1, 1.2, 1], opacity: [0.4, 0.6, 0.4], rotate: [0, 45, 0] }}
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute inset-[-120px] blur-[80px] rounded-full -z-20"
+                className="absolute inset-[-40px] blur-[60px] rounded-full -z-20"
                 style={{ backgroundColor: JANTRA_ORANGE_GLOW }}
               />
               <AnimatePresence mode="wait">
                 <motion.div
                   key={current.title}
-                  initial={{ x: 80, opacity: 0, scale: 0.9, filter: "blur(10px)" }}
-                  animate={{ x: 0, opacity: 1, scale: 1.08, filter: "blur(0px)" }}
-                  exit={{ x: -80, opacity: 0, scale: 0.9, filter: "blur(10px)" }}
-                  transition={{ duration: 1, ease: [0.2, 1, 0.3, 1] }}
-                  className="absolute flex flex-col items-center w-full"
+                  initial={{ x: 40, opacity: 0, scale: 0.95, filter: "blur(6px)" }}
+                  animate={{ x: 0, opacity: 1, scale: 1.02, filter: "blur(0px)" }}
+                  exit={{ x: -40, opacity: 0, scale: 0.95, filter: "blur(6px)" }}
+                  transition={{ duration: 0.8, ease: [0.2, 1, 0.3, 1] }}
+                  className="relative flex flex-col items-center w-full"
                 >
-                  <div className="w-[540px] h-[540px]">
-                    <LottiePlayer src={current.animationSrc!} className="w-full h-full drop-shadow-[0_0_80px_rgba(249,115,22,0.3)] scale-110" />
+                  <div className="w-full max-w-[min(46vw,620px)] max-h-[min(54vh,620px)] aspect-square flex items-center justify-center">
+                    <LottiePlayer src={current.animationSrc!} className="w-full h-full drop-shadow-[0_0_60px_rgba(249,115,22,0.25)]" />
                   </div>
                   <div className="mt-2 flex flex-col items-center">
                     <motion.div
-                      className="flex items-center gap-6 px-10 py-5 rounded-[1.5rem] bg-white/40 backdrop-blur-xl border border-slate-100 shadow-[0_15px_45px_-10px_rgba(0,0,0,0.05)] ring-1 ring-white/50"
-                      initial={{ opacity: 0, y: 15 }}
+                      className="flex items-center gap-3.5 px-6 py-3 rounded-xl bg-white/40 backdrop-blur-xl border border-slate-100 shadow-[0_12px_35px_-8px_rgba(0,0,0,0.04)] ring-1 ring-white/50"
+                      initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.4 }}
+                      transition={{ delay: 0.3 }}
                     >
-                      <div className="text-4xl font-black text-orange-500 opacity-20 select-none leading-none">0{index + 1}</div>
-                      <div className="h-8 w-[1px] bg-slate-200" />
+                      <div className="text-xl font-black text-orange-500 opacity-20 select-none leading-none">0{index + 1}</div>
+                      <div className="h-5 w-[1px] bg-slate-200" />
                       <div className="text-left">
-                        <p className="text-[9px] font-black text-orange-600 uppercase tracking-[0.6em] mb-1">Service Platform</p>
-                        <h4 className="text-xl font-black text-slate-900 uppercase tracking-[0.25em] leading-none">
+                        <p className="text-[7px] font-black text-orange-600 uppercase tracking-[0.6em] mb-0.5">Service Platform</p>
+                        <h4 className="text-xs xl:text-sm font-black text-slate-900 uppercase tracking-[0.2em] leading-none">
                           {current.title}
                         </h4>
                       </div>
                     </motion.div>
                   </div>
-                  <div className="flex gap-2 justify-center mt-6">
+                  <div className="flex gap-1.5 justify-center mt-4">
                     {services.map((_, i) => (
-                      <button key={i} onClick={() => setIndex(i)} className={`rounded-full transition-all duration-300 ${i === index ? 'bg-orange-500 w-5 h-1.5' : 'bg-slate-300 w-1.5 h-1.5'}`} />
+                      <button key={i} onClick={() => setIndex(i)} className={`rounded-full transition-all duration-300 ${i === index ? 'bg-orange-500 w-4 h-1' : 'bg-slate-300 w-1 h-1'}`} />
                     ))}
                   </div>
                 </motion.div>
@@ -522,7 +483,30 @@ function DesktopHero() {
 
         </div>
       </div>
-      <div className="absolute top-1/2 right-0 w-[500px] h-[500px] bg-orange-500/5 blur-[80px] rounded-full -translate-y-1/2 -z-10" />
+
+      {/* ── TECH MARQUEE (Desktop Version - fits without scroll) ── */}
+      <div className="w-full bg-white border-y border-slate-100 overflow-hidden relative z-30 py-2 shrink-0">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,white_0%,transparent_10%,transparent_90%,white_100%)] pointer-events-none z-20 w-full" />
+        <div className="flex gap-6 whitespace-nowrap animate-marquee items-center px-4 relative z-10">
+          {[
+            "React", "Next.js", "Node.js", "Python", "AWS", "OpenAI", "Flutter", "PostgreSQL", "TypeScript", "Docker",
+            "React", "Next.js", "Node.js", "Python", "AWS", "OpenAI", "Flutter", "PostgreSQL", "TypeScript", "Docker",
+            "React", "Next.js", "Node.js", "Python", "AWS", "OpenAI", "Flutter", "PostgreSQL", "TypeScript", "Docker",
+          ].map((tech, i) => {
+            const map: Record<string, string> = { React: "react", "Next.js": "nextdotjs", "Node.js": "nodedotjs", Python: "python", AWS: "amazonaws", OpenAI: "openai", Flutter: "flutter", PostgreSQL: "postgresql", TypeScript: "typescript", Docker: "docker" };
+            const slug = map[tech];
+            const broken = slug === "amazonaws" || slug === "openai";
+            return (
+              <div key={`${tech}-${i}`} className="relative p-[1px] rounded-full bg-gradient-to-r from-orange-100/50 via-orange-50 to-orange-200/50 group hover:from-orange-300 hover:to-orange-400 transition-all duration-500 cursor-default shadow-sm hover:shadow-[0_6px_18px_-6px_rgba(249,115,22,0.25)] hover:-translate-y-0.5">
+                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/90 backdrop-blur-sm">
+                  {!broken && <img src={`https://cdn.simpleicons.org/${slug}/c2410c`} alt={tech} className="w-3 h-3" />}
+                  <span className="text-[10px] font-bold text-orange-950/70 group-hover:text-orange-900 transition-colors">{tech}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </section>
   );
 }
@@ -540,7 +524,7 @@ export default function HomePage({ initialProjects = [] }: { initialProjects?: a
         setLoading(true);
         const response = await api.get("/work");
         const data = response.data?.data || response.data || [];
-        
+
         const published = Array.isArray(data) ? data
           .filter((p: any) => p.published)
           .sort((a: any, b: any) => {
@@ -554,7 +538,7 @@ export default function HomePage({ initialProjects = [] }: { initialProjects?: a
           tags: apiProject.techStack || [],
           description: apiProject.description || apiProject.challenge || "Production software delivery.",
         }));
-        
+
         // Take top 4 for home if many projects
         setFeaturedProjects(formatted);
       } finally {
@@ -570,30 +554,6 @@ export default function HomePage({ initialProjects = [] }: { initialProjects?: a
       {/* Hero — dedicated per breakpoint */}
       <MobileLottieHero />
       <DesktopHero />
-
-      {/* ── TECH MARQUEE ──────────────────────────────────── */}
-      <section className="py-1 bg-white border-y border-orange-50/80 overflow-hidden relative z-30">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,white_0%,transparent_8%,transparent_92%,white_100%)] pointer-events-none z-20 w-full" />
-        <div className="flex gap-4 whitespace-nowrap animate-marquee items-center px-4 relative z-10">
-          {[
-            "React", "Next.js", "Node.js", "Python", "AWS", "OpenAI", "Flutter", "PostgreSQL", "TypeScript", "Docker",
-            "React", "Next.js", "Node.js", "Python", "AWS", "OpenAI", "Flutter", "PostgreSQL", "TypeScript", "Docker",
-            "React", "Next.js", "Node.js", "Python", "AWS", "OpenAI", "Flutter", "PostgreSQL", "TypeScript", "Docker",
-          ].map((tech, i) => {
-            const map: Record<string, string> = { React: "react", "Next.js": "nextdotjs", "Node.js": "nodedotjs", Python: "python", AWS: "amazonaws", OpenAI: "openai", Flutter: "flutter", PostgreSQL: "postgresql", TypeScript: "typescript", Docker: "docker" };
-            const slug = map[tech];
-            const broken = slug === "amazonaws" || slug === "openai";
-            return (
-              <div key={`${tech}-${i}`} className="relative p-[1px] rounded-full bg-gradient-to-r from-orange-100/50 via-orange-50 to-orange-200/50 group hover:from-orange-300 hover:to-orange-400 transition-all duration-500 cursor-default shadow-sm hover:shadow-[0_6px_18px_-6px_rgba(249,115,22,0.25)] hover:-translate-y-0.5">
-                <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/90 backdrop-blur-sm">
-                  {!broken && <img src={`https://cdn.simpleicons.org/${slug}/c2410c`} alt={tech} className="w-3.5 h-3.5" />}
-                  <span className="text-[12px] font-bold text-orange-950/70 group-hover:text-orange-900 transition-colors">{tech}</span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </section>
 
       {/* ── STATS ─────────────────────────────────────────── */}
       <section className="py-6 sm:py-12 lg:py-16 px-5 sm:px-8 bg-[#fcfaf8] border-y border-orange-50">
@@ -639,7 +599,7 @@ export default function HomePage({ initialProjects = [] }: { initialProjects?: a
       </section>
 
       {/* ── TESTIMONIALS CAROUSEL ─────────────────────────── */}
-      <section className="py-20 sm:py-32 lg:py-48 px-5 sm:px-8 border-y border-slate-100 bg-[#f8fafc] relative overflow-hidden">
+      <section className="py-14 sm:py-20 lg:py-24 px-5 sm:px-8 border-y border-slate-100 bg-[#f8fafc] relative overflow-hidden">
         {/* Subtle background moniker */}
         <div className="absolute top-[15%] left-[-5%] w-[110%] overflow-hidden opacity-[0.015] pointer-events-none select-none z-0">
           <div className="flex whitespace-nowrap animate-marquee-slow">
@@ -647,13 +607,13 @@ export default function HomePage({ initialProjects = [] }: { initialProjects?: a
           </div>
         </div>
 
-        <div className="mx-auto max-w-4xl relative z-10 text-center">
-          <div className="space-y-4 mb-14">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-100/50 border border-orange-200/50">
+        <div className="mx-auto max-w-3xl relative z-10 text-center">
+          <div className="space-y-3 mb-8">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-100/50 border border-orange-200/50">
               <Star className="w-3.5 h-3.5 fill-orange-500 text-orange-500" />
               <span className="text-[10px] font-black uppercase tracking-widest text-orange-800">Elite Client Trust</span>
             </div>
-            <h3 className="text-4xl sm:text-6xl font-black text-slate-900 tracking-tighter">Client Stories.</h3>
+            <h3 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tighter">Client Stories.</h3>
           </div>
 
           <ReviewCarousel testimonials={homeTestimonials} />

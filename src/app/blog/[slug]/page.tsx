@@ -1,11 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Clock, Share2, Twitter, Linkedin, Github, User, Binary, Sparkles } from "lucide-react";
 import { getBlogPostBySlug, getAllPosts } from "@/data/blogPosts";
 import { notFound } from "next/navigation";
 import api from "@/lib/api";
 
-export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
-    const { slug } = await params;
+async function getPostBySlug(slug: string) {
     let post = null;
 
     try {
@@ -14,8 +14,13 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         if (Array.isArray(data) && data.length > 0) {
             const apiPost = data.find((p: any) => p.slug === slug);
             if (apiPost) {
-                const local = getAllPosts().find(l => l.slug === apiPost.slug);
-                post = { ...local, ...apiPost, author: local?.author || apiPost.author || { name: 'Admin', role: 'Editor' } };
+                const local = getAllPosts().find((l) => l.slug === apiPost.slug);
+                post = { 
+                    ...local, 
+                    ...apiPost, 
+                    image: apiPost.heroImage || apiPost.image || "",
+                    author: local?.author || apiPost.author || { name: "Admin", role: "Editor" } 
+                };
             } else {
                 post = getBlogPostBySlug(slug);
             }
@@ -25,6 +30,43 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
     } catch {
         post = getBlogPostBySlug(slug);
     }
+
+    return post;
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const { slug } = await params;
+    const post = await getPostBySlug(slug);
+
+    if (!post) {
+        return { title: "Blog" };
+    }
+
+    const title = `${post.title} | JANTRA Blog`;
+    const description = post.excerpt || "JANTRA engineering insights, SaaS guides, and AI automation playbooks.";
+    const url = `https://jantrasoft.online/blog/${slug}`;
+
+    return {
+        title,
+        description,
+        alternates: { canonical: url },
+        openGraph: {
+            title,
+            description,
+            url,
+            type: "article"
+        },
+        twitter: {
+            card: "summary_large_image",
+            title,
+            description
+        }
+    };
+}
+
+export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
+    const post = await getPostBySlug(slug);
 
     if (!post) {
         notFound();

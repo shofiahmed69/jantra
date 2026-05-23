@@ -74,7 +74,9 @@ export default function LeadsPage() {
             if (selectedLead?.id === id) {
                 setSelectedLead(prev => prev ? { ...prev, status: newStatus } : null);
             }
-        } catch {
+        } catch (error: any) {
+            console.error("Failed to update status:", error);
+            alert(error?.response?.data?.error || error?.response?.data?.message || "Failed to update status");
         }
     };
 
@@ -84,8 +86,9 @@ export default function LeadsPage() {
             await api.delete(`/leads/admin/${leadId}`);
             setLeads(leads.filter(lead => lead.id !== leadId));
             if (selectedLead?.id === leadId) setSelectedLead(null);
-        } catch {
-            alert('Failed to delete lead');
+        } catch (error: any) {
+            console.error("Failed to delete lead:", error);
+            alert(error?.response?.data?.error || error?.response?.data?.message || "Failed to delete lead");
         }
     };
 
@@ -124,11 +127,13 @@ export default function LeadsPage() {
                             onChange={(e) => setStatus(e.target.value)}
                             className="bg-white border-slate-100 rounded-[1.5rem] pl-12 pr-10 py-4 text-sm focus:ring-2 focus:ring-orange-300 appearance-none cursor-pointer shadow-sm font-bold text-slate-700 w-full sm:w-48"
                         >
-                            <option value="">All Vectors</option>
-                            <option value="NEW">New Signal</option>
-                            <option value="CONTACTED">Engaged</option>
-                            <option value="QUALIFIED">High-Value</option>
-                            <option value="REJECTED">Archived</option>
+                            <option value="">All Statuses</option>
+                            <option value="NEW">New</option>
+                            <option value="CONTACTED">Contacted</option>
+                            <option value="QUALIFIED">Qualified</option>
+                            <option value="PROPOSAL">Proposal</option>
+                            <option value="CLOSED_WON">Won</option>
+                            <option value="CLOSED_LOST">Lost</option>
                         </select>
                     </div>
                 </div>
@@ -203,14 +208,18 @@ export default function LeadsPage() {
                                                 <div className={cn(
                                                     "text-[9px] font-black px-4 py-2 rounded-full border shadow-sm transition-all flex items-center gap-1.5",
                                                     lead.status === 'NEW' ? 'bg-orange-500/5 text-orange-600 border-orange-200' :
-                                                        lead.status === 'CONTACTED' ? 'bg-blue-500/5 text-blue-600 border-blue-200' :
-                                                            lead.status === 'QUALIFIED' ? 'bg-orange-500/5 text-orange-600 border-orange-200' :
-                                                                'bg-slate-500/5 text-slate-500 border-slate-200 opacity-50'
+                                                        lead.status === 'CONTACTED' ? 'bg-sky-500/5 text-sky-600 border-sky-200' :
+                                                            lead.status === 'QUALIFIED' ? 'bg-emerald-500/5 text-emerald-600 border-emerald-200' :
+                                                                lead.status === 'PROPOSAL' ? 'bg-purple-500/5 text-purple-600 border-purple-200' :
+                                                                    lead.status === 'CLOSED_WON' ? 'bg-emerald-600/5 text-emerald-700 border-emerald-300' :
+                                                                        'bg-rose-500/5 text-rose-600 border-rose-200'
                                                 )}>
                                                     <div className={cn("w-1.5 h-1.5 rounded-full", 
                                                         lead.status === 'NEW' ? 'bg-orange-500 animate-pulse' :
-                                                        lead.status === 'CONTACTED' ? 'bg-blue-500' :
-                                                        lead.status === 'QUALIFIED' ? 'bg-orange-500' : 'bg-slate-500'
+                                                        lead.status === 'CONTACTED' ? 'bg-sky-500' :
+                                                        lead.status === 'QUALIFIED' ? 'bg-emerald-500' :
+                                                        lead.status === 'PROPOSAL' ? 'bg-purple-500' :
+                                                        lead.status === 'CLOSED_WON' ? 'bg-emerald-600' : 'bg-rose-500'
                                                     )} />
                                                     {lead.status}
                                                 </div>
@@ -220,9 +229,11 @@ export default function LeadsPage() {
                                                     className="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-900 transition-all text-[8px] bg-white cursor-pointer shadow-sm"
                                                 >
                                                     <option value="NEW">NEW</option>
-                                                    <option value="CONTACTED">ENGAGED</option>
-                                                    <option value="QUALIFIED">VALUED</option>
-                                                    <option value="REJECTED">VOID</option>
+                                                    <option value="CONTACTED">CONTACTED</option>
+                                                    <option value="QUALIFIED">QUALIFIED</option>
+                                                    <option value="PROPOSAL">PROPOSAL</option>
+                                                    <option value="CLOSED_WON">WON</option>
+                                                    <option value="CLOSED_LOST">LOST</option>
                                                 </select>
                                             </div>
                                         </td>

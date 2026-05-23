@@ -81,6 +81,7 @@ export default function WorkManagementPage() {
 
     const [editingId, setEditingId] = useState<string | null>(null);
     const [uploadingImage, setUploadingImage] = useState(false);
+    const [submitError, setSubmitError] = useState("");
 
     // Form state
     const [formData, setFormData] = useState({
@@ -154,6 +155,7 @@ export default function WorkManagementPage() {
     const handleAddProject = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
+        setSubmitError("");
         try {
             const payload: Record<string, unknown> = {
                 title: formData.title.trim(),
@@ -182,6 +184,10 @@ export default function WorkManagementPage() {
             setEditingId(null);
             fetchProjects();
             resetForm();
+        } catch (error: any) {
+            console.error("Failed to save project:", error);
+            const message = error?.response?.data?.error || error?.response?.data?.message || "Failed to save project Blueprint.";
+            setSubmitError(message);
         } finally {
             setIsSubmitting(false);
         }
@@ -195,6 +201,7 @@ export default function WorkManagementPage() {
             liveUrl: "",
             featured: false, published: true
         });
+        setSubmitError("");
     };
 
     const handleEdit = (project: Project) => {
@@ -848,6 +855,12 @@ export default function WorkManagementPage() {
                                                 <span className="text-xs font-black uppercase tracking-widest text-slate-700">Live Status</span>
                                             </label>
                                         </div>
+
+                                        {submitError && (
+                                            <div className="rounded-[1.75rem] border border-red-100 bg-red-50 px-6 py-4 text-xs font-bold text-red-600">
+                                                {submitError}
+                                            </div>
+                                        )}
                                     </form>
                                 </div>
 

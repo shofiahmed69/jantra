@@ -246,6 +246,9 @@ export default function ReportPage() {
                 status: "SUBMITTED"
             });
             await fetchAll();
+        } catch (error: any) {
+            console.error("Error submitting report:", error);
+            alert(error.response?.data?.error || error.response?.data?.message || error.message || "Failed to submit report. Please try again.");
         } finally {
             setSubmitting(false);
         }
@@ -262,6 +265,9 @@ export default function ReportPage() {
             setSelectedReport(null);
             setReviewFeedback("");
             await fetchAll();
+        } catch (error: any) {
+            console.error("Error reviewing report:", error);
+            alert(error.response?.data?.error || error.response?.data?.message || error.message || "Failed to submit review. Please try again.");
         } finally {
             setReviewing(false);
         }
@@ -272,6 +278,10 @@ export default function ReportPage() {
         try {
             await api.put("/reports/settings", settings);
             await fetchAll();
+            alert("Settings updated successfully.");
+        } catch (error: any) {
+            console.error("Error saving settings:", error);
+            alert(error.response?.data?.error || error.response?.data?.message || error.message || "Failed to save settings. Please try again.");
         } finally {
             setSavingSettings(false);
         }

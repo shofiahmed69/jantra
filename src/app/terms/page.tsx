@@ -20,7 +20,7 @@ export default function TermsPage() {
 
                 <article className="prose prose-slate prose-lg max-w-none prose-headings:font-bold prose-headings:text-slate-900 prose-a:text-orange-600">
                     <p className="lead text-xl text-slate-600 mb-10">
-                        These Terms of Service constitute a legally binding agreement made between you, whether personally or on behalf of an entity ("you") and JANTRA ("we," "us" or "our").
+                        These Terms of Service constitute a legally binding agreement made between you, whether personally or on behalf of an entity (&quot;you&quot;) and JANTRA (&quot;we,&quot; &quot;us&quot; or &quot;our&quot;).
                     </p>
 
                     <h2>1. Service Agreements</h2>

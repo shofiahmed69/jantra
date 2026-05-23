@@ -55,7 +55,7 @@ const getEmployeeApiBaseUrl = () => {
         if (typeof window !== "undefined" && window.location.hostname !== "localhost") {
             url = "https://jontro-backend.onrender.com";
         } else {
-            url = "http://localhost:4000";
+            url = "http://127.0.0.1:4005";
         }
     }
 

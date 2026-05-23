@@ -2,8 +2,8 @@ import { Metadata } from "next";
 import ContactClient from "./ContactClient";
 
 export const metadata: Metadata = {
-  title: "Get in Touch",
-  description: "Ready to build something extraordinary? Contact Jantra for elite software development, AI agent consultation, and technical strategy.",
+  title: "Start a Project | Contact Us",
+  description: "Ready to build something extraordinary? Contact Jantra Software for custom software development, AI agent consultation, and workflow automation.",
 };
 
 export default function Page() {

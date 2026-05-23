@@ -514,7 +514,13 @@ function JobModal({ job, onClose, onSuccess }: { job: Job | null, onClose: () =>
             if (job) await api.put(`/careers/admin/${job.id}`, data);
             else await api.post("/careers/admin", data);
             onSuccess();
-            alert("Failed to save job listing");
+        } catch (error: any) {
+            console.error("Failed to save job:", error);
+            const fieldErrors = error?.response?.data?.errors;
+            const message = fieldErrors
+                ? Object.values(fieldErrors).flat().filter(Boolean).join(" ")
+                : "";
+            alert(message || error?.response?.data?.error || "Failed to save job listing");
         } finally {
             setLoading(false);
         }

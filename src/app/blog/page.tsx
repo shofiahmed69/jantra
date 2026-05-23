@@ -14,8 +14,8 @@ interface BlogPost {
 }
 
 export const metadata: Metadata = {
-  title: "Blog",
-  description: "Insights on software engineering, AI agents, automation, and digital product strategy from the Jantra team.",
+  title: "Studio Insights & Engineering Blog",
+  description: "Insights on software engineering, AI agents, workflow automation, and SaaS product strategy from the Jantra Software team.",
 };
 
 async function getInitialPosts(): Promise<BlogPost[]> {
@@ -26,7 +26,7 @@ async function getInitialPosts(): Promise<BlogPost[]> {
         if (Array.isArray(apiData) && apiData.length > 0) {
             return apiData.map((ap: any) => {
                 const local = staticPosts.find((sp) => sp.slug === ap.slug);
-                return { ...local, ...ap };
+                return { ...local, ...ap, image: ap.heroImage || ap.image || "" };
             }) as BlogPost[];
         }
 

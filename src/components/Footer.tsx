@@ -56,6 +56,7 @@ export default function Footer() {
                                 { label: "Careers", href: "/careers" },
                                 { label: "Pricing", href: "/pricing" },
                                 { label: "Contact", href: "/contact" },
+                                { label: "Services", href: "/services" },
                             ].map(link => (
                                 <li key={link.href}>
                                     <Link href={link.href}
@@ -74,11 +75,11 @@ export default function Footer() {
                         </h3>
                         <ul className="space-y-3">
                             {[
-                                { label: "Custom Software", href: "/services/custom-software" },
-                                { label: "AI Agents", href: "/services/ai-agent" },
+                                { label: "Custom Software", href: "/services/custom-software-development" },
+                                { label: "AI Agents", href: "/services/ai-agent-development" },
                                 { label: "Workflow Automation", href: "/services/workflow-automation" },
-                                { label: "SaaS Development", href: "/services/saas" },
-                                { label: "Mobile Apps", href: "/services/mobile-app" },
+                                { label: "SaaS Development", href: "/services/saas-product-development" },
+                                { label: "Mobile Apps", href: "/services/mobile-app-development" },
                                 { label: "UI/UX Design", href: "/services/ui-ux-design" },
                             ].map(link => (
                                 <li key={link.href}>
@@ -119,18 +120,6 @@ export default function Footer() {
                     <p className="text-slate-500 text-xs">
                         © {new Date().getFullYear()} JANTRA. All rights reserved.
                     </p>
-                    <p className="text-slate-500 text-xs text-center md:text-right">
-                        Built with ❤️ in Dhaka, Bangladesh
-                    </p>
-                    <div className="flex items-center gap-2">
-                        <span className="relative flex h-2 w-2">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-                            <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
-                        </span>
-                        <span className="text-slate-500 text-xs">
-                            All systems operational
-                        </span>
-                    </div>
                 </div>
             </div>
         </footer >

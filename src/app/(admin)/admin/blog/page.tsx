@@ -23,7 +23,8 @@ import {
     ChevronDown,
     Layers,
     Clock,
-    Sparkles
+    Sparkles,
+    UploadCloud
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -41,6 +42,7 @@ interface Post {
     excerpt: string;
     readTime: number;
     createdAt: string;
+    heroImage?: string;
 }
 
 interface TeamMember {
@@ -363,9 +365,33 @@ function BlogPostModal({ post, authors, onClose, onSuccess }: {
         excerpt: post?.excerpt || "",
         content: post?.content || "",
         readTime: post?.readTime || 5,
-        published: post?.published ?? false
+        published: post?.published ?? false,
+        heroImage: post?.heroImage || ""
     });
     const [loading, setLoading] = useState(false);
+    const [uploadingImage, setUploadingImage] = useState(false);
+    const [submitError, setSubmitError] = useState("");
+
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setUploadingImage(true);
+        const data = new FormData();
+        data.append("image", file);
+
+        try {
+            const response = await api.post("/upload/image", data, {
+                headers: { "Content-Type": "multipart/form-data" }
+            });
+            setFormData(prev => ({ ...prev, heroImage: response.data.url }));
+        } catch (error) {
+            console.error("Failed to upload image:", error);
+            alert("Failed to upload image. Please try again.");
+        } finally {
+            setUploadingImage(false);
+        }
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -374,13 +400,33 @@ function BlogPostModal({ post, authors, onClose, onSuccess }: {
             return;
         }
         setLoading(true);
+        setSubmitError("");
+
+        const payload = {
+            title: formData.title,
+            category: formData.category,
+            authorId: formData.authorId,
+            excerpt: formData.excerpt,
+            content: formData.content,
+            readTime: formData.readTime,
+            published: formData.published,
+            heroImage: formData.heroImage ? formData.heroImage : undefined
+        };
+
         try {
             if (post) {
-                await api.put(`/blog/${post.id}`, formData);
+                await api.put(`/blog/${post.id}`, payload);
             } else {
-                await api.post("/blog", formData);
+                await api.post("/blog", payload);
             }
             onSuccess();
+        } catch (error: any) {
+            console.error("Failed to save post:", error);
+            const fieldErrors = error?.response?.data?.errors;
+            const message = fieldErrors
+                ? Object.values(fieldErrors).flat().filter(Boolean).join(" ")
+                : "";
+            setSubmitError(message || error?.response?.data?.error || "Unable to save blog post configuration.");
         } finally {
             setLoading(false);
         }
@@ -454,6 +500,49 @@ function BlogPostModal({ post, authors, onClose, onSuccess }: {
                                     className="w-full bg-slate-50 border-2 border-slate-100 rounded-[1.5rem] px-8 py-6 text-xl font-black text-slate-800 focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 focus:bg-white transition-all placeholder:text-slate-200"
                                     placeholder="Enter Compelling Headline..."
                                 />
+                            </div>
+
+                            {/* Hero Image Section */}
+                            <div className="space-y-4">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-2 block">Hero Image</label>
+                                <div className="flex flex-col sm:flex-row items-stretch gap-6">
+                                    <div className="relative w-full sm:w-48 aspect-video sm:aspect-square md:aspect-video rounded-[2rem] overflow-hidden bg-slate-50 border-2 border-slate-100 border-dashed flex items-center justify-center group flex-shrink-0">
+                                        {formData.heroImage ? (
+                                            <>
+                                                <img src={formData.heroImage} alt="Hero" className="object-cover w-full h-full" />
+                                                <div className="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setFormData({ ...formData, heroImage: "" })}
+                                                        className="bg-red-500 text-white p-3 rounded-2xl hover:scale-110 active:scale-95 transition-all shadow-xl"
+                                                    >
+                                                        <Trash2 className="w-5 h-5" />
+                                                    </button>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <div className="flex flex-col items-center gap-2 text-slate-300">
+                                                <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">No Image Uploaded</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                    
+                                    <div className="flex-1 flex flex-col justify-center space-y-4">
+                                        <p className="text-[11px] text-slate-400 font-medium leading-relaxed">
+                                            Select a high-resolution hero image (JPG/PNG). This image represents the article in the insights grid.
+                                        </p>
+                                        <label className={cn(
+                                            "cursor-pointer inline-flex items-center justify-center gap-3 px-8 py-4 rounded-2xl text-sm font-black transition-all border-2 shadow-sm w-full sm:w-fit active:scale-95",
+                                            uploadingImage 
+                                                ? "bg-slate-50 text-slate-300 border-slate-100 pointer-events-none" 
+                                                : "bg-white border-slate-100 hover:border-orange-500 hover:text-orange-600 hover:shadow-orange-500/10"
+                                        )}>
+                                            {uploadingImage ? <Loader2 className="w-5 h-5 animate-spin" /> : <UploadCloud className="w-5 h-5 text-orange-500" />}
+                                            <span className="text-xs font-black uppercase tracking-widest text-slate-800">{uploadingImage ? 'TRANSMITTING...' : 'UPLOAD IMAGE'}</span>
+                                            <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -547,6 +636,12 @@ function BlogPostModal({ post, authors, onClose, onSuccess }: {
                                     <span className="text-[9px] font-bold text-slate-400 mt-1">{formData.published ? 'ACTIVE SIGNAL' : 'OFFLINE DRAFT'}</span>
                                 </div>
                             </div>
+
+                            {submitError && (
+                                <div className="rounded-[1.75rem] border border-red-100 bg-red-50 px-6 py-4 text-xs font-bold text-red-600">
+                                    {submitError}
+                                </div>
+                            )}
                         </form>
                     </div>
 

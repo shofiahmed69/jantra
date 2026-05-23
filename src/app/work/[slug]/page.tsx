@@ -1,7 +1,42 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2, ChevronRight, BarChart, ExternalLink } from "lucide-react";
 import { notFound } from "next/navigation";
 import { getWorkProjects } from "@/lib/work-data";
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const { slug } = await params;
+    const allProjects = await getWorkProjects();
+    const project = allProjects.find((p) => p.slug === slug) || null;
+
+    if (!project) {
+        return {
+            title: "Our Work",
+            description: "Portfolio of software products, SaaS platforms, AI agents, and automation systems built by JANTRA.",
+        };
+    }
+
+    const title = `${project.title} | JANTRA Work`;
+    const description = project.description || "Case study from JANTRA's software and AI delivery portfolio.";
+    const url = `https://jantrasoft.online/work/${slug}`;
+
+    return {
+        title,
+        description,
+        alternates: { canonical: url },
+        openGraph: {
+            title,
+            description,
+            url,
+            type: "article",
+        },
+        twitter: {
+            card: "summary_large_image",
+            title,
+            description,
+        },
+    };
+}
 
 export default async function CaseStudyPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
@@ -27,130 +62,147 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
     const nextProject = hasNext ? allProjects[currentIndex + 1] : null;
 
     return (
-        <main className="w-full min-h-screen bg-white pb-32">
-            
-            <div className="max-w-[1280px] mx-auto px-6 sm:px-12 pt-28 sm:pt-40">
+        <main className="w-full min-h-screen bg-white pb-20">
+            <div className="max-w-[1140px] mx-auto px-6 sm:px-8 pt-28 sm:pt-36">
                 
                 {/* ── BREADCRUMB ── */}
-                <Link href="/work" className="inline-flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-orange-600 transition-colors mb-12 uppercase tracking-widest">
-                     <ArrowLeft className="w-4 h-4" /> Portfolio Index
+                <Link href="/work" className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-orange-600 transition-colors mb-6 uppercase tracking-wider">
+                     <ArrowLeft className="w-4 h-4" /> Back to Projects
                 </Link>
 
                 {/* ── HERO ── */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:items-end mb-20 sm:mb-32">
-                    <div className="lg:col-span-8 space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:items-start mb-10">
+                    <div className="lg:col-span-8 space-y-4">
                         <div className="flex items-center gap-3">
-                            <span className="text-[10px] font-black uppercase tracking-widest text-orange-600 bg-orange-50 px-4 py-2 rounded-full border border-orange-100">
-                                {Array.isArray(project.category) ? project.category[0] : project.category || "Case Study"}
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-orange-600 bg-orange-50 px-3 py-1 rounded-full border border-orange-100">
+                                {Array.isArray(project.category) ? project.category[0] : project.category || "Project"}
                             </span>
-                            <div className="w-12 h-[1px] bg-slate-200" />
                         </div>
-                        <h1 className="text-4xl sm:text-6xl lg:text-8xl font-black text-slate-900 tracking-tighter uppercase leading-[0.9]">
-                            {project.title} <span className="text-orange-500">.</span>
-                        </h1>
-                        <p className="text-slate-500 text-lg sm:text-2xl font-medium leading-relaxed max-w-2xl border-l-4 border-orange-500/20 pl-8">
+                        
+                        <div className="flex items-center gap-4 flex-wrap pt-1">
+                            <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
+                                {project.title}
+                            </h1>
+                            {project.liveUrl && (
+                                <Link 
+                                    href={project.liveUrl} 
+                                    target="_blank" 
+                                    className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-orange-600 hover:bg-orange-700 text-white font-bold text-[10px] uppercase tracking-wider transition-all shadow-sm hover:shadow active:scale-95 shrink-0"
+                                >
+                                    Live Demo <ExternalLink className="w-3 h-3" />
+                                </Link>
+                            )}
+                        </div>
+                        
+                        <p className="text-slate-600 text-base sm:text-lg font-normal leading-relaxed max-w-3xl border-l-2 border-orange-500 pl-4 mt-2">
                             {project.description}
                         </p>
                     </div>
-                    <div className="lg:col-span-4 space-y-2">
-                        <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">TIMELINE</span>
-                        <p className="text-xl font-black text-slate-900 uppercase tracking-tight">{project.duration || "48 Wks Cycle"}</p>
+                    <div className="lg:col-span-4 lg:text-right pt-2 lg:pt-8">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Duration</span>
+                        <p className="text-lg font-bold text-slate-800 uppercase tracking-tight">{project.duration || "4 Weeks"}</p>
                     </div>
                 </div>
 
                 {/* ── MAIN IMAGE ── */}
-                <div className="relative aspect-[16/10] sm:aspect-[16/7] rounded-[2.5rem] sm:rounded-[4rem] overflow-hidden bg-slate-900 mb-20 shadow-2xl ring-1 ring-black/5">
+                <div className="relative aspect-[16/9] sm:aspect-[21/9] rounded-2xl overflow-hidden bg-slate-900 mb-10 shadow-lg ring-1 ring-black/5">
                     {project.thumbnail ? (
                         <img 
                             src={getThumbnailUrl(project.thumbnail)} 
                             alt={project.title} 
-                            className="w-full h-full object-cover opacity-100 transition-all duration-700 hover:scale-105"
+                            className="w-full h-full object-cover opacity-100 transition-all duration-700 hover:scale-102"
                         />
                     ) : (
-                        <div className="w-full h-full flex items-center justify-center text-white/5 font-black text-8xl uppercase tracking-tighter">Jantra Archive</div>
+                        <div className="w-full h-full flex items-center justify-center text-white/5 font-black text-6xl uppercase tracking-tighter">Jantra Archive</div>
                     )}
                 </div>
 
                 {/* ── SPECIFICATIONS GRID ── */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 mb-32 items-start">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 mb-16 items-start">
                     
                     {/* LEFT CONTENT */}
-                    <div className="lg:col-span-7 space-y-20">
+                    <div className="lg:col-span-7 space-y-8">
                         
-                        <div className="grid sm:grid-cols-2 gap-12">
-                             <div className="space-y-4">
-                                <h3 className="text-[10px] font-black text-orange-600 uppercase tracking-[0.4em]">The Challenge</h3>
-                                <p className="text-slate-500 text-sm sm:text-base leading-relaxed font-semibold uppercase tracking-tight">{project.challenge}</p>
+                        <div className="grid sm:grid-cols-2 gap-8">
+                             <div className="space-y-2">
+                                <h3 className="text-xs font-bold text-orange-600 uppercase tracking-wider">The Challenge</h3>
+                                <p className="text-slate-600 text-sm leading-relaxed">{project.challenge}</p>
                              </div>
-                             <div className="space-y-4">
-                                <h3 className="text-[10px] font-black text-orange-600 uppercase tracking-[0.4em]">The Solution</h3>
-                                <p className="text-slate-500 text-sm sm:text-base leading-relaxed font-semibold uppercase tracking-tight">{project.approach}</p>
+                             <div className="space-y-2">
+                                <h3 className="text-xs font-bold text-orange-600 uppercase tracking-wider">The Solution</h3>
+                                <p className="text-slate-600 text-sm leading-relaxed">{project.approach}</p>
                              </div>
                         </div>
 
-                        <div className="p-8 sm:p-14 bg-slate-50 rounded-[3rem] border border-slate-100 space-y-10">
-                            <h3 className="text-2xl font-black text-slate-900 uppercase tracking-tighter flex items-center gap-4">
-                                <CheckCircle2 className="w-6 h-6 text-orange-600" /> Key Features
-                            </h3>
-                            <div className="grid sm:grid-cols-2 gap-6">
-                                {project.features && project.features.map((feat: string, i: number) => (
-                                    <div key={i} className="flex items-center gap-4 group">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-orange-600 group-hover:scale-150 transition-all" />
-                                        <span className="text-[10px] font-black uppercase text-slate-950 tracking-widest">{feat}</span>
-                                    </div>
-                                ))}
+                        {project.features && project.features.length > 0 && (
+                            <div className="p-6 sm:p-8 bg-slate-50 rounded-2xl border border-slate-100 space-y-4">
+                                <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                                    <CheckCircle2 className="w-5 h-5 text-orange-600" /> Key Features
+                                </h3>
+                                <div className="grid sm:grid-cols-2 gap-4">
+                                    {project.features.map((feat: string, i: number) => (
+                                        <div key={i} className="flex items-start gap-2.5 group">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-orange-600 mt-2 shrink-0 group-hover:scale-120 transition-all" />
+                                            <span className="text-sm font-medium text-slate-700">{feat}</span>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </div>
 
                     {/* RIGHT SIDEBAR */}
-                    <div className="lg:col-span-5 space-y-8">
+                    <div className="lg:col-span-5 space-y-6">
                          
                          {/* TECH STACK */}
-                         <div className="bg-slate-950 p-10 sm:p-14 rounded-[3rem] text-white space-y-10">
-                             <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em]">Technology Hub</h3>
-                             <div className="flex flex-wrap gap-2">
-                                 {project.techStack && project.techStack.map((tech: string, i: number) => (
-                                     <span key={i} className="px-5 py-3 rounded-xl bg-white/5 border border-white/10 text-[9px] font-black uppercase tracking-widest text-slate-300">
-                                         {tech}
-                                     </span>
-                                 ))}
+                         {project.techStack && project.techStack.length > 0 && (
+                             <div className="bg-slate-900 p-6 sm:p-8 rounded-2xl text-white space-y-4">
+                                 <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Technologies Used</h3>
+                                 <div className="flex flex-wrap gap-2">
+                                     {project.techStack.map((tech: string, i: number) => (
+                                         <span key={i} className="px-3 py-1.5 rounded-lg bg-white/10 border border-white/5 text-xs font-medium text-slate-200">
+                                             {tech}
+                                         </span>
+                                     ))}
+                                 </div>
                              </div>
-                         </div>
+                         )}
 
                          {/* METRIC CARD */}
-                         <div className="p-10 sm:p-14 bg-orange-600 rounded-[3rem] text-white space-y-6">
-                             <div className="flex items-center gap-3">
-                                <BarChart className="w-5 h-5 text-white/60" />
-                                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/60">Registry Metrics</span>
+                         {project.results && (
+                             <div className="p-6 sm:p-8 bg-orange-50 border border-orange-100 rounded-2xl text-slate-800 space-y-3">
+                                 <div className="flex items-center gap-2">
+                                    <BarChart className="w-4 h-4 text-orange-600" />
+                                    <span className="text-xs font-bold uppercase tracking-wider text-orange-600">Key Results</span>
+                                 </div>
+                                 <p className="text-sm sm:text-base font-semibold leading-relaxed text-slate-800">
+                                     {project.results}
+                                 </p>
                              </div>
-                             <p className="text-xl sm:text-2xl font-black leading-tight uppercase tracking-tighter">
-                                 &ldquo;{project.results}&rdquo;
-                             </p>
-                         </div>
+                         )}
 
                          {/* LIVE LINK */}
                          {project.liveUrl && (
-                             <Link href={project.liveUrl} target="_blank" className="flex items-center justify-center gap-4 w-full py-8 rounded-[2rem] bg-slate-950 text-white font-black uppercase tracking-[0.4em] text-[11px] hover:bg-orange-600 transition-all shadow-2xl active:scale-95">
-                                Visit Protocol <ExternalLink className="w-4 h-4" />
+                             <Link href={project.liveUrl} target="_blank" className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-slate-900 text-white font-semibold text-sm hover:bg-orange-600 transition-all shadow active:scale-98">
+                                Visit Live Website <ExternalLink className="w-4 h-4" />
                              </Link>
                          )}
                     </div>
                 </div>
 
                 {/* ── NEXT PROJECT TRANSITION ── */}
-                <div className="pt-20 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-12">
-                     <Link href="/work" className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-300 hover:text-slate-950 transition-colors">
-                        All Cases Registry
+                <div className="pt-10 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-6">
+                     <Link href="/work" className="text-xs font-bold uppercase tracking-wider text-slate-400 hover:text-slate-800 transition-colors">
+                        View All Projects
                      </Link>
 
                      {hasNext && nextProject && (
-                        <Link href={`/work/${nextProject.slug}`} className="group flex flex-col items-end text-right gap-4">
-                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">Next Case Study</span>
-                            <div className="flex items-center gap-8">
-                                 <h2 className="text-4xl sm:text-7xl font-black text-slate-950 tracking-tighter uppercase leading-none group-hover:text-orange-600 transition-all">{nextProject.title}</h2>
-                                 <div className="w-14 h-14 rounded-full border border-slate-100 flex items-center justify-center group-hover:bg-slate-950 group-hover:text-white transition-all">
-                                     <ChevronRight className="w-6 h-6" />
+                        <Link href={`/work/${nextProject.slug}`} className="group flex flex-col items-end text-right gap-2">
+                            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Next Project</span>
+                            <div className="flex items-center gap-4">
+                                 <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight group-hover:text-orange-600 transition-all">{nextProject.title}</h2>
+                                 <div className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center group-hover:bg-slate-900 group-hover:text-white transition-all">
+                                     <ChevronRight className="w-5 h-5" />
                                  </div>
                             </div>
                         </Link>

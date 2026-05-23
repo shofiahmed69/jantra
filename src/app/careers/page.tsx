@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowRight, MapPin, Zap, Heart, Monitor, Loader2, Terminal, Binary } from "lucide-react";
+import { ArrowRight, MapPin, Loader2, Briefcase } from "lucide-react";
 import api from "@/lib/api";
 import ApplyModal from "@/components/ApplyModal";
 import { motion, AnimatePresence } from "framer-motion";
@@ -25,6 +25,8 @@ export default function CareersPage() {
             try {
                 const response = await api.get("/careers");
                 setJobs(response.data || []);
+            } catch (error) {
+                console.error("Error fetching jobs:", error);
             } finally {
                 setLoading(false);
             }
@@ -49,58 +51,59 @@ export default function CareersPage() {
     }, [selectedJob]);
 
     return (
-        <main className="w-full min-h-screen bg-white pb-32">
-            
-            <div className="max-w-[1280px] mx-auto px-6 sm:px-12 pt-36 sm:pt-48">
+        <main className="w-full min-h-screen bg-slate-50/50 pb-20 selection:bg-orange-100">
+            <div className="max-w-[1140px] mx-auto px-4 sm:px-6 pt-28 sm:pt-36">
                 
                 {/* ── HEADER ── */}
-                <div className="max-w-2xl mb-20 sm:mb-32 text-left">
-                    <span className="text-orange-600 font-bold tracking-widest text-xs uppercase mb-6 block">Join the Squad</span>
-                    <h1 className="text-5xl sm:text-7xl font-black text-slate-900 leading-[0.9] tracking-tighter uppercase mb-8">
-                        Our Open <br /> Positions <span className="text-orange-500">.</span>
+                <div className="max-w-2xl mb-12 text-left">
+                    <span className="text-orange-600 font-bold tracking-widest text-[10px] uppercase mb-3 block">Careers</span>
+                    <h1 className="text-3xl sm:text-5xl font-black text-slate-900 leading-tight tracking-tight uppercase mb-4">
+                        Join Our Team<span className="text-orange-500">.</span>
                     </h1>
-                    <p className="text-slate-500 text-lg font-medium leading-relaxed uppercase tracking-tight max-w-lg">Recruiting the next cohort of engineers to architect elite digital systems.</p>
+                    <p className="text-slate-500 text-sm font-medium leading-relaxed max-w-lg">
+                        Build the future of custom software, AI agents, and high-performance applications with us. We value clean code, quick iterations, and user-centric design.
+                    </p>
                 </div>
 
-                {/* ── CLEAN JOB BOARD: 1-COL ── */}
-                <div className="space-y-6 sm:space-y-8">
+                {/* ── JOB BOARD ── */}
+                <div className="space-y-4">
                     {loading ? (
-                        <div className="py-20 text-center flex flex-col items-center gap-6">
-                            <Loader2 className="w-10 h-10 animate-spin text-orange-500" />
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Decrypting Registry...</p>
+                        <div className="py-16 text-center flex flex-col items-center gap-4">
+                            <Loader2 className="w-8 h-8 animate-spin text-orange-500" />
+                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Loading open positions...</p>
                         </div>
                     ) : jobs.length === 0 ? (
-                        <div className="py-32 text-center p-20 bg-slate-50 rounded-[4rem] border border-slate-200">
-                            <p className="text-slate-400 font-black uppercase tracking-widest text-[11px]">The cohort is currently at capacity.</p>
+                        <div className="py-16 text-center p-8 bg-white rounded-2xl border border-slate-100">
+                            <p className="text-slate-400 font-bold uppercase tracking-wide text-xs">We are not actively hiring at the moment. Please check back later.</p>
                         </div>
                     ) : (
                         jobs.map((job, i) => (
                             <motion.div 
                                 key={job.id}
-                                initial={{ opacity: 0, y: 15 }}
+                                initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: i * 0.05 }}
+                                transition={{ delay: i * 0.03 }}
                                 onClick={() => setSelectedJob(job)}
-                                className="group relative bg-white border border-slate-100 rounded-[2.5rem] p-8 sm:p-12 flex flex-col md:flex-row items-center justify-between gap-10 hover:bg-slate-50 hover:border-slate-300 hover:shadow-2xl transition-all duration-700 cursor-pointer"
+                                className="group relative bg-white border border-slate-100 rounded-xl p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-6 hover:bg-slate-50/50 hover:border-slate-300 hover:shadow-md transition-all duration-300 cursor-pointer"
                             >
-                                <div className="flex items-center gap-8 text-left w-full">
-                                    <div className="w-16 h-16 rounded-[1.5rem] bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-300 group-hover:text-orange-500 group-hover:bg-orange-50 transition-all duration-700">
-                                        <Binary className="w-6 h-6" />
+                                <div className="flex items-center gap-4 text-left w-full">
+                                    <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-orange-500 group-hover:bg-orange-50 transition-all">
+                                        <Briefcase className="w-5 h-5" />
                                     </div>
-                                    <div className="space-y-3">
+                                    <div className="space-y-1.5 flex-1 min-w-0">
                                         <div className="flex flex-wrap gap-2">
-                                            <span className="px-4 py-1.5 bg-slate-50 rounded-full text-[9px] font-black text-slate-400 uppercase tracking-widest">{job.department}</span>
-                                            <span className="px-4 py-1.5 bg-orange-50 rounded-full text-[9px] font-black text-orange-600 uppercase tracking-widest">{job.type}</span>
+                                            <span className="px-2.5 py-0.5 bg-slate-100 rounded-md text-[8px] font-bold text-slate-500 uppercase tracking-wider">{job.department}</span>
+                                            <span className="px-2.5 py-0.5 bg-orange-50 rounded-md text-[8px] font-bold text-orange-600 uppercase tracking-wider">{job.type}</span>
                                         </div>
-                                        <h3 className="text-3xl sm:text-5xl font-black text-slate-950 tracking-tighter uppercase leading-none group-hover:text-orange-600 transition-colors">{job.title}</h3>
-                                        <span className="text-[10px] sm:text-xs font-black text-slate-400 uppercase tracking-tight flex items-center gap-2">
-                                            <MapPin className="w-4 h-4 text-orange-500" /> {job.location}
+                                        <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight uppercase group-hover:text-orange-600 transition-colors truncate">{job.title}</h3>
+                                        <span className="text-[10px] sm:text-xs font-semibold text-slate-400 uppercase tracking-tight flex items-center gap-1.5">
+                                            <MapPin className="w-3.5 h-3.5 text-orange-500" /> {job.location}
                                         </span>
                                     </div>
                                 </div>
 
-                                <button className="w-full md:w-auto px-12 py-6 bg-slate-950 text-white rounded-[1.5rem] font-black uppercase tracking-widest text-[11px] group-hover:bg-orange-600 transition-all shadow-xl active:scale-95 flex items-center justify-center gap-3">
-                                    Initialize <ArrowRight className="w-4 h-4 ml-2" />
+                                <button className="w-full sm:w-auto px-6 py-3 bg-orange-600 text-white rounded-lg font-bold uppercase tracking-wider text-[10px] group-hover:bg-slate-950 transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+                                    Apply Now <ArrowRight className="w-3.5 h-3.5" />
                                 </button>
                             </motion.div>
                         ))
@@ -108,14 +111,14 @@ export default function CareersPage() {
                 </div>
 
                 {/* ── CTA BOX ── */}
-                <div className="mt-32 p-12 sm:p-20 rounded-[4rem] bg-slate-950 text-white flex flex-col md:flex-row items-center justify-between gap-12 text-center md:text-left overflow-hidden relative">
-                     <div className="absolute top-0 right-0 w-96 h-96 bg-orange-600/10 blur-[100px] rounded-full" />
-                     <div className="space-y-4 relative z-10">
-                         <h2 className="text-4xl font-black tracking-tighter uppercase leading-none">Genius Profile?</h2>
-                         <p className="text-slate-400 text-sm font-medium leading-relaxed max-w-sm uppercase tracking-tight">Deploy your CV to our open archive.</p>
+                <div className="mt-16 p-8 sm:p-10 rounded-2xl bg-slate-950 text-white flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left relative overflow-hidden">
+                     <div className="absolute top-0 right-0 w-80 h-80 bg-orange-600/10 blur-[80px] rounded-full pointer-events-none" />
+                     <div className="space-y-2 relative z-10">
+                          <h2 className="text-2xl font-bold tracking-tight uppercase">Don&apos;t see a matching role?</h2>
+                          <p className="text-slate-400 text-xs font-medium max-w-sm">We are always looking for talented developers, designers, and innovators. Send us your resume.</p>
                      </div>
-                     <Link href="/contact" className="relative z-10 px-16 py-7 rounded-2xl bg-white text-slate-950 text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-orange-600 hover:text-white transition-all shadow-2xl active:scale-95">
-                        Submit Archive <ArrowRight className="w-5 h-5" />
+                     <Link href="/contact" className="relative z-10 px-8 py-3.5 rounded-lg bg-white text-slate-950 text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-orange-600 hover:text-white transition-all shadow-md active:scale-95">
+                        Send Open Application <ArrowRight className="w-4 h-4" />
                      </Link>
                 </div>
             </div>

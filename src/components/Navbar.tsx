@@ -36,7 +36,7 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav className="fixed inset-x-0 top-0 z-[100] transition-all duration-500">
+    <nav className="fixed inset-x-0 top-[-16px] z-[100] transition-all duration-500">
       <GlassFilter />
       
       <div className="mx-auto max-w-7xl px-3 pt-3 sm:px-6 sm:pt-6 text-left">
@@ -143,7 +143,7 @@ export default function Navbar() {
                     className="group border-none bg-orange-600/90 py-3.5 text-white transition-all duration-500 hover:bg-orange-600 hover:shadow-[0_10px_30px_-10px_rgba(249,115,22,0.5)]"
                   >
                     <span className="flex items-center gap-2 text-[0.85rem] font-black uppercase tracking-wider">
-                      Let's Build 
+                      Let&apos;s Build 
                       <Sparkles className="h-4 w-4 transition-transform duration-500 group-hover:rotate-12 group-hover:scale-125" />
                     </span>
                   </GlassButton>
@@ -263,5 +263,3 @@ export default function Navbar() {
     </nav>
   );
 }
-
-

@@ -1,19 +1,54 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, CheckCircle2, LayoutTemplate, Layers, Cpu, ShieldCheck, Mail } from "lucide-react";
 import LottiePlayer from "@/components/LottiePlayer";
 import api from "@/lib/api";
 
+const serviceDataMap: Record<string, { title: string, category: string, lottie: string, description: string, descBg: string }> = {
+    "custom-software-development": { title: "Custom Software", category: "Engineering", lottie: "/lottie/software-development-green.json", description: "Bespoke software solutions built for scale and performance. We engineer systems that fit your exact business logic.", descBg: "bg-slate-50" },
+    "mobile-app-development": { title: "Mobile Apps", category: "Product", lottie: "/lottie/mobile-app-promo/animations/12345.json", description: "High-performance native and cross-platform mobile applications for iOS and Android.", descBg: "bg-slate-50" },
+    "ai-agent-development": { title: "AI Agents", category: "AI & ML", lottie: "/lottie/ai-assistant-animation.json", description: "Autonomous AI agents that execute complex business tasks 24/7. Transform operational efficiency.", descBg: "bg-slate-50" },
+    "workflow-automation": { title: "Automation", category: "Optimization", lottie: "/lottie/live_chatbot.json", description: "Eliminate manual operational bottlenecks with intelligent, end-to-end automated workflows.", descBg: "bg-slate-50" },
+    "saas-product-development": { title: "SaaS Products", category: "Cloud", lottie: "/lottie/saas.json", description: "Scalable Software-as-a-Service platforms designed for massive parallel tenant usage.", descBg: "bg-slate-50" },
+    "cloud-api-systems": { title: "API Systems", category: "Infrastructure", lottie: "/lottie/cloud.json", description: "Robust backend systems and APIs to connect and power your digital ecosystem.", descBg: "bg-slate-50" },
+    "ui-ux-design": { title: "UI/UX Design", category: "Design", lottie: "/lottie/uxui-d.json", description: "Human-centered interface and experience design focused on clarity, conversion, and product usability.", descBg: "bg-slate-50" },
+};
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const { slug } = await params;
+    const service = serviceDataMap[slug];
+
+    if (!service) {
+        return {
+            title: "Services",
+            description: "Custom software, SaaS, AI agents, and workflow automation services by JANTRA.",
+        };
+    }
+
+    const title = `${service.title} Service | JANTRA`;
+    const description = service.description;
+    const url = `https://jantrasoft.online/services/${slug}`;
+
+    return {
+        title,
+        description,
+        alternates: { canonical: url },
+        openGraph: {
+            title,
+            description,
+            url,
+            type: "website",
+        },
+        twitter: {
+            card: "summary_large_image",
+            title,
+            description,
+        },
+    };
+}
+
 export default async function ServiceDetailPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
-    
-    const serviceDataMap: Record<string, { title: string, category: string, lottie: string, description: string, descBg: string }> = {
-        "custom-software-development": { title: "Custom Software", category: "Engineering", lottie: "/lottie/software-development-green.json", description: "Bespoke software solutions built for scale and performance. We engineer systems that fit your exact business logic.", descBg: "bg-slate-50" },
-        "mobile-app-development": { title: "Mobile Apps", category: "Product", lottie: "/lottie/mobile-app-promo/animations/12345.json", description: "High-performance native and cross-platform mobile applications for iOS and Android.", descBg: "bg-slate-50" },
-        "ai-agent-development": { title: "AI Agents", category: "AI & ML", lottie: "/lottie/ai-assistant-animation.json", description: "Autonomous AI agents that execute complex business tasks 24/7. Transform operational efficiency.", descBg: "bg-slate-50" },
-        "workflow-automation": { title: "Automation", category: "Optimization", lottie: "/lottie/live_chatbot.json", description: "Eliminate manual operational bottlenecks with intelligent, end-to-end automated workflows.", descBg: "bg-slate-50" },
-        "saas-product-development": { title: "SaaS Products", category: "Cloud", lottie: "/lottie/saas.json", description: "Scalable Software-as-a-Service platforms designed for massive parallel tenant usage.", descBg: "bg-slate-50" },
-        "cloud-api-systems": { title: "API Systems", category: "Infrastructure", lottie: "/lottie/cloud.json", description: "Robust backend systems and APIs to connect and power your digital ecosystem.", descBg: "bg-slate-50" },
-    };
 
     let service = null;
     try {
@@ -51,8 +86,18 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
                 {/* ── HERO: CLEAN FORMAT ── */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center mb-20 sm:mb-32">
                     <div className="lg:col-span-7 space-y-8">
-                         <div className="flex items-center gap-3">
+                         <div className="flex items-center gap-3 flex-wrap">
                             <span className="text-[10px] font-black uppercase tracking-widest text-orange-600 bg-orange-50 px-4 py-2 rounded-full border border-orange-100">{service.category}</span>
+                            {service.demoUrl && (
+                                <a 
+                                    href={service.demoUrl} 
+                                    target="_blank" 
+                                    rel="noreferrer" 
+                                    className="text-[10px] font-black uppercase tracking-widest text-slate-500 hover:text-orange-600 bg-slate-50 px-4 py-2 rounded-full border border-slate-100 flex items-center gap-1.5 transition-all"
+                                >
+                                    View Live Demo <ArrowRight className="w-3.5 h-3.5" />
+                                </a>
+                            )}
                             <div className="w-12 h-[1px] bg-slate-200" />
                          </div>
                          <h1 className="text-5xl sm:text-7xl font-black text-slate-900 tracking-tight leading-[0.9] uppercase">
@@ -63,8 +108,12 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
                          </p>
                     </div>
 
-                    <div className={`lg:col-span-5 aspect-square ${service.descBg} rounded-[3rem] border border-slate-100 flex items-center justify-center p-12 overflow-hidden`}>
-                         <LottiePlayer src={service.lottie} className="w-full h-full max-w-[350px]" />
+                    <div className={`lg:col-span-5 aspect-square ${service.descBg} rounded-[3rem] border border-slate-100 flex items-center justify-center overflow-hidden ${service.banner ? 'p-0' : 'p-12'}`}>
+                         {service.banner ? (
+                             <img src={service.banner} alt={service.title} className="w-full h-full object-cover" />
+                         ) : (
+                             <LottiePlayer src={service.lottie} className="w-full h-full max-w-[350px]" />
+                         )}
                     </div>
                 </div>
 
@@ -128,9 +177,9 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
                     <div className="p-12 rounded-[3.5rem] bg-orange-600 text-white flex flex-col justify-between">
                          <div className="space-y-4">
                             <h2 className="text-3xl font-black tracking-tighter uppercase">Ready to Build?</h2>
-                            <p className="text-white/80 font-medium leading-relaxed max-w-xs">Let's schedule a brief discovery call to explore your project architecture.</p>
+                            <p className="text-white/80 font-medium leading-relaxed max-w-xs">Let&apos;s schedule a brief discovery call to explore your project architecture.</p>
                          </div>
-                         <Link href="/contact" className="mt-8 w-full py-6 rounded-2xl bg-slate-950 text-white font-black uppercase tracking-widest flex items-center justify-center gap-4 hover:bg-white hover:text-slate-950 transition-all shadow-2xl active:scale-95">
+                         <Link href="/contact" className="mt-8 w-full py-6 rounded-2xl bg-orange-600 text-white font-black uppercase tracking-widest flex items-center justify-center gap-4 hover:bg-slate-950 transition-all shadow-2xl active:scale-95">
                             Get A Quote <ArrowRight className="w-5 h-5" />
                          </Link>
                     </div>

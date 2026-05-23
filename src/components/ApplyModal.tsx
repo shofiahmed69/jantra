@@ -98,7 +98,7 @@ export default function ApplyModal({ jobId, jobTitle, onClose }: ApplyModalProps
                             </div>
                             <h2 className="text-2xl font-bold text-slate-900 mb-2">Application Received!</h2>
                             <p className="text-slate-500 mb-8 max-w-sm mx-auto">
-                                Good luck, {formData.name.split(" ")[0]}! We've sent a confirmation email to {formData.email}.
+                                Good luck, {formData.name.split(" ")[0]}! We&apos;ve sent a confirmation email to {formData.email}.
                             </p>
                             <button
                                 onClick={onClose}

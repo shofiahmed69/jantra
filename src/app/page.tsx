@@ -3,8 +3,8 @@ import HomeClient from "./HomeClient";
 import api from "@/lib/api";
 
 export const metadata: Metadata = {
-  title: "JANTRA | Custom Software & AI Agent Studio",
-  description: "Jantra builds high-performance custom software, modern websites, AI agents, and mobile apps for visionary companies worldwide.",
+  title: "Jantra Software | Custom Software & AI Agent Studio",
+  description: "Looking for Jantra Software? We are the leading custom software company in Bangladesh building SaaS products, AI agents, and workflow automations.",
 };
 
 async function getFeaturedProjects() {

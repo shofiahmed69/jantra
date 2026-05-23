@@ -49,14 +49,20 @@ function normalizeLottieAssetPaths(raw: unknown, src: string) {
             return asset;
         }
 
-        const isAbsolute = asset.p.startsWith("/") || asset.p.startsWith("http://") || asset.p.startsWith("https://");
+        const isAbsolute =
+            asset.p.startsWith("/") ||
+            asset.p.startsWith("http://") ||
+            asset.p.startsWith("https://") ||
+            asset.p.startsWith("data:");
+
         if (isAbsolute) {
             return asset;
         }
 
         return {
             ...asset,
-            u: assetBase,
+            p: `${assetBase}${asset.p}`,
+            u: "",
         };
     });
 

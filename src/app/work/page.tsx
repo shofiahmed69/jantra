@@ -3,8 +3,8 @@ import WorkClient from "./WorkClient";
 import { getWorkProjects } from "@/lib/work-data";
 
 export const metadata: Metadata = {
-  title: "Our Work",
-  description: "Browse Jantra's portfolio of custom software, enterprise AI agents, and high-end web applications shipped for industry leaders.",
+  title: "Case Studies & Work Registry",
+  description: "Browse Jantra Software's portfolio of custom software, enterprise AI agents, and high-end web applications shipped for industry leaders.",
 };
 
 async function getInitialProjects() {
