@@ -54,6 +54,12 @@ interface ServiceRecord {
     pricingTiers: any; // Storing array of plan slugs, e.g. ["starter", "growth"]
     priceMin: number | null;
     priceMax: number | null;
+    priceMinUsd?: number | null;
+    priceMaxUsd?: number | null;
+    priceMinEur?: number | null;
+    priceMaxEur?: number | null;
+    priceMinBdt?: number | null;
+    priceMaxBdt?: number | null;
     features: string[];
     techStack: string[];
     icon?: string | null;
@@ -105,7 +111,19 @@ export default function PricingManagementPage() {
         }
     };
 
-    const handlePriceChange = (id: string, field: "priceMin" | "priceMax", value: string) => {
+    const handlePriceChange = (
+        id: string,
+        field:
+            | "priceMin"
+            | "priceMax"
+            | "priceMinUsd"
+            | "priceMaxUsd"
+            | "priceMinEur"
+            | "priceMaxEur"
+            | "priceMinBdt"
+            | "priceMaxBdt",
+        value: string
+    ) => {
         setServices(prev =>
             prev.map(s => {
                 if (s.id === id) {
@@ -171,6 +189,18 @@ export default function PricingManagementPage() {
     const handleSaveService = async (service: ServiceRecord) => {
         setSavingId(service.id);
         setErrorMsg("");
+
+        const isInvalidRange =
+            (service.priceMinUsd != null && service.priceMaxUsd != null && service.priceMinUsd > service.priceMaxUsd) ||
+            (service.priceMinEur != null && service.priceMaxEur != null && service.priceMinEur > service.priceMaxEur) ||
+            (service.priceMinBdt != null && service.priceMaxBdt != null && service.priceMinBdt > service.priceMaxBdt);
+
+        if (isInvalidRange) {
+            setSavingId(null);
+            setErrorMsg("Invalid price range: min cannot be greater than max for a currency.");
+            return;
+        }
+
         try {
             // Build request payload matching Zod validation schema
             const payload = {
@@ -184,6 +214,12 @@ export default function PricingManagementPage() {
                 pricingTiers: service.pricingTiers,
                 priceMin: service.priceMin,
                 priceMax: service.priceMax,
+                priceMinUsd: service.priceMinUsd ?? service.priceMin ?? null,
+                priceMaxUsd: service.priceMaxUsd ?? service.priceMax ?? null,
+                priceMinEur: service.priceMinEur ?? null,
+                priceMaxEur: service.priceMaxEur ?? null,
+                priceMinBdt: service.priceMinBdt ?? null,
+                priceMaxBdt: service.priceMaxBdt ?? null,
                 icon: service.icon || null,
                 image: service.image || null,
                 banner: service.banner || null,
@@ -339,34 +375,80 @@ export default function PricingManagementPage() {
                                         </div>
                                     </div>
 
-                                    {/* Price Range inputs (col-span changed to 3) */}
-                                    <div className="lg:col-span-3 grid grid-cols-2 gap-4">
-                                        <div className="space-y-1.5">
-                                            <label className="text-[9px] font-black uppercase tracking-widest text-slate-500 block ml-1">Min Price ($)</label>
-                                            <input
-                                                type="number"
-                                                placeholder="e.g. 5000"
-                                                value={service.priceMin === null ? "" : service.priceMin}
-                                                onChange={(e) => handlePriceChange(service.id, "priceMin", e.target.value)}
-                                                className="w-full rounded-xl border border-slate-200/80 bg-white p-3 text-xs font-bold uppercase tracking-wider text-slate-800 focus:border-orange-500 focus:outline-none"
-                                            />
+                                    {/* Multi-currency Price Range inputs */}
+                                    <div className="lg:col-span-3 space-y-3">
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="space-y-1.5">
+                                                <label className="text-[9px] font-black uppercase tracking-widest text-slate-500 block ml-1">USD Min</label>
+                                                <input
+                                                    type="number"
+                                                    placeholder="5000"
+                                                    value={service.priceMinUsd ?? service.priceMin ?? ""}
+                                                    onChange={(e) => handlePriceChange(service.id, "priceMinUsd", e.target.value)}
+                                                    className="w-full rounded-xl border border-slate-200/80 bg-white p-3 text-xs font-bold uppercase tracking-wider text-slate-800 focus:border-orange-500 focus:outline-none"
+                                                />
+                                            </div>
+                                            <div className="space-y-1.5">
+                                                <label className="text-[9px] font-black uppercase tracking-widest text-slate-500 block ml-1">USD Max</label>
+                                                <input
+                                                    type="number"
+                                                    placeholder="15000"
+                                                    value={service.priceMaxUsd ?? service.priceMax ?? ""}
+                                                    onChange={(e) => handlePriceChange(service.id, "priceMaxUsd", e.target.value)}
+                                                    className="w-full rounded-xl border border-slate-200/80 bg-white p-3 text-xs font-bold uppercase tracking-wider text-slate-800 focus:border-orange-500 focus:outline-none"
+                                                />
+                                            </div>
                                         </div>
-                                        <div className="space-y-1.5">
-                                            <label className="text-[9px] font-black uppercase tracking-widest text-slate-500 block ml-1">Max Price ($)</label>
-                                            <input
-                                                type="number"
-                                                placeholder="e.g. 15000"
-                                                value={service.priceMax === null ? "" : service.priceMax}
-                                                onChange={(e) => handlePriceChange(service.id, "priceMax", e.target.value)}
-                                                className="w-full rounded-xl border border-slate-200/80 bg-white p-3 text-xs font-bold uppercase tracking-wider text-slate-800 focus:border-orange-500 focus:outline-none"
-                                            />
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="space-y-1.5">
+                                                <label className="text-[9px] font-black uppercase tracking-widest text-slate-500 block ml-1">EUR Min</label>
+                                                <input
+                                                    type="number"
+                                                    placeholder="4500"
+                                                    value={service.priceMinEur ?? ""}
+                                                    onChange={(e) => handlePriceChange(service.id, "priceMinEur", e.target.value)}
+                                                    className="w-full rounded-xl border border-slate-200/80 bg-white p-3 text-xs font-bold uppercase tracking-wider text-slate-800 focus:border-orange-500 focus:outline-none"
+                                                />
+                                            </div>
+                                            <div className="space-y-1.5">
+                                                <label className="text-[9px] font-black uppercase tracking-widest text-slate-500 block ml-1">EUR Max</label>
+                                                <input
+                                                    type="number"
+                                                    placeholder="13000"
+                                                    value={service.priceMaxEur ?? ""}
+                                                    onChange={(e) => handlePriceChange(service.id, "priceMaxEur", e.target.value)}
+                                                    className="w-full rounded-xl border border-slate-200/80 bg-white p-3 text-xs font-bold uppercase tracking-wider text-slate-800 focus:border-orange-500 focus:outline-none"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="space-y-1.5">
+                                                <label className="text-[9px] font-black uppercase tracking-widest text-slate-500 block ml-1">BDT Min</label>
+                                                <input
+                                                    type="number"
+                                                    placeholder="550000"
+                                                    value={service.priceMinBdt ?? ""}
+                                                    onChange={(e) => handlePriceChange(service.id, "priceMinBdt", e.target.value)}
+                                                    className="w-full rounded-xl border border-slate-200/80 bg-white p-3 text-xs font-bold uppercase tracking-wider text-slate-800 focus:border-orange-500 focus:outline-none"
+                                                />
+                                            </div>
+                                            <div className="space-y-1.5">
+                                                <label className="text-[9px] font-black uppercase tracking-widest text-slate-500 block ml-1">BDT Max</label>
+                                                <input
+                                                    type="number"
+                                                    placeholder="1600000"
+                                                    value={service.priceMaxBdt ?? ""}
+                                                    onChange={(e) => handlePriceChange(service.id, "priceMaxBdt", e.target.value)}
+                                                    className="w-full rounded-xl border border-slate-200/80 bg-white p-3 text-xs font-bold uppercase tracking-wider text-slate-800 focus:border-orange-500 focus:outline-none"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
 
                                     {/* Plan inclusions checkboxes (col-span 3) */}
                                     <div className="lg:col-span-3 space-y-1.5">
                                         <label className="text-[9px] font-black uppercase tracking-widest text-slate-500 block ml-1">Plan Tiers Inclusion</label>
-                                        <div className="flex gap-2">
+                                        <div className="grid grid-cols-3 gap-1.5">
                                             {[
                                                 { label: "Starter", slug: "starter", color: "peer-checked:bg-orange-50 peer-checked:text-orange-700 peer-checked:border-orange-200" },
                                                 { label: "Growth", slug: "growth", color: "peer-checked:bg-sky-50 peer-checked:text-sky-700 peer-checked:border-sky-200" },
@@ -388,7 +470,7 @@ export default function PricingManagementPage() {
                                     </div>
 
                                     {/* Operations Column (col-span 2) */}
-                                    <div className="lg:col-span-2 flex items-center justify-end gap-2.5">
+                                    <div className="lg:col-span-2 flex items-center justify-end gap-2.5 pt-4 border-t border-slate-100 lg:pt-0 lg:border-t-0 w-full lg:w-auto">
                                         {/* Edit Button */}
                                         <button
                                             onClick={() => { setEditingService(service); setShowModal(true); }}
@@ -707,17 +789,17 @@ function ServiceModal({ service, onClose, onSuccess }: { service: ServiceRecord 
 
                 {/* Main Interaction Area */}
                 <div className="flex-grow flex flex-col bg-white min-w-0">
-                    <div className="flex items-center justify-between p-8 border-b border-slate-100 shrink-0">
+                    <div className="flex items-center justify-between p-5 sm:p-8 border-b border-slate-100 shrink-0">
                         <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Service Specification</span>
                         <button onClick={onClose} className="p-3 bg-slate-50 hover:bg-slate-900 hover:text-white rounded-2xl transition-all">
                             <X className="w-5 h-5" />
                         </button>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto custom-scrollbar p-8 md:p-12">
+                    <div className="flex-1 overflow-y-auto custom-scrollbar p-5 sm:p-8 md:p-12">
                         <form onSubmit={handleSubmit} className="space-y-10">
                             
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-10">
                                 <div className="space-y-4">
                                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-4">Service Title</label>
                                     <input
@@ -752,7 +834,7 @@ function ServiceModal({ service, onClose, onSuccess }: { service: ServiceRecord 
                             </div>
 
                             {/* Service Icon & Image */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-10">
                                 {/* Service Icon */}
                                 <div className="space-y-4">
                                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-4 block">Service Icon</label>
@@ -781,7 +863,7 @@ function ServiceModal({ service, onClose, onSuccess }: { service: ServiceRecord 
                                 {/* Service Image */}
                                 <div className="space-y-4">
                                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-4 block">Service Card Photo</label>
-                                    <div className="flex items-stretch gap-6">
+                                    <div className="flex flex-col sm:flex-row items-stretch gap-6">
                                         <div className="relative w-28 aspect-[16/10] rounded-xl overflow-hidden bg-slate-50 border-2 border-slate-100 border-dashed flex items-center justify-center group flex-shrink-0">
                                             {formData.image ? (
                                                 <>
@@ -924,7 +1006,7 @@ function ServiceModal({ service, onClose, onSuccess }: { service: ServiceRecord 
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-10">
                                 <div className="space-y-4">
                                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-4">Service Features (Comma Separated)</label>
                                     <input
@@ -949,7 +1031,7 @@ function ServiceModal({ service, onClose, onSuccess }: { service: ServiceRecord 
                             <div className="space-y-4">
                                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-4 block">Pricing Section Inclusions</label>
                                 <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest ml-4 mb-2">Check the plans where this service should be listed as an included feature:</p>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
                                     {[
                                         { name: "Starter Plan", slug: "starter", tone: "peer-checked:bg-orange-50 peer-checked:text-orange-700 peer-checked:border-orange-200" },
                                         { name: "Growth Plan", slug: "growth", tone: "peer-checked:bg-sky-50 peer-checked:text-sky-700 peer-checked:border-sky-200" },
@@ -971,7 +1053,7 @@ function ServiceModal({ service, onClose, onSuccess }: { service: ServiceRecord 
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-10">
                                 <div className="space-y-4">
                                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-4">Min Price ($)</label>
                                     <input
@@ -994,7 +1076,7 @@ function ServiceModal({ service, onClose, onSuccess }: { service: ServiceRecord 
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-10">
                                 <div className="space-y-4">
                                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-900 ml-4">Sort Order</label>
                                     <input
@@ -1034,17 +1116,17 @@ function ServiceModal({ service, onClose, onSuccess }: { service: ServiceRecord 
                     </div>
 
                     {/* Sticky Footer */}
-                    <div className="p-8 md:px-12 bg-slate-50/50 border-t border-slate-100 flex justify-end gap-5 shrink-0">
+                    <div className="p-5 sm:p-8 md:px-12 bg-slate-50/50 border-t border-slate-100 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-5 shrink-0">
                         <button
                             type="button" onClick={onClose}
-                            className="px-8 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-455 hover:text-red-500 transition-all"
+                            className="w-full sm:w-auto px-8 py-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-455 hover:text-red-500 transition-all text-center"
                         >
                             Abort Configuration
                         </button>
                         <button
                             disabled={loading || uploadingImage || uploadingBanner || uploadingDemo}
                             onClick={handleSubmit}
-                            className="inline-flex items-center justify-center gap-3 bg-slate-950 text-white px-12 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-orange-600 transition-all shadow-2xl shadow-slate-300 active:scale-95 disabled:opacity-50 min-w-[220px]"
+                            className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-slate-950 text-white px-12 py-4 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-orange-600 transition-all shadow-2xl shadow-slate-300 active:scale-95 disabled:opacity-50 min-w-0 sm:min-w-[220px]"
                         >
                             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
                             <span>{loading ? "Calibrating..." : service ? "Update Service" : "Confirm Onboarding"}</span>

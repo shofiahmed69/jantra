@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
     ArrowRight,
@@ -126,7 +126,22 @@ const FAQS = [
     { q: "Can we migrate or scale plans later?", a: "Absolutely. You can start with a MVP and upgrade features or scale infrastructure as your needs evolve." }
 ];
 
-const renderServiceBanner = (slug: string) => {
+type CurrencyCode = "USD" | "EUR" | "BDT";
+
+const resolveServiceVisualUrl = (service: any) => {
+    const raw = service?.banner || service?.image || serviceImages[service?.slug] || "";
+    if (!raw) return "";
+    if (raw.startsWith("http")) return raw;
+
+    const apiBase = (process.env.NEXT_PUBLIC_API_URL || "https://jontro-backend.onrender.com/api").replace(/\/api\/?$/, "");
+    const cleanBase = apiBase.endsWith("/") ? apiBase.slice(0, -1) : apiBase;
+    const cleanPath = raw.startsWith("/") ? raw : `/${raw}`;
+    return `${cleanBase}${cleanPath}`;
+};
+
+const renderServiceBanner = (service: any) => {
+    const slug = service?.slug || "";
+
     return (
         <div className="relative w-full h-full bg-[#FCFAF8] flex items-center justify-center overflow-hidden transition-transform duration-500">
             {/* Ambient Background Grid Patterns */}
@@ -218,6 +233,7 @@ const renderServiceBanner = (slug: string) => {
 
 export default function PricingPage() {
     const [services, setServices] = useState<any[]>(FALLBACK_SERVICES);
+    const [readyVisuals, setReadyVisuals] = useState<Record<string, string>>({});
     const [selectedService, setSelectedService] = useState<any | null>(null);
     const [leadName, setLeadName] = useState("");
     const [leadEmail, setLeadEmail] = useState("");
@@ -226,6 +242,7 @@ export default function PricingPage() {
     const [leadBudget, setLeadBudget] = useState("");
     const [submitStatus, setSubmitStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
     const [errorMessage, setErrorMessage] = useState("");
+    const [currency, setCurrency] = useState<CurrencyCode>("USD");
 
     const handleSelectPlan = (service: any) => {
         setSelectedService(service);
@@ -291,6 +308,99 @@ export default function PricingPage() {
         loadDynamicServices();
     }, []);
 
+    useEffect(() => {
+        const persisted = localStorage.getItem("jantra_currency_pref") as CurrencyCode | null;
+        if (persisted === "USD" || persisted === "EUR" || persisted === "BDT") {
+            setCurrency(persisted);
+            return;
+        }
+
+        const cookieMatch = document.cookie.match(/(?:^|;\s*)currency_pref_auto=(USD|EUR|BDT)/);
+        if (cookieMatch?.[1]) {
+            setCurrency(cookieMatch[1] as CurrencyCode);
+        }
+    }, []);
+
+    const setCurrencyAndPersist = (next: CurrencyCode) => {
+        setCurrency(next);
+        localStorage.setItem("jantra_currency_pref", next);
+    };
+
+    useEffect(() => {
+        let cancelled = false;
+
+        // Keep existing successful visuals and only add new successfully preloaded URLs.
+        const nextReady: Record<string, string> = {};
+        const tasks = services.map((service) => {
+            const visualUrl = resolveServiceVisualUrl(service);
+            if (!visualUrl || !service?.id) return Promise.resolve();
+
+            return new Promise<void>((resolve) => {
+                const image = new window.Image();
+                image.onload = () => {
+                    if (!cancelled) nextReady[service.id] = visualUrl;
+                    resolve();
+                };
+                image.onerror = () => resolve();
+                image.src = visualUrl;
+            });
+        });
+
+        Promise.all(tasks).then(() => {
+            if (cancelled) return;
+            setReadyVisuals((prev) => ({ ...prev, ...nextReady }));
+        });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [services]);
+
+    const formatCompactPrice = (amount: number, code: CurrencyCode) => {
+        if (code === "BDT") {
+            if (amount >= 100000) {
+                const lakh = amount / 100000;
+                const value = Number.isInteger(lakh) ? lakh.toString() : lakh.toFixed(1);
+                return `৳${value}L`;
+            }
+            return new Intl.NumberFormat("en-BD", {
+                style: "currency",
+                currency: "BDT",
+                maximumFractionDigits: 0,
+            }).format(amount);
+        }
+
+        const locale = code === "EUR" ? "de-DE" : "en-US";
+        const symbol = code === "EUR" ? "€" : "$";
+        if (amount >= 1000) {
+            const k = amount / 1000;
+            const value = Number.isInteger(k) ? k.toString() : k.toFixed(1);
+            return `${symbol}${value}k`;
+        }
+        return new Intl.NumberFormat(locale, {
+            style: "currency",
+            currency: code,
+            maximumFractionDigits: 0,
+        }).format(amount);
+    };
+
+    const getCurrencyRange = (service: any, code: CurrencyCode): { min: number | null; max: number | null } => {
+        const pick = () => {
+            if (code === "USD") return { min: service.priceMinUsd, max: service.priceMaxUsd };
+            if (code === "EUR") return { min: service.priceMinEur, max: service.priceMaxEur };
+            return { min: service.priceMinBdt, max: service.priceMaxBdt };
+        };
+
+        const primary = pick();
+        const validPrimary = primary.min !== null || primary.max !== null;
+        if (validPrimary) return { min: primary.min ?? null, max: primary.max ?? null };
+
+        return {
+            min: service.priceMinUsd ?? service.priceMin ?? null,
+            max: service.priceMaxUsd ?? service.priceMax ?? null,
+        };
+    };
+
     return (
         <main className="w-full min-h-screen bg-slate-50/50 pb-20 selection:bg-orange-100">
             <div className="max-w-[1240px] mx-auto px-4 sm:px-6 pt-28 sm:pt-36">
@@ -304,11 +414,28 @@ export default function PricingPage() {
                     <p className="text-slate-500 text-sm font-medium leading-relaxed max-w-lg">
                         Choose a pricing tier that aligns with your product goals. No hidden fees, clear deliverables, and robust code quality.
                     </p>
+                    <div className="mt-5 inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white p-1.5 shadow-sm">
+                        {(["USD", "EUR", "BDT"] as CurrencyCode[]).map((code) => (
+                            <button
+                                key={code}
+                                onClick={() => setCurrencyAndPersist(code)}
+                                className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-colors ${
+                                    currency === code
+                                        ? "bg-orange-600 text-white"
+                                        : "text-slate-500 hover:bg-slate-100"
+                                }`}
+                            >
+                                {code}
+                            </button>
+                        ))}
+                    </div>
                 </div>
 
                 {/* ── PRICING GRID ── */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
                     {services.map((service, i) => {
+                        const range = getCurrencyRange(service, currency);
+                        const hasAnyPrice = range.min !== null || range.max !== null;
                         return (
                             <motion.div
                                 key={service.id}
@@ -323,7 +450,14 @@ export default function PricingPage() {
                                 <div>
                                     {/* Service Photo Banner (Proper 16:9 Aspect Ratio) */}
                                     <div className="relative w-full aspect-[16/9] overflow-hidden rounded-[1.25rem] mb-6 border border-slate-200/10 bg-slate-950 shadow-inner shrink-0">
-                                        {renderServiceBanner(service.slug)}
+                                        {readyVisuals[service.id] ? (
+                                            <img
+                                                src={readyVisuals[service.id]}
+                                                alt={service.title || "Service Banner"}
+                                                className="w-full h-full object-cover"
+                                                loading="lazy"
+                                            />
+                                        ) : renderServiceBanner(service)}
                                     </div>
 
                                     {/* Minimal Side-by-Side Header */}
@@ -335,11 +469,11 @@ export default function PricingPage() {
                                             <span className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest block mt-0.5">Estimated Cost</span>
                                         </div>
                                         <div className="text-right shrink-0">
-                                            {service.priceMin || service.priceMax ? (
+                                            {hasAnyPrice ? (
                                                 <span className="text-xl font-extrabold tracking-tight text-emerald-600 leading-none">
-                                                    {service.priceMin ? `$${(service.priceMin / 1000).toFixed(0)}k` : ""}
-                                                    {service.priceMin && service.priceMax ? "-" : ""}
-                                                    {service.priceMax ? `$${(service.priceMax / 1000).toFixed(0)}k` : ""}
+                                                    {range.min !== null ? formatCompactPrice(range.min, currency) : ""}
+                                                    {range.min !== null && range.max !== null ? "-" : ""}
+                                                    {range.max !== null ? formatCompactPrice(range.max, currency) : ""}
                                                 </span>
                                             ) : (
                                                 <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Custom Pricing</span>
@@ -450,13 +584,18 @@ export default function PricingPage() {
                                 </h3>
                                 <p className="text-slate-400 text-[10px] font-bold uppercase tracking-wide mt-1.5 flex items-center gap-1.5">
                                     Estimated Cost: <span className="font-extrabold text-emerald-600">
-                                        {selectedService.priceMin || selectedService.priceMax ? (
+                                        {(() => {
+                                            const range = getCurrencyRange(selectedService, currency);
+                                            const hasAny = range.min !== null || range.max !== null;
+                                            if (!hasAny) return "Custom Pricing";
+                                            return (
                                             <>
-                                                {selectedService.priceMin ? `$${(selectedService.priceMin / 1000).toFixed(0)}k` : ""}
-                                                {selectedService.priceMin && selectedService.priceMax ? " - " : ""}
-                                                {selectedService.priceMax ? `$${(selectedService.priceMax / 1000).toFixed(0)}k` : ""}
+                                                {range.min !== null ? formatCompactPrice(range.min, currency) : ""}
+                                                {range.min !== null && range.max !== null ? " - " : ""}
+                                                {range.max !== null ? formatCompactPrice(range.max, currency) : ""}
                                             </>
-                                        ) : "Custom Pricing"}
+                                            );
+                                        })()}
                                     </span>
                                 </p>
                             </div>
@@ -544,7 +683,7 @@ export default function PricingPage() {
                                                     <input
                                                         required
                                                         type="text"
-                                                        placeholder={selectedService.priceMin || selectedService.priceMax ? `e.g. $${(selectedService.priceMin / 1000).toFixed(0)}k - $${(selectedService.priceMax / 1000).toFixed(0)}k` : "e.g. $10,000"}
+                                                        placeholder="e.g. Budget range in your preferred currency"
                                                         value={leadBudget}
                                                         onChange={(e) => setLeadBudget(e.target.value)}
                                                         className="w-full bg-slate-50 border border-slate-200/80 rounded-xl px-4 py-3 text-[10px] font-bold uppercase tracking-wider outline-none focus:bg-white focus:ring-1 focus:ring-orange-500 transition-all"
