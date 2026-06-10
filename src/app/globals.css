@@ -36,11 +36,6 @@
   --animate-marquee-slow: marquee 120s linear infinite;
   --animate-fade-up: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   --animate-scroll: scroll 2s infinite;
-  --animate-float-slow: float 8s ease-in-out infinite;
-  --animate-float-medium: float 6s ease-in-out infinite;
-  --animate-float-fast: float 4s ease-in-out infinite;
-  --animate-spin-slow: spin 12s linear infinite;
-  --animate-pulse-soft: pulseSoft 4s ease-in-out infinite;
 }
 
 body {
@@ -59,12 +54,7 @@ h1, h2, h3, h4, h5, h6 {
 
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
-}
-
-@keyframes pulseSoft {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.7; }
+  50% { transform: translateY(-15px); }
 }
 
 @keyframes marquee {
@@ -95,13 +85,11 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Premium Layout Utilities */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(40px);
-  -webkit-backdrop-filter: blur(40px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 
-    0 8px 32px 0 rgba(251, 146, 60, 0.15),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
 }
 
 .card-premium {
