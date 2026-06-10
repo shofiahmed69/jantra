@@ -264,7 +264,7 @@ export const homeTestimonials: TestimonialItem[] = [
   },
   {
     quote: "The difference was clarity. We always knew what was being built, what it solved, and what came next.",
-    author: "Daniel Kim",
+    author: "Tanvir Ahmed",
     role: "Founder, SaaS Startup",
     avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80",
     company: "OrbitOps",

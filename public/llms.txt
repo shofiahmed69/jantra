@@ -1,0 +1,23 @@
+# Jantrasoft
+
+Jantrasoft is a specialized software engineering and design agency that builds high-performance technical solutions for global scale. We engineer systems that fit your exact business logic.
+
+## Core Services
+
+- **Custom Software Development:** Bespoke software solutions built for scale and performance.
+- **Mobile App Development:** High-performance native and cross-platform mobile applications for iOS and Android.
+- **AI Agent Development:** Autonomous AI agents that execute complex business tasks 24/7. Transform operational efficiency with LLMs and RAG pipelines.
+- **Workflow Automation:** Eliminate manual operational bottlenecks with intelligent, end-to-end automated workflows (n8n, Make, custom scripts).
+- **SaaS Product Development:** Scalable Software-as-a-Service platforms designed for massive parallel tenant usage.
+- **Cloud API Systems:** Robust backend systems, REST/GraphQL APIs, and database architecture to connect and power your digital ecosystem.
+- **UI/UX Design:** Human-centered interface and experience design focused on clarity, conversion, and product usability.
+
+## Value Proposition
+- High-performance technical solutions designed for global scale.
+- We provide complete source code ownership, full deployment manifests, API documentation, and direct developer training during handover.
+- 2-week agile sprints with constant feedback loops.
+- Rigorous security and quality assurance (QA) built into every deployment.
+
+## Contact Information
+- Website: https://jantrasoft.online
+- Contact Page: https://jantrasoft.online/contact

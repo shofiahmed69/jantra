@@ -90,15 +90,6 @@ const FALLBACK_SERVICES = [
     }
 ];
 
-const serviceImages: Record<string, string> = {
-    "custom-software-development": "/custom_software.png",
-    "ai-agent-development": "/ai_agents.png",
-    "workflow-automation": "/workflow_auto.png",
-    "saas-product-development": "/saas_dev.png",
-    "mobile-app-development": "/mobile_dev.png",
-    "cloud-api-systems": "/cloud_systems.png"
-};
-
 const serviceIcons: Record<string, any> = {
     "custom-software-development": Code,
     "ai-agent-development": Bot,
@@ -129,12 +120,11 @@ const FAQS = [
 type CurrencyCode = "USD" | "EUR" | "BDT";
 
 const resolveServiceVisualUrl = (service: any) => {
-    const localFallback = serviceImages[service?.slug] || "";
-    const raw = service?.banner || service?.image || localFallback;
-    if (!raw) return "";
+    const raw = service?.banner || service?.image;
+    if (!raw) {
+        return "";
+    }
     if (raw.startsWith("http")) return raw;
-    // Keep built-in pricing card assets on the frontend origin.
-    if (raw === localFallback) return raw;
 
     const apiBase = (process.env.NEXT_PUBLIC_API_URL || "https://jontro-backend.onrender.com/api").replace(/\/api\/?$/, "");
     const cleanBase = apiBase.endsWith("/") ? apiBase.slice(0, -1) : apiBase;
@@ -235,7 +225,7 @@ const renderServiceBanner = (service: any) => {
 };
 
 export default function PricingPage() {
-    const [services, setServices] = useState<any[]>(FALLBACK_SERVICES);
+    const [services, setServices] = useState<any[]>([]);
     const [loadedVisuals, setLoadedVisuals] = useState<Record<string, boolean>>({});
     const [failedVisuals, setFailedVisuals] = useState<Record<string, boolean>>({});
     const [selectedService, setSelectedService] = useState<any | null>(null);
@@ -247,6 +237,26 @@ export default function PricingPage() {
     const [submitStatus, setSubmitStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
     const [errorMessage, setErrorMessage] = useState("");
     const [currency, setCurrency] = useState<CurrencyCode>("USD");
+    const [submittingServiceId, setSubmittingServiceId] = useState<string | null>(null);
+    const [submittedServiceIds, setSubmittedServiceIds] = useState<Record<string, boolean>>({});
+
+    const handleSelectPlanInstant = async (service: any) => {
+        setSubmittingServiceId(service.id);
+        try {
+            await api.post("/leads", {
+                name: "Instant Plan Selection",
+                email: "instant@jantra.online",
+                service: service.title,
+                description: `User clicked Select Plan button for ${service.title} on Pricing Page.`
+            });
+            setSubmittedServiceIds(prev => ({ ...prev, [service.id]: true }));
+        } catch (error) {
+            console.error("Failed to submit lead:", error);
+            alert("Failed to submit request. Please try again.");
+        } finally {
+            setSubmittingServiceId(null);
+        }
+    };
 
     const handleSelectPlan = (service: any) => {
         setSelectedService(service);
@@ -259,26 +269,26 @@ export default function PricingPage() {
         setLeadBudget("");
     };
 
-    const handleSubmitLead = async (e: React.FormEvent) => {
+    const handleSubmitLead = (e: React.FormEvent) => {
         e.preventDefault();
-        setSubmitStatus("submitting");
+        
+        const payload = {
+            name: leadName,
+            email: leadEmail,
+            company: leadCompany,
+            service: selectedService.title,
+            budget: leadBudget,
+            description: leadDescription,
+        };
+
+        // Instantly transition to the success view in the UI
+        setSubmitStatus("success");
         setErrorMessage("");
 
-        try {
-            await api.post("/leads", {
-                name: leadName,
-                email: leadEmail,
-                company: leadCompany,
-                service: selectedService.title,
-                budget: leadBudget,
-                description: leadDescription,
-            });
-            setSubmitStatus("success");
-        } catch (error: any) {
-            console.error("Failed to submit plan request:", error);
-            setSubmitStatus("error");
-            setErrorMessage(error?.response?.data?.error || error?.response?.data?.message || "Failed to submit plan request. Please try again.");
-        }
+        // Submit to the backend asynchronously in the background
+        api.post("/leads", payload).catch((error: any) => {
+            console.error("Failed to submit plan request in background:", error);
+        });
     };
 
     useEffect(() => {
@@ -304,9 +314,12 @@ export default function PricingPage() {
                 const servicesData = response.data?.data || response.data || [];
                 if (Array.isArray(servicesData) && servicesData.length > 0) {
                     setServices(servicesData);
+                } else {
+                    setServices(FALLBACK_SERVICES);
                 }
             } catch (error) {
                 console.error("Failed to load services for pricing page:", error);
+                setServices(FALLBACK_SERVICES);
             }
         };
         loadDynamicServices();
@@ -386,7 +399,6 @@ export default function PricingPage() {
                     {services.map((service, i) => {
                         const range = getCurrencyRange(service, currency);
                         const hasAnyPrice = range.min !== null || range.max !== null;
-                        const localVisual = serviceImages[service.slug] || "";
                         const visualUrl = resolveServiceVisualUrl(service);
                         const canRenderImage = Boolean(visualUrl) && !failedVisuals[service.id];
                         return (
@@ -403,34 +415,20 @@ export default function PricingPage() {
                                 <div>
                                     {/* Service Photo Banner (Proper 16:9 Aspect Ratio) */}
                                     <div className="relative w-full aspect-[16/9] overflow-hidden rounded-[1.25rem] mb-6 border border-slate-200/10 bg-slate-950 shadow-inner shrink-0">
-                                        {localVisual ? (
-                                            <img
-                                                src={localVisual}
-                                                alt=""
-                                                aria-hidden="true"
-                                                className="absolute inset-0 w-full h-full object-cover"
-                                                loading="eager"
-                                            />
-                                        ) : (
-                                            renderServiceBanner(service)
-                                        )}
-                                        {canRenderImage && (
+                                        {canRenderImage ? (
                                             <img
                                                 src={visualUrl}
                                                 alt={service.title || "Service Banner"}
-                                                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-150 ${
-                                                    loadedVisuals[service.id] ? "opacity-100" : "opacity-0"
-                                                }`}
+                                                className="absolute inset-0 w-full h-full object-cover"
                                                 loading={i < 3 ? "eager" : "lazy"}
                                                 fetchPriority={i < 3 ? "high" : "auto"}
                                                 decoding="async"
-                                                onLoad={() =>
-                                                    setLoadedVisuals((prev) => ({ ...prev, [service.id]: true }))
-                                                }
                                                 onError={() =>
                                                     setFailedVisuals((prev) => ({ ...prev, [service.id]: true }))
                                                 }
                                             />
+                                        ) : (
+                                            renderServiceBanner(service)
                                         )}
                                     </div>
 

@@ -72,8 +72,24 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
         notFound();
     }
 
+    const articleSchema = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": post.title,
+        "image": post.image,
+        "author": {
+            "@type": "Person",
+            "name": post.author.name
+        },
+        "datePublished": post.publishedAt,
+    };
+
     return (
         <main className="relative w-full min-h-screen bg-white overflow-hidden pb-40">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+            />
             {/* ── BACKGROUND MONIKER ── */}
             <div className="absolute top-[5%] left-[-5%] w-[110%] overflow-hidden opacity-[0.02] pointer-events-none select-none z-0">
                 <div className="flex whitespace-nowrap animate-marquee-slow">

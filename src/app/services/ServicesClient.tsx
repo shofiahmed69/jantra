@@ -3,6 +3,8 @@
 import LottiePlayer from "@/components/LottiePlayer";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo } from "react";
 import { 
     ArrowRight, 
     Code, Smartphone, Bot, Workflow, 
@@ -38,7 +40,8 @@ const capabilitiesMap: Record<string, { features: string[]; techStack: string[] 
 };
 
 export default function ServicesPage() {
-    const services = homeServicePreview.map((s, i) => {
+    const router = useRouter();
+    const services = useMemo(() => homeServicePreview.map((s, i) => {
         const slug = s.title.toLowerCase().replace(/ & /g, '-').replace(/\s+/g, '-');
         return {
             ...s,
@@ -53,7 +56,13 @@ export default function ServicesPage() {
                   slug.includes('interface') ? Layout : Database,
             capabilities: capabilitiesMap[slug]
         };
-    });
+    }), []);
+
+    useEffect(() => {
+        for (const service of services) {
+            router.prefetch(`/services/${service.slug}`);
+        }
+    }, [router, services]);
 
     return (
         <main className="relative w-full min-h-screen bg-slate-50/50 pb-24 overflow-x-hidden selection:bg-orange-100">
@@ -88,6 +97,8 @@ export default function ServicesPage() {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: i * 0.04 }}
                             className="group relative p-6 rounded-[2rem] bg-white border border-slate-200/60 shadow-lg shadow-slate-100/30 hover:border-orange-500/25 hover:shadow-2xl hover:shadow-orange-500/5 hover:-translate-y-1.5 flex flex-col justify-between transition-all duration-300 h-full overflow-hidden"
+                            onMouseEnter={() => router.prefetch(`/services/${service.slug}`)}
+                            onTouchStart={() => router.prefetch(`/services/${service.slug}`)}
                         >
                             {/* Subtle background glow on card hover */}
                             <div className="absolute inset-0 -z-10 bg-gradient-to-br from-orange-50/0 via-transparent to-orange-500/0 group-hover:from-orange-500/1 group-hover:to-orange-500/3 transition-all duration-500" />

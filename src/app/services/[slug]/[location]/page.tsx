@@ -1,33 +1,40 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { 
-    ArrowLeft, ArrowRight, CheckCircle2, LayoutTemplate, Layers, Cpu, ShieldCheck, Mail,
-    Code2, Smartphone, Terminal, Activity, FileJson, Sparkles, Workflow, Zap, Database, Cloud, Palette, ChevronDown
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-react";
 import LottiePlayer from "@/components/LottiePlayer";
 import React from "react";
 import { serviceDataMap, ServiceDetail, IconHelper } from "@/data/services";
+import { notFound } from "next/navigation";
+
+export const locations = ["new-york", "san-francisco", "london", "austin", "toronto", "berlin"];
 
 export const revalidate = 300;
 
 export function generateStaticParams() {
-    return Object.keys(serviceDataMap).map((slug) => ({ slug }));
+    const params: { slug: string; location: string }[] = [];
+    Object.keys(serviceDataMap).forEach((slug) => {
+        locations.forEach((location) => {
+            params.push({ slug, location });
+        });
+    });
+    return params;
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-    const { slug } = await params;
+export async function generateMetadata({ params }: { params: Promise<{ slug: string; location: string }> }): Promise<Metadata> {
+    const { slug, location } = await params;
     const service = serviceDataMap[slug];
 
-    if (!service) {
+    if (!service || !locations.includes(location)) {
         return {
             title: "Services",
             description: "Custom software, SaaS, AI agents, and workflow automation services by JANTRA.",
         };
     }
 
-    const title = `${service.title} Service | JANTRA`;
-    const description = service.description;
-    const url = `https://jantrasoft.online/services/${slug}`;
+    const formattedLocation = location.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
+    const title = `${service.title} in ${formattedLocation} | JANTRA`;
+    const description = `Top-tier ${service.title.toLowerCase()} services in ${formattedLocation}. ${service.description}`;
+    const url = `https://jantrasoft.online/services/${slug}/${location}`;
 
     return {
         title,
@@ -47,32 +54,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     };
 }
 
-export default async function ServiceDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-    const { slug } = await params;
+export default async function LocationServiceDetailPage({ params }: { params: Promise<{ slug: string; location: string }> }) {
+    const { slug, location } = await params;
+    const service = serviceDataMap[slug];
 
-    const service: ServiceDetail = serviceDataMap[slug] || {
-        title: "Expert Engineering",
-        category: "Core Service",
-        lottie: "/lottie/cloud.json",
-        description: "High-performance technical solutions designed for global scale.",
-        descBg: "bg-slate-50",
-        longDescription: "High-performance technical solutions designed for global scale.",
-        deliverables: [
-            { title: "Discovery", desc: "Detailed system diagrams & data maps.", icon: "layout" },
-            { title: "Building", desc: "Production code with full documentation.", icon: "layers" },
-            { title: "Scaling", desc: "Infrastructure pipelines & CI/CD workflows.", icon: "shield" }
-        ],
-        process: [
-            { num: "01", title: "Architecture Design", desc: "Mapping business logic into technical schemas." },
-            { num: "02", title: "Agile Development", desc: "2-week sprints with constant feedback loops." },
-            { num: "03", title: "QA & Security", desc: "Automated testing and rigorous code audits." },
-            { num: "04", title: "Deployment", desc: "Smooth go-live with continuous support." }
-        ],
-        techStack: ["React", "Node.js", "Python", "AWS", "PostgreSQL", "Docker"],
-        faqs: [
-            { question: "What is your typical project timeline?", answer: "Project timelines vary depending on complexity, but an average initial phase takes between 4 to 8 weeks to design, develop, and launch." }
-        ]
-    };
+    if (!service || !locations.includes(location)) {
+        notFound();
+    }
+
+    const formattedLocation = location.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
 
     const faqSchema = {
         "@context": "https://schema.org",
@@ -105,15 +95,15 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
             <div className="max-w-[1240px] mx-auto px-4 sm:px-6 pt-28 sm:pt-40">
                 
                 {/* ── BREADCRUMB ── */}
-                <Link href="/services" className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-orange-600 transition-colors mb-12">
-                     <ArrowLeft className="w-3.5 h-3.5" /> Back to Services
+                <Link href={`/services/${slug}`} className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-orange-600 transition-colors mb-12">
+                     <ArrowLeft className="w-3.5 h-3.5" /> Back to {service.title}
                 </Link>
 
                 {/* ── HERO ── */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center mb-24 sm:mb-32">
                     <div className="lg:col-span-7 space-y-8 text-left">
                          <div className="flex items-center gap-3 flex-wrap">
-                            <span className="text-[9px] font-black uppercase tracking-widest text-orange-600 bg-orange-50 px-4 py-2 rounded-full border border-orange-100">{service.category}</span>
+                            <span className="text-[9px] font-black uppercase tracking-widest text-orange-600 bg-orange-50 px-4 py-2 rounded-full border border-orange-100">{service.category} in {formattedLocation}</span>
                             {service.demoUrl && (
                                 <a 
                                     href={service.demoUrl} 
@@ -127,10 +117,10 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
                             <div className="w-12 h-[1px] bg-slate-200" />
                          </div>
                          <h1 className="text-4xl sm:text-6xl font-black text-slate-900 tracking-tight leading-none uppercase">
-                             {service.title}<span className="text-orange-500">.</span>
+                             {service.title} in {formattedLocation}<span className="text-orange-500">.</span>
                          </h1>
                          <p className="text-slate-500 text-sm sm:text-base font-medium leading-relaxed max-w-xl">
-                             {service.longDescription || service.description}
+                             Top-tier {service.title.toLowerCase()} services tailored for businesses in {formattedLocation}. {service.longDescription || service.description}
                          </p>
                     </div>
 
@@ -148,7 +138,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
                 <div className="space-y-8 mb-28 sm:mb-36">
                     <div className="text-left max-w-xl">
                         <span className="text-orange-600 font-bold tracking-widest text-[9px] uppercase mb-2 block">Key Capabilities</span>
-                        <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight uppercase">What We Deliver<span className="text-orange-500">.</span></h2>
+                        <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight uppercase">What We Deliver in {formattedLocation}<span className="text-orange-500">.</span></h2>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
                         {service.deliverables.map((del, i) => (
@@ -170,7 +160,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
                     <div className="lg:col-span-4 text-left">
                         <span className="text-orange-600 font-bold tracking-widest text-[9px] uppercase mb-2 block">Methodology</span>
                         <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight uppercase leading-tight mb-4">Our <br className="hidden lg:block"/>Process.</h2>
-                        <p className="text-slate-500 text-xs sm:text-sm font-medium leading-relaxed max-w-sm">We operate in highly organized, iterative sprints to ensure maximum visibility, transparency, and product alignment.</p>
+                        <p className="text-slate-500 text-xs sm:text-sm font-medium leading-relaxed max-w-sm">We operate in highly organized, iterative sprints to ensure maximum visibility, transparency, and product alignment for our {formattedLocation} clients.</p>
                     </div>
                     <div className="lg:col-span-8 flex flex-col gap-4">
                         {service.process.map((step, i) => (
@@ -211,7 +201,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
                          {/* Ambient overlay grid pattern */}
                          <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:16px_16px] pointer-events-none select-none opacity-40" />
                          <div className="space-y-4 relative z-10">
-                            <span className="text-[9px] font-black uppercase tracking-widest text-orange-100 bg-orange-700/30 px-3.5 py-1.5 rounded-full border border-white/10 inline-block mb-2">Instant Consultation</span>
+                            <span className="text-[9px] font-black uppercase tracking-widest text-orange-100 bg-orange-700/30 px-3.5 py-1.5 rounded-full border border-white/10 inline-block mb-2">{formattedLocation} Consultation</span>
                             <h2 className="text-3xl font-black tracking-tight uppercase leading-none">Ready to Build?</h2>
                             <p className="text-orange-50 text-xs sm:text-sm font-medium leading-relaxed max-w-sm">
                                 Schedule a brief discovery call to explore your project architecture and get a comprehensive scope of work.
@@ -254,7 +244,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
                 <div className="max-w-3xl mx-auto border-t border-slate-200/60 pt-12 text-center">
                     <span className="text-slate-400 font-bold tracking-widest text-[9px] uppercase mb-4 block">Available in Major Tech Hubs</span>
                     <div className="flex flex-wrap justify-center gap-4">
-                        {["new-york", "san-francisco", "london", "austin", "toronto", "berlin"].map((city) => (
+                        {locations.filter(l => l !== location).map((city) => (
                             <Link key={city} href={`/services/${slug}/${city}`} className="text-xs font-semibold text-slate-500 hover:text-orange-600 transition-colors uppercase tracking-wide">
                                 {city.replace('-', ' ')}
                             </Link>
