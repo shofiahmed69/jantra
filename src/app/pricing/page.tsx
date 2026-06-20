@@ -415,20 +415,27 @@ export default function PricingPage() {
                                 <div>
                                     {/* Service Photo Banner (Proper 16:9 Aspect Ratio) */}
                                     <div className="relative w-full aspect-[16/9] overflow-hidden rounded-[1.25rem] mb-6 border border-slate-200/10 bg-slate-950 shadow-inner shrink-0">
-                                        {canRenderImage ? (
+                                        {/* Instant SVG Placeholder banner */}
+                                        {renderServiceBanner(service)}
+
+                                        {/* Loaded Image Overlay */}
+                                        {canRenderImage && (
                                             <img
                                                 src={visualUrl}
                                                 alt={service.title || "Service Banner"}
-                                                className="absolute inset-0 w-full h-full object-cover"
+                                                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-200 z-30 ${
+                                                    loadedVisuals[service.id] ? "opacity-100" : "opacity-0"
+                                                }`}
                                                 loading={i < 3 ? "eager" : "lazy"}
                                                 fetchPriority={i < 3 ? "high" : "auto"}
                                                 decoding="async"
+                                                onLoad={() =>
+                                                    setLoadedVisuals((prev) => ({ ...prev, [service.id]: true }))
+                                                }
                                                 onError={() =>
                                                     setFailedVisuals((prev) => ({ ...prev, [service.id]: true }))
                                                 }
                                             />
-                                        ) : (
-                                            renderServiceBanner(service)
                                         )}
                                     </div>
 

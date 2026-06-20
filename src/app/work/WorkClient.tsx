@@ -148,13 +148,14 @@ export default function WorkPage({ initialProjects }: WorkClientProps) {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                         {filteredProjects.map((project, i) => {
                             const thumbUrl = getThumbnailUrl(project);
+                            const category = Array.isArray(project.category) ? project.category[0] : project.category;
                             return (
                                 <motion.article 
                                     key={project.id}
-                                    initial={{ opacity: 0, y: 10 }}
+                                    initial={{ opacity: 0, y: 15 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.4 }}
-                                    className="group flex flex-col bg-white border border-slate-100 rounded-2xl p-4 hover:border-slate-200 hover:shadow-xl hover:shadow-slate-900/5 transition-all duration-500 h-full"
+                                    transition={{ type: "spring", stiffness: 95, damping: 14, delay: i * 0.04 }}
+                                    className="group flex flex-col bg-white border border-slate-100 hover:border-slate-200/80 rounded-2xl p-3 hover:shadow-[0_15px_45px_rgba(249,115,22,0.03)] active:scale-[0.995] transition-all duration-500 h-full"
                                     onMouseEnter={() => prefetchProject(project)}
                                     onTouchStart={() => prefetchProject(project)}
                                     data-project-slug={project.slug}
@@ -166,43 +167,65 @@ export default function WorkPage({ initialProjects }: WorkClientProps) {
                                         cardRefs.current.set(project.slug, node);
                                     }}
                                 >
-                                    <Link href={`/work/${project.slug}`} prefetch className="flex flex-col h-full">
-                                    <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-slate-900 mb-5 group-hover:shadow-md transition-all duration-500">
-                                        {thumbUrl ? (
-                                            <Image
-                                                src={thumbUrl}
-                                                alt={project.title}
-                                                fill
-                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                                priority={i < 6}
-                                                className="object-cover transition-transform duration-700 group-hover:scale-105"
-                                            />
-                                        ) : (
-                                            <div className="w-full h-full flex items-center justify-center text-white/5 font-black text-5xl uppercase">Jantra</div>
-                                        )}
-                                        <div className="absolute top-4 left-4">
-                                             <span className="px-4 py-1.5 rounded-full bg-white/95 backdrop-blur-md text-[8px] font-extrabold uppercase tracking-widest text-slate-950 shadow-sm border border-white/50">
-                                                 {Array.isArray(project.category) ? project.category[0] : project.category}
-                                             </span>
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-3 flex-1 flex flex-col justify-between">
-                                        <div className="space-y-2">
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-6 h-[1px] bg-slate-200" />
-                                                <span className="text-[9px] font-bold text-orange-600 uppercase tracking-widest">Case Study #{i + 1}</span>
+                                    <Link href={`/work/${project.slug}`} prefetch className="flex flex-col h-full justify-between">
+                                        <div>
+                                            {/* Compact 16:9 Image Box with ambient orange glow */}
+                                            <div className="relative mb-3.5">
+                                                <div className="absolute inset-0 bg-gradient-to-tr from-orange-600 to-orange-400 blur-md opacity-0 group-hover:opacity-20 transition-opacity duration-500 rounded-xl -z-10" />
+                                                <div className="relative aspect-[16/9] rounded-xl overflow-hidden bg-slate-950 transition-all duration-500">
+                                                    {thumbUrl ? (
+                                                        <>
+                                                            {/* Blurred backdrop background */}
+                                                            <Image
+                                                                src={thumbUrl}
+                                                                alt=""
+                                                                fill
+                                                                aria-hidden="true"
+                                                                className="object-cover blur-md opacity-25 scale-105 select-none pointer-events-none"
+                                                            />
+                                                            <Image
+                                                                src={thumbUrl}
+                                                                alt={project.title}
+                                                                fill
+                                                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                                                priority={i < 6}
+                                                                className="object-contain transition-transform duration-700 ease-out group-hover:scale-[1.02] z-10"
+                                                            />
+                                                        </>
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center text-white/5 font-black text-4xl uppercase bg-slate-900">Jantra</div>
+                                                    )}
+                                                    {/* Floating Category Tag */}
+                                                    <div className="absolute top-2.5 left-2.5 z-20">
+                                                        <span className="px-2.5 py-1 rounded-md bg-white/95 backdrop-blur-md text-[7.5px] font-black uppercase tracking-widest text-slate-950 shadow-sm border border-slate-200/10">
+                                                            {category}
+                                                        </span>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight uppercase leading-tight group-hover:text-orange-600 transition-colors">{project.title}</h3>
-                                            <p className="text-slate-500 text-xs font-normal leading-relaxed line-clamp-3 normal-case tracking-normal">{project.description}</p>
+
+                                            {/* Details */}
+                                            <div className="space-y-1.5 px-1">
+                                                <div className="flex items-center gap-1.5 text-[8px] font-black uppercase tracking-widest text-orange-600">
+                                                    <span>Case Study #{i + 1}</span>
+                                                </div>
+                                                <h3 className="text-sm font-bold text-slate-900 tracking-tight uppercase leading-snug group-hover:text-orange-600 transition-colors duration-200">
+                                                    {project.title}
+                                                </h3>
+                                                {project.description && (
+                                                    <p className="text-[10px] text-slate-500 leading-relaxed line-clamp-2 mt-0.5 normal-case tracking-normal">
+                                                        {project.description}
+                                                    </p>
+                                                )}
+                                            </div>
                                         </div>
-                                        
-                                        <div className="pt-4 border-t border-slate-50">
-                                            <span className="inline-flex items-center gap-2 text-[9px] font-bold text-slate-950 uppercase tracking-widest group-hover:text-orange-600 transition-colors">
-                                                Investigate <ArrowIcon className="w-3.5 h-3.5 text-orange-600 group-hover:translate-x-1 transition-transform" />
+
+                                        {/* Action link */}
+                                        <div className="pt-3 mt-3.5 border-t border-slate-100/80 flex items-center justify-between px-1">
+                                            <span className="inline-flex items-center gap-1 text-[8.5px] font-black text-slate-950 uppercase tracking-widest group-hover:text-orange-600 transition-colors duration-200">
+                                                Investigate <ArrowIcon className="w-3 h-3 text-orange-600 group-hover:translate-x-0.5 transition-transform" />
                                             </span>
                                         </div>
-                                    </div>
                                     </Link>
                                 </motion.article>
                             );
@@ -211,13 +234,24 @@ export default function WorkPage({ initialProjects }: WorkClientProps) {
                 )}
 
                 {/* ── FOOTER CTA ── */}
-                <div className="mt-20 p-8 sm:p-12 rounded-3xl bg-slate-950 text-white flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
-                     <div className="space-y-2">
-                          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight uppercase">Genius Profile?</h2>
-                          <p className="text-white/80 text-xs sm:text-sm font-medium tracking-tight uppercase">Deploy your CV to our open archive.</p>
+                <div className="mt-20 p-6 sm:p-8 rounded-2xl bg-slate-950 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-6 relative overflow-hidden border border-slate-800 shadow-[0_20px_50px_rgba(0,0,0,0.06)] w-full">
+                     {/* Ambient glass glow */}
+                     <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 via-transparent to-orange-500/10 pointer-events-none" />
+                     <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-orange-600/10 blur-3xl rounded-full pointer-events-none" />
+                     
+                     <div className="flex items-center gap-4 relative z-10 text-left">
+                          <div className="relative shrink-0 w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
+                               <span className="w-2.5 h-2.5 rounded-full bg-orange-500 animate-ping absolute" />
+                               <span className="w-2 h-2 rounded-full bg-orange-500" />
+                          </div>
+                          <div className="space-y-0.5">
+                               <p className="text-[7.5px] font-black uppercase tracking-widest text-slate-400">Join Registry</p>
+                               <h2 className="text-xl sm:text-2xl font-black tracking-tight uppercase text-white leading-none">Genius Profile?</h2>
+                               <p className="text-[9.5px] text-slate-400 font-medium">Deploy your CV to our open archive.</p>
+                          </div>
                      </div>
-                     <Link href="/contact" className="px-8 py-4 rounded-xl bg-white text-slate-950 text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-orange-600 hover:text-white transition-all shadow-md active:scale-95">
-                        Start Registry <ArrowIcon className="w-4 h-4" />
+                     <Link href="/contact" className="px-6 py-3.5 rounded-xl bg-white text-slate-950 text-[8.5px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 hover:bg-orange-600 hover:text-white transition-all shadow-sm hover:shadow-[0_10px_25px_rgba(249,115,22,0.2)] active:scale-95 relative z-10 shrink-0">
+                        Start Registry <ArrowIcon className="w-3.5 h-3.5" />
                      </Link>
                 </div>
             </div>
