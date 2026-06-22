@@ -223,17 +223,22 @@ function PortfolioShowcase({ projects }: { projects: any[] }) {
               whileHover={{ y: -8 }}
               className="group relative flex flex-col h-full bg-white border border-slate-200/60 rounded-[2rem] p-5 hover:border-slate-300 hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.08)] transition-all duration-500"
             >
-              {/* Image Box (Aspect 4/3 & Object Cover) */}
-              <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-slate-50 border border-slate-200/40 shrink-0 mb-6 shadow-sm">
+              {/* Image Box (Aspect 16/10 & Object Contain) */}
+              <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden bg-slate-50 border border-slate-200/40 shrink-0 mb-6 shadow-sm">
+                <Image
+                  src={pOptimizedSrc}
+                  alt=""
+                  fill
+                  aria-hidden="true"
+                  className="object-cover blur-xl opacity-20 scale-110 select-none pointer-events-none transition-transform duration-750 group-hover:scale-120 z-0"
+                />
                 <Image
                   src={pOptimizedSrc}
                   alt={project.title}
                   fill
                   sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-cover scale-100 transition-transform duration-700 ease-out group-hover:scale-105 z-10"
+                  className="object-contain p-2.5 scale-[0.97] drop-shadow-md transition-transform duration-700 ease-out group-hover:scale-100 z-10"
                 />
-                {/* Image overlay glow on hover */}
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/35 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-15 pointer-events-none" />
                 
                 {/* Floating Category Tag */}
                 <div className="absolute top-3.5 left-3.5 z-20">
