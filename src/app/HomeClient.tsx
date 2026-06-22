@@ -1066,7 +1066,7 @@ export default function HomePage({ initialProjects = [] }: { initialProjects?: a
 
               <Link
                 href="/work"
-                className="hidden sm:inline-flex items-center gap-2 text-[8.5px] font-black uppercase tracking-[0.4em] text-slate-400 hover:text-orange-600 transition-colors duration-300 group shrink-0"
+                className="inline-flex items-center gap-2 text-[8.5px] font-black uppercase tracking-[0.4em] text-slate-400 hover:text-orange-600 transition-colors duration-300 group shrink-0"
               >
                 View All
                 <div className="w-6 h-6 rounded-full bg-slate-100 group-hover:bg-orange-100 flex items-center justify-center transition-colors duration-300 border border-slate-200/30">
