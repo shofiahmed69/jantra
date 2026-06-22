@@ -213,6 +213,54 @@ function PortfolioShowcase({ projects }: { projects: any[] }) {
             : pSrc;
           const category = Array.isArray(project.category) ? project.category[0] : (project.category || "Case Study");
           
+          // Categorize and style with specific themes
+          let themeColor = "from-orange-500 to-amber-500";
+          let shadowHover = "hover:shadow-[0_30px_60px_-15px_rgba(249,115,22,0.12)]";
+          let textGlow = "group-hover:text-orange-500";
+          let badgeStyle = "text-orange-600 border-orange-200 bg-orange-50/90";
+          let tagStyle = "bg-orange-50/50 text-orange-700 border-orange-200/40 hover:bg-orange-50/80";
+          let btnGradient = "group-hover:from-orange-500 group-hover:to-amber-500 group-hover:text-white";
+          let borderGlow = "group-hover:from-orange-400 group-hover:to-amber-500";
+          let radialGlow = "rgba(249, 115, 22, 0.15)";
+          
+          const catLower = category.toLowerCase();
+          if (catLower.includes("ai") || catLower.includes("ml") || catLower.includes("intelligence")) {
+            themeColor = "from-orange-500 to-red-500";
+            shadowHover = "hover:shadow-[0_30px_60px_-15px_rgba(249,115,22,0.12)]";
+            textGlow = "group-hover:text-orange-500";
+            badgeStyle = "text-orange-600 border-orange-200 bg-orange-50/90";
+            tagStyle = "bg-orange-50/50 text-orange-700 border-orange-200/40 hover:bg-orange-50/80";
+            btnGradient = "group-hover:from-orange-500 group-hover:to-red-500 group-hover:text-white";
+            borderGlow = "group-hover:from-orange-500 group-hover:to-red-500";
+            radialGlow = "rgba(249, 115, 22, 0.15)";
+          } else if (catLower.includes("saas") || catLower.includes("software") || catLower.includes("web") || catLower.includes("app")) {
+            themeColor = "from-blue-500 to-cyan-500";
+            shadowHover = "hover:shadow-[0_30px_60px_-15px_rgba(59,130,246,0.12)]";
+            textGlow = "group-hover:text-blue-500";
+            badgeStyle = "text-blue-600 border-blue-200 bg-blue-50/90";
+            tagStyle = "bg-blue-50/50 text-blue-700 border-blue-200/40 hover:bg-blue-50/80";
+            btnGradient = "group-hover:from-blue-500 group-hover:to-cyan-500 group-hover:text-white";
+            borderGlow = "group-hover:from-blue-500 group-hover:to-cyan-500";
+            radialGlow = "rgba(59, 130, 246, 0.15)";
+          } else if (catLower.includes("automation") || catLower.includes("workflow") || catLower.includes("bot") || catLower.includes("system")) {
+            themeColor = "from-purple-500 to-fuchsia-500";
+            shadowHover = "hover:shadow-[0_30px_60px_-15px_rgba(168,85,247,0.12)]";
+            textGlow = "group-hover:text-purple-500";
+            badgeStyle = "text-purple-600 border-purple-200 bg-purple-50/90";
+            tagStyle = "bg-purple-50/50 text-purple-700 border-purple-200/40 hover:bg-purple-50/80";
+            btnGradient = "group-hover:from-purple-500 group-hover:to-fuchsia-500 group-hover:text-white";
+            borderGlow = "group-hover:from-purple-500 group-hover:to-fuchsia-500";
+            radialGlow = "rgba(168, 85, 247, 0.15)";
+          }
+
+          const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            e.currentTarget.style.setProperty("--mouse-x", `${x}px`);
+            e.currentTarget.style.setProperty("--mouse-y", `${y}px`);
+          };
+
           return (
             <motion.div
               key={project.id || idx}
@@ -221,66 +269,75 @@ function PortfolioShowcase({ projects }: { projects: any[] }) {
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.6, delay: idx * 0.05 }}
               whileHover={{ y: -8 }}
-              className="group relative flex flex-col h-full bg-white border border-slate-200/60 rounded-[2rem] p-5 hover:border-slate-300 hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.08)] transition-all duration-500"
+              onMouseMove={handleMouseMove}
+              style={{
+                "--glow-color": radialGlow,
+              } as React.CSSProperties}
+              className={`group relative p-[1px] rounded-[2.2rem] bg-slate-200/60 transition-all duration-500 overflow-hidden bg-gradient-to-br from-transparent to-transparent ${borderGlow} ${shadowHover}`}
             >
-              {/* Image Box (Aspect 16/10 & Object Contain) */}
-              <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden bg-slate-50 border border-slate-200/40 shrink-0 mb-6 shadow-sm">
-                <Image
-                  src={pOptimizedSrc}
-                  alt=""
-                  fill
-                  aria-hidden="true"
-                  className="object-cover blur-xl opacity-20 scale-110 select-none pointer-events-none transition-transform duration-750 group-hover:scale-120 z-0"
-                />
-                <Image
-                  src={pOptimizedSrc}
-                  alt={project.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-contain p-2.5 scale-[0.97] drop-shadow-md transition-transform duration-700 ease-out group-hover:scale-100 z-10"
-                />
+              {/* Card Body inner container */}
+              <div className="relative w-full h-full bg-white rounded-[2.15rem] p-5 flex flex-col justify-between z-10 overflow-hidden before:absolute before:inset-0 before:rounded-[2.15rem] before:bg-[radial-gradient(400px_circle_at_var(--mouse-x,0px)_var(--mouse-y,0px),var(--glow-color),transparent)] before:opacity-0 group-hover:before:opacity-100 before:transition-opacity before:duration-500 before:pointer-events-none before:z-0">
                 
-                {/* Floating Category Tag */}
-                <div className="absolute top-3.5 left-3.5 z-20">
-                  <span className="px-3 py-1 rounded-full text-[8.5px] font-black uppercase tracking-wider backdrop-blur-md bg-white/95 text-slate-800 border border-slate-200/40 shadow-sm">
-                    {category}
-                  </span>
-                </div>
-              </div>
-
-              {/* Title & Info */}
-              <div className="flex-1 flex flex-col justify-between space-y-4 px-1">
-                <div className="space-y-3 text-left">
-                  <h3 className="text-lg font-black tracking-tight text-slate-900 group-hover:text-orange-500 transition-colors uppercase leading-none">
-                    {project.title}
-                  </h3>
+                {/* Image Box */}
+                <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden bg-slate-50 border border-slate-200/40 shrink-0 mb-6 shadow-sm z-10">
+                  <Image
+                    src={pOptimizedSrc}
+                    alt=""
+                    fill
+                    aria-hidden="true"
+                    className="object-cover blur-xl opacity-20 scale-110 select-none pointer-events-none transition-transform duration-750 group-hover:scale-120 z-0"
+                  />
+                  <Image
+                    src={pOptimizedSrc}
+                    alt={project.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-contain p-2.5 scale-[0.97] drop-shadow-md transition-transform duration-700 ease-out group-hover:scale-100 z-10"
+                  />
                   
-                  {project.tags && project.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5">
-                      {project.tags.slice(0, 3).map((tag: string, tIdx: number) => (
-                        <span key={tIdx} className="text-[7.5px] font-black uppercase tracking-widest bg-slate-50 text-slate-500 px-2.5 py-1 rounded-full border border-slate-200/50 hover:bg-slate-100 transition-colors duration-200">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                  {project.description && (
-                    <p className="text-xs leading-relaxed text-slate-500 font-medium line-clamp-2 mt-2">
-                      {project.description}
-                    </p>
-                  )}
+                  {/* Floating Category Tag */}
+                  <div className="absolute top-3.5 left-3.5 z-20">
+                    <span className={`px-3 py-1 rounded-full text-[8.5px] font-black uppercase tracking-wider backdrop-blur-md border border-slate-200/20 shadow-sm ${badgeStyle}`}>
+                      {category}
+                    </span>
+                  </div>
                 </div>
 
-                {/* Explore Case Study CTA Row */}
-                <div className="pt-5 border-t border-slate-100">
-                  <Link 
-                    href={`/work/${project.slug}`} 
-                    className="inline-flex items-center justify-center gap-2 text-[9px] font-black uppercase tracking-widest text-slate-900 bg-slate-50 group-hover:bg-slate-950 group-hover:text-white border border-slate-100 group-hover:border-transparent py-3.5 px-4 rounded-xl transition-all duration-300 w-full text-center"
-                  >
-                    Explore Case Study <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform duration-300" />
-                  </Link>
+                {/* Title & Info */}
+                <div className="flex-1 flex flex-col justify-between space-y-4 px-1 z-10">
+                  <div className="space-y-3 text-left">
+                    <h3 className={`text-lg font-black tracking-tight text-slate-900 ${textGlow} transition-colors uppercase leading-none`}>
+                      {project.title}
+                    </h3>
+                    
+                    {project.tags && project.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5">
+                        {project.tags.slice(0, 3).map((tag: string, tIdx: number) => (
+                          <span key={tIdx} className={`text-[7.5px] font-black uppercase tracking-widest px-2.5 py-1 rounded-full border border-slate-200/50 transition-colors duration-200 ${tagStyle}`}>
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {project.description && (
+                      <p className="text-xs leading-relaxed text-slate-500 font-medium line-clamp-2 mt-2">
+                        {project.description}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Explore Case Study CTA Button */}
+                  <div className="pt-5 border-t border-slate-100">
+                    <Link 
+                      href={`/work/${project.slug}`} 
+                      className={`inline-flex items-center justify-center gap-2 text-[9px] font-black uppercase tracking-widest text-slate-950 bg-slate-50 group-hover:bg-gradient-to-r ${btnGradient} border border-slate-100 group-hover:border-transparent py-3.5 px-4 rounded-xl transition-all duration-300 w-full text-center`}
+                    >
+                      Explore Case Study <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform duration-300" />
+                    </Link>
+                  </div>
                 </div>
+
               </div>
             </motion.div>
           );
