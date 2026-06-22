@@ -213,45 +213,14 @@ function PortfolioShowcase({ projects }: { projects: any[] }) {
             : pSrc;
           const category = Array.isArray(project.category) ? project.category[0] : (project.category || "Case Study");
           
-          // Categorize and style with specific themes
-          let themeColor = "from-orange-500 to-amber-500";
+          // Style with unified premium orange theme on hover
           let shadowHover = "hover:shadow-[0_30px_60px_-15px_rgba(249,115,22,0.12)]";
-          let textGlow = "group-hover:text-orange-500";
+          let textGlow = "group-hover:text-orange-600";
           let badgeStyle = "text-orange-600 border-orange-200 bg-orange-50/90";
           let tagStyle = "bg-orange-50/50 text-orange-700 border-orange-200/40 hover:bg-orange-50/80";
           let btnGradient = "group-hover:from-orange-500 group-hover:to-amber-500 group-hover:text-white";
           let borderGlow = "group-hover:from-orange-400 group-hover:to-amber-500";
           let radialGlow = "rgba(249, 115, 22, 0.15)";
-          
-          const catLower = category.toLowerCase();
-          if (catLower.includes("ai") || catLower.includes("ml") || catLower.includes("intelligence")) {
-            themeColor = "from-orange-500 to-red-500";
-            shadowHover = "hover:shadow-[0_30px_60px_-15px_rgba(249,115,22,0.12)]";
-            textGlow = "group-hover:text-orange-500";
-            badgeStyle = "text-orange-600 border-orange-200 bg-orange-50/90";
-            tagStyle = "bg-orange-50/50 text-orange-700 border-orange-200/40 hover:bg-orange-50/80";
-            btnGradient = "group-hover:from-orange-500 group-hover:to-red-500 group-hover:text-white";
-            borderGlow = "group-hover:from-orange-500 group-hover:to-red-500";
-            radialGlow = "rgba(249, 115, 22, 0.15)";
-          } else if (catLower.includes("saas") || catLower.includes("software") || catLower.includes("web") || catLower.includes("app")) {
-            themeColor = "from-blue-500 to-cyan-500";
-            shadowHover = "hover:shadow-[0_30px_60px_-15px_rgba(59,130,246,0.12)]";
-            textGlow = "group-hover:text-blue-500";
-            badgeStyle = "text-blue-600 border-blue-200 bg-blue-50/90";
-            tagStyle = "bg-blue-50/50 text-blue-700 border-blue-200/40 hover:bg-blue-50/80";
-            btnGradient = "group-hover:from-blue-500 group-hover:to-cyan-500 group-hover:text-white";
-            borderGlow = "group-hover:from-blue-500 group-hover:to-cyan-500";
-            radialGlow = "rgba(59, 130, 246, 0.15)";
-          } else if (catLower.includes("automation") || catLower.includes("workflow") || catLower.includes("bot") || catLower.includes("system")) {
-            themeColor = "from-purple-500 to-fuchsia-500";
-            shadowHover = "hover:shadow-[0_30px_60px_-15px_rgba(168,85,247,0.12)]";
-            textGlow = "group-hover:text-purple-500";
-            badgeStyle = "text-purple-600 border-purple-200 bg-purple-50/90";
-            tagStyle = "bg-purple-50/50 text-purple-700 border-purple-200/40 hover:bg-purple-50/80";
-            btnGradient = "group-hover:from-purple-500 group-hover:to-fuchsia-500 group-hover:text-white";
-            borderGlow = "group-hover:from-purple-500 group-hover:to-fuchsia-500";
-            radialGlow = "rgba(168, 85, 247, 0.15)";
-          }
 
           const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
             const rect = e.currentTarget.getBoundingClientRect();
