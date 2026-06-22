@@ -188,316 +188,118 @@ const slideVariants: any = {
     x: direction < 0 ? 100 : -100,
     opacity: 0,
     scale: 0.99,
-    filter: "blur(3px)",
-    transition: {
-      x: { type: "spring", stiffness: 380, damping: 32 },
-      opacity: { duration: 0.12 }
-    }
+    filter: "blur(3px)"
   })
 };
 
 function PortfolioShowcase({ projects }: { projects: any[] }) {
-  const [[page, direction], setPage] = useState([0, 0]);
-  const [isHovered, setIsHovered] = useState(false);
-
   if (!projects || projects.length === 0) {
     return (
-      <div className="flex items-center justify-center h-64 rounded-[2rem] border border-dashed border-slate-200 bg-slate-50/50">
+      <div className="flex items-center justify-center h-64 rounded-[2rem] border border-dashed border-slate-200 bg-slate-50">
         <p className="text-xs text-slate-400 font-extrabold tracking-widest uppercase">Curating case studies...</p>
       </div>
     );
   }
 
-  const displayProjects = projects.slice(0, 5);
-  const activeIndex = page % displayProjects.length;
-  const activeIndexSafe = activeIndex < 0 ? activeIndex + displayProjects.length : activeIndex;
-  const activeProject = displayProjects[activeIndexSafe];
-
-  const paginate = (newDirection: number) => {
-    setPage([page + newDirection, newDirection]);
-  };
-
-  const handleHoverItem = (idx: number) => {
-    const diff = idx - activeIndexSafe;
-    if (diff !== 0) {
-      setPage([page + diff, diff > 0 ? 1 : -1]);
-    }
-  };
-
-  useEffect(() => {
-    if (isHovered || displayProjects.length <= 1) return;
-    const interval = setInterval(() => {
-      paginate(1);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [isHovered, page, displayProjects.length]);
-
-  const pSrc = resolveImg(activeProject.thumbnail);
-  const pOptimizedSrc = pSrc.includes("images.unsplash.com") 
-    ? pSrc.replace(/w=\d+/, "w=1000").replace(/q=\d+/, "q=85")
-    : pSrc;
+  const displayProjects = projects.slice(0, 6);
 
   return (
-    <div 
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className="relative w-full select-none"
-    >
-      {/* Mobile-First Swipe/Slide Carousel (lg:hidden) */}
-      <div className="lg:hidden flex flex-col space-y-5">
-        <div className="relative w-full aspect-[16/10] sm:aspect-[16/9] rounded-[2rem] overflow-hidden bg-slate-50 border border-slate-100 shadow-[0_12px_40px_rgba(0,0,0,0.02)] group/mobile">
-          <AnimatePresence initial={false} custom={direction} mode="popLayout">
+    <div className="w-full">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {displayProjects.map((project, idx) => {
+          const pSrc = resolveImg(project.thumbnail);
+          const pOptimizedSrc = pSrc.includes("images.unsplash.com") 
+            ? pSrc.replace(/w=\d+/, "w=800").replace(/q=\d+/, "q=80")
+            : pSrc;
+          const category = Array.isArray(project.category) ? project.category[0] : (project.category || "Case Study");
+          
+          // Light theme category colors
+          let borderHoverClass = "hover:border-orange-500/30 hover:shadow-[0_20px_50px_rgba(249,115,22,0.05)]";
+          let badgeColor = "text-orange-600 border-orange-200/60 bg-orange-50/80";
+          
+          if (category.toLowerCase().includes("ai") || category.toLowerCase().includes("ml") || category.toLowerCase().includes("intelligence")) {
+            borderHoverClass = "hover:border-orange-500/40 hover:shadow-[0_20px_50px_rgba(249,115,22,0.06)]";
+            badgeColor = "text-orange-600 border-orange-200/60 bg-orange-50/80";
+          } else if (category.toLowerCase().includes("saas") || category.toLowerCase().includes("software") || category.toLowerCase().includes("web")) {
+            borderHoverClass = "hover:border-blue-500/40 hover:shadow-[0_20px_50px_rgba(59,130,246,0.06)]";
+            badgeColor = "text-blue-600 border-blue-200/60 bg-blue-50/80";
+          } else if (category.toLowerCase().includes("automation") || category.toLowerCase().includes("workflow") || category.toLowerCase().includes("bot")) {
+            borderHoverClass = "hover:border-purple-500/40 hover:shadow-[0_20px_50px_rgba(168,85,247,0.06)]";
+            badgeColor = "text-purple-600 border-purple-200/60 bg-purple-50/80";
+          }
+
+          return (
             <motion.div
-              key={page}
-              custom={direction}
-              variants={slideVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              className="absolute inset-0 w-full h-full"
+              key={project.id || idx}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.6, delay: idx * 0.05 }}
+              whileHover={{ y: -8 }}
+              className={`group relative flex flex-col h-full bg-white border border-slate-100 ${borderHoverClass} rounded-[2rem] p-5 transition-all duration-500 shadow-sm`}
             >
-              {/* Blurred backdrop background */}
-              <Image
-                src={pOptimizedSrc}
-                alt=""
-                fill
-                aria-hidden="true"
-                className="object-cover blur-md opacity-[0.12] scale-105 select-none pointer-events-none"
-              />
-
-              {/* Foreground project image */}
-              <Image
-                src={pOptimizedSrc}
-                alt={activeProject.title}
-                fill
-                priority
-                sizes="(max-width: 768px) 100vw, 85vw"
-                className="object-contain scale-95 transition-transform duration-750 ease-out z-10"
-              />
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Page Tracker */}
-          <div className="absolute top-4 right-4 z-30">
-            <div className="px-3.5 py-1.5 rounded-full bg-white/80 backdrop-blur-md border border-slate-200/50 text-[9px] font-black text-slate-800 font-mono uppercase tracking-widest flex items-center gap-2 shadow-sm">
-              <span className="text-orange-600">0{activeIndexSafe + 1}</span>
-              <span className="opacity-30">/</span>
-              <span className="text-slate-500">0{displayProjects.length}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Dynamic Project Details below Mobile frame */}
-        <div className="mt-4 px-2">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeProject.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-              className="space-y-3"
-            >
-              <div className="space-y-1.5 text-left">
-                <span className="text-[9px] font-black uppercase tracking-widest text-orange-600">
-                  {Array.isArray(activeProject.category) ? activeProject.category[0] : activeProject.category}
-                </span>
-                <h3 className="font-heading font-black text-slate-900 text-lg tracking-tight uppercase leading-none">
-                  {activeProject.title}
-                </h3>
-                {activeProject.description && (
-                  <p className="text-xs text-slate-500 leading-relaxed">
-                    {activeProject.description}
-                  </p>
-                )}
-              </div>
-
-              <div className="pt-2">
-                <Link 
-                  href={`/work/${activeProject.slug}`} 
-                  className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-slate-950 text-white text-[9px] font-black uppercase tracking-widest active:scale-95 transition-all duration-300"
-                >
-                  Explore Case Study <ArrowRight className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </div>
-
-      {/* PC Version: Split Showcase Layout (hidden lg:grid) */}
-      <div className="hidden lg:grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-stretch min-h-[480px]">
-        {/* Left side: Interactive vertical directory list (col-span-5) */}
-        <div className="lg:col-span-5 flex flex-col justify-center space-y-3.5">
-          {displayProjects.map((project, idx) => {
-            const isActive = idx === activeIndexSafe;
-            const category = Array.isArray(project.category) ? project.category[0] : (project.category || "Case Study");
-            return (
-              <button
-                key={project.id || idx}
-                onMouseEnter={() => handleHoverItem(idx)}
-                onClick={() => handleHoverItem(idx)}
-                className="text-left w-full group/item relative py-4 px-5 rounded-2xl border transition-all duration-300 flex items-center gap-5 outline-none"
-                style={{
-                  borderColor: isActive ? "rgba(249, 115, 22, 0.15)" : "transparent",
-                  backgroundColor: isActive ? "rgba(255, 255, 255, 0.9)" : "transparent",
-                  boxShadow: isActive ? "0 12px 30px -15px rgba(249, 115, 22, 0.04)" : "none"
-                }}
-              >
-                {isActive && (
-                  <motion.div
-                    layoutId="activeIndicator"
-                    className="absolute left-0 top-1/4 bottom-1/4 w-[3px] bg-orange-500 rounded-full"
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  />
-                )}
+              {/* Image Box */}
+              <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden bg-slate-50 border border-slate-100 shrink-0 mb-6 group-hover:border-slate-200 transition-colors duration-500">
+                <Image
+                  src={pOptimizedSrc}
+                  alt=""
+                  fill
+                  aria-hidden="true"
+                  className="object-cover blur-lg opacity-15 scale-110 select-none pointer-events-none transition-transform duration-750 group-hover:scale-120"
+                />
+                <Image
+                  src={pOptimizedSrc}
+                  alt={project.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-contain scale-[0.93] transition-transform duration-700 ease-out group-hover:scale-95 z-10"
+                />
                 
-                <span className={cn(
-                  "text-xs font-black font-mono tracking-tight transition-colors duration-300",
-                  isActive ? "text-orange-500" : "text-slate-300 group-hover/item:text-slate-400"
-                )}>
-                  0{idx + 1}
-                </span>
-                
-                <div className="space-y-0.5">
-                  <p className="text-[7.5px] font-black uppercase tracking-widest text-slate-400 group-hover/item:text-orange-400 transition-colors">
+                {/* Floating Category Tag */}
+                <div className="absolute top-3 left-3 z-20">
+                  <span className={`px-2.5 py-1 rounded-lg border text-[8px] font-black uppercase tracking-widest backdrop-blur-md shadow-sm ${badgeColor}`}>
                     {category}
-                  </p>
-                  <h3 className={cn(
-                    "text-sm sm:text-base font-bold uppercase tracking-tight transition-all duration-300",
-                    isActive ? "text-slate-900 translate-x-1" : "text-slate-400 group-hover/item:text-slate-700"
-                  )}>
+                  </span>
+                </div>
+              </div>
+
+              {/* Title & Info */}
+              <div className="flex-1 flex flex-col justify-between space-y-4 px-1">
+                <div className="space-y-3 text-left">
+                  <h3 className="text-base sm:text-lg font-black tracking-tight text-slate-900 group-hover:text-orange-600 transition-colors uppercase leading-tight">
                     {project.title}
                   </h3>
-                </div>
-              </button>
-            );
-          })}
-
-          <div className="pt-2 pl-5">
-            <Link
-              href="/work"
-              className="inline-flex items-center gap-1.5 text-[8.5px] font-black uppercase tracking-widest text-orange-600 hover:text-slate-900 transition-colors"
-            >
-              Browse Full Archive <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-        </div>
-
-        {/* Right side: Cinematic Preview Showcase (col-span-7) */}
-        <div className="lg:col-span-7 flex flex-col justify-between">
-          <div className="relative w-full aspect-[16/9] group/nav">
-            {/* Ambient orange glow backdrop */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-orange-500 to-orange-600 blur-2xl opacity-10 group-hover/nav:opacity-30 transition-opacity duration-1000 rounded-[2rem] -z-10" />
-
-            <div className="relative w-full h-full rounded-[2rem] overflow-hidden bg-slate-50 border border-slate-100 shadow-[0_12px_40px_rgba(0,0,0,0.02)]">
-              <AnimatePresence initial={false} custom={direction} mode="popLayout">
-                <motion.div
-                  key={page}
-                  custom={direction}
-                  variants={slideVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  className="absolute inset-0 w-full h-full"
-                >
-                  <Image
-                    src={pOptimizedSrc}
-                    alt=""
-                    fill
-                    aria-hidden="true"
-                    className="object-cover blur-md opacity-[0.12] scale-105 select-none pointer-events-none"
-                  />
-                  <Image
-                    src={pOptimizedSrc}
-                    alt={activeProject.title}
-                    fill
-                    priority
-                    sizes="50vw"
-                    className="object-contain scale-95 transition-transform duration-750 ease-out z-10"
-                  />
-                </motion.div>
-              </AnimatePresence>
-
-              <div className="absolute top-4 right-4 z-30">
-                <div className="px-3.5 py-1.5 rounded-full bg-white/80 backdrop-blur-md border border-slate-200/50 text-[9px] font-black text-slate-800 font-mono uppercase tracking-widest flex items-center gap-2 shadow-sm">
-                  <span className="text-orange-600">0{activeIndexSafe + 1}</span>
-                  <span className="opacity-30">/</span>
-                  <span className="text-slate-500">0{displayProjects.length}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Dynamic details below card */}
-          <div className="mt-6 px-2">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeProject.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
-                className="flex flex-row items-end justify-between gap-6"
-              >
-                <div className="space-y-2 text-left">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[9px] font-black uppercase tracking-widest text-orange-600">
-                      {Array.isArray(activeProject.category) ? activeProject.category[0] : activeProject.category}
-                    </span>
-                    {activeProject.tags && activeProject.tags.length > 0 && (
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-slate-300 text-[10px] select-none">•</span>
-                        <span className="text-[9px] font-bold text-slate-400 font-mono tracking-normal">
-                          {activeProject.tags.slice(0, 3).join(" / ")}
+                  
+                  {project.tags && project.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5">
+                      {project.tags.slice(0, 3).map((tag: string, tIdx: number) => (
+                        <span key={tIdx} className="text-[7px] font-black uppercase tracking-widest bg-slate-50 text-slate-500 px-2 py-0.5 rounded border border-slate-200/50 group-hover:bg-slate-100 transition-colors duration-300">
+                          {tag}
                         </span>
-                      </div>
-                    )}
-                  </div>
+                      ))}
+                    </div>
+                  )}
 
-                  <h3 className="font-heading font-black text-slate-900 text-lg sm:text-2xl tracking-tight uppercase leading-none">
-                    {activeProject.title}
-                  </h3>
-                  {activeProject.description && (
-                    <p className="text-xs text-slate-500 leading-relaxed max-w-xl">
-                      {activeProject.description}
+                  {project.description && (
+                    <p className="text-[11px] leading-relaxed text-slate-500 group-hover:text-slate-600 transition-colors duration-300 font-medium line-clamp-3 mt-2">
+                      {project.description}
                     </p>
                   )}
                 </div>
 
-                <div className="shrink-0">
+                {/* Explore Case Study action line */}
+                <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
                   <Link 
-                    href={`/work/${activeProject.slug}`} 
-                    className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-slate-950 hover:bg-orange-600 hover:text-white text-white text-[9px] font-black uppercase tracking-widest shadow-sm active:scale-95 transition-all duration-300"
+                    href={`/work/${project.slug}`} 
+                    className="inline-flex items-center gap-1.5 text-[8.5px] font-black uppercase tracking-widest text-slate-400 group-hover:text-orange-600 transition-colors duration-300"
                   >
-                    Explore Case Study <ArrowRight className="w-3.5 h-3.5" />
+                    Explore Case Study <ArrowRight className="w-3.5 h-3.5 text-orange-500 group-hover:translate-x-1 transition-transform duration-300" />
                   </Link>
                 </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        </div>
-      </div>
-
-      {/* Progress Indicator Dots */}
-      <div className="flex justify-center gap-2.5 mt-6">
-        {displayProjects.map((_, idx) => (
-          <button
-            key={idx}
-            onClick={() => {
-              const diff = idx - activeIndexSafe;
-              if (diff !== 0) paginate(diff);
-            }}
-            className="py-2 focus:outline-none"
-          >
-            <div 
-              className={cn(
-                "h-1 rounded-full transition-all duration-500",
-                activeIndexSafe === idx ? "w-8 bg-orange-600 shadow-sm" : "w-1.5 bg-slate-200 hover:bg-slate-300"
-              )}
-            />
-          </button>
-        ))}
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
     </div>
   );
@@ -1239,14 +1041,18 @@ export default function HomePage({ initialProjects = [] }: { initialProjects?: a
         </div>
       </section>
 
-      {/* ── SELECTED WORK — Compact Bento Grid ───────────────── */}
-      <section id="work" className="py-10 sm:py-14 bg-[#f8fafc] overflow-hidden">
+      {/* ── SELECTED WORK — Premium Bento Grid / Grid Showcase ───────────────── */}
+      {/* ── SELECTED WORK — Premium Bento Grid / Grid Showcase ───────────────── */}
+      <section id="work" className="py-20 sm:py-28 bg-[#f8fafc] relative overflow-hidden">
+        {/* Soft Ambient Light Glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[450px] bg-gradient-to-b from-orange-500/[0.03] to-transparent blur-[130px] pointer-events-none" />
+        
         <ScrollReveal>
-          <div className="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12">
+          <div className="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-12 relative z-10">
             {/* Compact Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 pb-5 border-b border-slate-100">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 pb-6 border-b border-slate-200/60">
               <div>
-                <div className="flex items-center gap-2.5 mb-2">
+                <div className="flex items-center gap-2.5 mb-3">
                   <div className="w-5 h-[2px] bg-orange-500 rounded-full" />
                   <p className="text-[8.5px] font-black uppercase tracking-[0.65em] text-orange-600">Selected Work</p>
                 </div>
@@ -1262,10 +1068,10 @@ export default function HomePage({ initialProjects = [] }: { initialProjects?: a
                     key={tab}
                     onClick={() => setActiveTab(tab)}
                     className={cn(
-                      "px-4 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-wider transition-all duration-300 whitespace-nowrap",
+                      "px-4 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-wider transition-all duration-300 whitespace-nowrap border",
                       activeTab === tab
-                        ? "bg-slate-950 text-white shadow-md shadow-slate-950/15"
-                        : "bg-white text-slate-500 border border-slate-200/80 hover:bg-slate-50 hover:text-slate-950 hover:border-slate-350"
+                        ? "bg-slate-950 text-white border-transparent shadow-md shadow-slate-950/15"
+                        : "bg-white text-slate-500 border-slate-200 hover:bg-slate-50 hover:text-slate-950 hover:border-slate-300"
                     )}
                   >
                     {tab}
@@ -1278,8 +1084,8 @@ export default function HomePage({ initialProjects = [] }: { initialProjects?: a
                 className="hidden sm:inline-flex items-center gap-2 text-[8.5px] font-black uppercase tracking-[0.4em] text-slate-400 hover:text-orange-600 transition-colors duration-300 group shrink-0"
               >
                 View All
-                <div className="w-6 h-6 rounded-full bg-slate-100 group-hover:bg-orange-100 flex items-center justify-center transition-colors duration-300">
-                  <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform duration-300" />
+                <div className="w-6 h-6 rounded-full bg-slate-100 group-hover:bg-orange-100 flex items-center justify-center transition-colors duration-300 border border-slate-200/30">
+                  <ArrowRight className="w-3 h-3 text-slate-500 group-hover:translate-x-0.5 transition-transform duration-300" />
                 </div>
               </Link>
             </div>
