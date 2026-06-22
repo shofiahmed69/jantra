@@ -213,21 +213,6 @@ function PortfolioShowcase({ projects }: { projects: any[] }) {
             : pSrc;
           const category = Array.isArray(project.category) ? project.category[0] : (project.category || "Case Study");
           
-          // Light theme category colors
-          let borderHoverClass = "hover:border-orange-500/30 hover:shadow-[0_20px_50px_rgba(249,115,22,0.05)]";
-          let badgeColor = "text-orange-600 border-orange-200/60 bg-orange-50/80";
-          
-          if (category.toLowerCase().includes("ai") || category.toLowerCase().includes("ml") || category.toLowerCase().includes("intelligence")) {
-            borderHoverClass = "hover:border-orange-500/40 hover:shadow-[0_20px_50px_rgba(249,115,22,0.06)]";
-            badgeColor = "text-orange-600 border-orange-200/60 bg-orange-50/80";
-          } else if (category.toLowerCase().includes("saas") || category.toLowerCase().includes("software") || category.toLowerCase().includes("web")) {
-            borderHoverClass = "hover:border-blue-500/40 hover:shadow-[0_20px_50px_rgba(59,130,246,0.06)]";
-            badgeColor = "text-blue-600 border-blue-200/60 bg-blue-50/80";
-          } else if (category.toLowerCase().includes("automation") || category.toLowerCase().includes("workflow") || category.toLowerCase().includes("bot")) {
-            borderHoverClass = "hover:border-purple-500/40 hover:shadow-[0_20px_50px_rgba(168,85,247,0.06)]";
-            badgeColor = "text-purple-600 border-purple-200/60 bg-purple-50/80";
-          }
-
           return (
             <motion.div
               key={project.id || idx}
@@ -236,28 +221,23 @@ function PortfolioShowcase({ projects }: { projects: any[] }) {
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.6, delay: idx * 0.05 }}
               whileHover={{ y: -8 }}
-              className={`group relative flex flex-col h-full bg-white border border-slate-100 ${borderHoverClass} rounded-[2rem] p-5 transition-all duration-500 shadow-sm`}
+              className="group relative flex flex-col h-full bg-white border border-slate-200/60 rounded-[2rem] p-5 hover:border-slate-300 hover:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.08)] transition-all duration-500"
             >
-              {/* Image Box */}
-              <div className="relative w-full aspect-[16/10] rounded-2xl overflow-hidden bg-slate-50 border border-slate-100 shrink-0 mb-6 group-hover:border-slate-200 transition-colors duration-500">
-                <Image
-                  src={pOptimizedSrc}
-                  alt=""
-                  fill
-                  aria-hidden="true"
-                  className="object-cover blur-lg opacity-15 scale-110 select-none pointer-events-none transition-transform duration-750 group-hover:scale-120"
-                />
+              {/* Image Box (Aspect 4/3 & Object Cover) */}
+              <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-slate-50 border border-slate-200/40 shrink-0 mb-6 shadow-sm">
                 <Image
                   src={pOptimizedSrc}
                   alt={project.title}
                   fill
                   sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-contain scale-[0.93] transition-transform duration-700 ease-out group-hover:scale-95 z-10"
+                  className="object-cover scale-100 transition-transform duration-700 ease-out group-hover:scale-105 z-10"
                 />
+                {/* Image overlay glow on hover */}
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/35 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-15 pointer-events-none" />
                 
                 {/* Floating Category Tag */}
-                <div className="absolute top-3 left-3 z-20">
-                  <span className={`px-2.5 py-1 rounded-lg border text-[8px] font-black uppercase tracking-widest backdrop-blur-md shadow-sm ${badgeColor}`}>
+                <div className="absolute top-3.5 left-3.5 z-20">
+                  <span className="px-3 py-1 rounded-full text-[8.5px] font-black uppercase tracking-wider backdrop-blur-md bg-white/95 text-slate-800 border border-slate-200/40 shadow-sm">
                     {category}
                   </span>
                 </div>
@@ -266,14 +246,14 @@ function PortfolioShowcase({ projects }: { projects: any[] }) {
               {/* Title & Info */}
               <div className="flex-1 flex flex-col justify-between space-y-4 px-1">
                 <div className="space-y-3 text-left">
-                  <h3 className="text-base sm:text-lg font-black tracking-tight text-slate-900 group-hover:text-orange-600 transition-colors uppercase leading-tight">
+                  <h3 className="text-lg font-black tracking-tight text-slate-900 group-hover:text-orange-500 transition-colors uppercase leading-none">
                     {project.title}
                   </h3>
                   
                   {project.tags && project.tags.length > 0 && (
                     <div className="flex flex-wrap gap-1.5">
                       {project.tags.slice(0, 3).map((tag: string, tIdx: number) => (
-                        <span key={tIdx} className="text-[7px] font-black uppercase tracking-widest bg-slate-50 text-slate-500 px-2 py-0.5 rounded border border-slate-200/50 group-hover:bg-slate-100 transition-colors duration-300">
+                        <span key={tIdx} className="text-[7.5px] font-black uppercase tracking-widest bg-slate-50 text-slate-500 px-2.5 py-1 rounded-full border border-slate-200/50 hover:bg-slate-100 transition-colors duration-200">
                           {tag}
                         </span>
                       ))}
@@ -281,19 +261,19 @@ function PortfolioShowcase({ projects }: { projects: any[] }) {
                   )}
 
                   {project.description && (
-                    <p className="text-[11px] leading-relaxed text-slate-500 group-hover:text-slate-600 transition-colors duration-300 font-medium line-clamp-3 mt-2">
+                    <p className="text-xs leading-relaxed text-slate-500 font-medium line-clamp-2 mt-2">
                       {project.description}
                     </p>
                   )}
                 </div>
 
-                {/* Explore Case Study action line */}
-                <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+                {/* Explore Case Study CTA Row */}
+                <div className="pt-5 border-t border-slate-100">
                   <Link 
                     href={`/work/${project.slug}`} 
-                    className="inline-flex items-center gap-1.5 text-[8.5px] font-black uppercase tracking-widest text-slate-400 group-hover:text-orange-600 transition-colors duration-300"
+                    className="inline-flex items-center justify-center gap-2 text-[9px] font-black uppercase tracking-widest text-slate-900 bg-slate-50 group-hover:bg-slate-950 group-hover:text-white border border-slate-100 group-hover:border-transparent py-3.5 px-4 rounded-xl transition-all duration-300 w-full text-center"
                   >
-                    Explore Case Study <ArrowRight className="w-3.5 h-3.5 text-orange-500 group-hover:translate-x-1 transition-transform duration-300" />
+                    Explore Case Study <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform duration-300" />
                   </Link>
                 </div>
               </div>
