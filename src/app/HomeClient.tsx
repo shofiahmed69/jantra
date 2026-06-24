@@ -213,7 +213,8 @@ function PortfolioShowcase({ projects }: { projects: any[] }) {
             : pSrc;
           const category = Array.isArray(project.category) ? project.category[0] : (project.category || "Case Study");
           
-          // Style with unified premium orange theme on hover
+          // Categorize and style with specific multicolor themes on hover
+          let themeColor = "from-orange-500 to-amber-500";
           let shadowHover = "hover:shadow-[0_30px_60px_-15px_rgba(249,115,22,0.12)]";
           let textGlow = "group-hover:text-orange-600";
           let badgeStyle = "text-orange-600 border-orange-200 bg-orange-50/90";
@@ -221,6 +222,36 @@ function PortfolioShowcase({ projects }: { projects: any[] }) {
           let btnGradient = "group-hover:from-orange-500 group-hover:to-amber-500 group-hover:text-white";
           let borderGlow = "group-hover:from-orange-400 group-hover:to-amber-500";
           let radialGlow = "rgba(249, 115, 22, 0.15)";
+          
+          const catLower = category.toLowerCase();
+          if (catLower.includes("ai") || catLower.includes("ml") || catLower.includes("intelligence")) {
+            themeColor = "from-orange-500 to-red-500";
+            shadowHover = "hover:shadow-[0_30px_60px_-15px_rgba(249,115,22,0.12)]";
+            textGlow = "group-hover:text-orange-600";
+            badgeStyle = "text-orange-600 border-orange-200 bg-orange-50/90";
+            tagStyle = "bg-orange-50/50 text-orange-700 border-orange-200/40 hover:bg-orange-50/80";
+            btnGradient = "group-hover:from-orange-500 group-hover:to-red-500 group-hover:text-white";
+            borderGlow = "group-hover:from-orange-500 group-hover:to-red-500";
+            radialGlow = "rgba(249, 115, 22, 0.15)";
+          } else if (catLower.includes("saas") || catLower.includes("software") || catLower.includes("web") || catLower.includes("app")) {
+            themeColor = "from-blue-500 to-cyan-500";
+            shadowHover = "hover:shadow-[0_30px_60px_-15px_rgba(59,130,246,0.12)]";
+            textGlow = "group-hover:text-blue-650";
+            badgeStyle = "text-blue-600 border-blue-200 bg-blue-50/90";
+            tagStyle = "bg-blue-50/50 text-blue-700 border-blue-200/40 hover:bg-blue-50/80";
+            btnGradient = "group-hover:from-blue-500 group-hover:to-cyan-500 group-hover:text-white";
+            borderGlow = "group-hover:from-blue-500 group-hover:to-cyan-500";
+            radialGlow = "rgba(59, 130, 246, 0.15)";
+          } else if (catLower.includes("automation") || catLower.includes("workflow") || catLower.includes("bot") || catLower.includes("system")) {
+            themeColor = "from-purple-500 to-fuchsia-500";
+            shadowHover = "hover:shadow-[0_30px_60px_-15px_rgba(168,85,247,0.12)]";
+            textGlow = "group-hover:text-purple-600";
+            badgeStyle = "text-purple-600 border-purple-200 bg-purple-50/90";
+            tagStyle = "bg-purple-50/50 text-purple-750 border-purple-200/40 hover:bg-purple-50/80";
+            btnGradient = "group-hover:from-purple-500 group-hover:to-fuchsia-500 group-hover:text-white";
+            borderGlow = "group-hover:from-purple-500 group-hover:to-fuchsia-500";
+            radialGlow = "rgba(168, 85, 247, 0.15)";
+          }
 
           const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
             const rect = e.currentTarget.getBoundingClientRect();
@@ -259,21 +290,12 @@ function PortfolioShowcase({ projects }: { projects: any[] }) {
                 </span>
               </div>
 
-              {/* Window Content Area (Image Box) */}
-              <div className="relative w-full aspect-[16/10] bg-slate-50 border-b border-slate-200/50 overflow-hidden shrink-0 z-10">
-                <Image
-                  src={pOptimizedSrc}
-                  alt=""
-                  fill
-                  aria-hidden="true"
-                  className="object-cover blur-xl opacity-15 scale-110 select-none pointer-events-none transition-transform duration-750 group-hover:scale-120 z-0"
-                />
-                <Image
+              {/* Window Content Area (Image Box) - Auto height fits image size exactly with no cropping and no blank space */}
+              <div className="w-full bg-slate-50/50 border-b border-slate-200/50 overflow-hidden shrink-0 z-10">
+                <img
                   src={pOptimizedSrc}
                   alt={project.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-contain p-3.5 scale-[0.98] drop-shadow-[0_8px_24px_rgba(0,0,0,0.05)] transition-transform duration-700 ease-out group-hover:scale-100 z-10"
+                  className="w-full h-auto block transition-transform duration-700 ease-out group-hover:scale-[1.02]"
                 />
               </div>
 
@@ -295,7 +317,7 @@ function PortfolioShowcase({ projects }: { projects: any[] }) {
                   )}
 
                   {project.description && (
-                    <p className="text-xs leading-relaxed text-slate-500 font-medium line-clamp-2 mt-2">
+                    <p className="text-xs leading-relaxed text-slate-550 font-medium line-clamp-2 mt-2">
                       {project.description}
                     </p>
                   )}
@@ -503,10 +525,10 @@ function MobileLottieHero() {
       <div className="relative z-10 px-5 sm:px-6 flex flex-col items-center text-center pb-5 sm:pb-6 shrink-0">
         <div className="w-full">
           <h2 className="text-[clamp(1.9rem,7.5vw,2.8rem)] font-black text-slate-900 leading-[1.15] tracking-tight mb-3 uppercase">
-            Building Custom Software <br />& AI <span className="text-orange-500">Solutions.</span>
+            We Build Custom Software <br />& AI <span className="text-orange-500">Solutions.</span>
           </h2>
-          <p className="text-[9px] text-slate-400 font-semibold uppercase tracking-[0.2em] mb-5 max-w-xs mx-auto leading-relaxed">
-            Jantra Software | Custom SaaS, AI Agents, & Enterprise Automation
+          <p className="text-[10px] text-slate-500 font-semibold mb-5 max-w-xs mx-auto leading-relaxed">
+            We design, build, and launch high-performance web applications, custom AI systems, and workflow automations tailored for your business.
           </p>
 
           {/* CTAs */}
@@ -557,11 +579,11 @@ function DesktopHero() {
               <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-orange-500 via-orange-500/40 to-transparent rounded-full" />
               
               <h1 className="text-[clamp(3.1rem,4.4vw,4.8rem)] 2xl:text-[clamp(4.2rem,4.5vw,5.6rem)] font-black leading-[1.1] tracking-tight text-slate-900 uppercase">
-                Building Custom Software <br />& AI <span className="text-orange-500">Solutions.</span>
+                We Build Custom Software <br />& AI <span className="text-orange-500">Solutions.</span>
               </h1>
 
-              <p className="text-[clamp(0.8rem,0.95vw,1.1rem)] font-semibold text-slate-400 uppercase tracking-[0.24em] leading-relaxed max-w-xl">
-                Jantra Software | Custom SaaS, AI Agents, & Enterprise Automation
+              <p className="text-[clamp(0.85rem,1.05vw,1.15rem)] font-medium text-slate-500 leading-relaxed max-w-xl">
+                We design, build, and launch high-performance web applications, custom AI systems, and workflow automations tailored to help your business grow.
               </p>
 
               <div className="flex items-center gap-4 pt-2">
@@ -667,9 +689,9 @@ function ScopingTimeline() {
     offset: ["start end", "end end"]
   });
 
-  const scaleY = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
+  const pathLength = useSpring(scrollYProgress, {
+    stiffness: 50,
+    damping: 15,
     restDelta: 0.001
   });
 
@@ -710,10 +732,10 @@ function ScopingTimeline() {
 
   return (
     <section ref={ref} className="py-20 sm:py-28 bg-[#fcfaf8] border-y border-orange-50/50 relative overflow-hidden">
-      <div className="mx-auto max-w-[1100px] px-5 sm:px-8 lg:px-12 relative">
+      <div className="mx-auto max-w-[1200px] px-5 sm:px-8 lg:px-12 relative">
         
         {/* Header */}
-        <div className="text-center max-w-2xl mx-auto mb-16 sm:mb-24">
+        <div className="text-center max-w-2xl mx-auto mb-20 sm:mb-28">
           <span className="text-orange-600 font-bold tracking-widest text-[9px] uppercase mb-2.5 block">Delivery Process</span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 leading-none uppercase tracking-tighter">
             Our Scoping Cycle<span className="text-orange-500">.</span>
@@ -723,84 +745,107 @@ function ScopingTimeline() {
           </p>
         </div>
 
-        {/* Timeline Engine */}
-        <div className="relative">
+        {/* Serpentine Timeline Engine */}
+        <div className="relative min-h-[800px] xs:min-h-[900px] sm:min-h-[1000px] flex flex-col justify-between">
           
-          {/* Scroll progress bar (Center on PC, Left on Mobile) */}
-          <div className="absolute left-6 lg:left-1/2 top-4 bottom-4 w-[3px] -translate-x-[1.5px] bg-slate-200/50 rounded-full" />
-          <motion.div 
-            className="absolute left-6 lg:left-1/2 top-4 bottom-4 w-[3px] -translate-x-[1.5px] bg-gradient-to-b from-orange-500 via-orange-600 to-orange-500 rounded-full shadow-[0_0_15px_rgba(249,115,22,0.6)]"
-            style={{ scaleY, transformOrigin: "top" }}
-          />
+          {/* SVG Serpentine Connector Line (Desktop & Mobile) */}
+          <div className="absolute inset-0 pointer-events-none z-0 block">
+            <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="timelineOrangeGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#f97316" />
+                  <stop offset="100%" stopColor="#ea580c" />
+                </linearGradient>
+              </defs>
+              
+              {/* Underlying faded serpentine track */}
+              <path
+                d="M 25,12.5 C 85,12.5 85,37.5 75,37.5 C 15,37.5 15,62.5 25,62.5 C 85,62.5 85,87.5 75,87.5"
+                fill="none"
+                stroke="#fed7aa"
+                strokeWidth="1.5"
+                strokeDasharray="4 4"
+                opacity="0.4"
+              />
+              
+              {/* Active scroll-animated path overlay */}
+              <motion.path
+                d="M 25,12.5 C 85,12.5 85,37.5 75,37.5 C 15,37.5 15,62.5 25,62.5 C 85,62.5 85,87.5 75,87.5"
+                fill="none"
+                stroke="url(#timelineOrangeGrad)"
+                strokeWidth="2.5"
+                strokeDasharray="8 8"
+                style={{ pathLength }}
+              />
+            </svg>
+          </div>
 
-          {/* Timeline Nodes */}
-          <div className="space-y-12 lg:space-y-24 relative">
+          {/* Timeline Nodes Layout */}
+          <div className="space-y-4 sm:space-y-0 relative z-10 flex flex-col justify-between h-full">
             {steps.map((step, idx) => {
               const StepIcon = step.icon;
               const isEven = idx % 2 === 0;
+              
+              // Alternating layout on both desktop and mobile
+              const rowStyle = isEven 
+                ? "flex flex-row items-center w-full" 
+                : "flex flex-row-reverse items-center w-full";
+
               return (
-                <motion.div 
-                  key={idx}
-                  initial={{ opacity: 0, y: 30, filter: "blur(3px)" }}
-                  whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={{ duration: 0.6, delay: 0.05 }}
-                  className="relative grid grid-cols-1 lg:grid-cols-12 gap-8 items-start"
-                >
-                  {/* Left Column (PC only) */}
-                  <div className={`hidden lg:block lg:col-span-5 text-right ${isEven ? "" : "lg:order-last text-left"}`}>
-                    <div className="space-y-3 px-4">
-                      <span className="inline-flex px-3 py-1 rounded-full bg-orange-50 text-[8.5px] font-black uppercase tracking-widest text-orange-600 border border-orange-100/50 mb-2 font-mono">
-                        {step.day}
-                      </span>
-                      <h3 className="text-xl font-bold uppercase text-slate-900 tracking-tight">
+                <div key={idx} className={`${rowStyle} relative h-[180px] xs:h-[200px] sm:h-[220px] lg:h-[240px] flex`}>
+                  
+                  {/* Node Circle (Center of winding path: at 25% or 75% width) */}
+                  <div className={`relative flex items-center justify-center w-1/2 ${isEven ? "justify-start pl-[15%] sm:pl-[20%]" : "justify-end pr-[15%] sm:pr-[20%]"} z-20`}>
+                    <motion.div 
+                      initial={{ scale: 0.7, opacity: 0 }}
+                      whileInView={{ scale: 1, opacity: 1 }}
+                      viewport={{ once: true, margin: "-100px" }}
+                      transition={{ type: "spring", stiffness: 80, damping: 12, delay: 0.1 }}
+                      className="relative flex items-center justify-center shrink-0"
+                    >
+                      <div className="absolute w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-orange-500/10 blur-[6px] sm:blur-[8px] animate-pulse" />
+                      {/* Big Floating Number Badge */}
+                      <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white border border-orange-500 flex flex-col items-center justify-center shadow-[0_4px_12px_rgba(249,115,22,0.12)] sm:shadow-[0_6px_20px_rgba(249,115,22,0.18)] z-10">
+                        <span className="text-[11px] sm:text-[14px] font-black font-mono text-orange-600 leading-none">0{idx + 1}</span>
+                      </div>
+                    </motion.div>
+                  </div>
+
+                  {/* Content Card layout */}
+                  <div className="w-1/2 px-2 sm:px-8">
+                    <motion.div
+                      initial={{ opacity: 0, y: 25 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, margin: "-100px" }}
+                      transition={{ duration: 0.6, delay: 0.15 }}
+                      className="p-3 sm:p-6 lg:p-8 rounded-[1.2rem] sm:rounded-[2rem] border border-slate-200/80 bg-white/90 backdrop-blur-md shadow-[0_4px_30px_rgba(0,0,0,0.02)] hover:shadow-[0_20px_45px_rgba(249,115,22,0.05)] hover:border-orange-500/20 transition-all duration-500 transform hover:-translate-y-0.5 text-left h-full flex flex-col justify-between"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-1.5 mb-1.5 sm:mb-3.5">
+                        <span className="inline-flex px-2 py-0.5 sm:px-3 sm:py-1 rounded-full bg-orange-50 text-[7px] sm:text-[8px] font-black uppercase tracking-widest text-orange-600 border border-orange-100/50 font-mono">
+                          {step.day}
+                        </span>
+                        
+                        <div className="flex items-center gap-1.5">
+                          <div className={`w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-gradient-to-r ${step.accent} animate-pulse`} />
+                          <span className="text-[7px] sm:text-[8px] font-black uppercase tracking-widest text-slate-400 font-mono">Milestone</span>
+                        </div>
+                      </div>
+
+                      <h3 className="text-[11px] xs:text-xs sm:text-lg lg:text-xl font-bold uppercase text-slate-900 tracking-tight mb-1 line-clamp-1 sm:line-clamp-none">
                         {step.title}
                       </h3>
-                      <p className="text-xs leading-relaxed text-slate-550 font-medium max-w-md ml-auto mr-0">
+                      
+                      <p className="text-[9px] sm:text-xs leading-normal sm:leading-relaxed text-slate-400 font-medium mb-2 sm:mb-4 line-clamp-2 sm:line-clamp-none">
                         {step.desc}
                       </p>
-                    </div>
-                  </div>
 
-                  {/* Center Node Column (col-span-2) */}
-                  <div className="lg:col-span-2 flex justify-start lg:justify-center items-center pl-1 lg:pl-0 z-20 relative">
-                    <div className="relative flex items-center justify-center">
-                      <div className="absolute w-14 h-14 rounded-full bg-orange-500/10 blur-[8px] animate-pulse" />
-                      <div className="w-10 h-10 rounded-2xl bg-white border-2 border-orange-500 flex items-center justify-center shadow-[0_6px_20px_rgba(249,115,22,0.18)]">
-                        <StepIcon className="w-4.5 h-4.5 text-orange-600" />
+                      <div className="pt-2 sm:pt-3.5 border-t border-slate-100 flex items-center justify-between mt-auto">
+                        <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-wider text-slate-900">{step.milestone}</span>
+                        <StepIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-orange-500" />
                       </div>
-                    </div>
+                    </motion.div>
                   </div>
-
-                  {/* Right Column / Content on mobile */}
-                  <div className={`col-span-1 lg:col-span-5 pl-14 lg:pl-0 ${isEven ? "lg:order-last" : ""}`}>
-                    {/* Mobile Text (Hidden on PC) */}
-                    <div className="lg:hidden space-y-2 mb-4 text-left">
-                      <span className="inline-flex px-3 py-1 rounded-full bg-orange-50 text-[8.5px] font-black uppercase tracking-widest text-orange-600 border border-orange-100/50 mb-2 font-mono">
-                        {step.day}
-                      </span>
-                      <h3 className="text-base font-bold uppercase text-slate-900 tracking-tight">
-                        {step.title}
-                      </h3>
-                      <p className="text-xs leading-relaxed text-slate-500 font-medium">
-                        {step.desc}
-                      </p>
-                    </div>
-
-                    {/* Decorative Milestone Card (Both Mobile and PC) */}
-                    <div className="p-6 rounded-3xl border border-slate-150 bg-white shadow-sm hover:shadow-[0_15px_35px_-10px_rgba(249,115,22,0.06)] hover:border-orange-500/10 transition-all duration-500 transform hover:-translate-y-0.5 text-left">
-                      <div className="flex items-center gap-3 mb-2.5">
-                        <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${step.accent} animate-pulse`} />
-                        <span className="text-[8.5px] font-black uppercase tracking-widest text-slate-400 font-mono">Milestone Goal</span>
-                      </div>
-                      <h4 className="text-xs font-black uppercase tracking-tight text-slate-900 mb-1">{step.milestone}</h4>
-                      <p className="text-[10px] leading-relaxed font-semibold text-slate-400">
-                        100% verified design guidelines verified inside Jantra sandbox.
-                      </p>
-                    </div>
-                  </div>
-
-                </motion.div>
+                </div>
               );
             })}
           </div>
@@ -813,25 +858,84 @@ function ScopingTimeline() {
 }
 
 
+
 // ─── INTEGRATION MATRIX ──────────────────────────────────────────────────────
 function IntegrationMatrix() {
   const integrations = [
-    { name: "Slack", icon: "slack", color: "#4A154B", hoverGlow: "rgba(74, 21, 75, 0.12)", desc: "Real-time pipeline notifications." },
-    { name: "HubSpot", icon: "hubspot", color: "#FF7A59", hoverGlow: "rgba(255, 122, 89, 0.12)", desc: "CRM sync & lead workflows." },
-    { name: "Stripe", icon: "stripe", color: "#635BFF", hoverGlow: "rgba(99, 91, 255, 0.12)", desc: "Subscriptions & global gateways." },
-    { name: "OpenAI", icon: "openai", color: "#000000", hoverGlow: "rgba(16, 163, 127, 0.12)", desc: "AI core agents & prompt models." },
-    { name: "AWS", icon: "amazon", color: "#FF9900", hoverGlow: "rgba(255, 153, 0, 0.12)", desc: "Serverless Lambda & storage." },
-    { name: "WhatsApp", icon: "whatsapp", color: "#25D366", hoverGlow: "rgba(37, 211, 102, 0.12)", desc: "Direct customer communication." },
-    { name: "GitHub", icon: "github", color: "#24292F", hoverGlow: "rgba(36, 41, 47, 0.12)", desc: "Version control & webhook updates." },
-    { name: "Discord", icon: "discord", color: "#5865F2", hoverGlow: "rgba(88, 101, 242, 0.12)", desc: "Automated alert pipelines." }
+    { 
+      name: "Slack", 
+      color: "#4A154B", 
+      hoverGlow: "rgba(74, 21, 75, 0.2)", 
+      desc: "Real-time pipeline notifications.",
+      // Slack official SVG path
+      svg: <path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523 2.528 2.528 0 0 1-2.522-2.523 2.528 2.528 0 0 1 2.522-2.52h2.52v2.52zm1.261 0a2.528 2.528 0 0 1 2.52-2.52h5.043a2.528 2.528 0 0 1 2.522 2.52v5.042a2.528 2.528 0 0 1-2.522 2.52H8.823a2.528 2.528 0 0 1-2.52-2.52v-5.042zM8.823 5.043a2.528 2.528 0 0 1-2.52-2.522A2.528 2.528 0 0 1 8.823 0a2.528 2.528 0 0 1 2.52 2.521v2.522h-2.52zm0 1.261a2.528 2.528 0 0 1 2.52 2.52v5.043a2.528 2.528 0 0 1-2.52 2.522H3.78a2.528 2.528 0 0 1-2.52-2.522V8.824a2.528 2.528 0 0 1 2.52-2.52h5.043zm10.135 3.781a2.528 2.528 0 0 1 2.521-2.52 2.528 2.528 0 0 1 2.522 2.52 2.528 2.528 0 0 1-2.522 2.52h-2.521v-2.52zm-1.262 0a2.528 2.528 0 0 1-2.52 2.52h-5.043a2.528 2.528 0 0 1-2.522-2.52V5.043a2.528 2.528 0 0 1 2.522-2.52h5.043a2.528 2.528 0 0 1 2.52 2.52v5.042zm-3.78 10.135a2.528 2.528 0 0 1 2.52 2.522a2.528 2.528 0 0 1-2.52 2.521a2.528 2.528 0 0 1-2.522-2.521v-2.522h2.522zm0-1.262a2.528 2.528 0 0 1-2.52-2.52v-5.043a2.528 2.528 0 0 1 2.52-2.522h5.043a2.528 2.528 0 0 1 2.52 2.522v5.043a2.528 2.528 0 0 1-2.52 2.52h-5.043z"/>
+    },
+    { 
+      name: "Stripe", 
+      color: "#635BFF", 
+      hoverGlow: "rgba(99, 91, 255, 0.2)", 
+      desc: "Subscriptions & global gateways.",
+      svg: <path d="M20.093 11.297c0-3.696-2.532-5.328-5.832-5.328-3.672 0-6.192 1.956-6.192 5.376 0 3.732 2.928 4.908 6.444 5.928 1.956.576 2.568.96 2.568 1.776 0 .768-.696 1.176-1.74 1.176-1.524 0-2.916-.624-4.224-1.392l-1.02 2.82c1.476.84 3.396 1.344 5.232 1.344 3.768 0 6.276-1.896 6.276-5.388 0-3.792-2.916-4.884-6.456-5.892-1.908-.552-2.484-.912-2.484-1.692 0-.696.648-1.092 1.632-1.092 1.32 0 2.592.516 3.756 1.224l1.04-2.76z"/>
+    },
+    { 
+      name: "HubSpot", 
+      color: "#FF7A59", 
+      hoverGlow: "rgba(255, 122, 89, 0.2)", 
+      desc: "CRM sync & lead workflows.",
+      svg: <path d="M19.38 12.62a3.46 3.46 0 0 0-2.5-3.38V6.81a3.44 3.44 0 0 0 1.5-2.88 3.44 3.44 0 1 0-4.94 3.12l-2.07 2.07A3.46 3.46 0 0 0 8.88 9.5a3.45 3.45 0 0 0-2.5 5.75L3 18.63a1 1 0 1 0 1.42 1.42l3.38-3.38A3.45 3.45 0 0 0 14.5 15.5a3.46 3.46 0 0 0-3.38-2.5l2.07-2.07A3.44 3.44 0 0 0 15 11.06v2.44a3.46 3.46 0 1 0 4.38-.88zM15 3.93a1.44 1.44 0 1 1 1.44 1.44A1.44 1.44 0 0 1 15 3.93zm-6.12 13a1.44 1.44 0 1 1 1.44-1.44 1.44 1.44 0 0 1-1.44 1.44zm8.62-2.12a1.44 1.44 0 1 1-1.44-1.44 1.44 1.44 0 0 1 1.44 1.44z"/>
+    },
+    { 
+      name: "OpenAI", 
+      color: "#10A37F", 
+      hoverGlow: "rgba(16, 163, 127, 0.2)", 
+      desc: "AI core agents & prompt models.",
+      svg: <path d="M22.532 10.976a5.553 5.553 0 0 0-1.43-3.921 5.597 5.597 0 0 0-3.415-1.748 5.57 5.57 0 0 0-4.887-2.735 5.557 5.557 0 0 0-4.81 2.822 5.572 5.572 0 0 0-3.666 1.157A5.553 5.553 0 0 0 2.22 10.286a5.59 5.59 0 0 0 .543 4.148 5.558 5.558 0 0 0 2.824 2.502 5.57 5.57 0 0 0 4.884 2.738 5.568 5.568 0 0 0 4.815-2.82 5.58 5.58 0 0 0 3.667-1.158 5.555 5.555 0 0 0 2.106-3.731 5.557 5.557 0 0 0 .543-4.148 5.545 5.545 0 0 0-1.07-2.841zM12.8 4.225a3.917 3.917 0 0 1 3.2 1.637l-1.012.585a2.766 2.766 0 0 0-3.473-1.011l-1.493-.862.008-.004c.896-.232 1.83-.35 2.77-.345zm-6.242 3.6a3.917 3.917 0 0 1 1.6-3.2l1.012.584a2.766 2.766 0 0 0-1.011 3.473L6.666 9.544l-.004-.008a3.86 3.86 0 0 1-.104-1.711zm1.6 6.242L11.83 12l.004-.007a2.764 2.764 0 0 0 .538-3.585L9.645 6.77l-1.494.862a3.917 3.917 0 0 1 0 6.4zm8.625 2.378a3.918 3.918 0 0 1-3.2-1.637l1.012-.585a2.766 2.766 0 0 0 3.473 1.011l1.493.862-.008.004c-.896.232-1.83.35-2.77.345zm4.817-4.815a3.918 3.918 0 0 1-1.6 3.2l-1.012-.584a2.766 2.766 0 0 0 1.011-3.473l1.493-1.06.004.008a3.863 3.863 0 0 1 .104 1.709zM12 10.3a1.7 1.7 0 1 1-1.7 1.7 1.7 1.7 0 0 1 1.7-1.7zm1.782-2.148l2.727 1.575-1.494.862a2.764 2.764 0 0 0-3.585-.538l.004-.007L13.782 8.152zm-5.007 7.078a3.918 3.918 0 0 1 0-6.4l1.494.862a2.764 2.764 0 0 0 0 3.585z"/>
+    },
+    { 
+      name: "AWS", 
+      color: "#FF9900", 
+      hoverGlow: "rgba(255, 153, 0, 0.2)", 
+      desc: "Serverless Lambda & storage.",
+      svg: (
+        <g>
+          <path d="M13.568 12.352c0 2.272-1.376 3.472-3.648 3.472-1.2 0-2.144-.4-2.8-.976l.736-1.12c.56.496 1.312.8 2.064.8 1.456 0 2.224-.768 2.224-2.128v-.56c-.656.768-1.584 1.168-2.656 1.168-2.096 0-3.568-1.536-3.568-3.952 0-2.528 1.552-4.048 3.696-4.048 1.056 0 1.952.4 2.528 1.136V5.376h1.424zm-1.424-3.488c0-1.472-.88-2.32-2.128-2.32-1.296 0-2.176.88-2.176 2.384 0 1.456.848 2.336 2.144 2.336 1.296 0 2.16-.896 2.16-2.4zm8.384 6.848c-.96 0-1.84-.288-2.48-.816l.656-1.072c.544.432 1.2.656 1.856.656.96 0 1.456-.4 1.456-.992 0-.608-.432-.832-1.344-1.088-1.344-.384-2.32-.896-2.32-2.256 0-1.328 1.056-2.192 2.656-2.192.912 0 1.696.24 2.224.64l-.608 1.088c-.464-.32-1.04-.496-1.616-.496-.864 0-1.28.384-1.28.848 0 .544.416.736 1.328.992 1.392.384 2.352.928 2.352 2.336 0 1.44-1.12 2.352-2.88 2.352zm-12.72-9.456l1.232 4.672 1.296-4.672h1.568l1.312 4.672 1.216-4.672h1.616l-2.08 7.024h-1.504L11.536 7.44l-1.184 4.544H8.848l-2.048-7.024z"/>
+          <path d="M4.32 17.52c3.552 2.064 8.016 3.2 12.56 3.2 2.912 0 5.76-.464 8.352-1.376l.496.976c-2.736.976-5.744 1.472-8.848 1.472-4.816 0-9.52-1.2-13.264-3.376zm21.36-.64c-.096.384-.288 1.136-.448 1.52-.08.208-.224.224-.336.048-.48-.688-1.072-1.376-1.584-1.952-.16-.176-.112-.32.144-.304.832.064 2.048-.064 2.656-.128.24-.032.272.16.032.32-.24.16-.416.32-.464.496z"/>
+        </g>
+      )
+    },
+    { 
+      name: "WhatsApp", 
+      color: "#25D366", 
+      hoverGlow: "rgba(37, 211, 102, 0.2)", 
+      desc: "Direct customer communication.",
+      svg: <path d="M12.004 0C5.378 0 0 5.374 0 11.996c0 2.112.551 4.17 1.597 5.977L.055 24l6.19-1.622c1.728.944 3.676 1.442 5.759 1.442C18.625 23.82 24 18.446 24 11.82 24 5.374 18.625 0 12.004 0zm0 1.831c5.612 0 10.17 4.56 10.17 10.172 0 5.612-4.558 10.17-10.17 10.17-1.925 0-3.805-.544-5.437-1.572l-.39-.247-3.666.96.977-3.568-.27-.432A10.117 10.117 0 0 1 1.833 12c0-5.612 4.56-10.169 10.171-10.169zm-1.88 4.385c-.244-.543-.5-.552-.733-.561-.19-.009-.41-.009-.628-.009-.22 0-.575.082-.876.411-.3.329-1.15 1.123-1.15 2.74 0 1.616 1.176 3.179 1.34 3.4 0 .22 2.26 3.593 5.539 4.887.776.307 1.383.491 1.854.64.78.247 1.492.21 2.054.128.627-.092 1.926-.786 2.196-1.543.27-.757.27-1.407.19-1.543-.08-.137-.3-.22-.63-.384-.329-.165-1.927-.95-2.226-1.06-.299-.11-.518-.165-.734.164-.216.329-.838 1.06-1.026 1.28-.188.22-.376.247-.706.082-.33-.164-1.393-.512-2.655-1.64-1.022-.912-1.71-2.04-1.91-2.37-.2-.328-.02-.507.144-.67.148-.147.33-.385.495-.576.165-.192.22-.329.33-.548.11-.22.055-.411-.027-.575-.083-.165-.733-1.782-1.01-2.428z"/>
+    },
+    { 
+      name: "GitHub", 
+      color: "#24292F", 
+      hoverGlow: "rgba(36, 41, 47, 0.2)", 
+      desc: "Version control & webhook updates.",
+      svg: <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+    },
+    { 
+      name: "Discord", 
+      color: "#5865F2", 
+      hoverGlow: "rgba(88, 101, 242, 0.2)", 
+      desc: "Automated alert pipelines.",
+      svg: <path d="M20.317 4.37a18.002 18.002 0 0 0-4.485-1.388c-.08-.008-.16.03-.193.103a12.85 12.85 0 0 0-.57 1.173 16.59 16.59 0 0 0-4.854 0 12.283 12.283 0 0 0-.573-1.173.18.18 0 0 0-.192-.103 17.957 17.957 0 0 0-4.487 1.388.18.18 0 0 0-.072.07C1.113 10.149.32 15.78 1.144 21.326a.185.185 0 0 0 .071.127 18.198 18.198 0 0 0 5.483 2.756.186.186 0 0 0 .2-.065c.422-.572.79-1.183 1.103-1.815a.18.18 0 0 0-.098-.25 11.96 11.96 0 0 1-1.722-.816.188.188 0 0 1-.019-.312c.115-.085.23-.173.34-.263a.184.184 0 0 1 .192-.025 11.892 11.892 0 0 0 10.66 0 .185.185 0 0 1 .195.025c.11.09.224.178.34.263a.188.188 0 0 1-.018.312 11.933 11.933 0 0 1-1.725.816.18.18 0 0 0-.1.25c.316.632.684 1.243 1.103 1.815a.188.188 0 0 0 .201.065 18.187 18.187 0 0 0 5.485-2.756.186.186 0 0 0 .071-.127c1.077-6.223-.787-11.802-3.79-16.892a.185.185 0 0 0-.07-.07zM8.02 15.33c-1.072 0-1.954-.975-1.954-2.176s.867-2.176 1.954-2.176c1.09 0 1.968.986 1.955 2.176 0 1.2-.865 2.176-1.954 2.176zm7.98 0c-1.071 0-1.953-.975-1.953-2.176s.867-2.176 1.953-2.176c1.09 0 1.968.986 1.955 2.176 0 1.2-.865 2.176-1.955 2.176z"/>
+    }
   ];
 
   return (
     <section className="py-20 sm:py-28 bg-[#f8fafc] overflow-hidden relative border-b border-slate-100">
-      <div className="mx-auto max-w-[1100px] px-5 sm:px-8 lg:px-12 text-center">
+      <div className="mx-auto max-w-[1300px] px-5 sm:px-8 lg:px-12 text-center relative">
         
+        {/* Soft Ambient Glows */}
+        <div className="absolute top-0 left-1/4 w-[300px] h-[300px] bg-orange-500/5 blur-[90px] rounded-full pointer-events-none" />
+        <div className="absolute bottom-0 right-1/4 w-[350px] h-[350px] bg-blue-500/5 blur-[100px] rounded-full pointer-events-none" />
+
         {/* Header */}
-        <div className="max-w-2xl mx-auto mb-16">
+        <div className="max-w-2xl mx-auto mb-20 relative z-10">
           <span className="text-orange-600 font-bold tracking-widest text-[9px] uppercase mb-2.5 block">Automated Sync</span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 leading-none uppercase tracking-tighter">
             Integration Matrix<span className="text-orange-500">.</span>
@@ -841,50 +945,116 @@ function IntegrationMatrix() {
           </p>
         </div>
 
-        {/* Honeycomb Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-          {integrations.map((item, idx) => (
-            <motion.div
-              key={item.name}
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ delay: idx * 0.04 }}
-              whileHover={{ 
-                scale: 1.025,
-                borderColor: item.color,
-                boxShadow: `0 15px 40px -10px ${item.hoverGlow}`
-              }}
-              className="group relative p-5 rounded-2xl bg-white border border-slate-200/50 flex flex-col items-center justify-between text-center transition-all duration-300 h-full cursor-default"
-            >
-              <div className="flex flex-col items-center gap-4">
-                {/* Brand Logo Container */}
-                <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center group-hover:bg-white transition-all duration-300 relative overflow-hidden">
-                  {/* Default monochrome logo */}
-                  <img
-                    src={`https://cdn.simpleicons.org/${item.icon}/94a3b8`}
-                    alt={item.name}
-                    className="w-5 h-5 transition-opacity duration-300 group-hover:opacity-0"
+        {/* Stunning Interactive Node Web Canvas (Responsive Scale Orbit) */}
+        <div className="relative left-1/2 -translate-x-1/2 lg:left-0 lg:translate-x-0 w-[900px] h-[540px] flex items-center justify-center origin-center scale-[0.52] xs:scale-[0.62] sm:scale-[0.78] md:scale-[0.88] lg:scale-100 my-[-130px] xs:my-[-105px] sm:my-[-65px] md:my-[-30px] lg:my-0 transition-transform duration-500">
+          {/* Animated Connecting Lines Web SVG */}
+          <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
+            {integrations.map((item, idx) => {
+              const angle = (idx * 45 * Math.PI) / 180;
+              const radius = 220; // Radius of outer circle
+              const xTarget = 450 + radius * Math.cos(angle);
+              const yTarget = 270 + radius * Math.sin(angle);
+              
+              return (
+                <g key={`web-line-${idx}`}>
+                  {/* Faded background path */}
+                  <line 
+                    x1="450" 
+                    y1="270" 
+                    x2={xTarget} 
+                    y2={yTarget} 
+                    stroke="#e2e8f0" 
+                    strokeWidth="1.5"
+                    strokeDasharray="4 4"
                   />
-                  {/* Hover colored version */}
-                  <img
-                    src={`https://cdn.simpleicons.org/${item.icon}/${item.color.replace("#", "")}`}
-                    alt={item.name}
-                    className="w-5 h-5 absolute opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                  {/* Animated glowing path */}
+                  <motion.line 
+                    x1="450" 
+                    y1="270" 
+                    x2={xTarget} 
+                    y2={yTarget} 
+                    stroke={item.color} 
+                    strokeWidth="2"
+                    initial={{ strokeDasharray: "8 20", strokeDashoffset: 100 }}
+                    animate={{ strokeDashoffset: [100, 0] }}
+                    transition={{ 
+                      repeat: Infinity, 
+                      duration: 3, 
+                      ease: "linear",
+                      delay: idx * 0.2 
+                    }}
                   />
-                </div>
+                </g>
+              );
+            })}
+          </svg>
 
-                <div className="space-y-1">
-                  <h3 className="text-xs font-black uppercase tracking-wider text-slate-800">
-                    {item.name}
-                  </h3>
-                  <p className="text-[10px] text-slate-400 font-semibold leading-relaxed max-w-[150px] mx-auto">
-                    {item.desc}
-                  </p>
-                </div>
+          {/* Central Jantra core node */}
+          <div className="absolute left-[450px] top-[270px] -translate-x-1/2 -translate-y-1/2 z-20 flex items-center justify-center">
+            <motion.div 
+              animate={{ scale: [1, 1.05, 1] }}
+              transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+              className="relative w-28 h-28 rounded-full bg-slate-900 flex items-center justify-center shadow-[0_0_50px_rgba(249,115,22,0.25)] border border-orange-500/30"
+            >
+              <div className="absolute inset-2 rounded-full border border-dashed border-orange-500/40 animate-[spin_20s_linear_infinite]" />
+              <div className="text-center">
+                <span className="text-[10px] font-black text-orange-500 tracking-[0.3em] uppercase block">JANTRA</span>
+                <span className="text-[7px] font-black text-white/50 tracking-widest uppercase block mt-1">CORE</span>
               </div>
             </motion.div>
-          ))}
+          </div>
+
+          {/* Symmetrical Orbiting Integration Nodes */}
+          {integrations.map((item, idx) => {
+            const angle = (idx * 45 * Math.PI) / 180;
+            const radius = 220;
+            const xVal = 450 + radius * Math.cos(angle);
+            const yVal = 270 + radius * Math.sin(angle);
+
+            return (
+              <motion.div
+                key={`node-${item.name}`}
+                style={{ left: `${xVal}px`, top: `${yVal}px` }}
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ type: "spring", stiffness: 100, delay: idx * 0.05 }}
+                whileHover={{ scale: 1.1, zIndex: 30 }}
+                className="absolute -translate-x-1/2 -translate-y-1/2 group z-10 cursor-pointer flex flex-col items-center"
+              >
+                {/* Brand circle */}
+                <div 
+                  className="w-20 h-20 rounded-2xl bg-white border border-slate-200 shadow-md flex items-center justify-center transition-all duration-300 group-hover:border-transparent relative overflow-hidden group-hover:shadow-[0_10px_35px_-8px_rgba(0,0,0,0.15)]"
+                  style={{ 
+                    transformStyle: "preserve-3d"
+                  }}
+                >
+                  {/* Subtle color highlight ring on hover */}
+                  <div 
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 border-2" 
+                    style={{ borderColor: item.color }} 
+                  />
+                  <div className="absolute inset-0 bg-slate-50/50 group-hover:bg-transparent transition-colors duration-300" />
+                  
+                  {/* Logo SVG (Self-contained, full brand color by default, large size) */}
+                  <svg 
+                    viewBox="0 0 24 24" 
+                    fill="currentColor"
+                    className="w-10 h-10 transition-all duration-300 z-10 group-hover:scale-110 drop-shadow-[0_2px_8px_rgba(0,0,0,0.05)]"
+                    style={{ color: item.color }}
+                  >
+                    {item.svg}
+                  </svg>
+                </div>
+
+                {/* Floating Tooltip/label on hover */}
+                <div className="absolute top-18 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-350 transform translate-y-2 group-hover:translate-y-0 w-44 bg-slate-900 text-white rounded-xl p-3 shadow-xl z-30">
+                  <h4 className="text-[10px] font-black uppercase tracking-wider mb-0.5">{item.name}</h4>
+                  <p className="text-[8px] text-slate-400 leading-normal font-medium">{item.desc}</p>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
 
       </div>

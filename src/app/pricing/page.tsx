@@ -120,6 +120,20 @@ const FAQS = [
 type CurrencyCode = "USD" | "EUR" | "BDT";
 
 const resolveServiceVisualUrl = (service: any) => {
+    const slug = service?.slug || "";
+    // Direct mapping to ultra-fast local static images in the public folder
+    if (slug === "custom-software-development") return "/custom_software.png";
+    if (slug === "mobile-app-development") return "/mobile_dev.png";
+    if (slug === "saas-product-development") return "/saas_dev.png";
+    if (slug === "ai-agents-development" || slug === "ai-agent-development" || slug.includes("ai")) return "/ai_agents.png";
+    if (slug === "workflow-automation" || slug.includes("automation")) return "/workflow_auto.png";
+    if (slug === "cloud-systems-architecture" || slug.includes("cloud")) return "/cloud_systems.png";
+
+    // Fallback plans mapping
+    if (slug.includes("starter")) return "/starter_plan.png";
+    if (slug.includes("growth")) return "/growth_plan.png";
+    if (slug.includes("enterprise")) return "/enterprise_plan.png";
+
     const raw = service?.banner || service?.image;
     if (!raw) {
         return "";
@@ -423,18 +437,10 @@ export default function PricingPage() {
                                             <img
                                                 src={visualUrl}
                                                 alt={service.title || "Service Banner"}
-                                                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-200 z-30 ${
-                                                    loadedVisuals[service.id] ? "opacity-100" : "opacity-0"
-                                                }`}
-                                                loading={i < 3 ? "eager" : "lazy"}
-                                                fetchPriority={i < 3 ? "high" : "auto"}
-                                                decoding="async"
-                                                onLoad={() =>
-                                                    setLoadedVisuals((prev) => ({ ...prev, [service.id]: true }))
-                                                }
-                                                onError={() =>
-                                                    setFailedVisuals((prev) => ({ ...prev, [service.id]: true }))
-                                                }
+                                                className="absolute inset-0 w-full h-full object-cover z-30"
+                                                loading="eager"
+                                                fetchPriority="high"
+                                                decoding="sync"
                                             />
                                         )}
                                     </div>
