@@ -134,7 +134,7 @@ export default function Navbar() {
               </div>
 
               {/* Action Terminal */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <div className="hidden lg:block">
                    <Link
                     href="/contact"
@@ -146,6 +146,14 @@ export default function Navbar() {
                     </span>
                   </Link>
                 </div>
+
+                {/* Mobile Contact Action Button */}
+                <Link
+                  href="/contact"
+                  className="flex md:hidden items-center justify-center h-10 px-4 rounded-xl bg-orange-600 hover:bg-slate-950 text-white text-[9px] font-black uppercase tracking-widest transition-all duration-200 active:scale-95 shadow-md shadow-orange-600/10 border border-orange-500/10"
+                >
+                  Contact
+                </Link>
 
                 <button
                   type="button"

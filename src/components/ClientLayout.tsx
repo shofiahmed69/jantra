@@ -66,7 +66,7 @@ export default function ClientLayout({
 
             {/* Sticky Floating Contact Action Button (FAB) with dynamic overlay */}
             {showNav && (
-                <div className="fixed bottom-12 right-5 md:bottom-8 md:right-8 z-[150] flex flex-col items-end gap-3 select-none">
+                <div className="hidden md:flex fixed bottom-12 right-5 md:bottom-8 md:right-8 z-[150] flex-col items-end gap-3 select-none">
                     
                     {/* Animated Options Menu */}
                     <AnimatePresence>
