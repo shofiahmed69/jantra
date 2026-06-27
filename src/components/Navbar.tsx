@@ -294,56 +294,64 @@ export default function Navbar() {
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
             className="absolute inset-x-0 top-full mt-4 px-4 sm:px-6 md:hidden"
           >
-            <GlassEffect className="overflow-hidden rounded-2xl bg-white/95 p-3.5 shadow-[0_20px_40px_rgba(0,0,0,0.08)] backdrop-blur-3xl border border-slate-200/60 max-w-[280px] ml-auto">
-              <div className="flex flex-col gap-1">
+            <GlassEffect className="overflow-hidden rounded-3xl bg-white/95 p-5 shadow-[0_30px_60px_-15px_rgba(249,115,22,0.18)] backdrop-blur-3xl border border-slate-200/60">
+              <div className="text-center mb-5">
+                <span className="text-[8.5px] font-black uppercase tracking-widest text-orange-600 font-mono">Instant Scoping</span>
+                <h3 className="text-sm font-black uppercase tracking-tight text-slate-950 mt-1">Connect with Jantra</h3>
+              </div>
+              <div className="flex flex-col gap-3">
                 {/* WhatsApp */}
                 <a
                   href="https://wa.me/8801625027956"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-3.5 rounded-xl p-2.5 hover:bg-slate-50 transition-all duration-200 active:scale-98 group/item"
+                  className="flex items-center justify-between rounded-2xl px-5 py-4 bg-gradient-to-r from-orange-50/60 to-amber-50/30 hover:from-orange-100/40 hover:to-amber-100/20 border border-orange-100/50 text-slate-900 transition-all duration-300 active:scale-98 group/item"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center justify-center">
-                    <MessageCircle className="h-4 w-4 text-emerald-600" />
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-9 h-9 rounded-xl bg-orange-600/10 flex items-center justify-center border border-orange-600/20 shrink-0">
+                      <MessageCircle className="h-4.5 w-4.5 text-orange-600" />
+                    </div>
+                    <div className="text-left">
+                      <span className="text-xs font-black text-slate-900 block leading-tight">WhatsApp Chat</span>
+                      <span className="text-[9px] font-medium text-slate-500 block mt-0.5">Talk to a product engineer</span>
+                    </div>
                   </div>
-                  <div className="flex-1 text-left">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 font-mono leading-none">WhatsApp</p>
-                    <p className="text-xs font-black text-slate-800 leading-none mt-1">Chat Direct</p>
-                  </div>
-                  <ArrowRight className="h-3 w-3 text-slate-400 group-hover/item:translate-x-0.5 transition-transform" />
+                  <ArrowRight className="h-4 w-4 text-orange-600 group-hover/item:translate-x-0.5 transition-transform" />
                 </a>
 
                 {/* Email */}
                 <a
                   href="mailto:contact@jantrasoft.online"
-                  className="flex items-center gap-3.5 rounded-xl p-2.5 hover:bg-slate-50 transition-all duration-200 active:scale-98 group/item"
+                  className="flex items-center justify-between rounded-2xl px-5 py-4 bg-gradient-to-r from-orange-50/60 to-amber-50/30 hover:from-orange-100/40 hover:to-amber-100/20 border border-orange-100/50 text-slate-900 transition-all duration-300 active:scale-98 group/item"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center">
-                    <Mail className="h-4 w-4 text-blue-600" />
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-9 h-9 rounded-xl bg-orange-600/10 flex items-center justify-center border border-orange-600/20 shrink-0">
+                      <Mail className="h-4.5 w-4.5 text-orange-600" />
+                    </div>
+                    <div className="text-left">
+                      <span className="text-xs font-black text-slate-900 block leading-tight">Direct Email</span>
+                      <span className="text-[9px] font-medium text-slate-500 block mt-0.5">Send project details & docs</span>
+                    </div>
                   </div>
-                  <div className="flex-1 text-left">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 font-mono leading-none">Email</p>
-                    <p className="text-xs font-black text-slate-800 leading-none mt-1">Send Request</p>
-                  </div>
-                  <ArrowRight className="h-3 w-3 text-slate-400 group-hover/item:translate-x-0.5 transition-transform" />
+                  <ArrowRight className="h-4 w-4 text-orange-600 group-hover/item:translate-x-0.5 transition-transform" />
                 </a>
 
-                <div className="h-px bg-slate-100 my-1" />
-
-                {/* Standard Contact Page */}
+                {/* Start a Project (HQ Link) */}
                 <Link
                   href="/contact"
                   onClick={() => setContactOpen(false)}
-                  className="flex items-center gap-3.5 rounded-xl p-2.5 bg-orange-600 hover:bg-slate-950 text-white transition-all duration-200 active:scale-98 group/item"
+                  className="flex items-center justify-between rounded-2xl px-5 py-4.5 bg-gradient-to-r from-orange-600 to-orange-500 hover:from-slate-950 hover:to-slate-900 text-white transition-all duration-300 active:scale-98 group/item shadow-lg shadow-orange-600/10 border border-orange-500/10"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
-                    <MessageSquare className="h-4 w-4 text-white" />
+                  <div className="flex items-center gap-3.5">
+                    <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center shrink-0">
+                      <MessageSquare className="h-4.5 w-4.5 text-white" />
+                    </div>
+                    <div className="text-left">
+                      <span className="text-xs font-black text-white block leading-tight">Start a Project</span>
+                      <span className="text-[9px] font-medium text-orange-200 block mt-0.5">Get a customized cost scoping</span>
+                    </div>
                   </div>
-                  <div className="flex-1 text-left">
-                    <p className="text-[8px] font-black uppercase tracking-widest text-orange-200 font-mono leading-none">Launch Project</p>
-                    <p className="text-xs font-black text-white leading-none mt-1">Get Custom Quote</p>
-                  </div>
-                  <Sparkles className="h-3.5 w-3.5 text-white animate-pulse" />
+                  <Sparkles className="h-4.5 w-4.5 text-white animate-pulse" />
                 </Link>
               </div>
             </GlassEffect>
