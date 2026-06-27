@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, Menu, X, Sparkles } from "lucide-react";
+import { ArrowRight, Menu, X, Sparkles, MessageSquare } from "lucide-react";
 import Logo from "@/components/Logo";
 import { navItems } from "@/content/site";
 import {
@@ -147,12 +147,13 @@ export default function Navbar() {
                   </Link>
                 </div>
 
-                {/* Mobile Contact Action Button */}
+                {/* Mobile Contact Action Button (Compact Icon Style) */}
                 <Link
                   href="/contact"
-                  className="flex md:hidden items-center justify-center h-10 px-4 rounded-xl bg-orange-600 hover:bg-slate-950 text-white text-[9px] font-black uppercase tracking-widest transition-all duration-200 active:scale-95 shadow-md shadow-orange-600/10 border border-orange-500/10"
+                  className="flex md:hidden items-center justify-center h-10 w-10 rounded-xl bg-orange-600 hover:bg-slate-950 text-white transition-all duration-200 active:scale-95 shadow-md shadow-orange-600/10 border border-orange-500/10"
+                  aria-label="Contact Us"
                 >
-                  Contact
+                  <MessageSquare className="h-4.5 w-4.5" />
                 </Link>
 
                 <button
