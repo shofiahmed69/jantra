@@ -27,9 +27,15 @@ const DEFAULT_PROJECT_IMG = "https://images.unsplash.com/photo-1618761714954-0b8
 
 function resolveImg(thumbnail?: string): string {
   if (!thumbnail) return DEFAULT_PROJECT_IMG;
-  if (thumbnail.startsWith("http")) return thumbnail;
-  const base = (process.env.NEXT_PUBLIC_API_URL || "https://jontro-backend.onrender.com/api").replace(/\/api\/?$/, "");
-  return `${base.replace(/\/$/, "")}/${thumbnail.replace(/^\//, "")}`;
+  let url = thumbnail;
+  if (!url.startsWith("http")) {
+    const base = (process.env.NEXT_PUBLIC_API_URL || "https://jontro-backend.onrender.com/api").replace(/\/api\/?$/, "");
+    url = `${base.replace(/\/$/, "")}/${url.replace(/^\//, "")}`;
+  }
+  if (url.startsWith("http://144.79.249.162:9000") || url.includes(":9000/")) {
+    return `/api/image-proxy?url=${encodeURIComponent(url)}`;
+  }
+  return url;
 }
 
 // ─── PORTFOLIO CARD — Compact Glassmorphic Card with Image Overlay ─────────
