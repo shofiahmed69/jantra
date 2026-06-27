@@ -6,10 +6,21 @@ const nextConfig: NextConfig = {
     localPatterns: [
       {
         pathname: "/api/image-proxy",
-        search: "?url=*",
+        search: "?*",
+      },
+      {
+        pathname: "/**",
       },
     ],
     remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "*.sslip.io",
+      },
+      {
+        protocol: "http",
+        hostname: "144.79.249.162",
+      },
       {
         protocol: "https",
         hostname: "jantrasoft.online",
