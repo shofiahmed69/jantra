@@ -109,7 +109,7 @@ const resolveServiceVisualUrl = (service: any) => {
         const cleanPath = url.startsWith("/") ? url : `/${url}`;
         url = `${cleanBase}${cleanPath}`;
     }
-    if (url.startsWith("http://144.79.249.162:9000") || url.includes(":9000/")) {
+    if (url.startsWith("http://") || url.includes("sslip.io")) {
         return `/api/image-proxy?url=${encodeURIComponent(url)}`;
     }
     return url;
