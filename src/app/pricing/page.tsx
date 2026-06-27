@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
     ArrowRight,
     HelpCircle,
@@ -101,12 +102,17 @@ type CurrencyCode = "USD" | "EUR" | "BDT";
 const resolveServiceVisualUrl = (service: any) => {
     const raw = service?.banner || service?.image;
     if (!raw) return "";
-    if (raw.startsWith("http")) return raw;
-
-    const apiBase = (process.env.NEXT_PUBLIC_API_URL || "https://jontro-backend.onrender.com/api").replace(/\/api\/?$/, "");
-    const cleanBase = apiBase.endsWith("/") ? apiBase.slice(0, -1) : apiBase;
-    const cleanPath = raw.startsWith("/") ? raw : `/${raw}`;
-    return `${cleanBase}${cleanPath}`;
+    let url = raw;
+    if (!url.startsWith("http")) {
+        const apiBase = (process.env.NEXT_PUBLIC_API_URL || "https://jontro-backend.onrender.com/api").replace(/\/api\/?$/, "");
+        const cleanBase = apiBase.endsWith("/") ? apiBase.slice(0, -1) : apiBase;
+        const cleanPath = url.startsWith("/") ? url : `/${url}`;
+        url = `${cleanBase}${cleanPath}`;
+    }
+    if (url.startsWith("http://144.79.249.162:9000") || url.includes(":9000/")) {
+        return `/api/image-proxy?url=${encodeURIComponent(url)}`;
+    }
+    return url;
 };
 
 const getServiceIcon = (slug: string) => {
@@ -339,10 +345,12 @@ export default function PricingPage() {
                                         {/* Real Banner Image (No SVG mock placeholders) */}
                                         <div className="relative w-full aspect-[16/9] overflow-hidden rounded-xl mb-5 border border-slate-200/60 bg-[#fcfaf8] flex items-center justify-center shrink-0">
                                             {hasImage ? (
-                                                <img
+                                                <Image
                                                     src={visualUrl}
                                                     alt={service.title || "Service Banner"}
-                                                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                                                    fill
+                                                    sizes="(max-width: 768px) 100vw, 33vw"
+                                                    className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
                                                     onError={() => setFailedImages(prev => ({ ...prev, [service.id]: true }))}
                                                 />
                                             ) : (
