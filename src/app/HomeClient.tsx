@@ -484,15 +484,15 @@ function MobileLottieHero() {
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[80vw] h-[80vw] ambient-glow-oklch rounded-full blur-[80px] pointer-events-none -z-10 animate-pulse" style={{ animationDuration: '8s' }} />
 
       {/* Unified flex container for balanced centering */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 gap-4">
+      <div className="flex-1 flex flex-col items-center justify-center px-6 gap-3 min-h-0">
         
         {/* Lottie Animation + Indicators */}
-        <div className="relative flex flex-col items-center justify-center shrink-0">
-          <div className="w-[88vw] h-[88vw] max-w-[380px] max-h-[380px] flex items-center justify-center">
+        <div className="relative flex flex-col items-center justify-center shrink">
+          <div className="w-[70vw] h-[70vw] sm:w-[80vw] sm:h-[80vw] max-w-[260px] sm:max-w-[320px] max-h-[260px] sm:max-h-[320px] flex items-center justify-center">
             <LottiePlayer src={current.animationSrc!} className="w-full h-full object-contain scale-[1.15]" />
           </div>
           
-          <div className="mt-2 flex flex-col items-center gap-1">
+          <div className="mt-1 flex flex-col items-center gap-1">
             <div className="flex items-center gap-1.5">
               {services.map((_, i) => (
                 <button
@@ -509,8 +509,8 @@ function MobileLottieHero() {
         </div>
 
         {/* Text content & buttons */}
-        <div className="relative z-10 text-center flex flex-col items-center shrink-0 w-full">
-          <h1 className="text-[clamp(1.9rem,8vw,2.5rem)] font-black text-slate-900 leading-[1.1] tracking-tight mb-2">
+        <div className="relative z-10 text-center flex flex-col items-center shrink-0 w-full pb-6">
+          <h1 className="text-[clamp(1.8rem,7vw,2.3rem)] font-black text-slate-900 leading-[1.1] tracking-tight mb-2">
             WE BUILD CUSTOM <br />
             <span className="vibrant-gradient-text">SOFTWARE & AI.</span>
           </h1>
@@ -538,7 +538,7 @@ function MobileLottieHero() {
       </div>
 
       {/* FLUSH BOTTOM STRIP */}
-      <div className="w-full shrink-0 pb-1 relative z-20">
+      <div className="w-full shrink-0 pb-1 pt-2 relative z-20">
         <TechMarqueeStrip />
       </div>
     </section>
