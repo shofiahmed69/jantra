@@ -77,9 +77,12 @@ export default function Navbar() {
                 <div className="relative">
                    <Logo className="h-9 w-9" />
                 </div>
-                <div className="flex flex-col text-left justify-center">
-                  <span className="text-sm font-black tracking-tight text-slate-800 leading-none">
+                <div className="flex flex-col text-left leading-none">
+                  <span className="bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent text-sm font-black tracking-tight">
                     Jantra Soft
+                  </span>
+                  <span className="text-[6.5px] font-black uppercase tracking-[0.25em] text-slate-400 mt-1 block">
+                    Enterprise Software
                   </span>
                 </div>
               </Link>
