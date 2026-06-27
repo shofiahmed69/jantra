@@ -12,30 +12,42 @@ import {
 } from "lucide-react";
 import { homeServicePreview } from "@/content/site";
 
-const capabilitiesMap: Record<string, { features: string[]; techStack: string[] }> = {
+const capabilitiesMap: Record<string, { features: string[]; techStack: string[]; color: string; accentGlow: string }> = {
     "custom-software-development": {
         features: ["UI/UX Design", "Responsive Frontend", "Core REST APIs"],
-        techStack: ["React", "Next.js"]
+        techStack: ["React", "Next.js"],
+        color: "#f97316",
+        accentGlow: "rgba(249, 115, 22, 0.12)"
     },
     "ai-agent-development": {
         features: ["Custom AI Models", "Search Systems", "AI Chat Integration"],
-        techStack: ["Python", "OpenAI"]
+        techStack: ["Python", "OpenAI"],
+        color: "#a855f7",
+        accentGlow: "rgba(168, 85, 247, 0.12)"
     },
     "workflow-automation": {
         features: ["System Integration", "Automatic Alerts", "Data Syncing"],
-        techStack: ["Make.com", "n8n"]
+        techStack: ["Make.com", "n8n"],
+        color: "#ec4899",
+        accentGlow: "rgba(236, 72, 153, 0.12)"
     },
     "saas-product-development": {
         features: ["Secure Login", "Subscription Billing", "User Dashboards"],
-        techStack: ["Next.js", "Stripe"]
+        techStack: ["Next.js", "Stripe"],
+        color: "#10b981",
+        accentGlow: "rgba(16, 185, 129, 0.12)"
     },
     "mobile-app-development": {
         features: ["iOS & Android Apps", "Offline Support", "Push Notifications"],
-        techStack: ["React Native", "Expo"]
+        techStack: ["React Native", "Expo"],
+        color: "#3b82f6",
+        accentGlow: "rgba(59, 130, 246, 0.12)"
     },
     "cloud-api-systems": {
         features: ["Cloud Hosting", "Custom APIs", "Secure Databases"],
-        techStack: ["AWS", "Docker"]
+        techStack: ["AWS", "Docker"],
+        color: "#8b5cf6",
+        accentGlow: "rgba(139, 92, 246, 0.12)"
     }
 };
 
@@ -43,6 +55,12 @@ export default function ServicesPage() {
     const router = useRouter();
     const services = useMemo(() => homeServicePreview.map((s, i) => {
         const slug = s.title.toLowerCase().replace(/ & /g, '-').replace(/\s+/g, '-');
+        const cap = capabilitiesMap[slug] || {
+            features: ["Digital Solutions", "Custom Architecture"],
+            techStack: ["Modern Stack"],
+            color: "#f97316",
+            accentGlow: "rgba(249, 115, 22, 0.12)"
+        };
         return {
             ...s,
             id: `0${i + 1}`,
@@ -54,7 +72,7 @@ export default function ServicesPage() {
                   slug.includes('saas') ? Cpu :
                   slug.includes('software') ? Code :
                   slug.includes('interface') ? Layout : Database,
-            capabilities: capabilitiesMap[slug]
+            capabilities: cap
         };
     }), []);
 
@@ -65,113 +83,157 @@ export default function ServicesPage() {
     }, [router, services]);
 
     return (
-        <main className="relative w-full min-h-screen bg-slate-50/50 pb-24 overflow-x-hidden selection:bg-orange-100">
-            {/* Dynamic ambient background glows */}
-            <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-orange-200/15 blur-[140px] rounded-full -z-20 pointer-events-none" />
-            <div className="absolute top-[20%] right-[-10%] w-[500px] h-[500px] bg-blue-100/10 blur-[130px] rounded-full -z-20 pointer-events-none" />
+        <main className="relative w-full min-h-screen bg-[#fcfaf8] pb-24 overflow-x-hidden selection:bg-orange-100">
+            {/* Ambient dynamic background glows */}
+            <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-orange-500/[0.02] blur-[150px] rounded-full -z-20 pointer-events-none" />
+            <div className="absolute top-[35%] right-[-10%] w-[600px] h-[600px] bg-amber-500/[0.015] blur-[140px] rounded-full -z-20 pointer-events-none" />
 
-            {/* Grid pattern background */}
-            <div className="absolute top-0 inset-x-0 h-[500px] overflow-hidden pointer-events-none select-none -z-10 opacity-[0.02] md:opacity-[0.03]">
+            {/* Clean minimal background grid */}
+            <div className="absolute top-0 inset-x-0 h-[700px] overflow-hidden pointer-events-none select-none -z-10 opacity-[0.02] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_40%,#000_80%,transparent_100%)]">
                 <div className="w-full h-full bg-[linear-gradient(to_right,#ea580c_1px,transparent_1px),linear-gradient(to_bottom,#ea580c_1px,transparent_1px)] bg-[size:4rem_4rem]" />
             </div>
 
-            <div className="max-w-[1240px] mx-auto px-4 sm:px-6 pt-28 sm:pt-36">
+            <div className="max-w-[1240px] mx-auto px-5 sm:px-8 pt-28 sm:pt-36">
                 
                 {/* ── HEADER ── */}
-                <div className="max-w-2xl mb-16 text-left">
-                    <span className="text-orange-600 font-bold tracking-widest text-[10px] uppercase mb-3 block">Expertise Registry</span>
-                    <h1 className="text-3xl sm:text-5xl font-black text-slate-900 leading-none tracking-tight uppercase mb-4">
-                        Our Services<span className="text-orange-500">.</span>
-                    </h1>
-                    <p className="text-slate-500 text-xs sm:text-sm font-medium leading-relaxed max-w-xl">
-                        High-performance engineering solutions designed to solve complex digital challenges. Modular architectures, clean systems, and robust execution.
-                    </p>
+                <div className="max-w-2xl mb-16 text-left relative z-10">
+                  <div className="flex items-center gap-2.5 mb-2.5">
+                    <div className="w-4 h-[1.5px] bg-orange-500 rounded-full" />
+                    <span className="text-orange-600 font-bold tracking-widest text-[9px] uppercase font-mono">Capabilities Registry</span>
+                  </div>
+                  <h1 className="text-3xl sm:text-5xl font-black text-slate-900 leading-none uppercase tracking-tighter mb-4">
+                    Our Services<span className="text-orange-500">.</span>
+                  </h1>
+                  <p className="text-slate-500 text-xs sm:text-sm font-semibold uppercase tracking-wider leading-relaxed max-w-xl">
+                    High-performance engineering designed for clarity, performance, and scale. We build clean digital tools, AI agents, and workflows.
+                  </p>
                 </div>
 
                 {/* ── SERVICES GRID ── */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
-                    {services.map((service, i) => (
-                        <motion.div 
-                            key={service.slug} 
-                            initial={{ opacity: 0, y: 15 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: i * 0.04 }}
-                            className="group relative p-6 rounded-[2rem] bg-white border border-slate-200/60 shadow-lg shadow-slate-100/30 hover:border-orange-500/25 hover:shadow-2xl hover:shadow-orange-500/5 hover:-translate-y-1.5 flex flex-col justify-between transition-all duration-300 h-full overflow-hidden"
-                            onMouseEnter={() => router.prefetch(`/services/${service.slug}`)}
-                            onTouchStart={() => router.prefetch(`/services/${service.slug}`)}
-                        >
-                            {/* Subtle background glow on card hover */}
-                            <div className="absolute inset-0 -z-10 bg-gradient-to-br from-orange-50/0 via-transparent to-orange-500/0 group-hover:from-orange-500/1 group-hover:to-orange-500/3 transition-all duration-500" />
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch relative z-10">
+                    {services.map((service, i) => {
+                        const cap = service.capabilities;
 
-                            <div>
-                                {/* Icon & ID Row */}
-                                <div className="flex items-center justify-between mb-5">
-                                    <div className="w-11 h-11 rounded-xl bg-white text-orange-600 flex items-center justify-center shadow-md border border-orange-100/80 group-hover:bg-orange-600 group-hover:text-white group-hover:scale-105 transition-all duration-300">
-                                        <service.icon className="w-4 h-4" />
-                                    </div>
-                                    <span className="text-[7.5px] font-black text-orange-600/85 uppercase tracking-[0.25em] bg-orange-50 border border-orange-100 px-3 py-1 rounded-full shadow-sm">
-                                        #{service.id}
-                                    </span>
-                                </div>
+                        const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+                          const rect = e.currentTarget.getBoundingClientRect();
+                          const x = e.clientX - rect.left;
+                          const y = e.clientY - rect.top;
+                          e.currentTarget.style.setProperty("--mouse-x", `${x}px`);
+                          e.currentTarget.style.setProperty("--mouse-y", `${y}px`);
+                        };
 
-                                {/* Blueprint Canvas Lottie Preview */}
-                                <div className="relative w-full aspect-[2/1] max-h-[140px] flex items-center justify-center bg-slate-50/60 rounded-[1.25rem] p-4 overflow-hidden border border-slate-200/20 shadow-inner mb-6 shrink-0">
-                                    <div className="absolute inset-0 bg-[linear-gradient(to_right,#ea580c_1px,transparent_1px),linear-gradient(to_bottom,#ea580c_1px,transparent_1px)] bg-[size:16px_16px] opacity-[0.015]" />
-                                    <LottiePlayer 
-                                        src={service.animationSrc!} 
-                                        className="w-full h-full opacity-90 group-hover:scale-102 transition-transform duration-700 object-contain" 
-                                    />
-                                </div>
+                        return (
+                          <motion.div 
+                              key={service.slug} 
+                              initial={{ opacity: 0, y: 15 }}
+                              whileInView={{ opacity: 1, y: 0 }}
+                              viewport={{ once: true, margin: "-50px" }}
+                              transition={{ duration: 0.5, delay: i * 0.05, ease: "easeOut" }}
+                              onMouseMove={handleMouseMove}
+                              style={{
+                                "--spotlight-color": cap.accentGlow
+                              } as React.CSSProperties}
+                              className="group relative flex flex-col justify-between cursor-pointer"
+                              onMouseEnter={() => router.prefetch(`/services/${service.slug}`)}
+                              onTouchStart={() => router.prefetch(`/services/${service.slug}`)}
+                          >
+                              {/* 1. Background offset card layer (Dual layer styling with custom service colors) */}
+                              <div 
+                                  className="absolute inset-0 rounded-2xl border translate-x-2 translate-y-2 group-hover:translate-x-3 group-hover:translate-y-3 transition-transform duration-500 -z-10"
+                                  style={{
+                                    borderColor: `${cap.color}35`,
+                                    backgroundColor: `${cap.color}05`
+                                  }}
+                              />
 
-                                {/* Service details */}
-                                <div className="space-y-2.5 text-left">
-                                    <h3 className="text-sm font-black text-slate-900 tracking-tight uppercase leading-snug group-hover:text-orange-600 transition-colors">
-                                        {service.title}
-                                    </h3>
-                                    <p className="text-[11px] leading-relaxed text-slate-500 font-medium line-clamp-3">
-                                        {service.description}
-                                    </p>
-                                </div>
+                              {/* 2. Foreground main card layer */}
+                              <div className="w-full h-full rounded-2xl bg-white border border-slate-200/90 p-6 flex flex-col justify-between transition-all duration-500 group-hover:-translate-x-0.5 group-hover:-translate-y-0.5 group-hover:border-slate-400 group-hover:shadow-[0_15px_35px_rgba(0,0,0,0.03)] before:absolute before:inset-0 before:bg-[radial-gradient(130px_circle_at_var(--mouse-x,0px)_var(--mouse-y,0px),var(--spotlight-color),transparent)] before:opacity-0 group-hover:before:opacity-100 before:transition-opacity before:duration-300 before:pointer-events-none before:z-0 overflow-hidden relative">
+                                  
+                                  <div className="flex flex-col text-left relative z-10">
+                                      {/* Top Icon & ID Line */}
+                                      <div className="flex items-center justify-between mb-4">
+                                          <span className="text-[9px] font-black tracking-widest text-slate-300 font-mono">
+                                              #{service.id}
+                                          </span>
+                                          <div 
+                                              className="w-8 h-8 rounded-lg flex items-center justify-center border transition-all duration-300"
+                                              style={{
+                                                color: cap.color,
+                                                borderColor: `${cap.color}25`,
+                                                backgroundColor: `${cap.color}08`
+                                              }}
+                                          >
+                                              <service.icon className="w-3.5 h-3.5 stroke-[2]" />
+                                          </div>
+                                      </div>
 
-                                {/* Capability Tags list */}
-                                {service.capabilities && (
-                                    <div className="flex flex-wrap gap-1.5 mt-5">
-                                        {service.capabilities.features.map((feat, fIdx) => (
-                                            <span key={fIdx} className="text-[7.5px] font-black uppercase tracking-widest bg-orange-50/50 text-orange-700/80 border border-orange-100/40 px-2.5 py-0.5 rounded-full">
-                                                {feat}
-                                            </span>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                            
-                            {/* Action link */}
-                            <div className="pt-4 mt-5 border-t border-slate-100/70 flex items-center justify-between">
-                                <span className="inline-flex items-center gap-1.5 text-[8.5px] font-black text-slate-950 uppercase tracking-[0.2em] group-hover:text-orange-600 transition-colors">
-                                    View Details <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform duration-300 text-orange-500" />
-                                </span>
-                            </div>
-                            
-                            <Link href={`/services/${service.slug}`} className="absolute inset-0 z-20" />
-                        </motion.div>
-                    ))}
+                                      {/* Floating Lottie Player directly inside card (No inner card design) */}
+                                      <div className="w-full aspect-[2/1] max-h-[120px] flex items-center justify-center p-2 mb-4 relative overflow-hidden select-none">
+                                          <LottiePlayer 
+                                              src={service.animationSrc!} 
+                                              className="w-full h-full object-contain opacity-95 transition-transform duration-500 group-hover:scale-[1.02]" 
+                                          />
+                                      </div>
+
+                                      {/* Title & Description */}
+                                      <div className="space-y-1.5 mt-2">
+                                          <h3 
+                                              className="text-sm font-black tracking-tight uppercase transition-colors duration-300"
+                                              style={{ color: "#0f172a" }}
+                                              onMouseEnter={(e) => e.currentTarget.style.color = cap.color}
+                                              onMouseLeave={(e) => e.currentTarget.style.color = "#0f172a"}
+                                          >
+                                              {service.title}
+                                          </h3>
+                                          <p className="text-xs leading-relaxed text-slate-500 font-medium line-clamp-3">
+                                              {service.description}
+                                          </p>
+                                      </div>
+
+                                      {/* Capabilities: Simple List */}
+                                      {cap && cap.features && (
+                                          <div className="flex flex-wrap gap-x-2.5 gap-y-1 mt-4 text-[8.5px] font-bold text-slate-400 uppercase tracking-widest font-mono">
+                                              {cap.features.map((feat, fIdx) => (
+                                                  <span key={fIdx} className="after:content-['•'] after:ml-2.5 last:after:content-none">
+                                                      {feat}
+                                                  </span>
+                                              ))}
+                                          </div>
+                                      )}
+                                  </div>
+                                  
+                                  {/* Bottom row */}
+                                  <div className="pt-4 mt-5 border-t border-slate-100 flex items-center justify-between z-10">
+                                      <span className="inline-flex items-center gap-1.5 text-[8.5px] font-black text-slate-900 uppercase tracking-widest group-hover:text-orange-600 transition-colors duration-200">
+                                          Explore Route 
+                                          <ArrowRight className="w-3 h-3 text-orange-500 group-hover:translate-x-0.5 transition-transform" />
+                                      </span>
+                                      
+                                      <div className="font-mono text-[8px] font-extrabold uppercase text-slate-400">
+                                          {cap.techStack.join(" / ")}
+                                      </div>
+                                  </div>
+                                  
+                                  <Link href={`/services/${service.slug}`} className="absolute inset-0 z-20" />
+                              </div>
+                          </motion.div>
+                        );
+                    })}
                 </div>
 
                 {/* ── BOTTOM SPATIAL CTA CARD ── */}
-                <div className="mt-24 p-8 sm:p-12 rounded-[2rem] bg-slate-950 text-white flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left relative overflow-hidden shadow-2xl border border-white/5">
-                    {/* Glowing backdrops for spatial depth */}
-                    <div className="absolute top-0 right-0 w-96 h-96 bg-orange-600/10 blur-[110px] rounded-full pointer-events-none" />
-                    <div className="absolute bottom-0 left-[-5%] w-80 h-80 bg-blue-500/5 blur-[90px] rounded-full pointer-events-none" />
-
-                    <div className="space-y-3 relative z-10">
-                        <span className="text-orange-500 font-black tracking-widest text-[9px] uppercase">Immediate Scoping Available</span>
-                        <h2 className="text-2xl sm:text-4xl font-black tracking-tighter uppercase leading-none">Ready to Start?</h2>
-                        <p className="text-slate-400 text-xs sm:text-sm font-medium leading-relaxed max-w-md">Our engineering team operates globally to ensure quick scoping, transparent deliverables, and fast launch cycles.</p>
+                <div className="mt-20">
+                    <div className="p-8 sm:p-12 rounded-2xl bg-white border border-slate-200 flex flex-col md:flex-row items-center justify-between gap-6 text-left relative overflow-hidden transition-all duration-300 hover:border-orange-500/30">
+                        <div className="space-y-1.5 text-left relative z-10">
+                            <span className="text-orange-600 font-bold tracking-widest text-[9px] uppercase font-mono">Immediate Scoping Available</span>
+                            <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tighter uppercase leading-none">Ready to Start?</h2>
+                            <p className="text-slate-500 text-xs sm:text-sm font-medium leading-relaxed max-w-md">Our engineering team operates globally to ensure quick scoping, transparent deliverables, and fast launch cycles.</p>
+                        </div>
+                        
+                        <Link href="/contact" className="relative z-10 shrink-0 px-7 py-3.5 bg-slate-950 text-white text-[9px] font-black uppercase tracking-widest rounded-lg hover:bg-orange-600 transition-all active:scale-95 flex items-center justify-center gap-1.5">
+                            Start Project <ArrowRight className="w-3.5 h-3.5" />
+                        </Link>
                     </div>
-                    
-                    <Link href="/contact" className="relative z-10 px-8 py-4.5 rounded-xl bg-orange-600 text-white text-[9.5px] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-2 hover:bg-white hover:text-slate-950 transition-all shadow-lg hover:shadow-orange-500/10 active:scale-95">
-                        Start Project <ArrowRight className="w-4 h-4" />
-                    </Link>
                 </div>
             </div>
         </main>

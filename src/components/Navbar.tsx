@@ -46,15 +46,13 @@ export default function Navbar() {
         >
           <GlassEffect
             className={cn(
-              "relative w-full rounded-[2.5rem] transition-all duration-700 ease-out",
-              // Desktop: Previous style | Mobile: Orbital style
+              "relative w-full rounded-3xl transition-all duration-700 ease-out",
               scrolled
-                ? "bg-white/40 md:bg-white/40 ring-1 ring-white/40 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.15)] backdrop-blur-xl"
-                : "bg-white/25 md:bg-white/25 ring-1 ring-white/30 shadow-[0_20px_40px_-15px_rgba(249,115,22,0.25)] backdrop-blur-md",
-              "md:border-none border-t border-white/40" 
+                ? "bg-white/80 border border-slate-200/50 shadow-[0_20px_40px_rgba(0,0,0,0.06)] backdrop-blur-xl"
+                : "bg-white/60 border border-slate-200/30 shadow-[0_10px_30px_rgba(0,0,0,0.03)] backdrop-blur-md"
             )}
           >
-            <div className="relative z-10 flex items-center justify-between gap-4 px-3 py-2 sm:px-4 sm:py-1 text-left">
+            <div className="relative z-10 flex items-center justify-between gap-4 px-4 py-2 text-left">
               
               {/* DESKTOP LOGO (Clean Floating Style) */}
               <Link
@@ -62,13 +60,13 @@ export default function Navbar() {
                 className="hidden md:flex group relative items-center gap-3 transition-all duration-500"
               >
                 <div className="relative transition-all duration-500 group-hover:rotate-6 group-hover:scale-110">
-                  <Logo className="h-9 w-9" />
+                  <Logo className="h-8 w-8" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-[0.65rem] font-bold uppercase tracking-[0.4em] text-slate-500 transition-colors group-hover:text-orange-500">
+                  <span className="text-[0.6rem] font-bold uppercase tracking-[0.4em] text-slate-400 transition-colors group-hover:text-orange-500">
                     Jantra
                   </span>
-                  <span className="bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-base font-black tracking-tight text-transparent transition-all sm:text-lg">
+                  <span className="bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-sm font-black tracking-tight text-transparent transition-all">
                     Enterprise Software
                   </span>
                 </div>
@@ -77,20 +75,20 @@ export default function Navbar() {
               {/* MOBILE LOGO (Enhanced Visibility) */}
               <Link
                 href="/"
-                className="md:hidden group/logo relative flex items-center gap-3 transition-all duration-500"
+                className="md:hidden group/logo relative flex items-center gap-2 transition-all duration-500"
               >
                 <div className="relative">
-                   <Logo className="h-11 w-11" />
+                   <Logo className="h-9 w-9" />
                 </div>
                 <div className="flex flex-col text-left">
-                  <span className="text-[0.8rem] font-black uppercase tracking-[0.35em] text-orange-600 leading-none">Jantra</span>
-                  <span className="text-[0.95rem] font-black tracking-tighter text-slate-900 uppercase leading-none mt-1">Enterprise Software</span>
+                  <span className="text-[0.65rem] font-bold uppercase tracking-[0.3em] text-orange-600 leading-none">Jantra</span>
+                  <span className="text-[0.75rem] font-black tracking-tight text-slate-800 uppercase leading-none mt-1">Enterprise Software</span>
                 </div>
               </Link>
 
-              {/* Desktop Navigation (Previous style) */}
+              {/* Desktop Navigation */}
               <div className="hidden min-w-0 flex-1 items-center justify-center md:flex">
-                <div className="flex items-center gap-1 rounded-full bg-slate-900/[0.03] p-1.5 ring-1 ring-slate-950/5">
+                <div className="flex items-center gap-1 rounded-2xl bg-slate-900/[0.03] p-1 ring-1 ring-slate-950/5">
                   {navItems.map((item) => {
                     const active =
                       item.href === "/"
@@ -102,7 +100,7 @@ export default function Navbar() {
                         key={item.href}
                         href={item.href}
                         className={cn(
-                          "relative rounded-full px-5 py-2.5 text-[0.85rem] font-bold transition-all duration-500",
+                          "relative rounded-xl px-4 py-2 text-[0.8rem] font-bold transition-all duration-500",
                           active
                             ? "text-slate-950"
                             : "text-slate-500 hover:text-slate-900 hover:bg-white/40",
@@ -111,7 +109,7 @@ export default function Navbar() {
                         {active && (
                           <motion.div
                             layoutId="nav-active-pill"
-                            className="absolute inset-0 rounded-full bg-white shadow-[0_2px_10px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,1)]"
+                            className="absolute inset-0 rounded-xl bg-white shadow-[0_2px_10px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,1)]"
                             transition={{
                               type: "spring",
                               bounce: 0.25,
@@ -119,13 +117,13 @@ export default function Navbar() {
                             }}
                           />
                         )}
-                        <span className="relative z-10 flex items-center gap-1.5">
+                        <span className="relative z-10 flex items-center gap-1">
                           {item.label}
                           {active && (
                             <motion.span
                               initial={{ scale: 0 }}
                               animate={{ scale: 1 }}
-                              className="h-1 w-1 rounded-full bg-orange-500"
+                              className="h-1.0 w-1.0 rounded-full bg-orange-500"
                             />
                           )}
                         </span>
@@ -138,15 +136,15 @@ export default function Navbar() {
               {/* Action Terminal */}
               <div className="flex items-center gap-3">
                 <div className="hidden lg:block">
-                   <GlassButton
+                   <Link
                     href="/contact"
-                    className="group border-none bg-orange-600/90 py-3.5 text-white transition-all duration-500 hover:bg-orange-600 hover:shadow-[0_10px_30px_-10px_rgba(249,115,22,0.5)]"
+                    className="group px-6 py-2.5 rounded-xl btn-premium-orange transition-all flex items-center gap-2 shadow-md"
                   >
-                    <span className="flex items-center gap-2 text-[0.85rem] font-black uppercase tracking-wider">
+                    <span className="flex items-center gap-1.5 text-[0.8rem] font-bold uppercase tracking-wider">
                       Let&apos;s Build 
-                      <Sparkles className="h-4 w-4 transition-transform duration-500 group-hover:rotate-12 group-hover:scale-125" />
+                      <Sparkles className="h-3.5 w-3.5 transition-transform duration-500 group-hover:rotate-12 group-hover:scale-125" />
                     </span>
-                  </GlassButton>
+                  </Link>
                 </div>
 
                 <button
@@ -154,16 +152,16 @@ export default function Navbar() {
                   aria-label="Toggle menu"
                   onClick={() => setMobileOpen((current) => !current)}
                   className={cn(
-                    "group/menu relative flex h-12 w-12 items-center justify-center rounded-full transition-all duration-500 md:hidden",
+                    "group/menu relative flex h-10 w-10 items-center justify-center rounded-xl transition-all duration-500 md:hidden",
                     "bg-slate-50/80 backdrop-blur-md border border-slate-200 shadow-[0_2px_10px_rgba(0,0,0,0.05)]",
                     "hover:border-orange-500/30 hover:shadow-[0_4px_15px_rgba(249,115,22,0.1)] active:scale-95",
                     mobileOpen && "bg-orange-600 border-orange-600 text-white shadow-[0_10px_25px_rgba(249,115,22,0.4)]"
                   )}
                 >
                    {/* Unique Segments inside a Proper Circular Button */}
-                   <div className="relative w-5 h-3 flex flex-col justify-between items-center transition-transform duration-500 group-hover/menu:scale-110">
+                   <div className="relative w-4 h-3 flex flex-col justify-between items-center transition-transform duration-500 group-hover/menu:scale-110">
                       <motion.span 
-                        animate={mobileOpen ? { rotate: 45, y: 6, width: "100%", x: 0, backgroundColor: "#fff" } : { rotate: 0, y: 0, width: "60%", x: -4, backgroundColor: "#f97316" }}
+                        animate={mobileOpen ? { rotate: 45, y: 5, width: "100%", x: 0, backgroundColor: "#fff" } : { rotate: 0, y: 0, width: "60%", x: -3, backgroundColor: "#f97316" }}
                         className="h-[2px] rounded-full transition-all duration-500" 
                       />
                       <motion.span 
@@ -171,7 +169,7 @@ export default function Navbar() {
                         className="h-[2px] w-full rounded-full transition-all duration-300"
                       />
                       <motion.span 
-                        animate={mobileOpen ? { rotate: -45, y: -6, width: "100%", x: 0, backgroundColor: "#fff" } : { rotate: 0, y: 0, width: "60%", x: 4, backgroundColor: "#f97316" }}
+                        animate={mobileOpen ? { rotate: -45, y: -5, width: "100%", x: 0, backgroundColor: "#fff" } : { rotate: 0, y: 0, width: "60%", x: 3, backgroundColor: "#f97316" }}
                         className="h-[2px] rounded-full transition-all duration-500" 
                       />
                    </div>
@@ -192,7 +190,7 @@ export default function Navbar() {
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
             className="absolute inset-x-0 top-full mt-4 px-4 sm:px-6 md:hidden"
           >
-            <GlassEffect className="overflow-hidden rounded-[2.5rem] bg-white/80 p-5 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.2)] backdrop-blur-3xl ring-1 ring-white/50 border border-white/20">
+            <GlassEffect className="overflow-hidden rounded-3xl bg-white/90 p-5 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.15)] backdrop-blur-3xl border border-slate-200/50">
               <div className="flex flex-col gap-2">
                 {navItems.map((item, index) => {
                   const active =
@@ -211,9 +209,9 @@ export default function Navbar() {
                         href={item.href}
                         onClick={() => setMobileOpen(false)}
                         className={cn(
-                          "group flex items-center justify-between rounded-[1.5rem] px-5 py-4 transition-all duration-300",
+                          "group flex items-center justify-between rounded-xl px-5 py-4 transition-all duration-300",
                           active
-                            ? "bg-orange-600 text-white shadow-lg shadow-orange-500/20"
+                            ? "btn-premium-orange text-white shadow-md"
                             : "text-slate-600 hover:bg-white hover:text-slate-950",
                         )}
                       >
@@ -224,7 +222,7 @@ export default function Navbar() {
                           )}>
                             0{index + 1}
                           </span>
-                          <span className="text-base font-bold tracking-tight">
+                          <span className="text-sm font-bold tracking-tight">
                             {item.label}
                           </span>
                         </div>
@@ -232,7 +230,7 @@ export default function Navbar() {
                           "rounded-full p-2 transition-transform duration-500 group-hover:translate-x-1",
                           active ? "bg-white/20" : "bg-slate-100"
                         )}>
-                          <ArrowRight className="h-4 w-4" />
+                          <ArrowRight className="h-3.5 w-3.5" />
                         </div>
                       </Link>
                     </motion.div>
@@ -248,10 +246,10 @@ export default function Navbar() {
                   <Link
                     href="/contact"
                     onClick={() => setMobileOpen(false)}
-                    className="flex items-center justify-center gap-3 rounded-[1.5rem] bg-slate-900 py-5 text-sm font-black uppercase tracking-widest text-white shadow-xl transition-all hover:bg-slate-800"
+                    className="flex items-center justify-center gap-3 rounded-xl btn-premium-orange py-4 text-xs font-bold uppercase tracking-widest text-white shadow-xl transition-all"
                   >
                     Start a Project
-                    <Sparkles className="h-4 w-4 text-orange-400" />
+                    <Sparkles className="h-4 w-4 text-white" />
                   </Link>
                 </motion.div>
               </div>

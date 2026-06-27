@@ -5,17 +5,16 @@ import Link from "next/link";
 import {
     ArrowRight,
     HelpCircle,
-    Code,
-    Bot,
-    Workflow,
-    Cpu,
-    Smartphone,
-    Cloud,
-    Database,
-    Zap,
     CheckCircle2,
     X,
-    Loader2
+    Loader2,
+    Code,
+    Smartphone,
+    Bot,
+    Workflow,
+    Cloud,
+    Cpu,
+    Database
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import api from "@/lib/api";
@@ -90,26 +89,6 @@ const FALLBACK_SERVICES = [
     }
 ];
 
-const serviceIcons: Record<string, any> = {
-    "custom-software-development": Code,
-    "ai-agent-development": Bot,
-    "workflow-automation": Workflow,
-    "saas-product-development": Cpu,
-    "mobile-app-development": Smartphone,
-    "cloud-api-systems": Cloud
-};
-
-const iconMap: Record<string, any> = {
-    Code,
-    Bot,
-    Workflow,
-    Cpu,
-    Smartphone,
-    Cloud,
-    Database,
-    Zap
-};
-
 const FAQS = [
     { q: "How long does delivery take?", a: "Initial versions and MVPs are typically delivered and launched within 4-6 weeks." },
     { q: "Who owns the intellectual property?", a: "You retain 100% ownership of the source code and all intellectual property upon project completion." },
@@ -120,24 +99,8 @@ const FAQS = [
 type CurrencyCode = "USD" | "EUR" | "BDT";
 
 const resolveServiceVisualUrl = (service: any) => {
-    const slug = service?.slug || "";
-    // Direct mapping to ultra-fast local static images in the public folder
-    if (slug === "custom-software-development") return "/custom_software.png";
-    if (slug === "mobile-app-development") return "/mobile_dev.png";
-    if (slug === "saas-product-development") return "/saas_dev.png";
-    if (slug === "ai-agents-development" || slug === "ai-agent-development" || slug.includes("ai")) return "/ai_agents.png";
-    if (slug === "workflow-automation" || slug.includes("automation")) return "/workflow_auto.png";
-    if (slug === "cloud-systems-architecture" || slug.includes("cloud")) return "/cloud_systems.png";
-
-    // Fallback plans mapping
-    if (slug.includes("starter")) return "/starter_plan.png";
-    if (slug.includes("growth")) return "/growth_plan.png";
-    if (slug.includes("enterprise")) return "/enterprise_plan.png";
-
     const raw = service?.banner || service?.image;
-    if (!raw) {
-        return "";
-    }
+    if (!raw) return "";
     if (raw.startsWith("http")) return raw;
 
     const apiBase = (process.env.NEXT_PUBLIC_API_URL || "https://jontro-backend.onrender.com/api").replace(/\/api\/?$/, "");
@@ -146,102 +109,18 @@ const resolveServiceVisualUrl = (service: any) => {
     return `${cleanBase}${cleanPath}`;
 };
 
-const renderServiceBanner = (service: any) => {
-    const slug = service?.slug || "";
-
-    return (
-        <div className="relative w-full h-full bg-[#FCFAF8] flex items-center justify-center overflow-hidden transition-transform duration-500">
-            {/* Ambient Background Grid Patterns */}
-            <svg className="absolute inset-0 w-full h-full opacity-[0.06] stroke-orange-600" width="100%" height="100%">
-                <defs>
-                    <pattern id={`grid-${slug}`} width="24" height="24" patternUnits="userSpaceOnUse">
-                        <path d="M 24 0 L 0 0 0 24" fill="none" strokeWidth="1"/>
-                    </pattern>
-                </defs>
-                <rect width="100%" height="100%" fill={`url(#grid-${slug})`} />
-            </svg>
-            
-            {/* Diagonal Orange Accents */}
-            <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-orange-500/15 to-transparent rounded-full blur-xl pointer-events-none" />
-            <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-orange-500/5 rounded-full blur-2xl pointer-events-none" />
-
-            {/* Custom abstract graphic representation of the service */}
-            <div className="relative z-10 flex items-center justify-center w-full h-full">
-                {slug === "custom-software-development" && (
-                    <svg className="absolute w-2/3 h-2/3 opacity-25 stroke-orange-500/60" viewBox="0 0 100 100" fill="none">
-                        <rect x="10" y="20" width="80" height="60" rx="6" strokeWidth="1" />
-                        <line x1="10" y1="35" x2="90" y2="35" strokeWidth="1" />
-                        <circle cx="20" cy="27" r="2" fill="#ea580c" />
-                        <circle cx="28" cy="27" r="2" fill="#ea580c" />
-                        <circle cx="36" cy="27" r="2" fill="#ea580c" />
-                    </svg>
-                )}
-                {slug === "ai-agent-development" && (
-                    <svg className="absolute w-2/3 h-2/3 opacity-25 stroke-orange-500/60" viewBox="0 0 100 100" fill="none">
-                        <circle cx="50" cy="50" r="30" strokeWidth="1" strokeDasharray="3 3" />
-                        <circle cx="20" cy="50" r="4" fill="#ea580c" />
-                        <circle cx="80" cy="50" r="4" fill="#ea580c" />
-                        <circle cx="50" cy="20" r="4" fill="#ea580c" />
-                        <circle cx="50" cy="80" r="4" fill="#ea580c" />
-                        <line x1="50" y1="20" x2="50" y2="80" strokeWidth="1" />
-                        <line x1="20" y1="50" x2="80" y2="50" strokeWidth="1" />
-                    </svg>
-                )}
-                {slug === "workflow-automation" && (
-                    <svg className="absolute w-2/3 h-2/3 opacity-25 stroke-orange-500/60" viewBox="0 0 100 100" fill="none">
-                        <path d="M15,50 Q50,20 85,50" strokeWidth="1" />
-                        <path d="M15,50 Q50,80 85,50" strokeWidth="1" />
-                        <circle cx="15" cy="50" r="5" fill="#ea580c" />
-                        <circle cx="50" cy="35" r="5" fill="#ea580c" />
-                        <circle cx="50" cy="65" r="5" fill="#ea580c" />
-                        <circle cx="85" cy="50" r="5" fill="#ea580c" />
-                    </svg>
-                )}
-                {slug === "saas-product-development" && (
-                    <svg className="absolute w-2/3 h-2/3 opacity-25 stroke-orange-500/60" viewBox="0 0 100 100" fill="none">
-                        <rect x="15" y="15" width="30" height="30" rx="4" strokeWidth="1" />
-                        <rect x="55" y="15" width="30" height="30" rx="4" strokeWidth="1" />
-                        <rect x="15" y="55" width="30" height="30" rx="4" strokeWidth="1" />
-                        <rect x="55" y="55" width="30" height="30" rx="4" strokeWidth="1" />
-                        <line x1="30" y1="45" x2="30" y2="55" strokeWidth="1" />
-                        <line x1="70" y1="45" x2="70" y2="55" strokeWidth="1" />
-                    </svg>
-                )}
-                {slug === "mobile-app-development" && (
-                    <svg className="absolute w-2/3 h-2/3 opacity-25 stroke-orange-500/60" viewBox="0 0 100 100" fill="none">
-                        <rect x="30" y="10" width="40" height="80" rx="8" strokeWidth="1" />
-                        <circle cx="50" cy="80" r="3" fill="#ea580c" />
-                        <line x1="45" y1="18" x2="55" y2="18" strokeWidth="1" />
-                    </svg>
-                )}
-                {slug === "cloud-api-systems" && (
-                    <svg className="absolute w-2/3 h-2/3 opacity-25 stroke-orange-500/60" viewBox="0 0 100 100" fill="none">
-                        <path d="M25,65 L35,50 L45,65 Z" strokeWidth="1" />
-                        <path d="M55,65 L65,50 L75,65 Z" strokeWidth="1" />
-                        <path d="M20,65 Q50,45 80,65" strokeWidth="1" />
-                        <circle cx="50" cy="35" r="8" strokeWidth="1" />
-                    </svg>
-                )}
-
-                {/* Central Orange Jantra Logo (Arrowhead Cut is Transparent/White) */}
-                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-md border border-orange-100/80 relative z-20">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" className="w-8 h-8">
-                        <g fill="#F97316">
-                            <path d="M42,15 H85 V85 H55 V70 H70 V30 H52 Z"/>
-                            <path d="M25,65 H45 V85 H25 Z"/>
-                        </g>
-                        <polygon points="30,90 75,35 55,75 40,90" fill="white"/>
-                    </svg>
-                </div>
-            </div>
-        </div>
-    );
+const getServiceIcon = (slug: string) => {
+    if (slug.includes('mobile')) return Smartphone;
+    if (slug.includes('ai')) return Bot;
+    if (slug.includes('automation')) return Workflow;
+    if (slug.includes('cloud')) return Cloud;
+    if (slug.includes('saas')) return Cpu;
+    if (slug.includes('software')) return Code;
+    return Database;
 };
 
 export default function PricingPage() {
     const [services, setServices] = useState<any[]>([]);
-    const [loadedVisuals, setLoadedVisuals] = useState<Record<string, boolean>>({});
-    const [failedVisuals, setFailedVisuals] = useState<Record<string, boolean>>({});
     const [selectedService, setSelectedService] = useState<any | null>(null);
     const [leadName, setLeadName] = useState("");
     const [leadEmail, setLeadEmail] = useState("");
@@ -251,26 +130,7 @@ export default function PricingPage() {
     const [submitStatus, setSubmitStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
     const [errorMessage, setErrorMessage] = useState("");
     const [currency, setCurrency] = useState<CurrencyCode>("USD");
-    const [submittingServiceId, setSubmittingServiceId] = useState<string | null>(null);
-    const [submittedServiceIds, setSubmittedServiceIds] = useState<Record<string, boolean>>({});
-
-    const handleSelectPlanInstant = async (service: any) => {
-        setSubmittingServiceId(service.id);
-        try {
-            await api.post("/leads", {
-                name: "Instant Plan Selection",
-                email: "instant@jantra.online",
-                service: service.title,
-                description: `User clicked Select Plan button for ${service.title} on Pricing Page.`
-            });
-            setSubmittedServiceIds(prev => ({ ...prev, [service.id]: true }));
-        } catch (error) {
-            console.error("Failed to submit lead:", error);
-            alert("Failed to submit request. Please try again.");
-        } finally {
-            setSubmittingServiceId(null);
-        }
-    };
+    const [failedImages, setFailedImages] = useState<Record<string, boolean>>({});
 
     const handleSelectPlan = (service: any) => {
         setSelectedService(service);
@@ -295,11 +155,9 @@ export default function PricingPage() {
             description: leadDescription,
         };
 
-        // Instantly transition to the success view in the UI
         setSubmitStatus("success");
         setErrorMessage("");
 
-        // Submit to the backend asynchronously in the background
         api.post("/leads", payload).catch((error: any) => {
             console.error("Failed to submit plan request in background:", error);
         });
@@ -344,7 +202,27 @@ export default function PricingPage() {
         if (cookieMatch?.[1]) {
             setCurrency(cookieMatch[1] as CurrencyCode);
         } else {
-            setCurrency("USD");
+            // Client-side Geo-IP fallback detection for local development and edge failures
+            fetch("https://ipapi.co/json/")
+                .then((r) => r.json())
+                .then((data) => {
+                    const country = (data.country_code || "").toUpperCase();
+                    if (country === "BD") {
+                        setCurrency("BDT");
+                    } else if ([
+                        "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR",
+                        "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK",
+                        "SI", "ES", "SE"
+                    ].includes(country)) {
+                        setCurrency("EUR");
+                    } else {
+                        setCurrency("USD");
+                    }
+                })
+                .catch((err) => {
+                    console.error("Failed client-side Geo-IP check:", err);
+                    setCurrency("USD");
+                });
         }
     }, []);
 
@@ -394,127 +272,161 @@ export default function PricingPage() {
     };
 
     return (
-        <main className="w-full min-h-screen bg-slate-50/50 pb-20 selection:bg-orange-100">
-            <div className="max-w-[1240px] mx-auto px-4 sm:px-6 pt-28 sm:pt-36">
+        <main className="w-full min-h-screen bg-[#fcfaf8] pb-20 selection:bg-orange-100 relative overflow-x-hidden">
+            {/* Ambient dynamic background glows */}
+            <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-orange-500/[0.02] blur-[150px] rounded-full -z-20 pointer-events-none" />
+            <div className="absolute top-[35%] right-[-10%] w-[600px] h-[600px] bg-amber-500/[0.015] blur-[140px] rounded-full -z-20 pointer-events-none" />
+
+            {/* Clean minimal background grid */}
+            <div className="absolute top-0 inset-x-0 h-[700px] overflow-hidden pointer-events-none select-none -z-10 opacity-[0.02] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_40%,#000_80%,transparent_100%)]">
+                <div className="w-full h-full bg-[linear-gradient(to_right,#ea580c_1px,transparent_1px),linear-gradient(to_bottom,#ea580c_1px,transparent_1px)] bg-[size:4rem_4rem]" />
+            </div>
+
+            <div className="max-w-[1240px] mx-auto px-5 sm:px-8 pt-28 sm:pt-36">
 
                 {/* ── HEADER ── */}
-                <div className="max-w-2xl mb-12 text-left">
-                    <span className="text-orange-600 font-bold tracking-widest text-[10px] uppercase mb-3 block">Pricing Plans</span>
-                    <h1 className="text-3xl sm:text-5xl font-black text-slate-900 leading-tight tracking-tight uppercase mb-4">
-                        Simple Pricing<span className="text-orange-500">.</span>
-                    </h1>
-                    <p className="text-slate-500 text-sm font-medium leading-relaxed max-w-lg">
-                        Choose a pricing tier that aligns with your product goals. No hidden fees, clear deliverables, and robust code quality.
-                    </p>
+                <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-16 text-left border-b border-slate-200/50 pb-8 relative z-10">
+                    <div className="max-w-2xl">
+                        <div className="flex items-center gap-2.5 mb-2.5">
+                            <div className="w-4 h-[1.5px] bg-orange-500 rounded-full" />
+                            <span className="text-orange-600 font-bold tracking-widest text-[9px] uppercase font-mono">Pricing Plans</span>
+                        </div>
+                        <h1 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tighter uppercase mb-3">
+                            Simple Pricing<span className="text-orange-500">.</span>
+                        </h1>
+                        <p className="text-slate-500 text-xs sm:text-sm font-semibold uppercase tracking-wider">Choose a pricing tier that aligns with your product goals.</p>
+                    </div>
+
                 </div>
 
                 {/* ── PRICING GRID ── */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch relative z-10">
                     {services.map((service, i) => {
                         const range = getCurrencyRange(service, currency);
                         const hasAnyPrice = range.min !== null || range.max !== null;
                         const visualUrl = resolveServiceVisualUrl(service);
-                        const canRenderImage = Boolean(visualUrl) && !failedVisuals[service.id];
+                        const hasImage = visualUrl && !failedImages[service.id];
+                        const ServiceIcon = getServiceIcon(service.slug || "");
+                        
+                        const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+                          const rect = e.currentTarget.getBoundingClientRect();
+                          const x = e.clientX - rect.left;
+                          const y = e.clientY - rect.top;
+                          e.currentTarget.style.setProperty("--mouse-x", `${x}px`);
+                          e.currentTarget.style.setProperty("--mouse-y", `${y}px`);
+                        };
+
                         return (
                             <motion.div
                                 key={service.id}
-                                initial={{ opacity: 0, y: 12 }}
+                                initial={{ opacity: 0, y: 15 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: i * 0.03 }}
-                                className="group relative p-5 rounded-3xl bg-white border border-slate-200/60 shadow-lg shadow-slate-100/30 hover:border-orange-500/25 hover:shadow-2xl hover:shadow-orange-500/5 hover:-translate-y-1 flex flex-col justify-between transition-all duration-300 h-full overflow-hidden"
+                                transition={{ duration: 0.5, delay: i * 0.05, ease: "easeOut" }}
+                                onMouseMove={handleMouseMove}
+                                style={{
+                                  "--spotlight-color": "rgba(249, 115, 22, 0.12)"
+                                } as React.CSSProperties}
+                                className="group relative flex flex-col justify-between cursor-pointer"
                             >
-                                {/* Subtle background gradient glow */}
-                                <div className="absolute inset-0 -z-10 bg-gradient-to-br from-orange-50/0 via-transparent to-orange-500/0 group-hover:from-orange-500/1 group-hover:to-orange-500/3 transition-all duration-500" />
-                                
-                                <div>
-                                    {/* Service Photo Banner (Proper 16:9 Aspect Ratio) */}
-                                    <div className="relative w-full aspect-[16/9] overflow-hidden rounded-[1.25rem] mb-6 border border-slate-200/10 bg-slate-950 shadow-inner shrink-0">
-                                        {/* Instant SVG Placeholder banner */}
-                                        {renderServiceBanner(service)}
+                                {/* 1. Background offset card layer */}
+                                <div className="absolute inset-0 rounded-2xl border border-orange-500/25 bg-orange-500/[0.03] translate-x-2 translate-y-2 group-hover:translate-x-3 group-hover:translate-y-3 transition-transform duration-500 -z-10" />
 
-                                        {/* Loaded Image Overlay */}
-                                        {canRenderImage && (
-                                            <img
-                                                src={visualUrl}
-                                                alt={service.title || "Service Banner"}
-                                                className="absolute inset-0 w-full h-full object-cover z-30"
-                                                loading="eager"
-                                                fetchPriority="high"
-                                                decoding="sync"
-                                            />
-                                        )}
-                                    </div>
-
-                                    {/* Minimal Side-by-Side Header */}
-                                    <div className="flex items-start justify-between gap-4 pt-1">
-                                        <div className="min-w-0">
-                                            <h3 className="text-xs font-black uppercase tracking-wider text-slate-900 leading-tight truncate group-hover:text-orange-600 transition-colors" title={service.title}>
-                                                {service.title}
-                                            </h3>
-                                            <span className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest block mt-0.5">Estimated Cost</span>
-                                        </div>
-                                        <div className="text-right shrink-0">
-                                            {hasAnyPrice ? (
-                                                <span className="text-xl font-extrabold tracking-tight text-emerald-600 leading-none">
-                                                    {range.min !== null ? formatCompactPrice(range.min, currency) : ""}
-                                                    {range.min !== null && range.max !== null ? "-" : ""}
-                                                    {range.max !== null ? formatCompactPrice(range.max, currency) : ""}
-                                                </span>
+                                {/* 2. Foreground main card layer */}
+                                <div className="w-full h-full rounded-2xl bg-white border border-slate-200/90 p-5 flex flex-col justify-between transition-all duration-500 group-hover:-translate-x-0.5 group-hover:-translate-y-0.5 group-hover:border-slate-400 group-hover:shadow-[0_15px_35px_rgba(0,0,0,0.03)] before:absolute before:inset-0 before:bg-[radial-gradient(130px_circle_at_var(--mouse-x,0px)_var(--mouse-y,0px),var(--spotlight-color),transparent)] before:opacity-0 group-hover:before:opacity-100 before:transition-opacity before:duration-300 before:pointer-events-none before:z-0 overflow-hidden relative">
+                                    
+                                    <div className="flex flex-col text-left relative z-10">
+                                        
+                                        {/* Real Banner Image (No SVG mock placeholders) */}
+                                        <div className="relative w-full aspect-[16/9] overflow-hidden rounded-xl mb-5 border border-slate-200/60 bg-[#fcfaf8] flex items-center justify-center shrink-0">
+                                            {hasImage ? (
+                                                <img
+                                                    src={visualUrl}
+                                                    alt={service.title || "Service Banner"}
+                                                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                                                    onError={() => setFailedImages(prev => ({ ...prev, [service.id]: true }))}
+                                                />
                                             ) : (
-                                                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Custom Pricing</span>
+                                                /* Clean minimal icon backdrop (No placeholder drawings) */
+                                                <div className="w-full h-full bg-gradient-to-br from-slate-50 to-orange-500/[0.02] flex items-center justify-center relative">
+                                                    <div className="absolute inset-0 bg-[linear-gradient(to_right,#ea580c_1px,transparent_1px),linear-gradient(to_bottom,#ea580c_1px,transparent_1px)] bg-[size:16px_16px] opacity-[0.015]" />
+                                                    <div className="w-10 h-10 rounded-xl bg-white border border-slate-200/60 flex items-center justify-center shadow-sm">
+                                                        <ServiceIcon className="w-4 h-4 text-orange-500" />
+                                                    </div>
+                                                </div>
                                             )}
                                         </div>
+
+                                        {/* Pricing Header info */}
+                                        <div className="flex items-start justify-between gap-4 border-b border-slate-100 pb-4 mb-4">
+                                            <div className="min-w-0">
+                                                <h3 className="text-xs font-black uppercase tracking-tight text-slate-900 leading-tight group-hover:text-orange-600 transition-colors" title={service.title}>
+                                                    {service.title}
+                                                </h3>
+                                                <span className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest block mt-1 font-mono">Estimated Cost</span>
+                                            </div>
+                                            <div className="text-right shrink-0 font-mono">
+                                                {hasAnyPrice ? (
+                                                    <span className="text-lg sm:text-xl font-black tracking-tight text-emerald-600 leading-none">
+                                                        {range.min !== null ? formatCompactPrice(range.min, currency) : ""}
+                                                        {range.min !== null && range.max !== null ? "-" : ""}
+                                                        {range.max !== null ? formatCompactPrice(range.max, currency) : ""}
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-[8.5px] font-black uppercase tracking-widest text-slate-400">Custom Quote</span>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Description */}
+                                        <p className="text-xs leading-relaxed text-slate-500 font-medium line-clamp-3">
+                                            {service.description}
+                                        </p>
+
+                                        {/* Features checklist */}
+                                        {Array.isArray(service.features) && service.features.length > 0 && (
+                                            <div className="flex flex-col gap-2 pt-6">
+                                                {service.features.slice(0, 3).map((feat: string, fIdx: number) => (
+                                                    <div key={fIdx} className="flex items-center gap-2">
+                                                        <CheckCircle2 className="w-3.5 h-3.5 text-orange-500 shrink-0" />
+                                                        <span className="text-[9px] font-bold uppercase tracking-wider text-slate-700 leading-none">{feat}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
                                     </div>
 
-                                    {/* Description */}
-                                    <p className="text-[11px] leading-relaxed text-slate-500 font-medium line-clamp-2 mt-3.5">
-                                        {service.description}
-                                    </p>
-
-                                    {/* Horizontal Compact Features list */}
-                                    {Array.isArray(service.features) && service.features.length > 0 && (
-                                        <div className="flex flex-wrap gap-x-3 gap-y-1.5 pt-4">
-                                            {service.features.slice(0, 3).map((feat: string, fIdx: number) => (
-                                                <div key={fIdx} className="flex items-center gap-1.5">
-                                                    <CheckCircle2 className="w-3.5 h-3.5 text-orange-500 shrink-0" />
-                                                    <span className="text-[9px] font-bold uppercase tracking-wider text-slate-700 leading-none">{feat}</span>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div className="space-y-4 pt-4 mt-4 border-t border-slate-100/70">
-                                    {/* Tech Stack Badges */}
-                                    {Array.isArray(service.techStack) && service.techStack.length > 0 && (
-                                        <div className="flex flex-wrap gap-1">
-                                            {service.techStack.slice(0, 3).map((tech: string, tIdx: number) => (
-                                                <span key={tIdx} className="text-[7.5px] font-black uppercase tracking-widest bg-slate-50 text-slate-500 px-2 py-0.5 rounded border border-slate-200/50">
-                                                    {tech}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    )}
-
-                                    {/* Button actions */}
-                                    <div className="flex gap-2">
-                                        <button 
-                                            onClick={() => handleSelectPlan(service)}
-                                            className="flex-grow py-3 rounded-xl bg-orange-600 text-white hover:bg-slate-950 hover:shadow-lg hover:shadow-orange-500/20 font-black uppercase tracking-[0.15em] text-[9px] flex items-center justify-center gap-1.5 transition-all duration-200 active:scale-98 cursor-pointer"
-                                        >
-                                            Select Plan <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
-                                        </button>
-                                        {service.demoUrl && (
-                                             <a 
-                                                 href={service.demoUrl} 
-                                                 target="_blank" 
-                                                 rel="noreferrer" 
-                                                 className="px-4 py-3 rounded-xl border border-slate-200 hover:border-orange-500 hover:text-orange-600 font-black uppercase tracking-[0.15em] text-[9px] flex items-center justify-center gap-1 transition-all bg-white hover:shadow-md hover:shadow-orange-500/5 active:scale-98"
-                                                 title="View Live Demo"
-                                             >
-                                                 Demo
-                                             </a>
+                                    <div className="space-y-4 pt-6 mt-6 border-t border-slate-100 relative z-10">
+                                        {/* Tech Stack List */}
+                                        {Array.isArray(service.techStack) && service.techStack.length > 0 && (
+                                            <div className="flex flex-wrap gap-1 font-mono text-[8px] font-extrabold uppercase text-slate-400">
+                                                {service.techStack.slice(0, 3).map((tech: string, tIdx: number) => (
+                                                    <span key={tIdx} className="after:content-['/'] after:mx-1.5 last:after:content-none">
+                                                        {tech}
+                                                    </span>
+                                                ))}
+                                            </div>
                                         )}
+
+                                        {/* Button Actions */}
+                                        <div className="flex gap-2">
+                                            <button 
+                                                onClick={() => handleSelectPlan(service)}
+                                                className="flex-grow py-3 rounded-xl bg-slate-950 text-white hover:bg-orange-600 font-black uppercase tracking-widest text-[9px] flex items-center justify-center gap-1.5 transition-all duration-200 active:scale-98 cursor-pointer"
+                                            >
+                                                Select Plan <ArrowRight className="w-3.5 h-3.5" />
+                                            </button>
+                                            {service.demoUrl && (
+                                                 <a 
+                                                     href={service.demoUrl} 
+                                                     target="_blank" 
+                                                     rel="noreferrer" 
+                                                     className="px-4 py-3 rounded-xl border border-slate-200 hover:border-slate-400 font-black uppercase tracking-widest text-[9px] flex items-center justify-center gap-1 transition-all bg-white active:scale-98 text-slate-700"
+                                                     title="View Live Demo"
+                                                 >
+                                                     Demo
+                                                 </a>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             </motion.div>
@@ -524,13 +436,13 @@ export default function PricingPage() {
 
                 {/* ── FAQ GRID ── */}
                 <div className="mt-24">
-                    <h3 className="text-xl font-bold uppercase text-slate-900 mb-8 flex items-center gap-2">
-                        <HelpCircle className="w-5 h-5 text-orange-500" /> Frequently Asked Questions
+                    <h3 className="text-base font-black uppercase text-slate-900 mb-8 flex items-center gap-2">
+                        <HelpCircle className="w-4 h-4 text-orange-500" /> Frequently Asked Questions
                     </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                          {FAQS.map((item, i) => (
-                            <div key={i} className="p-5 rounded-xl bg-white border border-slate-200/80 flex gap-4 shadow-sm">
-                                <div className="space-y-2">
+                            <div key={i} className="p-5 rounded-xl bg-white border border-slate-200/80 flex gap-4 shadow-sm text-left">
+                                <div className="space-y-1.5">
                                     <h4 className="text-xs font-bold uppercase tracking-wide text-slate-900">{item.q}</h4>
                                     <p className="text-xs font-medium leading-relaxed text-slate-500">{item.a}</p>
                                 </div>
@@ -547,7 +459,7 @@ export default function PricingPage() {
                             initial={{ opacity: 0, scale: 0.95, y: 10 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                            className="w-full max-w-lg bg-white rounded-3xl border border-slate-200/80 shadow-2xl overflow-hidden relative"
+                            className="w-full max-w-lg bg-white rounded-2xl border border-slate-200/80 shadow-2xl overflow-hidden relative"
                             onClick={(e) => e.stopPropagation()}
                         >
                             {/* Close Button */}
@@ -562,13 +474,13 @@ export default function PricingPage() {
                             </button>
 
                             {/* Header */}
-                            <div className="p-8 pb-4 border-b border-slate-100">
-                                <span className="text-orange-600 font-black tracking-widest text-[9px] uppercase mb-1 block">Plan Request</span>
+                            <div className="p-8 pb-4 border-b border-slate-100 text-left">
+                                <span className="text-orange-600 font-black tracking-widest text-[9px] uppercase mb-1 block font-mono">Plan Request</span>
                                 <h3 className="text-xl font-black text-slate-900 uppercase tracking-tight">
                                     {selectedService.title}
                                 </h3>
                                 <p className="text-slate-400 text-[10px] font-bold uppercase tracking-wide mt-1.5 flex items-center gap-1.5">
-                                    Estimated Cost: <span className="font-extrabold text-emerald-600">
+                                    Estimated Cost: <span className="font-extrabold text-emerald-600 font-mono">
                                         {(() => {
                                             const range = getCurrencyRange(selectedService, currency);
                                             const hasAny = range.min !== null || range.max !== null;
@@ -627,7 +539,7 @@ export default function PricingPage() {
                                                 </div>
                                             )}
 
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
                                                 <div className="space-y-1">
                                                     <label className="text-[9px] font-bold uppercase tracking-wider text-slate-400 ml-1">Full Name *</label>
                                                     <input
@@ -652,7 +564,7 @@ export default function PricingPage() {
                                                 </div>
                                             </div>
 
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
                                                 <div className="space-y-1">
                                                     <label className="text-[9px] font-bold uppercase tracking-wider text-slate-400 ml-1">Company (Optional)</label>
                                                     <input
@@ -675,7 +587,7 @@ export default function PricingPage() {
                                                 </div>
                                             </div>
 
-                                            <div className="space-y-1">
+                                            <div className="space-y-1 text-left">
                                                 <label className="text-[9px] font-bold uppercase tracking-wider text-slate-400 ml-1">Project Details *</label>
                                                 <textarea
                                                     required

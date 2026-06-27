@@ -208,3 +208,89 @@ h1, h2, h3, h4, h5, h6 {
   animation: shimmer 1.6s infinite linear;
 }
 
+/* Animated backgrounds */
+.animated-grid {
+  animation: gridPan 20s linear infinite;
+}
+
+.animated-dot-grid {
+  animation: dotPan 15s linear infinite;
+}
+
+@keyframes gridPan {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 4rem 4rem;
+  }
+}
+
+@keyframes dotPan {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 16px 16px;
+  }
+}
+
+/* OKLCH Gradients & Ambient Effects */
+.vibrant-gradient-text {
+  background: linear-gradient(to right in oklch, #ff4500 0%, #f97316 60%, #ff8500 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+}
+
+
+.ambient-glow-oklch {
+  background: radial-gradient(circle at center in oklch, rgba(249, 115, 22, 0.15) 0%, rgba(253, 186, 116, 0.05) 50%, transparent 80%);
+}
+
+/* Premium Buttons & Hovour Effects */
+.btn-premium-orange {
+  position: relative;
+  background: #ff4500;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.05),
+    0 4px 12px rgba(255, 69, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-premium-orange:hover {
+  transform: translateY(-2px);
+  background: #ff5500;
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.05),
+    0 8px 20px rgba(255, 69, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.btn-premium-secondary {
+  position: relative;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-premium-secondary:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #0f172a;
+  transform: translateY(-1.5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+
+
+
+
+
+
