@@ -62,12 +62,9 @@ export default function Navbar() {
                 <div className="relative transition-all duration-500 group-hover:rotate-6 group-hover:scale-110">
                   <Logo className="h-8 w-8" />
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-[0.6rem] font-bold uppercase tracking-[0.4em] text-slate-400 transition-colors group-hover:text-orange-500">
-                    Jantra
-                  </span>
-                  <span className="bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-sm font-black tracking-tight text-transparent transition-all">
-                    Enterprise Software
+                <div className="flex flex-col text-left justify-center">
+                  <span className="bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-base font-black tracking-tight text-transparent transition-all group-hover:from-orange-600 group-hover:to-orange-500">
+                    Jantra Soft
                   </span>
                 </div>
               </Link>
@@ -80,9 +77,10 @@ export default function Navbar() {
                 <div className="relative">
                    <Logo className="h-9 w-9" />
                 </div>
-                <div className="flex flex-col text-left">
-                  <span className="text-[0.65rem] font-bold uppercase tracking-[0.3em] text-orange-600 leading-none">Jantra</span>
-                  <span className="text-[0.75rem] font-black tracking-tight text-slate-800 uppercase leading-none mt-1">Enterprise Software</span>
+                <div className="flex flex-col text-left justify-center">
+                  <span className="text-sm font-black tracking-tight text-slate-800 leading-none">
+                    Jantra Soft
+                  </span>
                 </div>
               </Link>
 
