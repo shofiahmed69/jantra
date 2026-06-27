@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowLeft, CheckCircle2, ChevronRight, BarChart, ExternalLink, Play } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -133,10 +134,12 @@ export default function WorkDetailClient({
                     <div className="absolute inset-0 bg-slate-950 rounded-[2rem] translate-x-3 translate-y-3 transition-transform group-hover:translate-x-1.5 group-hover:translate-y-1.5 duration-300" />
                     <div className="absolute inset-0 rounded-[2rem] overflow-hidden bg-slate-900 border border-slate-200 shadow-xl">
                         {project.thumbnail ? (
-                            <img 
+                            <Image 
                                 src={getThumbnailUrl(project.thumbnail)} 
                                 alt={project.title} 
-                                className="w-full h-full object-cover opacity-100 transition-all duration-700 hover:scale-[1.01]"
+                                fill
+                                sizes="(max-width: 768px) 100vw, 1200px"
+                                className="object-cover opacity-100 transition-all duration-700 hover:scale-[1.01]"
                             />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center text-white/5 font-black text-6xl uppercase tracking-tighter">Jantra Archive</div>

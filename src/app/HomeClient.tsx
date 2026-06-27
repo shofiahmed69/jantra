@@ -312,10 +312,12 @@ function PortfolioShowcase({ projects }: { projects: any[] }) {
                 {/* Compact Image Box aspect-[16/9] */}
                 <div className="relative w-full aspect-[16/9] overflow-hidden bg-slate-950 border-b border-slate-100">
                   <div className="absolute inset-0 bg-gradient-to-tr from-orange-600 to-amber-500 blur-md opacity-0 group-hover:opacity-25 transition-opacity duration-500 z-0" />
-                  <img
+                  <Image
                     src={pOptimizedSrc}
                     alt={project.title}
-                    className="relative w-full h-full object-cover block transition-transform duration-700 ease-out group-hover:scale-[1.03] z-10"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03] z-10"
                   />
                   {/* Floating Category Tag */}
                   <div className="absolute top-3 left-3 z-20">
