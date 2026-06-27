@@ -267,8 +267,8 @@ export default function PricingPage() {
             return { min: service.priceMinBdt, max: service.priceMaxBdt };
         };
 
-        const primary = pick();
-        const validPrimary = primary.min !== null || primary.max !== null;
+                const primary = pick();
+        const validPrimary = (primary.min !== null && primary.min !== undefined) || (primary.max !== null && primary.max !== undefined);
         if (validPrimary) return { min: primary.min ?? null, max: primary.max ?? null };
 
         return {

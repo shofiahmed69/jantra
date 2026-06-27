@@ -43,6 +43,14 @@ const nextConfig: NextConfig = {
 
     return config;
   },
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path((?!image-proxy).*)',
+        destination: 'http://localhost:4005/api/:path*',
+      },
+    ];
+  },
 };
 
 export default nextConfig;
