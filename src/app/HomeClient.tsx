@@ -32,7 +32,7 @@ function resolveImg(thumbnail?: string): string {
     const base = (process.env.NEXT_PUBLIC_API_URL || "https://jontro-backend.onrender.com/api").replace(/\/api\/?$/, "");
     url = `${base.replace(/\/$/, "")}/${url.replace(/^\//, "")}`;
   }
-  if (url.startsWith("http://144.79.249.162:9000") || url.includes(":9000/")) {
+  if (url.startsWith("http://") || url.includes("sslip.io")) {
     return `/api/image-proxy?url=${encodeURIComponent(url)}`;
   }
   return url;

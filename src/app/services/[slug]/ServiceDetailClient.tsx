@@ -99,7 +99,7 @@ export default function ServiceDetailClient({
                          <div className={`absolute inset-0 ${service.descBg} rounded-[2.5rem] border border-slate-200 shadow-lg flex items-center justify-center overflow-hidden ${service.banner ? 'p-0' : 'p-10'} bg-white`}>
                               <div className="absolute inset-0 bg-[linear-gradient(to_right,#ea580c_1px,transparent_1px),linear-gradient(to_bottom,#ea580c_1px,transparent_1px)] bg-[size:16px_16px] opacity-[0.01]" />
                               {service.banner ? (
-                                  <img src={service.banner} alt={service.title} className="w-full h-full object-cover" />
+                                  <img src={service.banner.startsWith("http://") || service.banner.includes("sslip.io") ? `/api/image-proxy?url=${encodeURIComponent(service.banner)}` : service.banner} alt={service.title} className="w-full h-full object-cover" />
                               ) : (
                                   <LottiePlayer src={service.lottie} className="w-full h-full max-w-[320px] object-contain scale-110" />
                               )}

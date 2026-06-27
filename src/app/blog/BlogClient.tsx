@@ -56,11 +56,17 @@ export default function BlogClient({ initialPosts }: BlogClientProps) {
 
     const getPostImage = (p: BlogPost) => {
         if (!p.image) return null;
-        if (p.image.startsWith('http')) return p.image;
-        const baseUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:4005').replace(/\/api$/, '');
-        const cleanBase = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
-        const cleanPath = p.image.startsWith('/') ? p.image : `/${p.image}`;
-        return `${cleanBase}${cleanPath}`;
+        let url = p.image;
+        if (!url.startsWith('http')) {
+            const baseUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:4005').replace(/\/api$/, '');
+            const cleanBase = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+            const cleanPath = url.startsWith('/') ? url : `/${url}`;
+            url = `${cleanBase}${cleanPath}`;
+        }
+        if (url.startsWith('http://') || url.includes('sslip.io')) {
+            return `/api/image-proxy?url=${encodeURIComponent(url)}`;
+        }
+        return url;
     };
 
     return (

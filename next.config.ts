@@ -50,8 +50,64 @@ const nextConfig: NextConfig = {
 
     return [
       {
-        source: '/api/:path((?!image-proxy).*)',
-        destination: `${apiBase}/:path*`,
+        source: '/api/services',
+        destination: `${apiBase}/services`,
+      },
+      {
+        source: '/api/leads',
+        destination: `${apiBase}/leads`,
+      },
+      {
+        source: '/api/settings',
+        destination: `${apiBase}/settings`,
+      },
+      {
+        source: '/api/auth/:path*',
+        destination: `${apiBase}/auth/:path*`,
+      },
+      {
+        source: '/api/admin/:path*',
+        destination: `${apiBase}/admin/:path*`,
+      },
+      {
+        source: '/api/blog/:path*',
+        destination: `${apiBase}/blog/:path*`,
+      },
+      {
+        source: '/api/work/:path*',
+        destination: `${apiBase}/work/:path*`,
+      },
+      {
+        source: '/api/careers/:path*',
+        destination: `${apiBase}/careers/:path*`,
+      },
+      {
+        source: '/api/testimonials/:path*',
+        destination: `${apiBase}/testimonials/:path*`,
+      },
+      {
+        source: '/api/team/:path*',
+        destination: `${apiBase}/team/:path*`,
+      },
+      {
+        source: '/api/stats/:path*',
+        destination: `${apiBase}/stats/:path*`,
+      },
+      {
+        source: '/api/upload/:path*',
+        destination: `${apiBase}/upload/:path*`,
+      },
+      {
+        source: '/api/reports/:path*',
+        destination: `${apiBase}/reports/:path*`,
+      },
+      {
+        source: '/api/migrate/:path*',
+        destination: `${apiBase}/migrate/:path*`,
+      },
+      {
+        source: '/api/finance/:path*',
+        destination: `${apiBase}/finance/:path*`,
       },
     ];
   },
