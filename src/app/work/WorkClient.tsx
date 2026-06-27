@@ -121,12 +121,18 @@ export default function WorkPage({ initialProjects }: WorkClientProps) {
     }, [filteredProjects]);
 
     const getThumbnailUrl = (p: Project) => {
-        if (!p.thumbnail) return null;
-        if (p.thumbnail.startsWith('http')) return p.thumbnail;
-        const baseUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:4005').replace(/\/api$/, '');
-        const cleanBase = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
-        const cleanPath = p.thumbnail.startsWith('/') ? p.thumbnail : `/${p.thumbnail}`;
-        return `${cleanBase}${cleanPath}`;
+        if (!p.thumbnail) return "";
+        let url = p.thumbnail;
+        if (!url.startsWith('http')) {
+            const baseUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:4005').replace(/\/api$/, '');
+            const cleanBase = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+            const cleanPath = url.startsWith('/') ? url : `/${url}`;
+            url = `${cleanBase}${cleanPath}`;
+        }
+        if (url.startsWith('http://144.79.249.162:9000') || url.includes(':9000/')) {
+            return `/api/image-proxy?url=${encodeURIComponent(url)}`;
+        }
+        return url;
     };
 
     return (

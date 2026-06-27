@@ -32,11 +32,17 @@ export default function WorkDetailClient({
     // Client-side thumbnail URL resolver
     const getThumbnailUrl = (thumbnail?: string) => {
         if (!thumbnail) return "";
-        if (thumbnail.startsWith("http")) return thumbnail;
-        const baseUrl = (process.env.NEXT_PUBLIC_API_URL || "https://jontro-backend.onrender.com/api").replace(/\/api$/, "");
-        const cleanBase = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;
-        const cleanPath = thumbnail.startsWith("/") ? thumbnail : `/${thumbnail}`;
-        return `${cleanBase}${cleanPath}`;
+        let url = thumbnail;
+        if (!url.startsWith("http")) {
+            const baseUrl = (process.env.NEXT_PUBLIC_API_URL || "https://jontro-backend.onrender.com/api").replace(/\/api$/, "");
+            const cleanBase = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;
+            const cleanPath = url.startsWith("/") ? url : `/${url}`;
+            url = `${cleanBase}${cleanPath}`;
+        }
+        if (url.startsWith("http://144.79.249.162:9000") || url.includes(":9000/")) {
+            return `/api/image-proxy?url=${encodeURIComponent(url)}`;
+        }
+        return url;
     };
 
     // Mouse hover coordinates for container tracking (spotlight effect)
