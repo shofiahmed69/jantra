@@ -353,14 +353,12 @@ export default function PricingPage() {
                                         {/* Real Banner Image (No SVG mock placeholders) */}
                                         <div className="relative w-full aspect-[16/9] overflow-hidden rounded-xl mb-5 border border-slate-200/60 bg-[#fcfaf8] flex items-center justify-center shrink-0">
                                             {hasImage ? (
-                                                <Image
-                                                    src={visualUrl}
-                                                    alt={service.title || "Service Banner"}
-                                                    fill
-                                                    sizes="(max-width: 768px) 100vw, 33vw"
-                                                    className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-                                                    onError={() => setFailedImages(prev => ({ ...prev, [service.id]: true }))}
-                                                />
+                                                <img
+                                                     src={visualUrl}
+                                                     alt={service.title || "Service Banner"}
+                                                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02] z-10"
+                                                     onError={() => setFailedImages(prev => ({ ...prev, [service.id]: true }))}
+                                                 />
                                             ) : (
                                                 /* Clean minimal icon backdrop (No placeholder drawings) */
                                                 <div className="w-full h-full bg-gradient-to-br from-slate-50 to-orange-500/[0.02] flex items-center justify-center relative">
