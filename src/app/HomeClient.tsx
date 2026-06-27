@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Star, ExternalLink, Code, Cpu, Bot, CheckCircle2, HelpCircle, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence, useScroll, useSpring, useTransform } from "framer-motion";
-import LottiePlayer from "@/components/LottiePlayer";
+import LottiePlayer, { preloadLottie } from "@/components/LottiePlayer";
 import Logo from "@/components/Logo";
 import {
   homeStats,
@@ -469,9 +469,16 @@ function MobileLottieHero() {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
+    // Preload all assets on mount
+    services.forEach((s) => {
+      if (s.animationSrc) {
+        preloadLottie(s.animationSrc);
+      }
+    });
+
     const timer = setInterval(() => setIndex(p => (p + 1) % services.length), 4200);
     return () => clearInterval(timer);
-  }, [services.length]);
+  }, [services]);
 
   const current = services[index];
 
@@ -488,8 +495,19 @@ function MobileLottieHero() {
         
         {/* Lottie Animation + Indicators */}
         <div className="relative flex flex-col items-center justify-center shrink">
-          <div className="w-[70vw] h-[70vw] sm:w-[80vw] sm:h-[80vw] max-w-[260px] sm:max-w-[320px] max-h-[260px] sm:max-h-[320px] flex items-center justify-center">
-            <LottiePlayer src={current.animationSrc!} className="w-full h-full object-contain scale-[1.15]" />
+          <div className="w-[70vw] h-[70vw] sm:w-[80vw] sm:h-[80vw] max-w-[260px] sm:max-w-[320px] max-h-[260px] sm:max-h-[320px] flex items-center justify-center relative overflow-hidden">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={current.title}
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 1.04 }}
+                transition={{ duration: 0.4, ease: "easeInOut" }}
+                className="w-full h-full flex items-center justify-center"
+              >
+                <LottiePlayer src={current.animationSrc!} className="w-full h-full object-contain scale-[1.15]" />
+              </motion.div>
+            </AnimatePresence>
           </div>
           
           <div className="mt-1 flex flex-col items-center gap-1">
@@ -551,9 +569,16 @@ function DesktopHero() {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
+    // Preload all assets on mount
+    services.forEach((s) => {
+      if (s.animationSrc) {
+        preloadLottie(s.animationSrc);
+      }
+    });
+
     const timer = setInterval(() => setIndex(p => (p + 1) % services.length), 4500);
     return () => clearInterval(timer);
-  }, [services.length]);
+  }, [services]);
 
   const current = services[index];
 

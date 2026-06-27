@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Lottie from "lottie-react";
 
-const animationCache = new Map<string, unknown>();
+export const animationCache = new Map<string, unknown>();
 
 interface LottiePlayerProps {
     src: string;
@@ -154,4 +154,15 @@ export default function LottiePlayer({
             />
         </div>
     );
+}
+
+export function preloadLottie(src: string) {
+    if (animationCache.has(src)) return;
+    fetch(src)
+        .then((res) => res.json())
+        .then((data) => {
+            const normalized = normalizeLottieAssetPaths(data, src);
+            animationCache.set(src, normalized);
+        })
+        .catch(() => {});
 }
