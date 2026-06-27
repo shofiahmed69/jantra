@@ -44,10 +44,14 @@ const nextConfig: NextConfig = {
     return config;
   },
   async rewrites() {
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:4005';
+    const cleanUrl = backendUrl.endsWith('/') ? backendUrl.slice(0, -1) : backendUrl;
+    const apiBase = cleanUrl.endsWith('/api') ? cleanUrl : `${cleanUrl}/api`;
+
     return [
       {
         source: '/api/:path((?!image-proxy).*)',
-        destination: 'http://localhost:4005/api/:path*',
+        destination: `${apiBase}/:path*`,
       },
     ];
   },
