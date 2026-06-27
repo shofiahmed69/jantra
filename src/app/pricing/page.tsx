@@ -100,14 +100,6 @@ const FAQS = [
 type CurrencyCode = "USD" | "EUR" | "BDT";
 
 const resolveServiceVisualUrl = (service: any) => {
-    const slug = service?.slug || "";
-    if (slug === "custom-software-development") return "/custom_software.png";
-    if (slug === "mobile-app-development") return "/mobile_dev.png";
-    if (slug === "saas-product-development") return "/saas_dev.png";
-    if (slug === "ai-agents-development" || slug === "ai-agent-development" || slug.includes("ai")) return "/ai_agents.png";
-    if (slug === "workflow-automation" || slug.includes("automation")) return "/workflow_auto.png";
-    if (slug === "cloud-api-systems" || slug.includes("cloud")) return "/cloud_systems.png";
-
     const raw = service?.banner || service?.image;
     if (!raw) return "";
     let url = raw;
@@ -145,6 +137,7 @@ export default function PricingPage() {
     const [errorMessage, setErrorMessage] = useState("");
     const [currency, setCurrency] = useState<CurrencyCode>("USD");
     const [failedImages, setFailedImages] = useState<Record<string, boolean>>({});
+    const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
 
     const handleSelectPlan = (service: any) => {
         setSelectedService(service);
@@ -352,21 +345,24 @@ export default function PricingPage() {
                                         
                                         {/* Real Banner Image (No SVG mock placeholders) */}
                                         <div className="relative w-full aspect-[16/9] overflow-hidden rounded-xl mb-5 border border-slate-200/60 bg-[#fcfaf8] flex items-center justify-center shrink-0">
-                                            {hasImage ? (
+                                            {/* Clean minimal icon backdrop (always rendered underneath as loading placeholder) */}
+                                            <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-slate-50 to-orange-500/[0.02] flex items-center justify-center">
+                                                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ea580c_1px,transparent_1px),linear-gradient(to_bottom,#ea580c_1px,transparent_1px)] bg-[size:16px_16px] opacity-[0.015]" />
+                                                <div className="w-10 h-10 rounded-xl bg-white border border-slate-200/60 flex items-center justify-center shadow-sm">
+                                                    <ServiceIcon className="w-4 h-4 text-orange-500" />
+                                                </div>
+                                            </div>
+
+                                            {hasImage && (
                                                 <img
                                                      src={visualUrl}
                                                      alt={service.title || "Service Banner"}
-                                                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-[1.02] z-10"
+                                                     className={`absolute inset-0 w-full h-full object-cover transition-all duration-300 group-hover:scale-[1.02] z-10 ${
+                                                         loadedImages[service.id] ? "opacity-100 scale-100" : "opacity-0 scale-[0.98]"
+                                                     }`}
+                                                     onLoad={() => setLoadedImages(prev => ({ ...prev, [service.id]: true }))}
                                                      onError={() => setFailedImages(prev => ({ ...prev, [service.id]: true }))}
                                                  />
-                                            ) : (
-                                                /* Clean minimal icon backdrop (No placeholder drawings) */
-                                                <div className="w-full h-full bg-gradient-to-br from-slate-50 to-orange-500/[0.02] flex items-center justify-center relative">
-                                                    <div className="absolute inset-0 bg-[linear-gradient(to_right,#ea580c_1px,transparent_1px),linear-gradient(to_bottom,#ea580c_1px,transparent_1px)] bg-[size:16px_16px] opacity-[0.015]" />
-                                                    <div className="w-10 h-10 rounded-xl bg-white border border-slate-200/60 flex items-center justify-center shadow-sm">
-                                                        <ServiceIcon className="w-4 h-4 text-orange-500" />
-                                                    </div>
-                                                </div>
                                             )}
                                         </div>
 
