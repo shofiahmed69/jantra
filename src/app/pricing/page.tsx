@@ -100,6 +100,14 @@ const FAQS = [
 type CurrencyCode = "USD" | "EUR" | "BDT";
 
 const resolveServiceVisualUrl = (service: any) => {
+    const slug = service?.slug || "";
+    if (slug === "custom-software-development") return "/custom_software.png";
+    if (slug === "mobile-app-development") return "/mobile_dev.png";
+    if (slug === "saas-product-development") return "/saas_dev.png";
+    if (slug === "ai-agents-development" || slug === "ai-agent-development" || slug.includes("ai")) return "/ai_agents.png";
+    if (slug === "workflow-automation" || slug.includes("automation")) return "/workflow_auto.png";
+    if (slug === "cloud-api-systems" || slug.includes("cloud")) return "/cloud_systems.png";
+
     const raw = service?.banner || service?.image;
     if (!raw) return "";
     let url = raw;
