@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, Menu, X, Sparkles, MessageSquare } from "lucide-react";
+import { ArrowRight, Menu, X, Sparkles, MessageSquare, MessageCircle, Mail } from "lucide-react";
 import Logo from "@/components/Logo";
 import { navItems } from "@/content/site";
 import {
@@ -18,6 +18,17 @@ export default function Navbar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
+
+  const toggleMobileOpen = () => {
+    setMobileOpen((current) => !current);
+    setContactOpen(false);
+  };
+
+  const toggleContactOpen = () => {
+    setContactOpen((current) => !current);
+    setMobileOpen(false);
+  };
   const { scrollY } = useScroll();
 
   // Dynamic transforms based on scroll
@@ -149,18 +160,23 @@ export default function Navbar() {
                 </div>
 
                 {/* Mobile Contact Action Button (Compact Icon Style) */}
-                <Link
-                  href="/contact"
-                  className="flex md:hidden items-center justify-center h-10 w-10 rounded-xl bg-orange-600 hover:bg-slate-950 text-white transition-all duration-200 active:scale-95 shadow-md shadow-orange-600/10 border border-orange-500/10"
-                  aria-label="Contact Us"
+                <button
+                  onClick={toggleContactOpen}
+                  className={cn(
+                    "flex md:hidden items-center justify-center h-10 w-10 rounded-xl transition-all duration-300 active:scale-95 shadow-md border outline-none",
+                    contactOpen 
+                      ? "bg-slate-950 text-white border-slate-950 shadow-slate-950/10" 
+                      : "bg-orange-600 text-white border-orange-500/10 hover:bg-slate-950 shadow-orange-600/10"
+                  )}
+                  aria-label="Contact Options"
                 >
-                  <MessageSquare className="h-4.5 w-4.5" />
-                </Link>
+                  {contactOpen ? <X className="h-4.5 w-4.5" /> : <MessageSquare className="h-4.5 w-4.5" />}
+                </button>
 
                 <button
                   type="button"
                   aria-label="Toggle menu"
-                  onClick={() => setMobileOpen((current) => !current)}
+                  onClick={toggleMobileOpen}
                   className={cn(
                     "group/menu relative flex h-10 w-10 items-center justify-center rounded-xl transition-all duration-500 md:hidden",
                     "bg-slate-50/80 backdrop-blur-md border border-slate-200 shadow-[0_2px_10px_rgba(0,0,0,0.05)]",
@@ -262,6 +278,66 @@ export default function Navbar() {
                     <Sparkles className="h-4 w-4 text-white" />
                   </Link>
                 </motion.div>
+              </div>
+            </GlassEffect>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Contact Panel Overlay (Stunning Dropdown Style) */}
+      <AnimatePresence>
+        {contactOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="absolute inset-x-0 top-full mt-4 px-4 sm:px-6 md:hidden"
+          >
+            <GlassEffect className="overflow-hidden rounded-3xl bg-white/90 p-5 shadow-[0_30px_60px_-15px_rgba(249,115,22,0.15)] backdrop-blur-3xl border border-slate-200/50">
+              <div className="text-center mb-4">
+                <span className="text-[8px] font-black uppercase tracking-widest text-orange-600 font-mono">Connect Instantly</span>
+                <h3 className="text-sm font-black uppercase tracking-tight text-slate-900 mt-1">Get in Touch</h3>
+              </div>
+              <div className="flex flex-col gap-2.5">
+                {/* WhatsApp */}
+                <a
+                  href="https://wa.me/8801625027956"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between rounded-xl px-5 py-4 bg-emerald-50 hover:bg-emerald-100/70 border border-emerald-100 text-emerald-950 transition-all duration-300 active:scale-98"
+                >
+                  <div className="flex items-center gap-3">
+                    <MessageCircle className="h-5 w-5 text-emerald-600 animate-pulse" />
+                    <span className="text-xs font-bold tracking-tight">WhatsApp Chat</span>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-emerald-600" />
+                </a>
+
+                {/* Email */}
+                <a
+                  href="mailto:contact@jantrasoft.online"
+                  className="flex items-center justify-between rounded-xl px-5 py-4 bg-blue-50 hover:bg-blue-100/70 border border-blue-100 text-blue-950 transition-all duration-300 active:scale-98"
+                >
+                  <div className="flex items-center gap-3">
+                    <Mail className="h-5 w-5 text-blue-600" />
+                    <span className="text-xs font-bold tracking-tight">Direct Email</span>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-blue-600" />
+                </a>
+
+                {/* Standard Contact Page */}
+                <Link
+                  href="/contact"
+                  onClick={() => setContactOpen(false)}
+                  className="flex items-center justify-between rounded-xl px-5 py-4 btn-premium-orange text-white shadow-md transition-all duration-300 active:scale-98"
+                >
+                  <div className="flex items-center gap-3">
+                    <MessageSquare className="h-5 w-5 text-white" />
+                    <span className="text-xs font-bold tracking-tight">Start a Project</span>
+                  </div>
+                  <Sparkles className="h-4 w-4 text-white animate-pulse" />
+                </Link>
               </div>
             </GlassEffect>
           </motion.div>
