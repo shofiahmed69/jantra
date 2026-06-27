@@ -3,6 +3,12 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   turbopack: {},
   images: {
+    localPatterns: [
+      {
+        pathname: "/api/image-proxy",
+        search: "?url=*",
+      },
+    ],
     remotePatterns: [
       {
         protocol: "https",
