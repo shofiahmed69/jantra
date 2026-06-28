@@ -136,35 +136,83 @@ export default function PricingClient({ initialServices }: { initialServices: an
 
     // Geolocation detection / cookie resolution
     useEffect(() => {
+        // 1. Check if user has explicitly set preference in cookie
         const cookieMatch = document.cookie.match(/(?:^|;\s*)currency_pref_auto=(USD|EUR|BDT)/);
         if (cookieMatch?.[1]) {
             setCurrency(cookieMatch[1] as CurrencyCode);
-        } else {
-            // Check headers, geolocation, or dynamic ipapi call
-            fetch("https://ipapi.co/json/")
-                .then((r) => r.json())
-                .then((data) => {
-                    const country = (data.country_code || "").toUpperCase();
-                    if (country === "BD") {
-                        setCurrency("BDT");
-                        document.cookie = "currency_pref_auto=BDT; path=/; max-age=31536000";
-                    } else if ([
-                        "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR",
-                        "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK",
-                        "SI", "ES", "SE"
-                    ].includes(country)) {
-                        setCurrency("EUR");
-                        document.cookie = "currency_pref_auto=EUR; path=/; max-age=31536000";
-                    } else {
-                        setCurrency("USD");
-                        document.cookie = "currency_pref_auto=USD; path=/; max-age=31536000";
-                    }
-                })
-                .catch((err) => {
-                    console.error("Failed client-side Geo-IP check:", err);
-                    setCurrency("USD");
-                });
+            return;
         }
+
+        // 2. Instant Zero-Network detection: Timezone check
+        try {
+            const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+            if (timeZone.toLowerCase().includes("dhaka") || timeZone.toLowerCase().includes("dacca")) {
+                setCurrency("BDT");
+                document.cookie = "currency_pref_auto=BDT; path=/; max-age=31536000";
+                return;
+            }
+        } catch (e) {
+            console.error("Timezone detection failed:", e);
+        }
+
+        // 3. Instant Zero-Network detection: Browser language check
+        const lang = (navigator.language || "").toLowerCase();
+        if (lang.includes("bn") || lang.includes("bd")) {
+            setCurrency("BDT");
+            document.cookie = "currency_pref_auto=BDT; path=/; max-age=31536000";
+            return;
+        }
+
+        // 4. Fallback Network Geo-IP Check (Checks both ipwho.is and ipapi.co)
+        const fetchGeo = async () => {
+            try {
+                // Try ipwho.is first
+                const res = await fetch("https://ipwho.is/");
+                const data = await res.json();
+                const country = (data.country_code || "").toUpperCase();
+                if (country === "BD") {
+                    setCurrency("BDT");
+                    document.cookie = "currency_pref_auto=BDT; path=/; max-age=31536000";
+                    return;
+                } else if ([
+                    "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR",
+                    "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK",
+                    "SI", "ES", "SE"
+                ].includes(country)) {
+                    setCurrency("EUR");
+                    document.cookie = "currency_pref_auto=EUR; path=/; max-age=31536000";
+                    return;
+                }
+            } catch (err) {
+                console.warn("ipwho.is failed, trying ipapi.co fallback:", err);
+            }
+
+            try {
+                // Fallback to ipapi.co
+                const res = await fetch("https://ipapi.co/json/");
+                const data = await res.json();
+                const country = (data.country_code || "").toUpperCase();
+                if (country === "BD") {
+                    setCurrency("BDT");
+                    document.cookie = "currency_pref_auto=BDT; path=/; max-age=31536000";
+                } else if ([
+                    "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR",
+                    "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK",
+                    "SI", "ES", "SE"
+                ].includes(country)) {
+                    setCurrency("EUR");
+                    document.cookie = "currency_pref_auto=EUR; path=/; max-age=31536000";
+                } else {
+                    setCurrency("USD");
+                    document.cookie = "currency_pref_auto=USD; path=/; max-age=31536000";
+                }
+            } catch (err) {
+                console.error("All Geo-IP checks failed:", err);
+                setCurrency("USD");
+            }
+        };
+
+        fetchGeo();
     }, []);
 
     const formatCompactPrice = (amount: number, code: CurrencyCode) => {
