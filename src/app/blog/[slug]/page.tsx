@@ -42,24 +42,39 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         return { title: "Blog" };
     }
 
-    const title = `${post.title} | JANTRA Blog`;
-    const description = post.excerpt || "JANTRA engineering insights, SaaS guides, and AI automation playbooks.";
+    const title = `${post.title} | JANTRA Software Blog`;
+    const description = post.excerpt || "Expert insights on custom software development, AI agents, SaaS products, and workflow automation from the JANTRA Software engineering team.";
     const url = `https://jantrasoft.online/blog/${slug}`;
+    const image = post.image || "/social-logo.png";
+
 
     return {
         title,
         description,
         alternates: { canonical: url },
+        keywords: [
+            post.category,
+            "software development blog",
+            "AI development insights",
+            "SaaS product tips",
+            "tech blog Bangladesh",
+            "JANTRA Software blog",
+        ],
         openGraph: {
             title,
             description,
             url,
-            type: "article"
+            type: "article",
+            publishedTime: post.publishedAt,
+            authors: [post.author?.name || "JANTRA Software"],
+            tags: [post.category, "software development", "Bangladesh tech"],
+            images: [{ url: image, width: 1200, height: 630, alt: post.title }],
         },
         twitter: {
             card: "summary_large_image",
             title,
-            description
+            description,
+            images: [image],
         }
     };
 }
@@ -74,14 +89,36 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
     const articleSchema = {
         "@context": "https://schema.org",
-        "@type": "Article",
+        "@type": "BlogPosting",
         "headline": post.title,
-        "image": post.image,
+        "description": post.excerpt || "",
+        "image": post.image || `https://jantrasoft.online/social-logo.png`,
         "author": {
             "@type": "Person",
-            "name": post.author.name
+            "name": post.author.name,
+            "worksFor": {
+                "@type": "Organization",
+                "name": "JANTRA Software",
+                "url": "https://jantrasoft.online"
+            }
+        },
+        "publisher": {
+            "@type": "Organization",
+            "name": "JANTRA Software",
+            "logo": {
+                "@type": "ImageObject",
+                "url": "https://jantrasoft.online/logo.png"
+            }
         },
         "datePublished": post.publishedAt,
+        "dateModified": post.updatedAt || post.publishedAt,
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": `https://jantrasoft.online/blog/${post.slug}`
+        },
+        "keywords": [post.category, "software development", "Bangladesh tech", "JANTRA"],
+        "articleSection": post.category,
+        "inLanguage": "en-US"
     };
 
     return (

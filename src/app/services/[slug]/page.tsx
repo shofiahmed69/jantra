@@ -25,24 +25,35 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         };
     }
 
-    const title = `${service.title} Service | JANTRA`;
-    const description = service.description;
+    const title = `${service.title} in Bangladesh | JANTRA Software`;
+    const description = `${service.description} JANTRA Software provides expert ${service.title.toLowerCase()} services in Bangladesh and worldwide. Get a free consultation today.`;
     const url = `https://jantrasoft.online/services/${slug}`;
 
     return {
         title,
         description,
         alternates: { canonical: url },
+        keywords: [
+            `${service.title} Bangladesh`,
+            `${service.title} company Bangladesh`,
+            `${service.title} Dhaka`,
+            `best ${service.title} company`,
+            `affordable ${service.title}`,
+            "software development Bangladesh",
+            "JANTRA Software",
+        ],
         openGraph: {
             title,
             description,
             url,
             type: "website",
+            images: [{ url: "/social-logo.png", width: 1200, height: 630, alt: `${service.title} - JANTRA Software` }],
         },
         twitter: {
             card: "summary_large_image",
             title,
             description,
+            images: ["/social-logo.png"],
         },
     };
 }

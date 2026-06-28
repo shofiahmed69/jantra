@@ -14,8 +14,32 @@ interface BlogPost {
 }
 
 export const metadata: Metadata = {
-  title: "Studio Insights & Engineering Blog",
-  description: "Insights on software engineering, AI agents, workflow automation, and SaaS product strategy from the Jantra Software team.",
+  title: "Blog | Software Engineering & AI Insights | JANTRA Bangladesh",
+  description: "Read JANTRA Software's blog for expert insights on custom software development, AI agents, SaaS product strategy, workflow automation, and mobile app development in Bangladesh.",
+  alternates: { canonical: "https://jantrasoft.online/blog" },
+  keywords: [
+    "software development blog Bangladesh",
+    "AI development blog",
+    "SaaS product blog",
+    "workflow automation blog",
+    "tech blog Bangladesh",
+    "software engineering insights",
+    "mobile app development blog",
+    "Jantra Software blog",
+  ],
+  openGraph: {
+    title: "Blog | Software Engineering & AI Insights | JANTRA Bangladesh",
+    description: "Expert insights on custom software, AI agents, SaaS strategy, and automation from JANTRA Software's engineering team.",
+    url: "https://jantrasoft.online/blog",
+    type: "website",
+    images: [{ url: "/social-logo.png", width: 1200, height: 630, alt: "JANTRA Software Blog" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Blog | JANTRA Software Bangladesh",
+    description: "Expert insights on custom software, AI agents, SaaS and automation from JANTRA's engineering team.",
+    images: ["/social-logo.png"],
+  },
 };
 
 async function getInitialPosts(): Promise<BlogPost[]> {

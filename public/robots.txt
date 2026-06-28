@@ -1,6 +1,27 @@
+# JANTRA Software — jantrasoft.online
+# https://jantrasoft.online
+
 User-agent: *
 Allow: /
-Disallow: /admin
-Disallow: /api
 
+# Block private/admin routes
+Disallow: /admin
+Disallow: /api/
+Disallow: /checkout
+Disallow: /report
+Disallow: /_next/
+Disallow: /blog/submit
+
+# Allow key crawlers full access
+User-agent: Googlebot
+Allow: /
+Disallow: /admin
+Disallow: /api/
+
+User-agent: Bingbot
+Allow: /
+Disallow: /admin
+Disallow: /api/
+
+# Sitemap location
 Sitemap: https://jantrasoft.online/sitemap.xml
