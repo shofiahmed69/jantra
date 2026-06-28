@@ -59,8 +59,8 @@ export default function Navbar() {
             className={cn(
               "relative w-full rounded-3xl transition-all duration-700 ease-out",
               scrolled
-                ? "bg-white/80 border border-slate-200/50 shadow-[0_20px_40px_rgba(0,0,0,0.06)] backdrop-blur-xl"
-                : "bg-white/60 border border-slate-200/30 shadow-[0_10px_30px_rgba(0,0,0,0.03)] backdrop-blur-md"
+                ? "bg-white/80 border border-slate-200/50 shadow-[0_20px_40px_rgba(0,0,0,0.06)] md:backdrop-blur-xl"
+                : "bg-white/60 border border-slate-200/30 shadow-[0_10px_30px_rgba(0,0,0,0.03)] md:backdrop-blur-md"
             )}
           >
             <div className="relative z-10 flex items-center justify-between gap-4 px-4 py-2 text-left">
@@ -179,7 +179,7 @@ export default function Navbar() {
                   onClick={toggleMobileOpen}
                   className={cn(
                     "group/menu relative flex h-10 w-10 items-center justify-center rounded-xl transition-all duration-500 md:hidden",
-                    "bg-slate-50/80 backdrop-blur-md border border-slate-200 shadow-[0_2px_10px_rgba(0,0,0,0.05)]",
+                    "bg-slate-50/80 md:backdrop-blur-md border border-slate-200 shadow-[0_2px_10px_rgba(0,0,0,0.05)]",
                     "hover:border-orange-500/30 hover:shadow-[0_4px_15px_rgba(249,115,22,0.1)] active:scale-95",
                     mobileOpen && "bg-orange-600 border-orange-600 text-white shadow-[0_10px_25px_rgba(249,115,22,0.4)]"
                   )}
@@ -216,7 +216,7 @@ export default function Navbar() {
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
             className="absolute inset-x-0 top-full mt-4 px-4 sm:px-6 md:hidden"
           >
-            <GlassEffect className="overflow-hidden rounded-3xl bg-white/90 p-5 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.15)] backdrop-blur-3xl border border-slate-200/50">
+            <GlassEffect className="overflow-hidden rounded-3xl bg-white/90 p-5 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.15)] md:backdrop-blur-3xl border border-slate-200/50">
               <div className="flex flex-col gap-2">
                 {navItems.map((item, index) => {
                   const active =
@@ -294,7 +294,7 @@ export default function Navbar() {
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
             className="absolute inset-x-0 top-full mt-4 px-4 sm:px-6 md:hidden"
           >
-            <GlassEffect className="overflow-hidden rounded-3xl bg-white/95 p-5 shadow-[0_30px_60px_-15px_rgba(249,115,22,0.18)] backdrop-blur-3xl border border-slate-200/60">
+            <GlassEffect className="overflow-hidden rounded-3xl bg-white/95 p-5 shadow-[0_30px_60px_-15px_rgba(249,115,22,0.18)] md:backdrop-blur-3xl border border-slate-200/60">
               <div className="text-center mb-5">
                 <span className="text-[8.5px] font-black uppercase tracking-widest text-orange-600 font-mono">Instant Scoping</span>
                 <h3 className="text-sm font-black uppercase tracking-tight text-slate-950 mt-1">Connect with Jantra</h3>

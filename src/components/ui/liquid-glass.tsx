@@ -47,7 +47,7 @@ export const GlassEffect: React.FC<GlassEffectProps> = ({
       onClick={onClick}
     >
       <div
-        className="absolute inset-0 z-0 rounded-[inherit] bg-white/10 backdrop-blur-md"
+        className="absolute inset-0 z-0 rounded-[inherit] bg-white/10 md:backdrop-blur-md"
       />
       <div
         className="absolute inset-0 z-10 rounded-[inherit] border border-white/20"

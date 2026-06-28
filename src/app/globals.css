@@ -86,10 +86,15 @@ h1, h2, h3, h4, h5, h6 {
 /* Premium Layout Utilities */
 .glass-panel {
   background: var(--glass);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
   box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
+}
+
+@media (min-width: 768px) {
+  .glass-panel {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
 }
 
 .card-premium {
