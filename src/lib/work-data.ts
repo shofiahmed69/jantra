@@ -57,10 +57,10 @@ function normalizeProject(project: RawProject): WorkProject | null {
   };
 }
 
-const getCachedWorkProjects = unstable_cache(
-  async (): Promise<WorkProject[]> => {
+export async function getWorkProjects(): Promise<WorkProject[]> {
+  try {
     const response = await fetch(WORK_ENDPOINT, {
-      next: { revalidate: 300, tags: ["work-projects"] },
+      next: { revalidate: 10, tags: ["work-projects"] },
       headers: { Accept: "application/json" },
     });
 
@@ -71,14 +71,6 @@ const getCachedWorkProjects = unstable_cache(
     if (!Array.isArray(raw)) return [];
 
     return (raw as RawProject[]).map(normalizeProject).filter(Boolean) as WorkProject[];
-  },
-  ["work-projects"],
-  { revalidate: 300 }
-);
-
-export async function getWorkProjects(): Promise<WorkProject[]> {
-  try {
-    return await getCachedWorkProjects();
   } catch {
     return [];
   }

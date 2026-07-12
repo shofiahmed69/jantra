@@ -2,6 +2,8 @@ import { Metadata } from "next";
 import WorkClient from "./WorkClient";
 import { getWorkProjects } from "@/lib/work-data";
 
+export const revalidate = 10;
+
 export const metadata: Metadata = {
   title: "Portfolio & Case Studies | Custom Software Projects | JANTRA",
   description: "Browse JANTRA Software's portfolio of custom software, SaaS platforms, AI agent systems, mobile apps, and automation tools built for businesses in Bangladesh and worldwide.",

@@ -4,6 +4,8 @@ import { ArrowLeft, CheckCircle2, ChevronRight, BarChart, ExternalLink } from "l
 import { notFound } from "next/navigation";
 import { getWorkProjects } from "@/lib/work-data";
 
+export const revalidate = 10;
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
     const { slug } = await params;
     const allProjects = await getWorkProjects();
