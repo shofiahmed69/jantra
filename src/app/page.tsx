@@ -2,6 +2,8 @@ import { Metadata } from "next";
 import HomeClient from "./HomeClient";
 import api from "@/lib/api";
 
+export const revalidate = 10;
+
 export const metadata: Metadata = {
   title: "Jantra Software | Custom Software & AI Agent Studio",
   description: "Looking for Jantra Software? We are the leading custom software company in Bangladesh building SaaS products, AI agents, and workflow automations.",
