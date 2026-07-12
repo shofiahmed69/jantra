@@ -155,6 +155,21 @@ function ScrollReveal({
   delay?: number; 
   direction?: "up" | "down" | "left" | "right" 
 }) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  if (isMobile) {
+    return <div>{children}</div>;
+  }
+
   const directionOffset = {
     up: { y: 30, x: 0 },
     down: { y: -30, x: 0 },
@@ -177,7 +192,7 @@ function ScrollReveal({
         x: 0,
         y: 0
       }}
-      viewport={{ once: false, margin: "-15% 0px -15% 0px" }}
+      viewport={{ once: true, margin: "-15% 0px -15% 0px" }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay }}
     >
       {children}
@@ -188,9 +203,19 @@ function ScrollReveal({
 function FocusSection({ id, children, className, disableScrollEffects = false }: { id: string; children: React.ReactNode; className?: string; disableScrollEffects?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const [isFocused, setIsFocused] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    if (disableScrollEffects) return;
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  useEffect(() => {
+    if (disableScrollEffects || isMobile) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
         setIsFocused(entry.isIntersecting);
@@ -205,9 +230,9 @@ function FocusSection({ id, children, className, disableScrollEffects = false }:
       observer.observe(ref.current);
     }
     return () => observer.disconnect();
-  }, [disableScrollEffects]);
+  }, [disableScrollEffects, isMobile]);
 
-  if (disableScrollEffects) {
+  if (disableScrollEffects || isMobile) {
     return <div id={id} className={className}>{children}</div>;
   }
 

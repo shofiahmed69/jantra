@@ -183,6 +183,13 @@ h1, h2, h3, h4, h5, h6 {
   filter: blur(150px);
   z-index: -1;
   pointer-events: none;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .orb {
+    display: block;
+  }
 }
 
 /* Orb animation */
