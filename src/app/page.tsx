@@ -20,7 +20,8 @@ async function getFeaturedProjects() {
       .filter((p: any) => p.published)
       .sort((a: any, b: any) => {
         if (a.featured !== b.featured) return a.featured ? -1 : 1;
-        return (a.order || 0) - (b.order || 0);
+        if ((a.order || 0) !== (b.order || 0)) return (a.order || 0) - (b.order || 0);
+        return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
       })
       .slice(0, 4); // Keep Home page light
   } catch {
