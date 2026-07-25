@@ -61,16 +61,16 @@ const nextConfig: NextConfig = {
 
     return [
       {
-        source: '/api/services',
-        destination: `${apiBase}/services`,
+        source: '/api/services/:path*',
+        destination: `${apiBase}/services/:path*`,
       },
       {
-        source: '/api/leads',
-        destination: `${apiBase}/leads`,
+        source: '/api/leads/:path*',
+        destination: `${apiBase}/leads/:path*`,
       },
       {
-        source: '/api/settings',
-        destination: `${apiBase}/settings`,
+        source: '/api/settings/:path*',
+        destination: `${apiBase}/settings/:path*`,
       },
       {
         source: '/api/auth/:path*',
