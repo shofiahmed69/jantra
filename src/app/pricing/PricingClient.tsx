@@ -32,7 +32,7 @@ const resolveServiceVisualUrl = (service: any) => {
     const raw = service?.banner || service?.image;
     if (!raw) return "";
     let url = raw;
-    if (!url.startsWith("http")) {
+    if (!url.startsWith("http://") && !url.startsWith("https://") && !url.startsWith("data:")) {
         const apiBase = (process.env.NEXT_PUBLIC_API_URL || "https://jontro-backend.onrender.com/api").replace(/\/api\/?$/, "");
         const cleanBase = apiBase.endsWith("/") ? apiBase.slice(0, -1) : apiBase;
         const cleanPath = url.startsWith("/") ? url : `/${url}`;
@@ -357,8 +357,8 @@ export default function PricingClient({ initialServices }: { initialServices: an
                                                 <img
                                                      src={visualUrl}
                                                      alt={service.title || "Service Banner"}
-                                                     className={`absolute inset-0 w-full h-full object-cover transition-all duration-300 group-hover:scale-[1.02] z-10 ${
-                                                         loadedImages[service.id] ? "opacity-100 scale-100" : "opacity-0 scale-[0.98]"
+                                                     className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 group-hover:scale-[1.02] z-10 ${
+                                                         loadedImages[service.id] ? "opacity-100" : "opacity-90"
                                                      }`}
                                                      onLoad={() => setLoadedImages(prev => ({ ...prev, [service.id]: true }))}
                                                      onError={() => setFailedImages(prev => ({ ...prev, [service.id]: true }))}
