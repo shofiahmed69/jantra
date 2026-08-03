@@ -23,7 +23,7 @@ async function getFeaturedProjects() {
         if ((a.order || 0) !== (b.order || 0)) return (a.order || 0) - (b.order || 0);
         return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
       })
-      .slice(0, 4); // Keep Home page light
+      .slice(0, 6); // Display top 6 featured portfolio items on Home page
   } catch {
     return [];
   }
