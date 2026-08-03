@@ -286,24 +286,13 @@ export default function PricingClient({ initialServices }: { initialServices: an
                         <p className="text-slate-500 text-xs sm:text-sm font-semibold uppercase tracking-wider">Choose a pricing tier that aligns with your product goals.</p>
                     </div>
 
-                    {/* Currency Selector (Manual toggle overrides GeoIP) */}
-                    <div className="flex items-center gap-1.5 bg-white border border-slate-200/60 rounded-xl p-1 shadow-sm shrink-0 self-start lg:self-auto font-mono text-[9px] font-black">
-                        {(["USD", "EUR", "BDT"] as const).map((curr) => (
-                            <button
-                                key={curr}
-                                onClick={() => {
-                                    setCurrency(curr);
-                                    document.cookie = `currency_pref_auto=${curr}; path=/; max-age=31536000`;
-                                }}
-                                className={`px-3 py-1.5 rounded-lg uppercase tracking-wider transition-all cursor-pointer ${
-                                    currency === curr
-                                        ? "bg-slate-950 text-white shadow-sm"
-                                        : "text-slate-400 hover:text-slate-900"
-                                }`}
-                            >
-                                {curr}
-                            </button>
-                        ))}
+                    {/* Currency Indicator (Single currency active based on geolocation) */}
+                    <div className="flex items-center gap-2 bg-white border border-slate-200/60 rounded-xl px-3.5 py-2 shadow-sm shrink-0 self-start lg:self-auto font-mono text-[10px] font-black">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                        <span className="text-slate-400 uppercase tracking-wider text-[9px]">Currency:</span>
+                        <span className="bg-slate-950 text-white px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-xs">
+                            {currency}
+                        </span>
                     </div>
                 </div>
 
