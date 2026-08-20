@@ -9,8 +9,8 @@ import { useLanguage } from "@/lib/i18n/language-provider";
 export default function LoginPage() {
   const router = useRouter();
   const { t } = useLanguage();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("admin@jantra.local");
+  const [password, setPassword] = useState("admin12345");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -42,7 +42,7 @@ export default function LoginPage() {
         </div>
         <div>
           <label className="form-label">{t("password")}</label>
-          <input className="input" type="password" name="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <input className="input font-mono" type="text" name="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         </div>
         {error ? <p className="text-base text-red-600 font-medium">{error}</p> : null}
         <button className="btn btn-primary w-full text-lg" disabled={loading} type="submit">
