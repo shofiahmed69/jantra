@@ -4,7 +4,10 @@ import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/layout/app-shell";
 import { api } from "@/lib/api";
 import { formatBDT } from "@/lib/currency";
-import { Pencil, Search, X } from "lucide-react";
+import { Pencil, X } from "lucide-react";
+import { ResponsiveTable } from "@/components/ui/responsive-table";
+import { SearchField } from "@/components/ui/search-field";
+import { useLanguage } from "@/lib/i18n/language-provider";
 
 type Product = {
   id: string;
@@ -25,6 +28,7 @@ type FormState = {
 const emptyForm: FormState = { stockQuantity: "", minStockAlert: "", expiryDate: "" };
 
 export default function InventoryPage() {
+  const { t } = useLanguage();
   const [items, setItems] = useState<Product[]>([]);
   const [search, setSearch] = useState("");
   const [openModal, setOpenModal] = useState(false);
@@ -69,57 +73,62 @@ export default function InventoryPage() {
   };
 
   return (
-    <AppShell title="Inventory">
-      <div className="grid md:grid-cols-4 gap-4 mb-4">
-        <div className="kpi-card"><p className="kpi-label">Total Products</p><p className="kpi-value">{items.length}</p></div>
-        <div className="kpi-card"><p className="kpi-label">Low Stock</p><p className="kpi-value text-amber-600">{low.length}</p></div>
-        <div className="kpi-card"><p className="kpi-label">Out of Stock</p><p className="kpi-value text-red-600">{out.length}</p></div>
-        <div className="kpi-card"><p className="kpi-label">Stock Value</p><p className="kpi-value">{formatBDT(totalValue)}</p></div>
+    <AppShell title={t("inventory.title")}>
+      <div className="kpi-grid kpi-grid-4 mb-4">
+        <div className="kpi-card"><p className="kpi-label">{t("inventory.totalProducts")}</p><p className="kpi-value">{items.length}</p></div>
+        <div className="kpi-card"><p className="kpi-label">{t("inventory.lowStock")}</p><p className="kpi-value text-amber-600">{low.length}</p></div>
+        <div className="kpi-card"><p className="kpi-label">{t("inventory.outOfStock")}</p><p className="kpi-value text-red-600">{out.length}</p></div>
+        <div className="kpi-card"><p className="kpi-label">{t("inventory.stockValue")}</p><p className="kpi-value">{formatBDT(totalValue)}</p></div>
       </div>
 
-      <div className="mb-4 flex items-center gap-3">
-        <div className="relative max-w-3xl w-full">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-          <input className="input pl-9" placeholder="Search inventory..." value={search} onChange={(e) => setSearch(e.target.value)} />
-        </div>
+      <div className="page-toolbar">
+        <SearchField value={search} onChange={setSearch} placeholder={t("inventory.search")} />
       </div>
 
-      <div className="table-wrap">
-        <table className="w-full text-sm">
-          <thead className="table-head"><tr><th className="p-4 text-left">Name</th><th className="p-4 text-left">Stock</th><th className="p-4 text-left">Min Alert</th><th className="p-4 text-left">Status</th><th className="p-4 text-left">Expiry</th><th className="p-4 text-right">Actions</th></tr></thead>
-          <tbody>
-            {filtered.map((s) => {
-              const st = s.stockQuantity === 0 ? "Out" : s.stockQuantity <= s.minStockAlert ? "Low" : "Active";
+      <ResponsiveTable
+        rows={filtered}
+        rowKey={(s) => s.id}
+        columns={[
+          { key: "name", header: t("name"), cell: (s) => <span className="font-medium text-lg">{s.name}</span> },
+          { key: "stock", header: t("stock"), cell: (s) => s.stockQuantity },
+          { key: "min", header: t("inventory.minAlert"), cell: (s) => s.minStockAlert },
+          {
+            key: "status",
+            header: t("status"),
+            cell: (s) => {
+              const st = s.stockQuantity === 0 ? t("out") : s.stockQuantity <= s.minStockAlert ? t("low") : t("active");
               const cls = s.stockQuantity === 0 ? "status-bad" : s.stockQuantity <= s.minStockAlert ? "status-warn" : "status-ok";
-              return (
-                <tr className="table-row border-t border-slate-200" key={s.id}>
-                  <td className="p-4">{s.name}</td>
-                  <td className="p-4">{s.stockQuantity}</td>
-                  <td className="p-4">{s.minStockAlert}</td>
-                  <td className="p-4"><span className={`status-pill ${cls}`}>{st}</span></td>
-                  <td className="p-4">{s.expiryDate || "-"}</td>
-                  <td className="p-4 text-right"><button type="button" className="icon-btn icon-btn-edit" onClick={() => openEdit(s)}><Pencil className="w-4 h-4" /></button></td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+              return <span className={`status-pill ${cls}`}>{st}</span>;
+            },
+          },
+          { key: "expiry", header: t("inventory.expiry"), cell: (s) => s.expiryDate || "-" },
+          {
+            key: "actions",
+            header: t("actions"),
+            align: "right",
+            cell: (s) => (
+              <button type="button" className="icon-btn icon-btn-edit" onClick={() => openEdit(s)}>
+                <Pencil className="w-4 h-4" />
+              </button>
+            ),
+          },
+        ]}
+      />
 
       {openModal ? (
         <div className="modal-overlay">
           <div className="card w-full max-w-xl p-5">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-lg font-bold">Update Stock</h3>
+              <h3 className="text-xl font-bold">{t("inventory.updateStock")}</h3>
               <button type="button" className="icon-btn btn-outline" onClick={() => setOpenModal(false)}><X className="w-4 h-4" /></button>
             </div>
             <form onSubmit={save} className="grid md:grid-cols-2 gap-3">
-              <input className="input" type="number" min={0} placeholder="Stock Quantity" value={form.stockQuantity} onChange={(e) => setForm({ ...form, stockQuantity: e.target.value })} required />
-              <input className="input" type="number" min={0} placeholder="Min Stock Alert" value={form.minStockAlert} onChange={(e) => setForm({ ...form, minStockAlert: e.target.value })} required />
+              <input className="input" type="number" min={0} placeholder={t("products.stockQty")} value={form.stockQuantity} onChange={(e) => setForm({ ...form, stockQuantity: e.target.value })} required />
+              <input className="input" type="number" min={0} placeholder={t("inventory.minAlert")} value={form.minStockAlert} onChange={(e) => setForm({ ...form, minStockAlert: e.target.value })} required />
               <input className="input md:col-span-2" type="date" value={form.expiryDate} onChange={(e) => setForm({ ...form, expiryDate: e.target.value })} />
               <div className="md:col-span-2 flex justify-end gap-2 pt-2">
-                <button type="button" className="btn btn-outline" onClick={() => setOpenModal(false)}>Cancel</button>
-                <button type="submit" className="btn btn-primary">Update Inventory</button>
+                <button type="button" className="btn btn-outline" onClick={() => setOpenModal(false)}>{t("cancel")}</button>
+                <button type="submit" className="btn btn-primary">{t("inventory.updateBtn")}</button>
               </div>
             </form>
           </div>

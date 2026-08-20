@@ -5,6 +5,8 @@ import { AppShell } from "@/components/layout/app-shell";
 import { api } from "@/lib/api";
 import { formatBDT } from "@/lib/currency";
 import { Pencil, Plus, Trash2, X } from "lucide-react";
+import { ResponsiveTable } from "@/components/ui/responsive-table";
+import { useLanguage } from "@/lib/i18n/language-provider";
 
 type Expense = { id: string; category: string; description: string; amount: string; expenseDate: string };
 
@@ -18,6 +20,7 @@ const emptyForm: FormState = {
 };
 
 export default function ExpensesPage() {
+  const { t } = useLanguage();
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [search, setSearch] = useState("");
   const [form, setForm] = useState<FormState>(emptyForm);
@@ -72,41 +75,41 @@ export default function ExpensesPage() {
   };
 
   return (
-    <AppShell title="Expenses">
-      <div className="mb-4 flex items-center justify-between gap-3">
-        <input className="input max-w-3xl" placeholder="Search expenses..." value={search} onChange={(e) => setSearch(e.target.value)} />
-        <button className="btn btn-primary flex items-center gap-2" onClick={openCreate}><Plus className="w-4 h-4" /> Add expense</button>
+    <AppShell title={t("expenses.title")}>
+      <div className="page-toolbar">
+        <input className="input" placeholder={t("expenses.search")} value={search} onChange={(e) => setSearch(e.target.value)} />
+        <button className="btn btn-primary flex items-center justify-center gap-2 w-full sm:w-auto shrink-0" onClick={openCreate}><Plus className="w-5 h-5" /> {t("expenses.add")}</button>
       </div>
 
-      <div className="kpi-card mb-4"><p className="kpi-label">Total Expenses</p><p className="kpi-value text-red-600">{formatBDT(total)}</p></div>
+      <div className="kpi-card mb-4"><p className="kpi-label">{t("expenses.total")}</p><p className="kpi-value text-red-600">{formatBDT(total)}</p></div>
 
-      <div className="table-wrap">
-        <table className="w-full text-sm">
-          <thead className="table-head"><tr><th className="p-4 text-left">Date</th><th className="p-4 text-left">Category</th><th className="p-4 text-left">Description</th><th className="p-4 text-left">Amount</th><th className="p-4 text-right">Actions</th></tr></thead>
-          <tbody>
-            {filtered.map((e) => (
-              <tr key={e.id} className="table-row border-t border-slate-200">
-                <td className="p-4">{e.expenseDate}</td>
-                <td className="p-4">{e.category}</td>
-                <td className="p-4">{e.description}</td>
-                <td className="p-4">{formatBDT(Number(e.amount))}</td>
-                <td className="p-4 text-right">
-                  <div className="inline-flex gap-2">
-                    <button type="button" className="icon-btn icon-btn-edit" onClick={() => openEdit(e)}><Pencil className="w-4 h-4" /></button>
-                    <button type="button" className="icon-btn icon-btn-delete" onClick={() => remove(e.id)}><Trash2 className="w-4 h-4" /></button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <ResponsiveTable
+        rows={filtered}
+        rowKey={(e) => e.id}
+        columns={[
+          { key: "date", header: t("date"), cell: (e) => e.expenseDate },
+          { key: "category", header: t("expenses.category"), cell: (e) => e.category },
+          { key: "description", header: t("expenses.description"), cell: (e) => e.description },
+          { key: "amount", header: t("expenses.amount"), cell: (e) => formatBDT(Number(e.amount)) },
+          {
+            key: "actions",
+            header: t("actions"),
+            align: "right",
+            cell: (e) => (
+              <div className="inline-flex gap-2">
+                <button type="button" className="icon-btn icon-btn-edit" onClick={() => openEdit(e)}><Pencil className="w-4 h-4" /></button>
+                <button type="button" className="icon-btn icon-btn-delete" onClick={() => remove(e.id)}><Trash2 className="w-4 h-4" /></button>
+              </div>
+            ),
+          },
+        ]}
+      />
 
       {openModal ? (
         <div className="modal-overlay">
           <div className="card w-full max-w-2xl p-5">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-lg font-bold">{editId ? "Edit Expense" : "Add Expense"}</h3>
+              <h3 className="text-xl font-bold">{editId ? t("expenses.edit") : t("expenses.create")}</h3>
               <button type="button" className="icon-btn btn-outline" onClick={() => setOpenModal(false)}><X className="w-4 h-4" /></button>
             </div>
             <form onSubmit={save} className="grid md:grid-cols-2 gap-3">
@@ -114,11 +117,11 @@ export default function ExpensesPage() {
                 <option value="rent">rent</option><option value="electricity">electricity</option><option value="salary">salary</option><option value="internet">internet</option><option value="other">other</option>
               </select>
               <input className="input" type="date" value={form.expense_date} onChange={(e) => setForm({ ...form, expense_date: e.target.value })} required />
-              <input className="input md:col-span-2" placeholder="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} required />
-              <input className="input md:col-span-2" type="number" min={0.01} step="0.01" placeholder="Amount (BDT)" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} required />
+              <input className="input md:col-span-2" placeholder={t("expenses.description")} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} required />
+              <input className="input md:col-span-2" type="number" min={0.01} step="0.01" placeholder={t("expenses.amount")} value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} required />
               <div className="md:col-span-2 flex justify-end gap-2 pt-2">
-                <button type="button" className="btn btn-outline" onClick={() => setOpenModal(false)}>Cancel</button>
-                <button type="submit" className="btn btn-primary">{editId ? "Update Expense" : "Create Expense"}</button>
+                <button type="button" className="btn btn-outline" onClick={() => setOpenModal(false)}>{t("cancel")}</button>
+                <button type="submit" className="btn btn-primary">{editId ? t("update") : t("create")}</button>
               </div>
             </form>
           </div>

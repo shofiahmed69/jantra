@@ -1,9 +1,9 @@
-import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { json, urlencoded } from 'express';
 import express, { Express } from 'express';
 import { AppModule } from './app.module';
+import { applyAppSecurity } from './common/security/apply-app-security';
 
 let cached: Express;
 
@@ -11,14 +11,13 @@ async function bootstrap(): Promise<Express> {
   if (cached) return cached;
 
   const expressApp = express();
-  expressApp.use(json({ limit: '10mb' }));
-  expressApp.use(urlencoded({ extended: true, limit: '10mb' }));
+  expressApp.use(json({ limit: '2mb' }));
+  expressApp.use(urlencoded({ extended: true, limit: '2mb' }));
 
   const adapter = new ExpressAdapter(expressApp);
   const app = await NestFactory.create(AppModule, adapter);
   app.setGlobalPrefix('');
-  app.enableCors({ origin: true, credentials: true });
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  applyAppSecurity(app);
   await app.init();
 
   cached = expressApp;

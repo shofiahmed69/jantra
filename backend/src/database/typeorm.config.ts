@@ -1,5 +1,6 @@
 import { join } from 'path';
 import type { DataSourceOptions } from 'typeorm';
+import { Pharmacy } from '../common/entities/pharmacy.entity';
 import { Owner } from '../common/entities/owner.entity';
 import { Category } from '../common/entities/category.entity';
 import { Product } from '../common/entities/product.entity';
@@ -15,6 +16,7 @@ import { Notification } from '../common/entities/notification.entity';
 import { ActivityLog } from '../common/entities/activity-log.entity';
 
 const entities = [
+  Pharmacy,
   Owner,
   Category,
   Product,

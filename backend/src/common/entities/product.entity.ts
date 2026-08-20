@@ -4,9 +4,10 @@ import { Category } from './category.entity';
 
 @Entity('products')
 export class Product extends AppBaseEntity {
+  @Column({ name: 'pharmacy_id', type: 'uuid' }) pharmacyId: string;
   @Column({ length: 150 }) name: string;
   @Column({ name: 'image_url', type: 'text', nullable: true }) imageUrl?: string;
-  @Column({ length: 100, unique: true, nullable: true }) barcode?: string;
+  @Column({ length: 100, nullable: true }) barcode?: string;
   @Column({ name: 'category_id', type: 'uuid', nullable: true }) categoryId?: string;
   @ManyToOne(() => Category, { nullable: true }) @JoinColumn({ name: 'category_id' }) category?: Category;
   @Column({ name: 'brand_name', length: 100, nullable: true }) brandName?: string;
@@ -17,7 +18,9 @@ export class Product extends AppBaseEntity {
   @Column({ name: 'selling_price', type: 'decimal', precision: 10, scale: 2 }) sellingPrice: string;
   @Column({ name: 'stock_quantity', type: 'int', default: 0 }) stockQuantity: number;
   @Column({ name: 'min_stock_alert', type: 'int', default: 10 }) minStockAlert: number;
-  @Column({ name: 'unit_type', length: 30 }) unitType: string;
+  @Column({ name: 'unit_type', length: 30, default: 'piece' }) unitType: string;
+  @Column({ name: 'pieces_per_strip', type: 'int', default: 1 }) piecesPerStrip: number;
+  @Column({ name: 'strips_per_box', type: 'int', nullable: true }) stripsPerBox?: number | null;
   @Column({ type: 'text', nullable: true }) description?: string;
   @DeleteDateColumn({ name: 'deleted_at', nullable: true }) deletedAt?: Date;
 }

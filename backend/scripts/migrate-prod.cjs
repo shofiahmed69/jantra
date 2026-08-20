@@ -14,8 +14,12 @@ async function main() {
 
   await dataSource.initialize();
   await dataSource.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
+  const pending = await dataSource.showMigrations();
   const ran = await dataSource.runMigrations();
-  console.log(`Ran ${ran.length} migration(s).`);
+  console.log(`Pending before run: ${pending}; ran ${ran.length} migration(s).`);
+  if (ran.length) {
+    for (const m of ran) console.log(`  - ${m.name}`);
+  }
   await dataSource.destroy();
 }
 

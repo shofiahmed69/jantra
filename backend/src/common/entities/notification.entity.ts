@@ -3,6 +3,7 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeor
 @Entity('notifications')
 export class Notification {
   @PrimaryGeneratedColumn('uuid') id: string;
+  @Column({ name: 'pharmacy_id', type: 'uuid', nullable: true }) pharmacyId?: string;
   @Column({ length: 30 }) type: string;
   @Column({ name: 'product_id', type: 'uuid', nullable: true }) productId?: string;
   @Column({ type: 'text' }) message: string;

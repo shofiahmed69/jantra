@@ -2,12 +2,20 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { Product } from '../../common/entities/product.entity';
+import { TenantContext } from '../../common/tenant/tenant.context';
 import bwipjs from 'bwip-js';
 import PDFDocument from 'pdfkit';
 
 @Injectable()
 export class BarcodesService {
-  constructor(@InjectRepository(Product) private readonly productRepo: Repository<Product>) {}
+  constructor(
+    @InjectRepository(Product) private readonly productRepo: Repository<Product>,
+    private readonly tenant: TenantContext,
+  ) {}
+
+  private get pid() {
+    return this.tenant.pharmacyId;
+  }
 
   private ensureProductBarcode(product: Product): string {
     if (product.barcode && product.barcode.trim().length > 0) return product.barcode;
@@ -18,7 +26,7 @@ export class BarcodesService {
   }
 
   async generate(productId: string) {
-    const product = await this.productRepo.findOne({ where: { id: productId } });
+    const product = await this.productRepo.findOne({ where: { id: productId, pharmacyId: this.pid } });
     if (!product) throw new NotFoundException('Product not found');
     const code = this.ensureProductBarcode(product);
 
@@ -42,7 +50,9 @@ export class BarcodesService {
   }
 
   async printSheet(productIds: string[]) {
-    const products = await this.productRepo.find({ where: { id: In(productIds) } });
+    const products = await this.productRepo.find({
+      where: { id: In(productIds), pharmacyId: this.pid },
+    });
     const valid = products.map((p) => ({ ...p, barcode: this.ensureProductBarcode(p) }));
 
     const doc = new PDFDocument({ size: 'A4', margin: 20 });

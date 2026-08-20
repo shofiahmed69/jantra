@@ -1,9 +1,10 @@
 import { Type } from 'class-transformer';
-import { IsArray, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { IsArray, IsIn, IsNumber, IsOptional, IsString, Min, ValidateNested } from 'class-validator';
 
 class SaleItemInputDto {
   @IsString() product_id: string;
-  @IsNumber() quantity: number;
+  @IsNumber() @Min(1) quantity: number;
+  @IsOptional() @IsIn(['piece', 'strip', 'box', 'bottle']) unit?: 'piece' | 'strip' | 'box' | 'bottle';
   @IsOptional() @IsNumber() discount_percent?: number;
 }
 

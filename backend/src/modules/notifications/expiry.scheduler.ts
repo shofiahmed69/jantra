@@ -21,7 +21,12 @@ export class ExpiryScheduler {
       .getMany();
 
     for (const p of rows) {
-      await this.notifications.createIfMissingUnread('expiry', p.id, `${p.name} is expiring soon (${p.expiryDate})`);
+      await this.notifications.createIfMissingUnread(
+        'expiry',
+        p.id,
+        `${p.name} is expiring soon (${p.expiryDate})`,
+        p.pharmacyId,
+      );
     }
   }
 }

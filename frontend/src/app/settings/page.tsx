@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import { AppShell } from "@/components/layout/app-shell";
 import { api } from "@/lib/api";
+import { useLanguage } from "@/lib/i18n/language-provider";
 
 export default function SettingsPage() {
+  const { t } = useLanguage();
   const [form, setForm] = useState({ name: "", phone: "", shopName: "", shopAddress: "" });
 
   useEffect(() => {
@@ -20,14 +22,14 @@ export default function SettingsPage() {
   };
 
   return (
-    <AppShell title="Settings">
-      <form onSubmit={save} className="card p-5 max-w-3xl space-y-3">
-        <p className="text-2xl font-semibold">Profile & Store Settings</p>
-        <input className="input" placeholder="Owner Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-        <input className="input" placeholder="Phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
-        <input className="input" placeholder="Shop Name" value={form.shopName} onChange={(e) => setForm({ ...form, shopName: e.target.value })} />
-        <textarea className="input" placeholder="Shop Address" value={form.shopAddress} onChange={(e) => setForm({ ...form, shopAddress: e.target.value })} />
-        <button className="btn btn-primary" type="submit">Save Settings</button>
+    <AppShell title={t("settings.title")}>
+      <form onSubmit={save} className="card p-5 sm:p-6 w-full max-w-3xl space-y-4">
+        <p className="text-2xl sm:text-3xl font-semibold">{t("settings.profile")}</p>
+        <input className="input" placeholder={t("settings.ownerName")} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+        <input className="input" placeholder={t("settings.phone")} value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+        <input className="input" placeholder={t("settings.shopName")} value={form.shopName} onChange={(e) => setForm({ ...form, shopName: e.target.value })} />
+        <textarea className="input" placeholder={t("settings.shopAddress")} value={form.shopAddress} onChange={(e) => setForm({ ...form, shopAddress: e.target.value })} />
+        <button className="btn btn-primary text-lg" type="submit">{t("settings.saveSettings")}</button>
       </form>
     </AppShell>
   );

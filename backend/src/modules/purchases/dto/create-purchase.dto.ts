@@ -1,9 +1,10 @@
 import { Type } from 'class-transformer';
-import { IsArray, IsDateString, IsInt, IsNumber, IsOptional, IsString, Min, ValidateNested } from 'class-validator';
+import { IsArray, IsDateString, IsIn, IsInt, IsNumber, IsOptional, IsString, Min, ValidateNested } from 'class-validator';
 
 class PurchaseItemInputDto {
   @IsString() product_id: string;
   @IsInt() @Min(1) quantity: number;
+  @IsOptional() @IsIn(['piece', 'strip', 'box', 'bottle']) unit?: 'piece' | 'strip' | 'box' | 'bottle';
   @IsNumber() @Min(0.01) cost_per_unit: number;
   @IsOptional() @IsString() batch_number?: string;
   @IsOptional() @IsDateString() expiry_date?: string;

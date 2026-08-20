@@ -3,6 +3,7 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeor
 @Entity('activity_logs')
 export class ActivityLog {
   @PrimaryGeneratedColumn('uuid') id: string;
+  @Column({ name: 'pharmacy_id', type: 'uuid', nullable: true }) pharmacyId?: string;
   @Column({ length: 100 }) action: string;
   @Column({ length: 50 }) entity: string;
   @Column({ name: 'entity_id', nullable: true }) entityId?: string;

@@ -3,6 +3,7 @@ import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedCol
 @Entity('suppliers')
 export class Supplier {
   @PrimaryGeneratedColumn('uuid') id: string;
+  @Column({ name: 'pharmacy_id', type: 'uuid' }) pharmacyId: string;
   @Column({ length: 150 }) name: string;
   @Column({ name: 'contact_person', length: 100, nullable: true }) contactPerson?: string;
   @Column({ length: 20, nullable: true }) phone?: string;

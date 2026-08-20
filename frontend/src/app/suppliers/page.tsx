@@ -4,6 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { AppShell } from "@/components/layout/app-shell";
 import { api } from "@/lib/api";
 import { Pencil, Plus, Trash2, X } from "lucide-react";
+import { ResponsiveTable } from "@/components/ui/responsive-table";
+import { useLanguage } from "@/lib/i18n/language-provider";
 
 type Supplier = { id: string; name: string; contactPerson?: string; phone?: string; email?: string };
 
@@ -12,6 +14,7 @@ type FormState = { name: string; contactPerson: string; phone: string; email: st
 const emptyForm: FormState = { name: "", contactPerson: "", phone: "", email: "" };
 
 export default function SuppliersPage() {
+  const { t } = useLanguage();
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [search, setSearch] = useState("");
   const [form, setForm] = useState<FormState>(emptyForm);
@@ -60,57 +63,49 @@ export default function SuppliersPage() {
   };
 
   return (
-    <AppShell title="Suppliers">
-      <div className="mb-4 flex items-center justify-between gap-3">
-        <input className="input max-w-3xl" placeholder="Search suppliers..." value={search} onChange={(e) => setSearch(e.target.value)} />
-        <button className="btn btn-primary flex items-center gap-2" onClick={openCreate}><Plus className="w-4 h-4" /> Add supplier</button>
+    <AppShell title={t("suppliers.title")}>
+      <div className="page-toolbar">
+        <input className="input" placeholder={t("suppliers.search")} value={search} onChange={(e) => setSearch(e.target.value)} />
+        <button className="btn btn-primary flex items-center justify-center gap-2 w-full sm:w-auto shrink-0" onClick={openCreate}><Plus className="w-5 h-5" /> {t("suppliers.add")}</button>
       </div>
 
-      <div className="table-wrap">
-        <table className="w-full text-sm">
-          <thead className="table-head">
-            <tr>
-              <th className="p-4 text-left">Name</th>
-              <th className="p-4 text-left">Contact</th>
-              <th className="p-4 text-left">Phone</th>
-              <th className="p-4 text-left">Email</th>
-              <th className="p-4 text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((s) => (
-              <tr key={s.id} className="table-row border-t border-slate-200">
-                <td className="p-4 font-medium">{s.name}</td>
-                <td className="p-4">{s.contactPerson || "-"}</td>
-                <td className="p-4">{s.phone || "-"}</td>
-                <td className="p-4">{s.email || "-"}</td>
-                <td className="p-4 text-right">
-                  <div className="inline-flex gap-2">
-                    <button type="button" className="icon-btn icon-btn-edit" onClick={() => openEdit(s)}><Pencil className="w-4 h-4" /></button>
-                    <button type="button" className="icon-btn icon-btn-delete" onClick={() => remove(s.id)}><Trash2 className="w-4 h-4" /></button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <ResponsiveTable
+        rows={filtered}
+        rowKey={(s) => s.id}
+        columns={[
+          { key: "name", header: t("name"), cell: (s) => <span className="font-medium text-lg">{s.name}</span> },
+          { key: "contact", header: t("suppliers.contact"), cell: (s) => s.contactPerson || "-" },
+          { key: "phone", header: t("suppliers.phone"), cell: (s) => s.phone || "-" },
+          { key: "email", header: t("email"), cell: (s) => <span className="break-all">{s.email || "-"}</span> },
+          {
+            key: "actions",
+            header: t("actions"),
+            align: "right",
+            cell: (s) => (
+              <div className="inline-flex gap-2">
+                <button type="button" className="icon-btn icon-btn-edit" onClick={() => openEdit(s)}><Pencil className="w-4 h-4" /></button>
+                <button type="button" className="icon-btn icon-btn-delete" onClick={() => remove(s.id)}><Trash2 className="w-4 h-4" /></button>
+              </div>
+            ),
+          },
+        ]}
+      />
 
       {openModal ? (
         <div className="modal-overlay">
           <div className="card w-full max-w-2xl p-5">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-lg font-bold">{editId ? "Edit Supplier" : "Add Supplier"}</h3>
+              <h3 className="text-xl font-bold">{editId ? t("suppliers.edit") : t("suppliers.create")}</h3>
               <button type="button" className="icon-btn btn-outline" onClick={() => setOpenModal(false)}><X className="w-4 h-4" /></button>
             </div>
             <form onSubmit={save} className="grid md:grid-cols-2 gap-3">
-              <input className="input md:col-span-2" placeholder="Supplier Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
-              <input className="input" placeholder="Contact Person" value={form.contactPerson} onChange={(e) => setForm({ ...form, contactPerson: e.target.value })} />
-              <input className="input" placeholder="Phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
-              <input className="input md:col-span-2" placeholder="Email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+              <input className="input md:col-span-2" placeholder={t("name")} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
+              <input className="input" placeholder={t("suppliers.contact")} value={form.contactPerson} onChange={(e) => setForm({ ...form, contactPerson: e.target.value })} />
+              <input className="input" placeholder={t("suppliers.phone")} value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+              <input className="input md:col-span-2" placeholder={t("email")} type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
               <div className="md:col-span-2 flex justify-end gap-2 pt-2">
-                <button type="button" className="btn btn-outline" onClick={() => setOpenModal(false)}>Cancel</button>
-                <button type="submit" className="btn btn-primary">{editId ? "Update Supplier" : "Create Supplier"}</button>
+                <button type="button" className="btn btn-outline" onClick={() => setOpenModal(false)}>{t("cancel")}</button>
+                <button type="submit" className="btn btn-primary">{editId ? t("update") : t("create")}</button>
               </div>
             </form>
           </div>

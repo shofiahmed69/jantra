@@ -3,6 +3,7 @@ import { DataSource } from 'typeorm';
 import { PosService } from './pos.service';
 import { NotificationsService } from '../notifications/notifications.service';
 import { DashboardGateway } from '../../common/realtime/dashboard.gateway';
+import { TenantContext } from '../../common/tenant/tenant.context';
 import { Product } from '../../common/entities/product.entity';
 import { Sale } from '../../common/entities/sale.entity';
 import { SaleItem } from '../../common/entities/sale-item.entity';
@@ -18,6 +19,9 @@ describe('PosService', () => {
       stockQuantity,
       minStockAlert: 3,
       unitType: 'piece',
+      piecesPerStrip: 1,
+      stripsPerBox: null,
+      pharmacyId: 'pharm-1',
       createdAt: new Date(),
       updatedAt: new Date(),
     } as Product;
@@ -36,7 +40,7 @@ describe('PosService', () => {
     } as Sale;
 
     const productRepo = {
-      findOne: jest.fn(async ({ where: { id } }) => (id === 'prod-1' ? product : null)),
+      findOne: jest.fn(async ({ where: { id, pharmacyId } }) => (id === 'prod-1' && pharmacyId === 'pharm-1' ? product : null)),
       save: jest.fn(async (p) => p),
     };
     const saleRepo = {
@@ -72,6 +76,7 @@ describe('PosService', () => {
     const saleLookupRepo = {
       createQueryBuilder: jest.fn(() => ({
         where: jest.fn().mockReturnThis(),
+        andWhere: jest.fn().mockReturnThis(),
         orderBy: jest.fn().mockReturnThis(),
         limit: jest.fn().mockReturnThis(),
         getMany: jest.fn(async () => []),
@@ -94,7 +99,9 @@ describe('PosService', () => {
       emitDashboardUpdate: jest.fn(),
     } as unknown as DashboardGateway;
 
-    const service = new PosService(dataSource, notifications, dashboardGateway);
+    const tenant = { pharmacyId: 'pharm-1' } as TenantContext;
+
+    const service = new PosService(dataSource, notifications, dashboardGateway, tenant);
 
     return { service, queryRunner, product, dashboardGateway };
   }
@@ -112,7 +119,7 @@ describe('PosService', () => {
     expect(result.id).toBe('sale-1');
     expect(product.stockQuantity).toBe(8);
     expect(queryRunner.commitTransaction).toHaveBeenCalled();
-    expect((dashboardGateway.emitDashboardUpdate as jest.Mock)).toHaveBeenCalledTimes(1);
+    expect((dashboardGateway.emitDashboardUpdate as jest.Mock)).toHaveBeenCalledWith('pharm-1', expect.any(Object));
   });
 
   it('rolls back when stock is insufficient and does not emit update', async () => {
@@ -129,5 +136,19 @@ describe('PosService', () => {
 
     expect(queryRunner.rollbackTransaction).toHaveBeenCalled();
     expect((dashboardGateway.emitDashboardUpdate as jest.Mock)).not.toHaveBeenCalled();
+  });
+
+  it('deducts pieces when selling by strip', async () => {
+    const { service, product } = setup(120);
+    product.piecesPerStrip = 12;
+
+    await service.createSale({
+      items: [{ product_id: 'prod-1', quantity: 2, unit: 'strip', discount_percent: 0 }],
+      discount_amount: 0,
+      tax_amount: 0,
+      payment_method: 'cash',
+    });
+
+    expect(product.stockQuantity).toBe(96);
   });
 });

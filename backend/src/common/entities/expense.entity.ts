@@ -3,6 +3,7 @@ import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedCol
 @Entity('expenses')
 export class Expense {
   @PrimaryGeneratedColumn('uuid') id: string;
+  @Column({ name: 'pharmacy_id', type: 'uuid' }) pharmacyId: string;
   @Column({ length: 50 }) category: string;
   @Column({ length: 255 }) description: string;
   @Column({ type: 'decimal', precision: 10, scale: 2 }) amount: string;

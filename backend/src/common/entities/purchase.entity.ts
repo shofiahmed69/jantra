@@ -3,6 +3,7 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from 'typeor
 @Entity('purchases')
 export class Purchase {
   @PrimaryGeneratedColumn('uuid') id: string;
+  @Column({ name: 'pharmacy_id', type: 'uuid' }) pharmacyId: string;
   @Column({ name: 'supplier_id', type: 'uuid', nullable: true }) supplierId?: string;
   @Column({ name: 'purchase_date', type: 'date' }) purchaseDate: string;
   @Column({ name: 'invoice_ref', length: 100, nullable: true }) invoiceRef?: string;

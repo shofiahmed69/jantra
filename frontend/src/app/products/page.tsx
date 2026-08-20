@@ -5,6 +5,10 @@ import { AppShell } from "@/components/layout/app-shell";
 import { api } from "@/lib/api";
 import { formatBDT } from "@/lib/currency";
 import { Pencil, Trash2, Plus, X, Upload } from "lucide-react";
+import { ResponsiveTable } from "@/components/ui/responsive-table";
+import { ProductThumb } from "@/components/ui/product-thumb";
+import { useLanguage } from "@/lib/i18n/language-provider";
+import { formatStockPieces, isBottleProduct } from "@/lib/units";
 
 type Product = {
   id: string;
@@ -14,8 +18,12 @@ type Product = {
   sellingPrice: string;
   costPrice: string;
   imageUrl?: string;
-  unitType: string;
+  piecesPerStrip: number;
+  stripsPerBox?: number | null;
+  unitType?: string;
 };
+
+type PackType = "tablet" | "bottle";
 
 type FormState = {
   name: string;
@@ -23,7 +31,9 @@ type FormState = {
   costPrice: string;
   sellingPrice: string;
   stockQuantity: string;
-  unitType: string;
+  packType: PackType;
+  piecesPerStrip: string;
+  stripsPerBox: string;
   imageUrl: string;
 };
 
@@ -33,11 +43,14 @@ const emptyForm: FormState = {
   costPrice: "",
   sellingPrice: "",
   stockQuantity: "",
-  unitType: "piece",
+  packType: "tablet",
+  piecesPerStrip: "1",
+  stripsPerBox: "",
   imageUrl: "",
 };
 
 export default function ProductsPage() {
+  const { t } = useLanguage();
   const [products, setProducts] = useState<Product[]>([]);
   const [search, setSearch] = useState("");
   const [form, setForm] = useState<FormState>(emptyForm);
@@ -69,7 +82,9 @@ export default function ProductsPage() {
       costPrice: String(p.costPrice),
       sellingPrice: String(p.sellingPrice),
       stockQuantity: String(p.stockQuantity),
-      unitType: p.unitType || "piece",
+      packType: p.unitType === "bottle" ? "bottle" : "tablet",
+      piecesPerStrip: String(p.piecesPerStrip ?? 1),
+      stripsPerBox: p.stripsPerBox ? String(p.stripsPerBox) : "",
       imageUrl: p.imageUrl || "",
     });
     setOpenModal(true);
@@ -79,19 +94,24 @@ export default function ProductsPage() {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith("image/")) {
-      setUploadError("Please choose an image file (JPG, PNG, etc.).");
+      setUploadError(t("products.uploadFail"));
       return;
     }
     setUploadError("");
     try {
       const body = new FormData();
       body.append("file", file);
-      const res = await fetch("/api/upload", { method: "POST", body });
+      const token = typeof window !== "undefined" ? localStorage.getItem("apex_token") : null;
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body,
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
       const data = await res.json();
       if (!res.ok || !data.url) throw new Error(data.message || "Upload failed");
       setForm((prev) => ({ ...prev, imageUrl: data.url }));
     } catch {
-      setUploadError("Could not upload image. Try again.");
+      setUploadError(t("products.uploadFail"));
     } finally {
       e.target.value = "";
     }
@@ -100,13 +120,16 @@ export default function ProductsPage() {
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaveError("");
+    const isBottle = form.packType === "bottle";
     const payload = {
       name: form.name,
       barcode: form.barcode || undefined,
       costPrice: Number(form.costPrice),
       sellingPrice: Number(form.sellingPrice),
       stockQuantity: Number(form.stockQuantity),
-      unitType: form.unitType,
+      unitType: isBottle ? "bottle" : "tablet",
+      piecesPerStrip: isBottle ? 1 : Number(form.piecesPerStrip) || 1,
+      stripsPerBox: isBottle ? null : form.stripsPerBox ? Number(form.stripsPerBox) : null,
       imageUrl: form.imageUrl || undefined,
     };
 
@@ -118,7 +141,7 @@ export default function ProductsPage() {
       setForm(emptyForm);
       await load();
     } catch {
-      setSaveError("Could not save product. Check image size and try again.");
+      setSaveError(t("products.saveFail"));
     }
   };
 
@@ -127,91 +150,151 @@ export default function ProductsPage() {
     await load();
   };
 
+  const columns = useMemo(
+    () => [
+      {
+        key: "image",
+        header: t("image"),
+        hideOnMobile: true,
+        cell: (p: Product) => <ProductThumb src={p.imageUrl} alt={p.name} size="lg" />,
+      },
+      {
+        key: "name",
+        header: t("name"),
+        cell: (p: Product) => (
+          <span className="font-medium flex items-center gap-3">
+            <span className="md:hidden"><ProductThumb src={p.imageUrl} alt={p.name} size="md" /></span>
+            {p.name}
+          </span>
+        ),
+      },
+      { key: "barcode", header: t("barcode"), cell: (p: Product) => p.barcode || "-" },
+      {
+        key: "retail",
+        header: t("retail"),
+        cell: (p: Product) => (
+          <span>
+            {formatBDT(Number(p.sellingPrice))}/{isBottleProduct(p) ? t("units.perBottle") : t("units.perPiece")}
+          </span>
+        ),
+      },
+      { key: "stock", header: t("stock"), cell: (p: Product) => formatStockPieces(p.stockQuantity, p) },
+      {
+        key: "status",
+        header: t("status"),
+        cell: (p: Product) => {
+          const statusClass = p.stockQuantity === 0 ? "bg-red-100 text-red-700" : p.stockQuantity <= 10 ? "bg-amber-100 text-amber-700" : "bg-orange-100 text-orange-700";
+          const status = p.stockQuantity === 0 ? t("out") : p.stockQuantity <= 10 ? t("low") : t("active");
+          return <span className={`status-pill ${statusClass}`}>{status}</span>;
+        },
+      },
+      {
+        key: "actions",
+        header: t("actions"),
+        align: "right" as const,
+        cell: (p: Product) => (
+          <div className="inline-flex gap-2">
+            <button type="button" className="icon-btn icon-btn-edit" onClick={() => openEdit(p)}><Pencil className="w-4 h-4" /></button>
+            <button type="button" className="icon-btn icon-btn-delete" onClick={() => remove(p.id)}><Trash2 className="w-4 h-4" /></button>
+          </div>
+        ),
+      },
+    ],
+    [t],
+  );
+
   return (
-    <AppShell title="Products">
-      <div className="mb-4 flex items-center justify-between gap-3">
-        <input className="input max-w-3xl" placeholder="Search name, SKU, barcode..." value={search} onChange={(e) => setSearch(e.target.value)} />
-        <button className="btn btn-primary flex items-center gap-2" onClick={openCreate}><Plus className="w-4 h-4" /> Add product</button>
+    <AppShell title={t("products.title")}>
+      <div className="page-toolbar">
+        <input className="input" placeholder={t("products.search")} value={search} onChange={(e) => setSearch(e.target.value)} />
+        <button className="btn btn-primary flex items-center justify-center gap-2 w-full sm:w-auto shrink-0" onClick={openCreate}><Plus className="w-5 h-5" /> {t("products.add")}</button>
       </div>
 
-      <div className="table-wrap">
-        <table className="w-full text-sm">
-          <thead className="table-head">
-            <tr>
-              <th className="p-4 text-left">Image</th>
-              <th className="p-4 text-left">Name</th>
-              <th className="p-4 text-left">Barcode</th>
-              <th className="p-4 text-left">Retail</th>
-              <th className="p-4 text-left">Stock</th>
-              <th className="p-4 text-left">Status</th>
-              <th className="p-4 text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((p) => {
-              const statusClass = p.stockQuantity === 0 ? "bg-red-100 text-red-700" : p.stockQuantity <= 10 ? "bg-amber-100 text-amber-700" : "bg-orange-100 text-orange-700";
-              const status = p.stockQuantity === 0 ? "Out" : p.stockQuantity <= 10 ? "Low" : "Active";
-              return (
-                <tr key={p.id} className="table-row border-t border-slate-200">
-                  <td className="p-4">{p.imageUrl ? <img src={p.imageUrl} alt={p.name} className="h-9 w-9 rounded object-cover" /> : <span className="text-xl">💊</span>}</td>
-                  <td className="p-4 font-medium">{p.name}</td>
-                  <td className="p-4">{p.barcode || '-'}</td>
-                  <td className="p-4">{formatBDT(Number(p.sellingPrice))}</td>
-                  <td className="p-4">{p.stockQuantity}</td>
-                  <td className="p-4"><span className={`status-pill ${statusClass}`}>{status}</span></td>
-                  <td className="p-4 text-right">
-                    <div className="inline-flex gap-2">
-                      <button type="button" className="icon-btn icon-btn-edit" onClick={() => openEdit(p)}><Pencil className="w-4 h-4" /></button>
-                      <button type="button" className="icon-btn icon-btn-delete" onClick={() => remove(p.id)}><Trash2 className="w-4 h-4" /></button>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+      <ResponsiveTable rows={filtered} rowKey={(p) => p.id} columns={columns} />
 
       {openModal ? (
         <div className="modal-overlay">
-          <div className="card w-full max-w-2xl p-5">
+          <div className="card w-full max-w-2xl p-6">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-lg font-bold">{editingId ? 'Edit Product' : 'Add Product'}</h3>
-              <button type="button" className="icon-btn btn-outline" onClick={() => setOpenModal(false)}><X className="w-4 h-4" /></button>
+              <h3 className="text-xl font-bold">{editingId ? t("products.edit") : t("products.create")}</h3>
+              <button type="button" className="icon-btn btn-outline" onClick={() => setOpenModal(false)}><X className="w-5 h-5" /></button>
             </div>
             <form onSubmit={save} className="grid md:grid-cols-2 gap-3">
-              <input className="input" placeholder="Medicine Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
-              <input className="input" placeholder="Barcode (optional)" value={form.barcode} onChange={(e) => setForm({ ...form, barcode: e.target.value })} />
-              <input className="input" placeholder="Cost Price (BDT)" value={form.costPrice} onChange={(e) => setForm({ ...form, costPrice: e.target.value })} required />
-              <input className="input" placeholder="Selling Price (BDT)" value={form.sellingPrice} onChange={(e) => setForm({ ...form, sellingPrice: e.target.value })} required />
-              <input className="input" placeholder="Stock Quantity" value={form.stockQuantity} onChange={(e) => setForm({ ...form, stockQuantity: e.target.value })} required />
-              <select className="input" value={form.unitType} onChange={(e) => setForm({ ...form, unitType: e.target.value })}><option value="box">box</option><option value="strip">strip</option><option value="bottle">bottle</option><option value="piece">piece</option></select>
+              <input className="input" placeholder={t("products.medicineName")} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />
+              <input className="input" placeholder={t("products.barcodeOpt")} value={form.barcode} onChange={(e) => setForm({ ...form, barcode: e.target.value })} />
+              <div className="md:col-span-2">
+                <label className="form-label">{t("units.medicineType")}</label>
+                <select
+                  className="input w-full"
+                  value={form.packType}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      packType: e.target.value as PackType,
+                      piecesPerStrip: e.target.value === "bottle" ? "1" : form.piecesPerStrip,
+                      stripsPerBox: e.target.value === "bottle" ? "" : form.stripsPerBox,
+                    })
+                  }
+                >
+                  <option value="tablet">{t("units.typeTablet")}</option>
+                  <option value="bottle">{t("units.typeBottle")}</option>
+                </select>
+              </div>
+              <input
+                className="input"
+                placeholder={form.packType === "bottle" ? t("units.costPerBottle") : t("units.costPerPiece")}
+                value={form.costPrice}
+                onChange={(e) => setForm({ ...form, costPrice: e.target.value })}
+                required
+              />
+              <input
+                className="input"
+                placeholder={form.packType === "bottle" ? t("units.pricePerBottle") : t("units.pricePerPiece")}
+                value={form.sellingPrice}
+                onChange={(e) => setForm({ ...form, sellingPrice: e.target.value })}
+                required
+              />
+              {form.packType === "tablet" ? (
+                <>
+                  <input className="input" type="number" min={1} placeholder={t("units.piecesPerStrip")} value={form.piecesPerStrip} onChange={(e) => setForm({ ...form, piecesPerStrip: e.target.value })} required />
+                  <input className="input" type="number" min={1} placeholder={t("units.stripsPerBox")} value={form.stripsPerBox} onChange={(e) => setForm({ ...form, stripsPerBox: e.target.value })} />
+                </>
+              ) : null}
+              <input
+                className="input md:col-span-2"
+                type="number"
+                min={0}
+                placeholder={form.packType === "bottle" ? t("units.stockBottles") : t("units.stockPieces")}
+                value={form.stockQuantity}
+                onChange={(e) => setForm({ ...form, stockQuantity: e.target.value })}
+                required
+              />
 
               <div className="md:col-span-2 grid md:grid-cols-2 gap-3 items-center">
                 <label className="input flex items-center gap-2 cursor-pointer">
-                  <Upload className="w-4 h-4" />
-                  <span>Upload Image</span>
+                  <Upload className="w-5 h-5" />
+                  <span>{t("products.uploadImage")}</span>
                   <input type="file" accept="image/*" className="hidden" onChange={handleFileUpload} />
                 </label>
                 <input
                   className="input"
-                  placeholder={form.imageUrl ? "Image uploaded (CDN URL stored)" : "Or paste image URL (optional)"}
+                  placeholder={form.imageUrl ? t("products.imageUploaded") : t("products.imageUrlOpt")}
                   value={form.imageUrl.startsWith("http") ? form.imageUrl : ""}
                   onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
                 />
               </div>
-              {uploadError ? <p className="md:col-span-2 text-sm text-red-600">{uploadError}</p> : null}
-              {saveError ? <p className="md:col-span-2 text-sm text-red-600">{saveError}</p> : null}
+              {uploadError ? <p className="md:col-span-2 text-base text-red-600">{uploadError}</p> : null}
+              {saveError ? <p className="md:col-span-2 text-base text-red-600">{saveError}</p> : null}
 
               {form.imageUrl ? (
                 <div className="md:col-span-2">
-                  <img src={form.imageUrl} alt="Preview" className="h-20 w-20 rounded object-cover border border-slate-300" />
+                  <ProductThumb src={form.imageUrl} alt="Preview" size="xl" />
                 </div>
               ) : null}
 
               <div className="md:col-span-2 flex justify-end gap-2 pt-2">
-                <button type="button" className="btn btn-outline" onClick={() => setOpenModal(false)}>Cancel</button>
-                <button type="submit" className="btn btn-primary">{editingId ? 'Update Product' : 'Create Product'}</button>
+                <button type="button" className="btn btn-outline" onClick={() => setOpenModal(false)}>{t("cancel")}</button>
+                <button type="submit" className="btn btn-primary">{editingId ? t("update") : t("create")}</button>
               </div>
             </form>
           </div>

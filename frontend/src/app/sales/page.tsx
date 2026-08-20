@@ -4,11 +4,14 @@ import { useEffect, useState } from "react";
 import { AppShell } from "@/components/layout/app-shell";
 import { api } from "@/lib/api";
 import { formatBDT } from "@/lib/currency";
+import { ResponsiveTable } from "@/components/ui/responsive-table";
+import { useLanguage } from "@/lib/i18n/language-provider";
 
 type Sale = { id: string; invoiceNumber: string; saleDate: string; totalAmount: string; status: string; paymentMethod: string };
 type Report = { transactionCount: number; totalSales: number };
 
 export default function SalesPage() {
+  const { t } = useLanguage();
   const [sales, setSales] = useState<Sale[]>([]);
   const [daily, setDaily] = useState<Report | null>(null);
   const [monthly, setMonthly] = useState<Report | null>(null);
@@ -29,28 +32,39 @@ export default function SalesPage() {
   const cancel = async (id: string) => { await api.post(`/api/v1/sales/${id}/cancel`); await load(); };
 
   return (
-    <AppShell title="Sales">
-      <div className="grid md:grid-cols-2 gap-4 mb-4">
-        <div className="kpi-card"><p className="kpi-label">Today Sales</p><p className="kpi-value">{formatBDT(daily?.totalSales || 0)}</p><p className="text-sm text-slate-500">Txns: {daily?.transactionCount || 0}</p></div>
-        <div className="kpi-card"><p className="kpi-label">Monthly Sales</p><p className="kpi-value">{formatBDT(monthly?.totalSales || 0)}</p><p className="text-sm text-slate-500">Txns: {monthly?.transactionCount || 0}</p></div>
+    <AppShell title={t("sales.title")}>
+      <div className="kpi-grid kpi-grid-2 mb-4">
+        <div className="kpi-card"><p className="kpi-label">{t("sales.todaySales")}</p><p className="kpi-value">{formatBDT(daily?.totalSales || 0)}</p><p className="text-base text-slate-500">{t("sales.txns")}: {daily?.transactionCount || 0}</p></div>
+        <div className="kpi-card"><p className="kpi-label">{t("sales.monthlySales")}</p><p className="kpi-value">{formatBDT(monthly?.totalSales || 0)}</p><p className="text-base text-slate-500">{t("sales.txns")}: {monthly?.transactionCount || 0}</p></div>
       </div>
-      <div className="table-wrap">
-        <table className="w-full text-sm">
-          <thead className="table-head"><tr><th className="p-4 text-left">Invoice</th><th className="p-4 text-left">Date</th><th className="p-4 text-left">Payment</th><th className="p-4 text-left">Total</th><th className="p-4 text-left">Status</th><th className="p-4 text-right">Action</th></tr></thead>
-          <tbody>
-            {sales.map((s) => (
-              <tr key={s.id} className="table-row border-t border-slate-200">
-                <td className="p-4 font-medium">{s.invoiceNumber}</td>
-                <td className="p-4">{new Date(s.saleDate).toLocaleString()}</td>
-                <td className="p-4">{s.paymentMethod}</td>
-                <td className="p-4">{formatBDT(Number(s.totalAmount))}</td>
-                <td className="p-4"><span className={`status-pill ${s.status === "completed" ? "status-ok" : "status-bad"}`}>{s.status}</span></td>
-                <td className="p-4 text-right">{s.status === "completed" ? <button className="btn btn-outline" onClick={() => cancel(s.id)}>Cancel</button> : "-"}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <ResponsiveTable
+        rows={sales}
+        rowKey={(s) => s.id}
+        columns={[
+          { key: "invoice", header: t("invoice"), cell: (s) => <span className="font-medium break-all">{s.invoiceNumber}</span> },
+          { key: "date", header: t("date"), cell: (s) => new Date(s.saleDate).toLocaleString() },
+          { key: "payment", header: t("payment"), cell: (s) => s.paymentMethod },
+          { key: "total", header: t("total"), cell: (s) => formatBDT(Number(s.totalAmount)) },
+          {
+            key: "status",
+            header: t("status"),
+            cell: (s) => <span className={`status-pill ${s.status === "completed" ? "status-ok" : "status-bad"}`}>{s.status === "completed" ? t("sales.completed") : s.status}</span>,
+          },
+          {
+            key: "action",
+            header: t("actions"),
+            align: "right",
+            cell: (s) =>
+              s.status === "completed" ? (
+                <button type="button" className="btn btn-outline !min-h-10 text-sm sm:text-base" onClick={() => cancel(s.id)}>
+                  {t("sales.cancelSale")}
+                </button>
+              ) : (
+                "-"
+              ),
+          },
+        ]}
+      />
     </AppShell>
   );
 }
