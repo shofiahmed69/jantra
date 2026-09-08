@@ -35,6 +35,7 @@ export default function Footer() {
                                     href={social.href}
                                     target="_blank"
                                     rel="noreferrer"
+                                    aria-label={social.label}
                                     className="w-10 h-10 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center hover:bg-orange-600 hover:border-orange-500 transition-all duration-500 group"
                                 >
                                     <social.icon className="w-4 h-4 text-slate-400 group-hover:text-white transition-colors" />
@@ -117,7 +118,7 @@ export default function Footer() {
 
                 {/* Bottom bar */}
                 <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-                    <p className="text-slate-500 text-xs">
+                    <p className="text-slate-400 text-xs">
                         © {new Date().getFullYear()} JANTRA. All rights reserved.
                     </p>
                 </div>

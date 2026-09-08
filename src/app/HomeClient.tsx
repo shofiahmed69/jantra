@@ -429,7 +429,7 @@ function ReviewCarousel({ testimonials }: { testimonials: any[] }) {
             <div className="relative space-y-4">
 
               <div className="space-y-1">
-                <h5 className="text-base font-black text-white tracking-tight leading-none">{t.author}</h5>
+                <h4 className="text-base font-black text-white tracking-tight leading-none">{t.author}</h4>
                 <p className="text-[9px] font-black text-orange-400 uppercase tracking-[0.28em]">{t.role}</p>
                 <p className="text-[10px] font-semibold text-slate-300 tracking-wide pt-1">{t.company}</p>
               </div>
@@ -471,10 +471,11 @@ function ReviewCarousel({ testimonials }: { testimonials: any[] }) {
 
       {/* High Fidelity Timer/Nav Dots */}
       <div className="flex justify-center gap-3 mt-6 pb-1">
-        {testimonials.map((_, i) => (
+        {testimonials.map((testimonial, i) => (
           <button
             key={i}
             onClick={() => setIndex(i)}
+            aria-label={`Go to slide ${i + 1} - ${testimonial.author}`}
             className="group relative py-2"
           >
             <div className={`h-[3px] transition-all duration-700 ${index === i ? 'w-10 bg-orange-500' : 'w-3 bg-slate-200 group-hover:bg-slate-300'}`} />
@@ -494,16 +495,15 @@ function MobileLottieHero() {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    // Preload all assets on mount
-    services.forEach((s) => {
-      if (s.animationSrc) {
-        preloadLottie(s.animationSrc);
-      }
-    });
+    // Only preload the immediate next animation on demand to preserve mobile CPU/network
+    const nextIndex = (index + 1) % services.length;
+    if (services[nextIndex]?.animationSrc) {
+      preloadLottie(services[nextIndex].animationSrc!);
+    }
 
     const timer = setInterval(() => setIndex(p => (p + 1) % services.length), 4200);
     return () => clearInterval(timer);
-  }, [services]);
+  }, [services, index]);
 
   const current = services[index];
 
@@ -537,10 +537,11 @@ function MobileLottieHero() {
           
           <div className="mt-1 flex flex-col items-center gap-1">
             <div className="flex items-center gap-1.5">
-              {services.map((_, i) => (
+              {services.map((s, i) => (
                 <button
                   key={i}
                   onClick={() => setIndex(i)}
+                  aria-label={`View service ${i + 1}: ${s.title}`}
                   className={`rounded-full transition-all duration-300 ${i === index ? "bg-orange-500 w-4 h-1.5" : "bg-slate-200 w-1.5 h-1.5"}`}
                 />
               ))}
@@ -594,16 +595,15 @@ function DesktopHero() {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    // Preload all assets on mount
-    services.forEach((s) => {
-      if (s.animationSrc) {
-        preloadLottie(s.animationSrc);
-      }
-    });
+    // Only preload the immediate next animation on demand to keep initial load lightweight
+    const nextIndex = (index + 1) % services.length;
+    if (services[nextIndex]?.animationSrc) {
+      preloadLottie(services[nextIndex].animationSrc!);
+    }
 
     const timer = setInterval(() => setIndex(p => (p + 1) % services.length), 4500);
     return () => clearInterval(timer);
-  }, [services]);
+  }, [services, index]);
 
   const current = services[index];
 
@@ -673,10 +673,11 @@ function DesktopHero() {
                 <span className="text-xs font-bold font-mono tracking-wider text-slate-800 uppercase">{current.title}</span>
               </div>
               <div className="flex items-center gap-1 pr-2">
-                {services.map((_, i) => (
+                {services.map((s, i) => (
                   <button
                     key={i}
                     onClick={() => setIndex(i)}
+                    aria-label={`View service ${i + 1}: ${s.title}`}
                     className={`rounded-full transition-all duration-300 ${i === index ? 'bg-orange-500 w-4 h-1.5' : 'bg-slate-200 hover:bg-slate-300 w-1.5 h-1.5'}`}
                   />
                 ))}
@@ -709,8 +710,8 @@ function TechMarqueeStrip() {
     { name: "Docker", slug: "docker", color: "2496ed" },
     { name: "Tailwind CSS", slug: "tailwindcss", color: "06b6d4" },
     { name: "GraphQL", slug: "graphql", color: "e10098" },
-    { name: "AWS Cloud", slug: "amazonaws", color: "ff9900" },
-    { name: "OpenAI AI", slug: "openai", color: "412991" },
+    { name: "Redis", slug: "redis", color: "dc382d" },
+    { name: "Linux", slug: "linux", color: "fcc624" },
   ];
 
   const repeated = [...techStack, ...techStack, ...techStack];
@@ -803,7 +804,7 @@ function ScopingTimeline() {
         
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-20 sm:mb-28">
-          <span className="text-orange-600 font-bold tracking-widest text-[9px] uppercase mb-2.5 block">Delivery Process</span>
+          <span className="text-orange-700 font-bold tracking-widest text-[9px] uppercase mb-2.5 block">Delivery Process</span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 leading-none uppercase tracking-tighter">
             Our Scoping Cycle<span className="text-orange-500">.</span>
           </h2>
@@ -1030,7 +1031,7 @@ function IntegrationMatrix() {
 
         {/* Header */}
         <div className="max-w-2xl mx-auto mb-20 relative z-10">
-          <span className="text-orange-600 font-bold tracking-widest text-[9px] uppercase mb-2.5 block">Automatic Connections</span>
+          <span className="text-orange-700 font-bold tracking-widest text-[9px] uppercase mb-2.5 block">Automatic Connections</span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 leading-none uppercase tracking-tighter">
             Connected Services<span className="text-orange-500">.</span>
           </h2>
@@ -1183,7 +1184,7 @@ function IntegrationMatrix() {
 
                 {/* Floating Tooltip/label on hover */}
                 <div className="absolute top-26 opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 w-44 bg-slate-900 border border-slate-800 text-white rounded-xl p-3 shadow-xl z-30">
-                  <h4 className="text-[10px] font-black uppercase tracking-wider mb-0.5 text-orange-500">{item.name}</h4>
+                  <div className="text-[10px] font-black uppercase tracking-wider mb-0.5 text-orange-500">{item.name}</div>
                   <p className="text-[8.5px] text-slate-400 leading-normal font-medium normal-case">{item.desc}</p>
                 </div>
               </motion.div>
@@ -1223,7 +1224,7 @@ function FAQSection() {
         
         {/* Header */}
         <div className="text-center max-w-2xl mx-auto mb-16">
-          <span className="text-orange-600 font-bold tracking-widest text-[9px] uppercase mb-2.5 block">FAQ</span>
+          <span className="text-orange-700 font-bold tracking-widest text-[9px] uppercase mb-2.5 block">FAQ</span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 leading-none uppercase tracking-tighter">
             Scoping Registry FAQs<span className="text-orange-500">.</span>
           </h2>
@@ -1357,7 +1358,7 @@ export default function HomePage({ initialProjects = [] }: { initialProjects?: a
                       <div className="text-4xl sm:text-5xl font-black tracking-tight vibrant-gradient-text mb-2.5 group-hover:scale-105 transition-transform duration-500">
                         {stat.value}
                       </div>
-                      <div className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 group-hover:text-slate-600 transition-colors duration-500 leading-tight">
+                      <div className="text-[10px] sm:text-[11px] font-black uppercase tracking-[0.2em] text-slate-600 group-hover:text-slate-800 transition-colors duration-500 leading-tight">
                         {stat.label}
                       </div>
                     </div>
@@ -1412,7 +1413,7 @@ export default function HomePage({ initialProjects = [] }: { initialProjects?: a
 
                 <Link
                   href="/work"
-                  className="inline-flex items-center gap-2 text-[8.5px] font-black uppercase tracking-[0.4em] text-slate-400 hover:text-orange-600 transition-colors duration-300 group shrink-0"
+                  className="inline-flex items-center gap-2 text-[8.5px] font-black uppercase tracking-[0.4em] text-slate-600 hover:text-orange-600 transition-colors duration-300 group shrink-0"
                 >
                   View All
                   <div className="w-6 h-6 rounded-full bg-slate-100 group-hover:bg-orange-100 flex items-center justify-center transition-colors duration-300 border border-slate-200/30">
