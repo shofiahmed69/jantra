@@ -13,6 +13,8 @@ interface Job {
     type: string;
     location: string;
     department: string;
+    salaryMin?: number | null;
+    salaryMax?: number | null;
 }
 
 export default function CareersPage() {
@@ -94,11 +96,18 @@ export default function CareersPage() {
                                         <div className="flex flex-wrap gap-2">
                                             <span className="px-2.5 py-0.5 bg-slate-100 rounded-md text-[8px] font-bold text-slate-500 uppercase tracking-wider">{job.department}</span>
                                             <span className="px-2.5 py-0.5 bg-orange-50 rounded-md text-[8px] font-bold text-orange-600 uppercase tracking-wider">{job.type}</span>
+                                            {(job.salaryMin || job.salaryMax) && (
+                                                <span className="px-2.5 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200/50 rounded-md text-[8px] font-bold uppercase tracking-wider font-mono">
+                                                    ৳{job.salaryMin?.toLocaleString()} – ৳{job.salaryMax?.toLocaleString()}/mo
+                                                </span>
+                                            )}
                                         </div>
                                         <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight uppercase group-hover:text-orange-600 transition-colors truncate">{job.title}</h3>
-                                        <span className="text-[10px] sm:text-xs font-semibold text-slate-400 uppercase tracking-tight flex items-center gap-1.5">
-                                            <MapPin className="w-3.5 h-3.5 text-orange-500" /> {job.location}
-                                        </span>
+                                        <div className="flex items-center gap-3 text-[10px] sm:text-xs font-semibold text-slate-400 uppercase tracking-tight">
+                                            <span className="flex items-center gap-1.5">
+                                                <MapPin className="w-3.5 h-3.5 text-orange-500" /> {job.location}
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
 
