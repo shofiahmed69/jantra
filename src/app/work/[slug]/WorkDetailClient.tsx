@@ -1,10 +1,10 @@
 'use client'
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, CheckCircle2, ChevronRight, BarChart, ExternalLink } from "lucide-react";
-import { motion } from "framer-motion";
+import { ArrowLeft, CheckCircle2, ChevronRight, ChevronLeft, BarChart, ExternalLink } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 type Project = {
     title: string;
@@ -14,6 +14,8 @@ type Project = {
     liveUrl?: string;
     duration?: string;
     thumbnail?: string;
+    mobileThumbnail?: string;
+    images?: string[];
     challenge?: string;
     approach?: string;
     features?: string[];
@@ -30,8 +32,8 @@ export default function WorkDetailClient({
     nextProject: Project | null;
     hasNext: boolean;
 }) {
-    // Client-side thumbnail URL resolver
-    const getThumbnailUrl = (thumbnail?: string) => {
+    // Client-side image URL resolver
+    const resolveImageUrl = (thumbnail?: string) => {
         if (!thumbnail) return "";
         let url = thumbnail;
         if (!url.startsWith("http")) {
@@ -45,6 +47,73 @@ export default function WorkDetailClient({
         }
         return url;
     };
+
+    // Calculate all available showcase perspective slides
+    const slides = useMemo(() => {
+        if (project.images && project.images.length > 0) {
+            return project.images.map(resolveImageUrl).filter(Boolean);
+        }
+        const derived: string[] = [];
+        if (project.thumbnail) {
+            derived.push(resolveImageUrl(project.thumbnail));
+            if (project.thumbnail.includes('01_hero_desktop.webp')) {
+                derived.push(resolveImageUrl(project.thumbnail.replace('01_hero_desktop.webp', '05_mobile_view.webp')));
+                derived.push(resolveImageUrl(project.thumbnail.replace('01_hero_desktop.webp', '02_showcase_section.webp')));
+                derived.push(resolveImageUrl(project.thumbnail.replace('01_hero_desktop.webp', '03_features_catalog.webp')));
+                derived.push(resolveImageUrl(project.thumbnail.replace('01_hero_desktop.webp', '04_full_page.webp')));
+            }
+        }
+        if (project.mobileThumbnail) {
+            const resolvedMob = resolveImageUrl(project.mobileThumbnail);
+            if (!derived.includes(resolvedMob)) {
+                derived.splice(1, 0, resolvedMob);
+            }
+        }
+        return derived.filter(Boolean);
+    }, [project]);
+
+    // Slide perspective details
+    const getSlideMeta = (url: string, idx: number) => {
+        const lower = url.toLowerCase();
+        if (lower.includes('01_hero') || lower.includes('hero')) {
+            return { title: 'Desktop Viewport (Hero)', type: 'Desktop View', isMobile: false };
+        }
+        if (lower.includes('05_mobile') || lower.includes('mobile')) {
+            return { title: 'Mobile Responsive View', type: 'Mobile UI', isMobile: true };
+        }
+        if (lower.includes('02_showcase') || lower.includes('showcase')) {
+            return { title: 'Interactive Showcase', type: 'Interactive UX', isMobile: false };
+        }
+        if (lower.includes('03_features') || lower.includes('features')) {
+            return { title: 'Features & Architecture', type: 'Catalog & Data', isMobile: false };
+        }
+        if (lower.includes('04_full_page') || lower.includes('full_page')) {
+            return { title: 'Full System Architecture', type: 'Full Flow', isMobile: false };
+        }
+        return { title: `Perspective 0${idx + 1}`, type: 'Preview', isMobile: false };
+    };
+
+    // Auto-scrolling carousel state
+    const [currentSlide, setCurrentSlide] = useState(0);
+    const [isCarouselHovered, setIsCarouselHovered] = useState(false);
+
+    const nextSlide = useCallback(() => {
+        if (slides.length <= 1) return;
+        setCurrentSlide((prev) => (prev + 1) % slides.length);
+    }, [slides.length]);
+
+    const prevSlide = useCallback(() => {
+        if (slides.length <= 1) return;
+        setCurrentSlide((prev) => (prev - 1 + slides.length) % slides.length);
+    }, [slides.length]);
+
+    useEffect(() => {
+        if (isCarouselHovered || slides.length <= 1) return;
+        const interval = setInterval(nextSlide, 3800);
+        return () => clearInterval(interval);
+    }, [isCarouselHovered, slides.length, nextSlide]);
+
+    const currentSlideMeta = slides[currentSlide] ? getSlideMeta(slides[currentSlide], currentSlide) : { title: 'Overview', type: 'Desktop', isMobile: false };
 
     // Mouse hover coordinates for container tracking (spotlight effect)
     const [coords, setCoords] = useState({ x: 0, y: 0 });
@@ -129,22 +198,174 @@ export default function WorkDetailClient({
                     </div>
                 </div>
 
-                {/* ── MAIN IMAGE (Dual-Layer Premium Layout) ── */}
-                <div className="relative group aspect-[16/9] sm:aspect-[21/9] mb-16 select-none">
-                    <div className="absolute inset-0 bg-slate-950 rounded-[2rem] translate-x-3 translate-y-3 transition-transform group-hover:translate-x-1.5 group-hover:translate-y-1.5 duration-300" />
-                    <div className="absolute inset-0 rounded-[2rem] overflow-hidden bg-slate-900 border border-slate-200 shadow-xl">
-                        {project.thumbnail ? (
-                            <Image 
-                                src={getThumbnailUrl(project.thumbnail)} 
-                                alt={project.title} 
-                                fill
-                                sizes="(max-width: 768px) 100vw, 1200px"
-                                className="object-cover opacity-100 transition-all duration-700 hover:scale-[1.01]"
+                {/* ── INTERACTIVE PERSPECTIVE CAROUSEL (Auto-Scrolling Showcase) ── */}
+                <div 
+                    className="relative group mb-16 select-none"
+                    onMouseEnter={() => setIsCarouselHovered(true)}
+                    onMouseLeave={() => setIsCarouselHovered(false)}
+                    onTouchStart={() => setIsCarouselHovered(true)}
+                >
+                    {/* Background offset shadow layer (Signature Jantra style) */}
+                    <div className="absolute inset-0 bg-slate-950 rounded-[2rem] translate-x-3 translate-y-3 transition-transform group-hover:translate-x-1.5 group-hover:translate-y-1.5 duration-300 -z-10" />
+
+                    {/* Main Carousel Viewport Frame */}
+                    <div className="relative aspect-[16/10] sm:aspect-[21/10] w-full rounded-[2rem] overflow-hidden bg-slate-950 border border-slate-200/90 shadow-2xl flex flex-col justify-between">
+                        
+                        {/* Browser Top Navigation Bar */}
+                        <div className="relative z-30 h-10 sm:h-12 bg-slate-900/95 backdrop-blur-md border-b border-white/10 px-4 sm:px-6 flex items-center justify-between pointer-events-none">
+                            <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-1.5">
+                                    <span className="w-2.5 h-2.5 rounded-full bg-red-400/90" />
+                                    <span className="w-2.5 h-2.5 rounded-full bg-amber-400/90" />
+                                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/90" />
+                                </div>
+                                <div className="hidden sm:flex items-center gap-2 ml-4 bg-white/5 rounded-md px-3 py-1 border border-white/10 text-[9px] font-mono text-slate-300">
+                                    <span className="text-emerald-400 font-bold">https://</span>
+                                    <span>{project.liveUrl ? project.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '') : `${project.slug}.jantrasoft.online`}</span>
+                                </div>
+                            </div>
+
+                            {/* Perspective Badge & Slide Counter */}
+                            <div className="flex items-center gap-3 pointer-events-auto">
+                                <div className="flex items-center gap-1.5 bg-white/10 backdrop-blur-md px-3 py-1 rounded-full border border-white/15 text-[8.5px] font-mono text-white">
+                                    <span className={`w-1.5 h-1.5 rounded-full ${isCarouselHovered ? 'bg-amber-400' : 'bg-emerald-400 animate-pulse'}`} />
+                                    <span className="font-bold text-orange-400">{currentSlideMeta.type}:</span>
+                                    <span className="hidden xs:inline">{currentSlideMeta.title}</span>
+                                </div>
+                                <span className="bg-slate-950/80 px-2.5 py-1 rounded-md text-[9px] font-mono font-black text-slate-400 border border-white/10">
+                                    {String(currentSlide + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Slide Display Canvas */}
+                        <div className="relative flex-1 w-full h-full overflow-hidden">
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={currentSlide}
+                                    initial={{ opacity: 0, scale: 0.98 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.4, ease: "easeOut" }}
+                                    className="relative w-full h-full"
+                                >
+                                    {currentSlideMeta.isMobile ? (
+                                        /* Centered Mobile Device Viewport */
+                                        <div className="relative w-full h-full bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-3 sm:p-5 overflow-hidden">
+                                            {/* Blurred ambient backdrop of the screenshot */}
+                                            {slides[currentSlide] && (
+                                                <Image
+                                                    src={slides[currentSlide]}
+                                                    alt=""
+                                                    fill
+                                                    className="object-cover opacity-20 blur-3xl scale-125 pointer-events-none"
+                                                />
+                                            )}
+                                            {/* Centered Smartphone Frame */}
+                                            <div className="relative h-full max-h-[360px] sm:max-h-[420px] aspect-[9/19] rounded-[2rem] bg-slate-950 p-2 sm:p-2.5 shadow-[0_25px_60px_rgba(0,0,0,0.9)] border-2 border-white/20 z-10 flex flex-col justify-center">
+                                                <div className="relative w-full h-full rounded-[1.4rem] overflow-hidden bg-slate-900">
+                                                    {/* Dynamic Island Notch */}
+                                                    <div className="absolute top-1.5 left-1/2 -translate-x-1/2 w-16 h-3 bg-black rounded-full z-30 pointer-events-none" />
+                                                    {slides[currentSlide] && (
+                                                        <Image
+                                                            src={slides[currentSlide]}
+                                                            alt={`${project.title} Mobile View`}
+                                                            fill
+                                                            priority
+                                                            sizes="(max-width: 768px) 50vw, 300px"
+                                                            className="object-cover object-top"
+                                                        />
+                                                    )}
+                                                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/10 pointer-events-none z-20" />
+                                                </div>
+                                            </div>
+
+                                            {/* Side info callout */}
+                                            <div className="hidden md:flex flex-col text-left absolute right-8 bottom-8 z-10 max-w-[220px] bg-slate-900/90 backdrop-blur-md p-4 rounded-xl border border-white/10 text-white shadow-xl pointer-events-none">
+                                                <p className="text-[8px] font-mono text-orange-400 font-bold uppercase tracking-widest mb-1">Mobile Architecture</p>
+                                                <p className="text-[11px] font-bold uppercase text-slate-200">Responsive Touch Viewport</p>
+                                                <p className="text-[9px] text-slate-400 mt-1 leading-relaxed">Full mobile parity optimized for iOS & Android screens.</p>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        /* Desktop Viewport Canvas */
+                                        <div className="relative w-full h-full bg-slate-950">
+                                            {slides[currentSlide] ? (
+                                                <Image
+                                                    src={slides[currentSlide]}
+                                                    alt={`${project.title} - ${currentSlideMeta.title}`}
+                                                    fill
+                                                    priority
+                                                    sizes="(max-width: 768px) 100vw, 1200px"
+                                                    className="object-cover object-top opacity-100 transition-transform duration-700 hover:scale-[1.015]"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-white/5 font-black text-6xl uppercase tracking-tighter">Jantra Archive</div>
+                                            )}
+                                        </div>
+                                    )}
+                                </motion.div>
+                            </AnimatePresence>
+
+                            {/* Floating Prev / Next Controls */}
+                            {slides.length > 1 && (
+                                <>
+                                    <button
+                                        type="button"
+                                        onClick={prevSlide}
+                                        className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-30 p-2 sm:p-3 rounded-full bg-slate-950/70 hover:bg-orange-600 text-white backdrop-blur-md border border-white/15 transition-all shadow-xl active:scale-90 hover:scale-105"
+                                        aria-label="Previous Perspective"
+                                    >
+                                        <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={nextSlide}
+                                        className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-30 p-2 sm:p-3 rounded-full bg-slate-950/70 hover:bg-orange-600 text-white backdrop-blur-md border border-white/15 transition-all shadow-xl active:scale-90 hover:scale-105"
+                                        aria-label="Next Perspective"
+                                    >
+                                        <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                                    </button>
+                                </>
+                            )}
+                        </div>
+
+                        {/* Bottom Status / Auto-Scroll Progress Bar */}
+                        <div className="relative z-30 h-1 bg-white/10 w-full overflow-hidden">
+                            <motion.div
+                                key={`${currentSlide}-${isCarouselHovered}`}
+                                initial={{ width: "0%" }}
+                                animate={{ width: isCarouselHovered ? "0%" : "100%" }}
+                                transition={{ duration: isCarouselHovered ? 0 : 3.8, ease: "linear" }}
+                                className="h-full bg-orange-500"
                             />
-                        ) : (
-                            <div className="w-full h-full flex items-center justify-center text-white/5 font-black text-6xl uppercase tracking-tighter">Jantra Archive</div>
-                        )}
+                        </div>
                     </div>
+
+                    {/* Perspective Navigation Tabs Strip (Below Frame) */}
+                    {slides.length > 1 && (
+                        <div className="mt-4 flex items-center justify-center gap-2 flex-wrap">
+                            {slides.map((slideUrl, idx) => {
+                                const meta = getSlideMeta(slideUrl, idx);
+                                const isActive = idx === currentSlide;
+                                return (
+                                    <button
+                                        key={idx}
+                                        type="button"
+                                        onClick={() => setCurrentSlide(idx)}
+                                        className={`group/btn flex items-center gap-2 px-3 py-1.5 rounded-xl border text-[8.5px] font-mono font-bold uppercase tracking-wider transition-all ${
+                                            isActive
+                                                ? "bg-slate-950 text-white border-orange-500 shadow-md scale-105"
+                                                : "bg-white text-slate-500 border-slate-200 hover:border-slate-400 hover:text-slate-900"
+                                        }`}
+                                    >
+                                        <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-orange-500' : 'bg-slate-300 group-hover/btn:bg-slate-400'}`} />
+                                        <span>{meta.title}</span>
+                                    </button>
+                                );
+                            })}
+                        </div>
+                    )}
                 </div>
 
                 {/* ── SPECIFICATIONS GRID ── */}

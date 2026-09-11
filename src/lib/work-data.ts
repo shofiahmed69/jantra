@@ -15,6 +15,8 @@ export interface WorkProject {
   category: string[] | string;
   description: string;
   thumbnail?: string;
+  mobileThumbnail?: string;
+  images?: string[];
   tags?: string[];
   challenge?: string;
   approach?: string;
@@ -55,6 +57,8 @@ function normalizeProject(project: RawProject): WorkProject | null {
         ? (project.techStack as string[])
         : [],
     thumbnail: typeof project.thumbnail === "string" ? project.thumbnail : undefined,
+    mobileThumbnail: typeof project.mobileThumbnail === "string" ? project.mobileThumbnail : undefined,
+    images: Array.isArray(project.images) ? (project.images as string[]) : undefined,
     liveUrl: typeof project.liveUrl === "string" ? project.liveUrl : undefined,
   };
 }

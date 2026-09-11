@@ -14,6 +14,8 @@ interface Project {
     category: string[] | string;
     description: string;
     thumbnail?: string;
+    mobileThumbnail?: string;
+    images?: string[];
     slug: string;
     tags?: string[];
     liveUrl?: string;
@@ -121,19 +123,19 @@ export default function WorkPage({ initialProjects }: WorkClientProps) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filteredProjects]);
 
-    const getThumbnailUrl = (p: Project) => {
-        if (!p.thumbnail) return "";
-        let url = p.thumbnail;
-        if (!url.startsWith('http')) {
+    const resolveImageUrl = (url?: string) => {
+        if (!url) return "";
+        let cleanUrl = url;
+        if (!cleanUrl.startsWith('http')) {
             const baseUrl = (process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:4005').replace(/\/api$/, '');
             const cleanBase = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
-            const cleanPath = url.startsWith('/') ? url : `/${url}`;
-            url = `${cleanBase}${cleanPath}`;
+            const cleanPath = cleanUrl.startsWith('/') ? cleanUrl : `/${cleanUrl}`;
+            cleanUrl = `${cleanBase}${cleanPath}`;
         }
-        if (url.startsWith('http://') || url.includes('sslip.io')) {
-            return `/api/image-proxy?url=${encodeURIComponent(url)}`;
+        if (cleanUrl.startsWith('http://') || cleanUrl.includes('sslip.io')) {
+            return `/api/image-proxy?url=${encodeURIComponent(cleanUrl)}`;
         }
-        return url;
+        return cleanUrl;
     };
 
     return (
@@ -207,7 +209,10 @@ export default function WorkPage({ initialProjects }: WorkClientProps) {
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
                         {filteredProjects.map((project, i) => {
-                            const thumbUrl = getThumbnailUrl(project);
+                            const thumbUrl = resolveImageUrl(project.thumbnail);
+                            const mobileUrl = resolveImageUrl(project.mobileThumbnail) ||
+                                (project.images?.find(img => img.includes('mobile')) ? resolveImageUrl(project.images.find(img => img.includes('mobile'))) : '') ||
+                                (thumbUrl.includes('01_hero_desktop.webp') ? thumbUrl.replace('01_hero_desktop.webp', '05_mobile_view.webp') : '');
                             const category = Array.isArray(project.category) ? project.category[0] : project.category;
                             
                             const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -247,32 +252,59 @@ export default function WorkPage({ initialProjects }: WorkClientProps) {
                                     <div className="w-full h-full rounded-2xl bg-white border border-slate-200/90 p-4 flex flex-col justify-between transition-all duration-500 group-hover:-translate-x-0.5 group-hover:-translate-y-0.5 group-hover:border-slate-400 group-hover:shadow-[0_15px_35px_rgba(0,0,0,0.03)] before:absolute before:inset-0 before:bg-[radial-gradient(130px_circle_at_var(--mouse-x,0px)_var(--mouse-y,0px),var(--spotlight-color),transparent)] before:opacity-0 group-hover:before:opacity-100 before:transition-opacity before:duration-300 before:pointer-events-none before:z-0 overflow-hidden relative">
                                         
                                         <div className="flex flex-col text-left relative z-10">
-                                            {/* Image Box - floats directly inside the foreground card */}
-                                            <div className="relative aspect-[16/9] rounded-xl overflow-hidden bg-slate-950 mb-4 transition-all duration-500">
-                                                {thumbUrl ? (
-                                                    <>
+                                            {/* Dual-Device Frame: Desktop Browser + Floating Mobile Phone */}
+                                            <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-slate-950 border border-slate-200/90 shadow-sm mb-4 transition-all duration-500 group-hover:border-slate-400">
+                                                {/* Minimal Browser Top Bar */}
+                                                <div className="absolute top-0 inset-x-0 h-6 bg-slate-900/95 backdrop-blur-sm border-b border-white/10 px-2.5 flex items-center justify-between z-20 pointer-events-none">
+                                                    <div className="flex items-center gap-1.5">
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-red-400/80" />
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400/80" />
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400/80" />
+                                                    </div>
+                                                    <div className="bg-white/10 rounded px-2 py-0.5 text-[7px] font-mono text-slate-300 tracking-tight max-w-[130px] truncate border border-white/5">
+                                                        {project.liveUrl ? project.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '') : `${project.slug}.jantrasoft.online`}
+                                                    </div>
+                                                    <div className="w-6" />
+                                                </div>
+
+                                                {/* Desktop View: object-cover object-top (Never chops top nav/header!) */}
+                                                <div className="absolute inset-0 pt-6 bg-slate-950 overflow-hidden">
+                                                    {thumbUrl ? (
                                                         <Image
                                                             src={thumbUrl}
-                                                            alt=""
-                                                            fill
-                                                            aria-hidden="true"
-                                                            className="object-cover blur-md opacity-25 scale-105 select-none pointer-events-none"
-                                                        />
-                                                        <Image
-                                                            src={thumbUrl}
-                                                            alt={project.title}
+                                                            alt={`${project.title} Desktop`}
                                                             fill
                                                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                                             priority={i < 6}
-                                                            className="object-contain transition-transform duration-700 ease-out group-hover:scale-[1.02] z-10"
+                                                            className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                                                         />
-                                                    </>
-                                                ) : (
-                                                    <div className="w-full h-full flex items-center justify-center text-white/5 font-black text-4xl uppercase bg-slate-900">Jantra</div>
-                                                )}
+                                                    ) : (
+                                                        <div className="w-full h-full flex items-center justify-center text-white/10 font-black text-3xl uppercase bg-slate-900">Jantra</div>
+                                                    )}
+                                                </div>
+
+                                                {/* Floating Mobile Phone Mockup (Second Image!) */}
+                                                {mobileUrl ? (
+                                                    <div className="absolute -bottom-2 -right-1.5 w-[30%] aspect-[9/18.5] rounded-[13px] bg-slate-950 p-[2.5px] shadow-[0_12px_28px_rgba(0,0,0,0.55)] border border-white/25 z-20 transition-all duration-500 group-hover:translate-y-[-4px] group-hover:scale-[1.05] group-hover:shadow-[0_18px_36px_rgba(0,0,0,0.7)]">
+                                                        <div className="relative w-full h-full rounded-[10px] overflow-hidden bg-slate-900">
+                                                            {/* Dynamic island notch */}
+                                                            <div className="absolute top-1 left-1/2 -translate-x-1/2 w-4 h-1 bg-black rounded-full z-30 pointer-events-none" />
+                                                            <Image
+                                                                src={mobileUrl}
+                                                                alt={`${project.title} Mobile`}
+                                                                fill
+                                                                sizes="(max-width: 768px) 35vw, 15vw"
+                                                                priority={i < 6}
+                                                                className="object-cover object-top"
+                                                            />
+                                                            <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/15 pointer-events-none z-20" />
+                                                        </div>
+                                                    </div>
+                                                ) : null}
+
                                                 {/* Floating Category Tag & Live Demo Badge */}
-                                                <div className="absolute top-2.5 inset-x-2.5 z-20 flex items-center justify-between pointer-events-none">
-                                                    <span className="px-2.5 py-1 rounded bg-slate-950/90 text-[7.5px] font-black uppercase tracking-widest text-white shadow-sm border border-white/10 font-mono pointer-events-auto">
+                                                <div className="absolute top-8 inset-x-2.5 z-20 flex items-center justify-between pointer-events-none">
+                                                    <span className="px-2.5 py-1 rounded bg-slate-950/90 backdrop-blur-sm text-[7.5px] font-black uppercase tracking-widest text-white shadow-sm border border-white/10 font-mono pointer-events-auto">
                                                         {category}
                                                     </span>
                                                     {project.liveUrl && (
