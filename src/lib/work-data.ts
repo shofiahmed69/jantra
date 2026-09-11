@@ -54,6 +54,8 @@ function normalizeProject(project: RawProject): WorkProject | null {
       : Array.isArray(project.techStack)
         ? (project.techStack as string[])
         : [],
+    thumbnail: typeof project.thumbnail === "string" ? project.thumbnail : undefined,
+    liveUrl: typeof project.liveUrl === "string" ? project.liveUrl : undefined,
   };
 }
 

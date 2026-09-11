@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight as ArrowIcon, Loader2 as LoaderIcon } from "lucide-react";
+import { ArrowRight as ArrowIcon, Loader2 as LoaderIcon, ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { PREFETCH_TTL_MS, prefetchStore } from "@/lib/prefetchStore";
@@ -16,6 +16,7 @@ interface Project {
     thumbnail?: string;
     slug: string;
     tags?: string[];
+    liveUrl?: string;
 }
 
 const CATEGORIES = ["All", "Web Design", "Web App", "Mobile App", "AI & ML", "Automation", "SaaS"];
@@ -269,11 +270,23 @@ export default function WorkPage({ initialProjects }: WorkClientProps) {
                                                 ) : (
                                                     <div className="w-full h-full flex items-center justify-center text-white/5 font-black text-4xl uppercase bg-slate-900">Jantra</div>
                                                 )}
-                                                {/* Floating Category Tag */}
-                                                <div className="absolute top-2.5 left-2.5 z-20">
-                                                    <span className="px-2.5 py-1 rounded bg-slate-950/90 text-[7.5px] font-black uppercase tracking-widest text-white shadow-sm border border-white/10 font-mono">
+                                                {/* Floating Category Tag & Live Demo Badge */}
+                                                <div className="absolute top-2.5 inset-x-2.5 z-20 flex items-center justify-between pointer-events-none">
+                                                    <span className="px-2.5 py-1 rounded bg-slate-950/90 text-[7.5px] font-black uppercase tracking-widest text-white shadow-sm border border-white/10 font-mono pointer-events-auto">
                                                         {category}
                                                     </span>
+                                                    {project.liveUrl && (
+                                                        <a
+                                                            href={project.liveUrl}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            onClick={(e) => e.stopPropagation()}
+                                                            className="px-2 py-0.5 rounded bg-orange-600 hover:bg-orange-500 text-[7.5px] font-black uppercase tracking-wider text-white shadow-sm border border-orange-400/30 font-mono pointer-events-auto flex items-center gap-1 transition-all active:scale-95"
+                                                            title="Direct Live Website"
+                                                        >
+                                                            Live Demo <ExternalLink className="w-2.5 h-2.5" />
+                                                        </a>
+                                                    )}
                                                 </div>
                                             </div>
 
@@ -295,9 +308,22 @@ export default function WorkPage({ initialProjects }: WorkClientProps) {
 
                                         {/* Action link & Tags */}
                                         <div className="pt-4 mt-5 border-t border-slate-100 flex items-center justify-between px-0.5 z-10">
-                                            <span className="inline-flex items-center gap-1 text-[8.5px] font-black text-slate-950 uppercase tracking-widest group-hover:text-orange-600 transition-colors duration-200">
-                                                Explore Study <ArrowIcon className="w-3 h-3 text-orange-600 group-hover:translate-x-0.5 transition-transform" />
-                                            </span>
+                                            <div className="flex items-center gap-3">
+                                                <span className="inline-flex items-center gap-1 text-[8.5px] font-black text-slate-950 uppercase tracking-widest group-hover:text-orange-600 transition-colors duration-200">
+                                                    Explore Study <ArrowIcon className="w-3 h-3 text-orange-600 group-hover:translate-x-0.5 transition-transform" />
+                                                </span>
+                                                {project.liveUrl && (
+                                                    <a
+                                                        href={project.liveUrl}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        onClick={(e) => e.stopPropagation()}
+                                                        className="relative z-30 inline-flex items-center gap-1 text-[8.5px] font-black text-orange-600 hover:text-slate-950 uppercase tracking-wider underline underline-offset-2 transition-colors duration-200"
+                                                    >
+                                                        Live Link <ExternalLink className="w-2.5 h-2.5" />
+                                                    </a>
+                                                )}
+                                            </div>
                                             
                                             {project.tags && project.tags.length > 0 && (
                                                 <div className="font-mono text-[8px] font-extrabold uppercase text-slate-400">
