@@ -4,7 +4,7 @@ import { unstable_cache } from "next/cache";
 
 const API_ORIGIN =
   process.env.NEXT_PUBLIC_API_URL?.replace(/\/api\/?$/, "") ||
-  "https://jontro-backend.onrender.com";
+  "https://jantrasoft.online";
 
 const WORK_ENDPOINT = `${API_ORIGIN}/api/work`;
 

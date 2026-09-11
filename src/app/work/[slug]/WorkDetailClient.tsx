@@ -176,132 +176,86 @@ export default function WorkDetailClient({
                     </div>
                 </div>
 
-                {/* ── INTERACTIVE DUAL VIEW CAROUSEL (Desktop & Mobile - Full Aspect Ratio, Zero Crop, Light Themed) ── */}
+                {/* ── IMAGE SHOWCASE (Desktop & Mobile - Clean Full Aspect Ratio, Zero Crop, No Window Decoration) ── */}
                 <div 
-                    className="relative group mb-16 select-none"
+                    className="relative mb-16 select-none"
                     onMouseEnter={() => setIsCarouselHovered(true)}
                     onMouseLeave={() => setIsCarouselHovered(false)}
                     onTouchStart={() => setIsCarouselHovered(true)}
                 >
-                    {/* Background offset layer (Light orange accent) */}
-                    <div className="absolute inset-0 bg-orange-500/15 rounded-[2rem] translate-x-2.5 translate-y-2.5 transition-transform group-hover:translate-x-1.5 group-hover:translate-y-1.5 duration-300 -z-10" />
-
-                    {/* Main Carousel Viewport Frame (Light Theme) */}
-                    <div className="relative aspect-[16/10] sm:aspect-[21/10] w-full rounded-[2rem] overflow-hidden bg-slate-50 border border-slate-200/90 shadow-xl flex flex-col justify-between">
+                    {/* Main Image Display Container */}
+                    <div className="relative w-full rounded-2xl overflow-hidden bg-slate-50 border border-slate-200/80 shadow-md">
                         
-                        {/* Light Browser Top Navigation Bar */}
-                        <div className="relative z-30 h-10 sm:h-12 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 sm:px-6 flex items-center justify-between pointer-events-none">
-                            <div className="flex items-center gap-2">
-                                <div className="flex items-center gap-1.5">
-                                    <span className="w-2.5 h-2.5 rounded-full bg-red-400/90" />
-                                    <span className="w-2.5 h-2.5 rounded-full bg-amber-400/90" />
-                                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/90" />
-                                </div>
-                                <div className="hidden sm:flex items-center gap-1.5 ml-4 bg-slate-50 rounded-md px-3 py-1 border border-slate-200 text-[10px] font-mono text-slate-600">
-                                    <span className="text-emerald-600 font-bold">https://</span>
-                                    <span>{project.liveUrl ? project.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '') : `${project.slug}.jantrasoft.online`}</span>
-                                </div>
-                            </div>
-
-                            {/* Perspective Badge & Slide Counter (Light Themed) */}
-                            <div className="flex items-center gap-2.5 pointer-events-auto">
-                                <div className="flex items-center gap-1.5 bg-white px-3 py-1 rounded-full border border-slate-200 text-[9px] font-mono text-slate-800 shadow-sm">
-                                    <span className={`w-1.5 h-1.5 rounded-full ${isCarouselHovered ? 'bg-amber-500' : 'bg-emerald-500 animate-pulse'}`} />
-                                    <span className="font-bold text-orange-600">{currentSlideMeta.title}</span>
-                                </div>
-                                <span className="bg-white px-2.5 py-1 rounded-md text-[9px] font-mono font-black text-slate-600 border border-slate-200 shadow-sm">
-                                    {String(currentSlide + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
-                                </span>
-                            </div>
-                        </div>
-
-                        {/* Slide Display Canvas (Full Aspect Ratio, Zero Crop, Light Background) */}
-                        <div className="relative flex-1 w-full h-full overflow-hidden bg-slate-50 flex items-center justify-center">
+                        {/* Slide Display Canvas (Clean, Big Image, Zero Crop) */}
+                        <div className={`relative w-full flex items-center justify-center p-3 sm:p-6 transition-all duration-300 ${
+                            currentSlideMeta.isMobile 
+                                ? "h-[540px] sm:h-[680px] md:h-[750px]" 
+                                : "aspect-[16/10] sm:aspect-[16/9] md:aspect-[21/10]"
+                        }`}>
                             <AnimatePresence mode="wait">
                                 <motion.div
                                     key={currentSlide}
-                                    initial={{ opacity: 0, scale: 0.98 }}
+                                    initial={{ opacity: 0, scale: 0.99 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     exit={{ opacity: 0 }}
-                                    transition={{ duration: 0.35, ease: "easeOut" }}
-                                    className="relative w-full h-full flex items-center justify-center p-2 sm:p-4"
+                                    transition={{ duration: 0.3, ease: "easeOut" }}
+                                    className="relative w-full h-full flex items-center justify-center"
                                 >
-                                    {currentSlideMeta.isMobile ? (
-                                        /* Centered Mobile Device Viewport: Full Height Aspect Ratio, No Crop */
-                                        <div className="relative h-full max-h-[380px] sm:max-h-[440px] aspect-[9/19.5] rounded-[2rem] bg-white p-2 sm:p-2.5 shadow-[0_15px_40px_rgba(0,0,0,0.12)] border-2 border-slate-300 z-10 flex flex-col justify-center">
-                                            <div className="relative w-full h-full rounded-[1.4rem] overflow-hidden bg-slate-50">
-                                                {/* Dynamic Island Notch */}
-                                                <div className="absolute top-1.5 left-1/2 -translate-x-1/2 w-14 h-2.5 bg-slate-900 rounded-full z-30 pointer-events-none" />
-                                                {slides[currentSlide] && (
-                                                    <Image
-                                                        src={slides[currentSlide]}
-                                                        alt={`${project.title} Mobile View`}
-                                                        fill
-                                                        priority
-                                                        sizes="(max-width: 768px) 50vw, 300px"
-                                                        className="object-contain"
-                                                    />
-                                                )}
-                                            </div>
-                                        </div>
+                                    {slides[currentSlide] ? (
+                                        <Image
+                                            src={slides[currentSlide]}
+                                            alt={`${project.title} ${currentSlideMeta.title}`}
+                                            fill
+                                            priority
+                                            sizes={currentSlideMeta.isMobile ? "(max-width: 768px) 100vw, 600px" : "(max-width: 768px) 100vw, 1400px"}
+                                            className="object-contain drop-shadow-md"
+                                        />
                                     ) : (
-                                        /* Desktop Viewport Canvas: Full Aspect Ratio, No Crop (object-contain) */
-                                        <div className="relative w-full h-full flex items-center justify-center">
-                                            {slides[currentSlide] ? (
-                                                <Image
-                                                    src={slides[currentSlide]}
-                                                    alt={`${project.title} Desktop View`}
-                                                    fill
-                                                    priority
-                                                    sizes="(max-width: 768px) 100vw, 1200px"
-                                                    className="object-contain"
-                                                />
-                                            ) : (
-                                                <div className="w-full h-full flex items-center justify-center text-slate-300 font-black text-3xl uppercase">Jantra</div>
-                                            )}
-                                        </div>
+                                        <div className="w-full h-full flex items-center justify-center text-slate-300 font-black text-3xl uppercase">Jantra</div>
                                     )}
                                 </motion.div>
                             </AnimatePresence>
 
-                            {/* Floating Prev / Next Controls (Light Themed) */}
+                            {/* Floating Prev / Next Controls (No Emojis, Clean Minimal) */}
                             {slides.length > 1 && (
                                 <>
                                     <button
                                         type="button"
                                         onClick={prevSlide}
-                                        className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-30 p-2 sm:p-3 rounded-full bg-white/90 hover:bg-orange-500 hover:text-white text-slate-700 backdrop-blur-md border border-slate-200 shadow-md transition-all active:scale-90 hover:scale-105"
+                                        className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-30 p-2 sm:p-3 rounded-full bg-white/95 hover:bg-orange-500 hover:text-white text-slate-700 border border-slate-200 shadow-lg transition-all active:scale-95"
                                         aria-label="Previous View"
                                     >
-                                        <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+                                        <ChevronLeft className="w-5 h-5" />
                                     </button>
                                     <button
                                         type="button"
                                         onClick={nextSlide}
-                                        className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-30 p-2 sm:p-3 rounded-full bg-white/90 hover:bg-orange-500 hover:text-white text-slate-700 backdrop-blur-md border border-slate-200 shadow-md transition-all active:scale-90 hover:scale-105"
+                                        className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-30 p-2 sm:p-3 rounded-full bg-white/95 hover:bg-orange-500 hover:text-white text-slate-700 border border-slate-200 shadow-lg transition-all active:scale-95"
                                         aria-label="Next View"
                                     >
-                                        <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                                        <ChevronRight className="w-5 h-5" />
                                     </button>
                                 </>
                             )}
                         </div>
 
-                        {/* Bottom Auto-Scroll Progress Bar (Light Themed) */}
-                        <div className="relative z-30 h-1 bg-slate-200 w-full overflow-hidden">
-                            <motion.div
-                                key={`${currentSlide}-${isCarouselHovered}`}
-                                initial={{ width: "0%" }}
-                                animate={{ width: isCarouselHovered ? "0%" : "100%" }}
-                                transition={{ duration: isCarouselHovered ? 0 : 3.8, ease: "linear" }}
-                                className="h-full bg-orange-500"
-                            />
-                        </div>
+                        {/* Bottom Auto-Scroll Indicator */}
+                        {slides.length > 1 && (
+                            <div className="h-1 bg-slate-100 w-full overflow-hidden">
+                                <motion.div
+                                    key={`${currentSlide}-${isCarouselHovered}`}
+                                    initial={{ width: "0%" }}
+                                    animate={{ width: isCarouselHovered ? "0%" : "100%" }}
+                                    transition={{ duration: isCarouselHovered ? 0 : 3.8, ease: "linear" }}
+                                    className="h-full bg-orange-500"
+                                />
+                            </div>
+                        )}
                     </div>
 
-                    {/* Exactly 2 Perspective Tabs (Light Themed) */}
+                    {/* View Switcher Tabs (Clean text without emojis) */}
                     {slides.length > 1 && (
-                        <div className="mt-4 flex items-center justify-center gap-3">
+                        <div className="mt-5 flex items-center justify-center gap-3">
                             {slides.map((slideUrl, idx) => {
                                 const meta = getSlideMeta(slideUrl, idx);
                                 const isActive = idx === currentSlide;
@@ -310,13 +264,13 @@ export default function WorkDetailClient({
                                         key={idx}
                                         type="button"
                                         onClick={() => setCurrentSlide(idx)}
-                                        className={`flex items-center gap-2 px-4 py-2 rounded-xl border text-[10px] font-mono font-bold uppercase tracking-wider transition-all shadow-sm ${
+                                        className={`px-5 py-2.5 rounded-xl border text-[11px] font-mono font-bold uppercase tracking-wider transition-all shadow-sm ${
                                             isActive
-                                                ? "bg-orange-500 text-white border-orange-500 shadow-md scale-105"
+                                                ? "bg-orange-600 text-white border-orange-600 shadow-md scale-105"
                                                 : "bg-white text-slate-700 border-slate-200 hover:border-slate-300 hover:bg-slate-50"
                                         }`}
                                     >
-                                        <span>{meta.isMobile ? '📱 Mobile View' : '🖥️ Desktop View'}</span>
+                                        {meta.isMobile ? 'Mobile View' : 'Desktop View'}
                                     </button>
                                 );
                             })}

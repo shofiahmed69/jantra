@@ -247,8 +247,26 @@ export default function WorkPage({ initialProjects }: WorkClientProps) {
 
                                     {/* 2. Foreground main card layer (Clean Light Theme) */}
                                     <div className="w-full h-full rounded-2xl bg-white border border-slate-200/90 p-4 flex flex-col justify-between transition-all duration-500 group-hover:-translate-x-0.5 group-hover:-translate-y-0.5 group-hover:border-slate-300 group-hover:shadow-[0_15px_35px_rgba(0,0,0,0.04)] before:absolute before:inset-0 before:bg-[radial-gradient(130px_circle_at_var(--mouse-x,0px)_var(--mouse-y,0px),var(--spotlight-color),transparent)] before:opacity-0 group-hover:before:opacity-100 before:transition-opacity before:duration-300 before:pointer-events-none before:z-0 overflow-hidden relative">
-                                        
                                         <div className="flex flex-col text-left relative z-10">
+                                            {/* Category & Live Demo Bar on Card (Not obstructing image) */}
+                                            <div className="flex items-center justify-between mb-3 px-0.5">
+                                                <span className="px-2.5 py-0.5 rounded bg-slate-100 text-[8px] font-black uppercase tracking-widest text-slate-700 border border-slate-200/80 font-mono">
+                                                    {category}
+                                                </span>
+                                                {project.liveUrl && (
+                                                    <a
+                                                        href={project.liveUrl}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        onClick={(e) => e.stopPropagation()}
+                                                        className="px-2.5 py-0.5 rounded bg-orange-50 hover:bg-orange-500 hover:text-white text-[8px] font-black uppercase tracking-wider text-orange-600 border border-orange-200/80 font-mono flex items-center gap-1 transition-all active:scale-95 z-30"
+                                                        title="Direct Live Website"
+                                                    >
+                                                        Live Demo <ExternalLink className="w-2.5 h-2.5" />
+                                                    </a>
+                                                )}
+                                            </div>
+
                                             {/* Desktop Browser Frame: Full Aspect Ratio, No Crop, Light Themed */}
                                             <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-slate-50 border border-slate-200 shadow-sm mb-4 transition-all duration-500 group-hover:border-slate-300 flex flex-col">
                                                 {/* Minimal Light Browser Top Bar */}
@@ -277,25 +295,6 @@ export default function WorkPage({ initialProjects }: WorkClientProps) {
                                                         />
                                                     ) : (
                                                         <div className="w-full h-full flex items-center justify-center text-slate-300 font-black text-2xl uppercase bg-slate-50">Jantra</div>
-                                                    )}
-                                                </div>
-
-                                                {/* Floating Category Tag & Live Demo Badge (Light Themed) */}
-                                                <div className="absolute top-8 inset-x-2.5 z-20 flex items-center justify-between pointer-events-none">
-                                                    <span className="px-2.5 py-0.5 rounded bg-white/95 backdrop-blur-sm text-[7.5px] font-black uppercase tracking-widest text-slate-800 shadow-sm border border-slate-200 font-mono pointer-events-auto">
-                                                        {category}
-                                                    </span>
-                                                    {project.liveUrl && (
-                                                        <a
-                                                            href={project.liveUrl}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            onClick={(e) => e.stopPropagation()}
-                                                            className="px-2 py-0.5 rounded bg-orange-500 hover:bg-orange-600 text-[7.5px] font-black uppercase tracking-wider text-white shadow-sm border border-orange-400 font-mono pointer-events-auto flex items-center gap-1 transition-all active:scale-95"
-                                                            title="Direct Live Website"
-                                                        >
-                                                            Live Demo <ExternalLink className="w-2.5 h-2.5" />
-                                                        </a>
                                                     )}
                                                 </div>
                                             </div>
