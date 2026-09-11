@@ -183,15 +183,14 @@ export default function WorkDetailClient({
                     onMouseLeave={() => setIsCarouselHovered(false)}
                     onTouchStart={() => setIsCarouselHovered(true)}
                 >
-                    {/* Main Image Display Container */}
-                    <div className="relative w-full rounded-2xl overflow-hidden bg-slate-50 border border-slate-200/80 shadow-md">
-                        
-                        {/* Slide Display Canvas (Clean, Big Image, Zero Crop) */}
-                        <div className={`relative w-full flex items-center justify-center p-3 sm:p-6 transition-all duration-300 ${
-                            currentSlideMeta.isMobile 
-                                ? "h-[540px] sm:h-[680px] md:h-[750px]" 
-                                : "aspect-[16/10] sm:aspect-[16/9] md:aspect-[21/10]"
-                        }`}>
+                    {/* Main Image Display Container (Snug fit to image dimensions) */}
+                    <div className={`mx-auto rounded-2xl overflow-hidden bg-slate-50 border border-slate-200/80 shadow-md transition-all duration-300 ${
+                        currentSlideMeta.isMobile
+                            ? "max-w-[340px] sm:max-w-[380px] aspect-[9/19.5]"
+                            : "w-full max-w-5xl aspect-[16/10]"
+                    }`}>
+                        {/* Slide Display Canvas (Zero Crop, Snug Card Frame) */}
+                        <div className="relative w-full h-full flex items-center justify-center">
                             <AnimatePresence mode="wait">
                                 <motion.div
                                     key={currentSlide}
@@ -199,7 +198,7 @@ export default function WorkDetailClient({
                                     animate={{ opacity: 1, scale: 1 }}
                                     exit={{ opacity: 0 }}
                                     transition={{ duration: 0.3, ease: "easeOut" }}
-                                    className="relative w-full h-full flex items-center justify-center"
+                                    className="relative w-full h-full"
                                 >
                                     {slides[currentSlide] ? (
                                         <Image
@@ -207,36 +206,14 @@ export default function WorkDetailClient({
                                             alt={`${project.title} ${currentSlideMeta.title}`}
                                             fill
                                             priority
-                                            sizes={currentSlideMeta.isMobile ? "(max-width: 768px) 100vw, 600px" : "(max-width: 768px) 100vw, 1400px"}
-                                            className="object-contain drop-shadow-md"
+                                            sizes={currentSlideMeta.isMobile ? "(max-width: 768px) 100vw, 400px" : "(max-width: 768px) 100vw, 1200px"}
+                                            className="object-contain"
                                         />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center text-slate-300 font-black text-3xl uppercase">Jantra</div>
                                     )}
                                 </motion.div>
                             </AnimatePresence>
-
-                            {/* Floating Prev / Next Controls (No Emojis, Clean Minimal) */}
-                            {slides.length > 1 && (
-                                <>
-                                    <button
-                                        type="button"
-                                        onClick={prevSlide}
-                                        className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-30 p-2 sm:p-3 rounded-full bg-white/95 hover:bg-orange-500 hover:text-white text-slate-700 border border-slate-200 shadow-lg transition-all active:scale-95"
-                                        aria-label="Previous View"
-                                    >
-                                        <ChevronLeft className="w-5 h-5" />
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={nextSlide}
-                                        className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-30 p-2 sm:p-3 rounded-full bg-white/95 hover:bg-orange-500 hover:text-white text-slate-700 border border-slate-200 shadow-lg transition-all active:scale-95"
-                                        aria-label="Next View"
-                                    >
-                                        <ChevronRight className="w-5 h-5" />
-                                    </button>
-                                </>
-                            )}
                         </div>
 
                         {/* Bottom Auto-Scroll Indicator */}
