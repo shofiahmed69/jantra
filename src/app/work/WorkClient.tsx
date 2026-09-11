@@ -210,9 +210,6 @@ export default function WorkPage({ initialProjects }: WorkClientProps) {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10">
                         {filteredProjects.map((project, i) => {
                             const thumbUrl = resolveImageUrl(project.thumbnail);
-                            const mobileUrl = resolveImageUrl(project.mobileThumbnail) ||
-                                (project.images?.find(img => img.includes('mobile')) ? resolveImageUrl(project.images.find(img => img.includes('mobile'))) : '') ||
-                                (thumbUrl.includes('01_hero_desktop.webp') ? thumbUrl.replace('01_hero_desktop.webp', '05_mobile_view.webp') : '');
                             const category = Array.isArray(project.category) ? project.category[0] : project.category;
                             
                             const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -231,7 +228,7 @@ export default function WorkPage({ initialProjects }: WorkClientProps) {
                                     transition={{ duration: 0.5, delay: i * 0.05, ease: "easeOut" }}
                                     onMouseMove={handleMouseMove}
                                     style={{
-                                      "--spotlight-color": "rgba(249, 115, 22, 0.12)"
+                                      "--spotlight-color": "rgba(249, 115, 22, 0.08)"
                                     } as React.CSSProperties}
                                     className="group relative flex flex-col justify-between cursor-pointer"
                                     onMouseEnter={() => prefetchProject(project)}
@@ -245,66 +242,47 @@ export default function WorkPage({ initialProjects }: WorkClientProps) {
                                         cardRefs.current.set(project.slug, node);
                                     }}
                                 >
-                                    {/* 1. Background offset card layer (Dual layer styling) */}
-                                    <div className="absolute inset-0 rounded-2xl border border-orange-500/25 bg-orange-500/[0.03] translate-x-2 translate-y-2 group-hover:translate-x-3 group-hover:translate-y-3 transition-transform duration-500 -z-10" />
+                                    {/* 1. Background offset card layer (Light orange accent) */}
+                                    <div className="absolute inset-0 rounded-2xl border border-orange-500/20 bg-orange-500/[0.03] translate-x-2 translate-y-2 group-hover:translate-x-3 group-hover:translate-y-3 transition-transform duration-500 -z-10" />
 
-                                    {/* 2. Foreground main card layer */}
-                                    <div className="w-full h-full rounded-2xl bg-white border border-slate-200/90 p-4 flex flex-col justify-between transition-all duration-500 group-hover:-translate-x-0.5 group-hover:-translate-y-0.5 group-hover:border-slate-400 group-hover:shadow-[0_15px_35px_rgba(0,0,0,0.03)] before:absolute before:inset-0 before:bg-[radial-gradient(130px_circle_at_var(--mouse-x,0px)_var(--mouse-y,0px),var(--spotlight-color),transparent)] before:opacity-0 group-hover:before:opacity-100 before:transition-opacity before:duration-300 before:pointer-events-none before:z-0 overflow-hidden relative">
+                                    {/* 2. Foreground main card layer (Clean Light Theme) */}
+                                    <div className="w-full h-full rounded-2xl bg-white border border-slate-200/90 p-4 flex flex-col justify-between transition-all duration-500 group-hover:-translate-x-0.5 group-hover:-translate-y-0.5 group-hover:border-slate-300 group-hover:shadow-[0_15px_35px_rgba(0,0,0,0.04)] before:absolute before:inset-0 before:bg-[radial-gradient(130px_circle_at_var(--mouse-x,0px)_var(--mouse-y,0px),var(--spotlight-color),transparent)] before:opacity-0 group-hover:before:opacity-100 before:transition-opacity before:duration-300 before:pointer-events-none before:z-0 overflow-hidden relative">
                                         
                                         <div className="flex flex-col text-left relative z-10">
-                                            {/* Dual-Device Frame: Desktop Browser + Floating Mobile Phone */}
-                                            <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-slate-950 border border-slate-200/90 shadow-sm mb-4 transition-all duration-500 group-hover:border-slate-400">
-                                                {/* Minimal Browser Top Bar */}
-                                                <div className="absolute top-0 inset-x-0 h-6 bg-slate-900/95 backdrop-blur-sm border-b border-white/10 px-2.5 flex items-center justify-between z-20 pointer-events-none">
+                                            {/* Desktop Browser Frame: Full Aspect Ratio, No Crop, Light Themed */}
+                                            <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-slate-50 border border-slate-200 shadow-sm mb-4 transition-all duration-500 group-hover:border-slate-300 flex flex-col">
+                                                {/* Minimal Light Browser Top Bar */}
+                                                <div className="relative h-6 bg-slate-100/90 backdrop-blur-sm border-b border-slate-200/80 px-2.5 flex items-center justify-between z-20 pointer-events-none">
                                                     <div className="flex items-center gap-1.5">
-                                                        <span className="w-1.5 h-1.5 rounded-full bg-red-400/80" />
-                                                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400/80" />
-                                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400/80" />
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-red-400/90" />
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400/90" />
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400/90" />
                                                     </div>
-                                                    <div className="bg-white/10 rounded px-2 py-0.5 text-[7px] font-mono text-slate-300 tracking-tight max-w-[130px] truncate border border-white/5">
+                                                    <div className="bg-white rounded px-2 py-0.5 text-[7px] font-mono text-slate-500 tracking-tight max-w-[140px] truncate border border-slate-200/60">
                                                         {project.liveUrl ? project.liveUrl.replace(/^https?:\/\//, '').replace(/\/$/, '') : `${project.slug}.jantrasoft.online`}
                                                     </div>
                                                     <div className="w-6" />
                                                 </div>
 
-                                                {/* Desktop View: object-cover object-top (Never chops top nav/header!) */}
-                                                <div className="absolute inset-0 pt-6 bg-slate-950 overflow-hidden">
+                                                {/* Full Aspect Ratio Desktop View (Zero Crop) */}
+                                                <div className="relative flex-1 w-full h-full bg-slate-50 flex items-center justify-center overflow-hidden">
                                                     {thumbUrl ? (
                                                         <Image
                                                             src={thumbUrl}
-                                                            alt={`${project.title} Desktop`}
+                                                            alt={`${project.title} Desktop View`}
                                                             fill
                                                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                                             priority={i < 6}
-                                                            className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                                                            className="object-contain transition-transform duration-500 ease-out group-hover:scale-[1.01]"
                                                         />
                                                     ) : (
-                                                        <div className="w-full h-full flex items-center justify-center text-white/10 font-black text-3xl uppercase bg-slate-900">Jantra</div>
+                                                        <div className="w-full h-full flex items-center justify-center text-slate-300 font-black text-2xl uppercase bg-slate-50">Jantra</div>
                                                     )}
                                                 </div>
 
-                                                {/* Floating Mobile Phone Mockup (Second Image!) */}
-                                                {mobileUrl ? (
-                                                    <div className="absolute -bottom-2 -right-1.5 w-[30%] aspect-[9/18.5] rounded-[13px] bg-slate-950 p-[2.5px] shadow-[0_12px_28px_rgba(0,0,0,0.55)] border border-white/25 z-20 transition-all duration-500 group-hover:translate-y-[-4px] group-hover:scale-[1.05] group-hover:shadow-[0_18px_36px_rgba(0,0,0,0.7)]">
-                                                        <div className="relative w-full h-full rounded-[10px] overflow-hidden bg-slate-900">
-                                                            {/* Dynamic island notch */}
-                                                            <div className="absolute top-1 left-1/2 -translate-x-1/2 w-4 h-1 bg-black rounded-full z-30 pointer-events-none" />
-                                                            <Image
-                                                                src={mobileUrl}
-                                                                alt={`${project.title} Mobile`}
-                                                                fill
-                                                                sizes="(max-width: 768px) 35vw, 15vw"
-                                                                priority={i < 6}
-                                                                className="object-cover object-top"
-                                                            />
-                                                            <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/15 pointer-events-none z-20" />
-                                                        </div>
-                                                    </div>
-                                                ) : null}
-
-                                                {/* Floating Category Tag & Live Demo Badge */}
+                                                {/* Floating Category Tag & Live Demo Badge (Light Themed) */}
                                                 <div className="absolute top-8 inset-x-2.5 z-20 flex items-center justify-between pointer-events-none">
-                                                    <span className="px-2.5 py-1 rounded bg-slate-950/90 backdrop-blur-sm text-[7.5px] font-black uppercase tracking-widest text-white shadow-sm border border-white/10 font-mono pointer-events-auto">
+                                                    <span className="px-2.5 py-0.5 rounded bg-white/95 backdrop-blur-sm text-[7.5px] font-black uppercase tracking-widest text-slate-800 shadow-sm border border-slate-200 font-mono pointer-events-auto">
                                                         {category}
                                                     </span>
                                                     {project.liveUrl && (
@@ -313,7 +291,7 @@ export default function WorkPage({ initialProjects }: WorkClientProps) {
                                                             target="_blank"
                                                             rel="noopener noreferrer"
                                                             onClick={(e) => e.stopPropagation()}
-                                                            className="px-2 py-0.5 rounded bg-orange-600 hover:bg-orange-500 text-[7.5px] font-black uppercase tracking-wider text-white shadow-sm border border-orange-400/30 font-mono pointer-events-auto flex items-center gap-1 transition-all active:scale-95"
+                                                            className="px-2 py-0.5 rounded bg-orange-500 hover:bg-orange-600 text-[7.5px] font-black uppercase tracking-wider text-white shadow-sm border border-orange-400 font-mono pointer-events-auto flex items-center gap-1 transition-all active:scale-95"
                                                             title="Direct Live Website"
                                                         >
                                                             Live Demo <ExternalLink className="w-2.5 h-2.5" />
