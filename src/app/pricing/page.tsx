@@ -116,8 +116,8 @@ async function getServices() {
         if (Array.isArray(data) && data.length > 0) {
             return data;
         }
-    } catch (error) {
-        console.error("Failed to fetch services for pricing page server-side:", error);
+    } catch {
+        // Return fallback silently if backend is unreachable
     }
     return FALLBACK_SERVICES;
 }

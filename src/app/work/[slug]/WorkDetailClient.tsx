@@ -121,7 +121,7 @@ export default function WorkDetailClient({
                 <div 
                     className="absolute inset-0 pointer-events-none -z-10 transition-opacity duration-500 opacity-25"
                     style={{
-                        background: `radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), oklch(0.85 0.15 45 / 0.12), transparent 80%)`
+                        background: `radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(249, 115, 22, 0.1), transparent 80%)`
                     }}
                 />
             )}

@@ -61,10 +61,10 @@ function PortfolioCard({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 15 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.6, delay: index * 0.05, ease: [0.16, 1, 0.3, 1] }}
+      viewport={{ once: true, amount: 0.05 }}
+      transition={{ duration: 0.4, delay: index * 0.04, ease: [0.16, 1, 0.3, 1] }}
       className={cn(
         "group relative w-full overflow-hidden rounded-xl cursor-pointer active:scale-[0.995] transition-all duration-350",
         isWide ? "lg:col-span-2" : "col-span-1"
@@ -148,122 +148,19 @@ function PortfolioCard({
 
 function ScrollReveal({ 
   children, 
-  delay = 0, 
-  direction = "up" 
 }: { 
   children: React.ReactNode; 
   delay?: number; 
   direction?: "up" | "down" | "left" | "right" 
 }) {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  if (isMobile) {
-    return <div>{children}</div>;
-  }
-
-  const directionOffset = {
-    up: { y: 30, x: 0 },
-    down: { y: -30, x: 0 },
-    left: { x: 30, y: 0 },
-    right: { x: -30, y: 0 }
-  };
-
-  return (
-    <motion.div
-      initial={{ 
-        opacity: 0.35, 
-        scale: 0.965, 
-        filter: "blur(3px)",
-        ...directionOffset[direction]
-      }}
-      whileInView={{ 
-        opacity: 1, 
-        scale: 1, 
-        filter: "blur(0px)",
-        x: 0,
-        y: 0
-      }}
-      viewport={{ once: true, margin: "-15% 0px -15% 0px" }}
-      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay }}
-    >
-      {children}
-    </motion.div>
-  );
+  return <div className="w-full">{children}</div>;
 }
 
-function FocusSection({ id, children, className, disableScrollEffects = false }: { id: string; children: React.ReactNode; className?: string; disableScrollEffects?: boolean }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [isFocused, setIsFocused] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  useEffect(() => {
-    if (disableScrollEffects || isMobile) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsFocused(entry.isIntersecting);
-      },
-      {
-        rootMargin: "-25% 0px -25% 0px",
-        threshold: 0.1,
-      }
-    );
-
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-    return () => observer.disconnect();
-  }, [disableScrollEffects, isMobile]);
-
-  if (disableScrollEffects || isMobile) {
-    return <div id={id} className={className}>{children}</div>;
-  }
-
+function FocusSection({ id, children, className }: { id: string; children: React.ReactNode; className?: string; disableScrollEffects?: boolean }) {
   return (
-    <motion.div
-      ref={ref}
-      id={id}
-      animate={{
-        opacity: isFocused ? 1 : 0.65,
-        scale: isFocused ? 1 : 0.98,
-        filter: isFocused ? "blur(0px)" : "blur(1.5px)",
-      }}
-      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      className={cn(
-        "transition-all duration-700 relative",
-        isFocused ? "z-10" : "z-0",
-        className
-      )}
-    >
-      <AnimatePresence>
-        {isFocused && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(249,115,22,0.03),transparent_70%)] pointer-events-none -z-10" 
-          />
-        )}
-      </AnimatePresence>
+    <div id={id} className={className}>
       {children}
-    </motion.div>
+    </div>
   );
 }
 
@@ -320,10 +217,10 @@ function PortfolioShowcase({ projects }: { projects: any[] }) {
           return (
             <motion.div
               key={project.id || idx}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5, delay: idx * 0.06 }}
+              viewport={{ once: true, amount: 0.05 }}
+              transition={{ duration: 0.4, delay: idx * 0.04 }}
               className="relative group w-full h-full"
             >
               {/* Dual-Layer Backdrop Styling: Offset vibrant orange card */}
@@ -530,7 +427,7 @@ function MobileLottieHero() {
                 transition={{ duration: 0.4, ease: "easeInOut" }}
                 className="w-full h-full flex items-center justify-center"
               >
-                <LottiePlayer src={current.animationSrc!} className="w-full h-full object-contain scale-[1.15]" />
+                <LottiePlayer src={current.animationSrc!} className="w-full h-full object-contain scale-[1.15]" priority={true} />
               </motion.div>
             </AnimatePresence>
           </div>
@@ -865,10 +762,10 @@ function ScopingTimeline() {
                   {/* Node Circle (Center of winding path: at 25% or 75% width) */}
                   <div className={`relative flex items-center justify-center w-1/2 ${isEven ? "justify-start pl-[15%] sm:pl-[20%]" : "justify-end pr-[15%] sm:pr-[20%]"} z-20`}>
                     <motion.div 
-                      initial={{ scale: 0.7, opacity: 0 }}
+                      initial={{ scale: 0.8, opacity: 0 }}
                       whileInView={{ scale: 1, opacity: 1 }}
-                      viewport={{ once: true, margin: "-100px" }}
-                      transition={{ type: "spring", stiffness: 80, damping: 12, delay: 0.1 }}
+                      viewport={{ once: true, amount: 0.05 }}
+                      transition={{ type: "spring", stiffness: 80, damping: 12, delay: 0.05 }}
                       className="relative flex items-center justify-center shrink-0"
                     >
                       <div className="absolute w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-orange-500/10 blur-[6px] sm:blur-[8px] animate-pulse" />
@@ -887,10 +784,10 @@ function ScopingTimeline() {
 
                       {/* Foreground Card */}
                       <motion.div
-                        initial={{ opacity: 0, y: 50, rotateX: 10, scale: 0.96 }}
-                        whileInView={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
-                        viewport={{ once: true, margin: "-80px" }}
-                        transition={{ type: "spring", stiffness: 60, damping: 15, delay: 0.05 }}
+                        initial={{ opacity: 0, y: 20, scale: 0.98 }}
+                        whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                        viewport={{ once: true, amount: 0.05 }}
+                        transition={{ duration: 0.4, delay: 0.05 }}
                         whileHover={{ y: -6, scale: 1.01 }}
                         style={{ transformOrigin: "bottom center" }}
                         className="relative rounded-[1.2rem] sm:rounded-[2rem] border border-slate-200/80 bg-white/95 backdrop-blur-md shadow-[0_8px_30px_rgba(0,0,0,0.02)] group-hover:border-orange-500/40 group-hover:shadow-[0_20px_45px_rgba(255,69,0,0.08)] transition-all duration-500 overflow-hidden flex flex-col h-full z-10"
@@ -1139,7 +1036,7 @@ function IntegrationMatrix() {
                 } as React.CSSProperties}
                 initial={{ opacity: 0, scale: 0.8 }}
                 whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
+                viewport={{ once: true, amount: 0.05 }}
                 transition={{ type: "spring", stiffness: 100, delay: idx * 0.05 }}
                 whileHover={{ scale: 1.12, zIndex: 30 }}
                 onMouseMove={handleNodeMouseMove}

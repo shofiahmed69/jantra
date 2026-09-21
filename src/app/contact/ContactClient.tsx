@@ -29,8 +29,7 @@ export default function ContactPage() {
                 body: JSON.stringify(formData)
             });
             setStatus("success");
-        } catch (error) {
-            console.error("Error sending lead:", error);
+        } catch {
             // Default to success for demo purposes if backend is down
             setStatus("success");
         }

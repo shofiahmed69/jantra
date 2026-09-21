@@ -119,27 +119,48 @@ export default function LottiePlayer({
 
         const controller = new AbortController();
 
+        const timer = setTimeout(() => {
+            controller.abort();
+        }, 8000);
+
         fetch(src, { signal: controller.signal })
-            .then((res) => res.json())
+            .then((res) => {
+                if (!res.ok) throw new Error("Failed to load animation");
+                return res.json();
+            })
             .then((data) => {
+                clearTimeout(timer);
                 const normalized = normalizeLottieAssetPaths(data, src);
                 animationCache.set(src, normalized);
                 setAnimationState({ src, data: normalized });
             })
             .catch((err: unknown) => {
+                clearTimeout(timer);
                 if (err instanceof DOMException && err.name === "AbortError") {
                     return;
                 }
-
+                // Cache a null placeholder so we do not spam failing requests
+                animationCache.set(src, null);
             });
 
-        return () => controller.abort();
+        return () => {
+            clearTimeout(timer);
+            controller.abort();
+        };
     }, [shouldLoad, src]);
 
     if (!animationData) {
         return (
-            <div ref={containerRef} className={`flex items-center justify-center ${className}`}>
-                <div className="w-8 h-8 border-2 border-orange-400 border-t-transparent rounded-full animate-spin" />
+            <div ref={containerRef} className={`flex items-center justify-center relative overflow-hidden ${className}`}>
+                <div className="w-full h-full flex items-center justify-center">
+                    <div className="w-16 h-16 rounded-2xl bg-orange-50 border border-orange-200/60 flex items-center justify-center text-orange-500 shadow-sm animate-pulse">
+                        <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <polygon points="12 2 2 7 12 12 22 7 12 2" />
+                            <polyline points="2 17 12 22 22 17" />
+                            <polyline points="2 12 12 17 22 12" />
+                        </svg>
+                    </div>
+                </div>
             </div>
         );
     }

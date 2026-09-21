@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Menu, X, Sparkles, MessageSquare, MessageCircle, Mail } from "lucide-react";
 import Logo from "@/components/Logo";
 import { navItems } from "@/content/site";
@@ -29,13 +29,6 @@ export default function Navbar() {
     setContactOpen((current) => !current);
     setMobileOpen(false);
   };
-  const { scrollY } = useScroll();
-
-  // Dynamic transforms based on scroll
-  // Dynamic transforms based on scroll - Optimized for performance
-  const navPadding = useTransform(scrollY, [0, 50], ["1.5rem", "1rem"]);
-  const navScale = useTransform(scrollY, [0, 50], [1, 1]); // Disabled scaling for smoother performance
-
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -47,17 +40,16 @@ export default function Navbar() {
   }, []);
 
   return (
-    <nav className="fixed inset-x-0 top-[-16px] z-[100] transition-all duration-500">
+    <nav className="fixed inset-x-0 top-0 z-[100] transition-all duration-300">
       <GlassFilter />
       
-      <div className="mx-auto max-w-7xl px-3 pt-3 sm:px-6 sm:pt-6 text-left">
-        <motion.div
-          style={{ padding: navPadding, scale: navScale }}
-          className="relative group w-full"
+      <div className="mx-auto max-w-7xl px-3 pt-2 sm:px-6 sm:pt-4 text-left">
+        <div
+          className={cn("relative group w-full transition-all duration-300", scrolled ? "py-1.5 sm:py-2" : "py-2.5 sm:py-3")}
         >
           <GlassEffect
             className={cn(
-              "relative w-full rounded-3xl transition-all duration-700 ease-out",
+              "relative w-full rounded-2xl sm:rounded-3xl transition-all duration-300 ease-out",
               scrolled
                 ? "bg-white/80 border border-slate-200/50 shadow-[0_20px_40px_rgba(0,0,0,0.06)] md:backdrop-blur-xl"
                 : "bg-white/60 border border-slate-200/30 shadow-[0_10px_30px_rgba(0,0,0,0.03)] md:backdrop-blur-md"
@@ -203,7 +195,7 @@ export default function Navbar() {
               </div>
             </div>
           </GlassEffect>
-        </motion.div>
+        </div>
       </div>
 
       {/* Mobile Menu Overlay (Stunning Dropdown Style) */}

@@ -125,10 +125,9 @@ export default function ServicesPage() {
                         return (
                           <motion.div 
                               key={service.slug} 
-                              initial={{ opacity: 0, y: 15 }}
-                              whileInView={{ opacity: 1, y: 0 }}
-                              viewport={{ once: true, margin: "-50px" }}
-                              transition={{ duration: 0.5, delay: i * 0.05, ease: "easeOut" }}
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ duration: 0.35, delay: i * 0.04, ease: "easeOut" }}
                               onMouseMove={handleMouseMove}
                               style={{
                                 "--spotlight-color": cap.accentGlow

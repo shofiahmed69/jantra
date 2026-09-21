@@ -27,8 +27,8 @@ export default function CareersPage() {
             try {
                 const response = await api.get("/careers");
                 setJobs(response.data || []);
-            } catch (error) {
-                console.error("Error fetching jobs:", error);
+            } catch {
+                // Ignore fetch error silently
             } finally {
                 setLoading(false);
             }

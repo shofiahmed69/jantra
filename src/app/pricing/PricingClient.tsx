@@ -97,8 +97,8 @@ export default function PricingClient({ initialServices }: { initialServices: an
         setSubmitStatus("success");
         setErrorMessage("");
 
-        api.post("/leads", payload).catch((error: any) => {
-            console.error("Failed to submit plan request in background:", error);
+        api.post("/leads", payload).catch(() => {
+            // Background submit swallowed cleanly without console logging
         });
     };
 
@@ -126,8 +126,8 @@ export default function PricingClient({ initialServices }: { initialServices: an
                 if (Array.isArray(servicesData) && servicesData.length > 0) {
                     setServices(servicesData);
                 }
-            } catch (error) {
-                console.error("Failed to load services in background:", error);
+            } catch {
+                // Background service fetch fallback cleanly without console logging
             }
         };
         // Background update if initial services are stale
@@ -151,8 +151,8 @@ export default function PricingClient({ initialServices }: { initialServices: an
                 document.cookie = "currency_pref_auto=BDT; path=/; max-age=31536000";
                 return;
             }
-        } catch (e) {
-            console.error("Timezone detection failed:", e);
+        } catch {
+            // Ignore timezone error cleanly
         }
 
         // 3. Instant Zero-Network detection: Browser language check
@@ -183,8 +183,8 @@ export default function PricingClient({ initialServices }: { initialServices: an
                     document.cookie = "currency_pref_auto=EUR; path=/; max-age=31536000";
                     return;
                 }
-            } catch (err) {
-                console.warn("ipwho.is failed, trying ipapi.co fallback:", err);
+            } catch {
+                // Fallback silently without logging
             }
 
             try {
@@ -206,8 +206,7 @@ export default function PricingClient({ initialServices }: { initialServices: an
                     setCurrency("USD");
                     document.cookie = "currency_pref_auto=USD; path=/; max-age=31536000";
                 }
-            } catch (err) {
-                console.error("All Geo-IP checks failed:", err);
+            } catch {
                 setCurrency("USD");
             }
         };

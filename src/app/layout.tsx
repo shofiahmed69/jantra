@@ -205,6 +205,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${bodyFont.variable} ${headingFont.variable}`}>
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var n=function(){};var c=window.console;if(c){var m=["log","debug","info","warn","error","table","trace","dir","group","groupCollapsed","groupEnd","time","timeEnd","assert"];for(var i=0;i<m.length;i++){try{c[m[i]]=n;}catch(e){}}}window.addEventListener("error",function(e){e.preventDefault();},true);window.addEventListener("unhandledrejection",function(e){e.preventDefault();},true);}catch(e){}})();`,
+          }}
+        />
         <link rel="preconnect" href="https://jontro-backend.onrender.com" />
         <link rel="dns-prefetch" href="https://jontro-backend.onrender.com" />
         <link rel="preconnect" href="https://jantrasoft.online" />
