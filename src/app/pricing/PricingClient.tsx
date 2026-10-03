@@ -315,31 +315,13 @@ export default function PricingClient({ initialServices }: { initialServices: an
                         <p className="text-slate-500 text-xs sm:text-sm font-semibold uppercase tracking-wider">Choose a pricing tier that aligns with your product goals.</p>
                     </div>
 
-                    {/* Regional Currency Selector (Auto-detected with instant manual toggle) */}
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2.5 bg-white border border-slate-200/80 rounded-2xl p-1.5 sm:px-3 sm:py-1.5 shadow-xs shrink-0 self-start lg:self-auto font-mono text-[10px] font-bold">
-                        <div className="flex items-center gap-1.5 px-2 py-0.5 text-slate-400">
-                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                            <span className="uppercase tracking-wider text-[9px] font-semibold">Region:</span>
-                        </div>
-                        <div className="flex items-center gap-1 bg-slate-100/80 p-1 rounded-xl">
-                            {(["USD", "EUR", "BDT"] as CurrencyCode[]).map((curr) => {
-                                const active = currency === curr;
-                                return (
-                                    <button
-                                        key={curr}
-                                        type="button"
-                                        onClick={() => handleCurrencyChange(curr)}
-                                        className={`px-3 py-1.5 rounded-lg uppercase tracking-wider text-[9.5px] font-black transition-all cursor-pointer ${
-                                            active
-                                                ? "bg-slate-950 text-white shadow-xs"
-                                                : "text-slate-500 hover:text-slate-900 hover:bg-white/60"
-                                        }`}
-                                    >
-                                        {curr}
-                                    </button>
-                                );
-                            })}
-                        </div>
+                    {/* Automatic Regional Currency Indicator */}
+                    <div className="flex items-center gap-2 bg-white border border-slate-200/80 rounded-xl px-3.5 py-2 shadow-xs shrink-0 self-start lg:self-auto font-mono text-[10px] font-black">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                        <span className="text-slate-400 uppercase tracking-wider text-[9px]">Auto Region:</span>
+                        <span className="bg-slate-950 text-white px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-xs">
+                            {currency}
+                        </span>
                     </div>
                 </div>
 
@@ -381,12 +363,12 @@ export default function PricingClient({ initialServices }: { initialServices: an
                                     <div className="flex flex-col text-left relative z-10">
                                         
                                         {/* Banner Image */}
-                                        <div className="relative w-full aspect-[16/9] overflow-hidden rounded-xl mb-5 border border-slate-200/60 bg-slate-900 flex items-center justify-center shrink-0 shadow-xs">
-                                            {/* Beautiful dark minimal blueprint background */}
-                                            <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-slate-900 to-slate-950 flex items-center justify-center">
-                                                <div className="absolute inset-0 bg-[linear-gradient(to_right,#f97316_1px,transparent_1px),linear-gradient(to_bottom,#f97316_1px,transparent_1px)] bg-[size:24px_24px] opacity-[0.06]" />
-                                                <div className="w-10 h-10 rounded-xl bg-slate-800/80 border border-slate-700/60 flex items-center justify-center shadow-sm">
-                                                    <ServiceIcon className="w-4 h-4 text-orange-400" />
+                                        <div className="relative w-full aspect-[16/9] overflow-hidden rounded-xl mb-5 border border-orange-100 bg-white flex items-center justify-center shrink-0 shadow-xs">
+                                            {/* Clean White & Orange Theme Background */}
+                                            <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-white via-orange-50/40 to-orange-100/30 flex items-center justify-center">
+                                                <div className="absolute inset-0 bg-[linear-gradient(to_right,#f97316_1px,transparent_1px),linear-gradient(to_bottom,#f97316_1px,transparent_1px)] bg-[size:24px_24px] opacity-[0.035]" />
+                                                <div className="w-10 h-10 rounded-xl bg-white border border-orange-200/80 flex items-center justify-center shadow-xs">
+                                                    <ServiceIcon className="w-4 h-4 text-orange-500" />
                                                 </div>
                                             </div>
 
