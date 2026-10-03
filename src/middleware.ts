@@ -32,17 +32,21 @@ export function middleware(req: NextRequest) {
   }
 
   const country =
+    req.headers.get("cf-ipcountry") ||
     req.headers.get("x-vercel-ip-country") ||
     req.headers.get("x-country-code") ||
+    req.headers.get("geoip-country-code") ||
     null;
 
-  const autoCurrency = toCurrency(country);
   const res = NextResponse.next();
-  res.cookies.set("currency_pref_auto", autoCurrency, {
-    path: "/",
-    sameSite: "lax",
-    maxAge: 60 * 60 * 24 * 30,
-  });
+  if (country) {
+    const autoCurrency = toCurrency(country);
+    res.cookies.set("currency_pref_auto", autoCurrency, {
+      path: "/",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24 * 30,
+    });
+  }
 
   if (req.nextUrl.pathname.startsWith('/api')) {
     res.headers.set('Access-Control-Allow-Origin', '*');

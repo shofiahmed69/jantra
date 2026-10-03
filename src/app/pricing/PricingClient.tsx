@@ -28,20 +28,39 @@ const FAQS = [
 
 type CurrencyCode = "USD" | "EUR" | "BDT";
 
+const DEFAULT_BANNERS: Record<string, string> = {
+    "custom-software-development": "/banners/custom-software-development.png",
+    "ai-agent-development": "/banners/ai-agent-development.png",
+    "workflow-automation": "/banners/workflow-automation.png",
+    "saas-product-development": "/banners/saas-product-development.png",
+    "mobile-app-development": "/banners/mobile-app-development.png",
+    "cloud-api-systems": "/banners/cloud-api-systems.png",
+};
+
 const resolveServiceVisualUrl = (service: any) => {
+    const slug = service?.slug || "";
+    const defaultBanner = DEFAULT_BANNERS[slug] || "/banners/custom-software-development.png";
+
     const raw = service?.banner || service?.image;
-    if (!raw) return "";
+    if (!raw) return defaultBanner;
+
     let url = raw;
-    if (!url.startsWith("http://") && !url.startsWith("https://") && !url.startsWith("data:")) {
+    if (!url.startsWith("http://") && !url.startsWith("https://") && !url.startsWith("data:") && !url.startsWith("/")) {
         const apiBase = (process.env.NEXT_PUBLIC_API_URL || "https://jontro-backend.onrender.com/api").replace(/\/api\/?$/, "");
         const cleanBase = apiBase.endsWith("/") ? apiBase.slice(0, -1) : apiBase;
-        const cleanPath = url.startsWith("/") ? url : `/${url}`;
-        url = `${cleanBase}${cleanPath}`;
+        url = `${cleanBase}/${url}`;
     }
+    
+    // If it's already an absolute path on our site (like /banners/...)
+    if (url.startsWith("/")) {
+        return url;
+    }
+
     if (url.includes("%")) {
         url = url.replace(/%([0-9A-Fa-f]{2})/g, "%25$1");
     }
-    if (url.startsWith("http://") || url.includes("sslip.io")) {
+
+    if (url.startsWith("http://") || url.includes("sslip.io") || url.includes("144.79.249.162")) {
         return `/api/image-proxy?url=${encodeURIComponent(url)}`;
     }
     return url;
@@ -136,19 +155,36 @@ export default function PricingClient({ initialServices }: { initialServices: an
 
     // Geolocation detection / cookie resolution
     useEffect(() => {
-        // 1. Check if user has explicitly set preference in cookie
+        // 1. Check if user has explicitly set preference in cookie or localStorage
         const cookieMatch = document.cookie.match(/(?:^|;\s*)currency_pref_auto=(USD|EUR|BDT)/);
         if (cookieMatch?.[1]) {
             setCurrency(cookieMatch[1] as CurrencyCode);
             return;
         }
 
+        const savedPref = typeof window !== "undefined" ? localStorage.getItem("jantra_currency_pref") : null;
+        if (savedPref === "USD" || savedPref === "EUR" || savedPref === "BDT") {
+            setCurrency(savedPref as CurrencyCode);
+            return;
+        }
+
         // 2. Instant Zero-Network detection: Timezone check
         try {
             const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
-            if (timeZone.toLowerCase().includes("dhaka") || timeZone.toLowerCase().includes("dacca")) {
+            const tzLower = timeZone.toLowerCase();
+            if (tzLower.includes("dhaka") || tzLower.includes("dacca") || tzLower.includes("asia/dhaka")) {
                 setCurrency("BDT");
                 document.cookie = "currency_pref_auto=BDT; path=/; max-age=31536000";
+                return;
+            }
+            if (
+                tzLower.includes("berlin") || tzLower.includes("paris") || tzLower.includes("amsterdam") ||
+                tzLower.includes("madrid") || tzLower.includes("rome") || tzLower.includes("brussels") ||
+                tzLower.includes("vienna") || tzLower.includes("warsaw") || tzLower.includes("athens") ||
+                tzLower.includes("helsinki") || tzLower.includes("dublin") || tzLower.includes("lisbon")
+            ) {
+                setCurrency("EUR");
+                document.cookie = "currency_pref_auto=EUR; path=/; max-age=31536000";
                 return;
             }
         } catch {
@@ -157,62 +193,56 @@ export default function PricingClient({ initialServices }: { initialServices: an
 
         // 3. Instant Zero-Network detection: Browser language check
         const lang = (navigator.language || "").toLowerCase();
-        if (lang.includes("bn") || lang.includes("bd")) {
+        if (lang.includes("bn") || lang.endsWith("-bd") || lang.includes("bn-bd")) {
             setCurrency("BDT");
             document.cookie = "currency_pref_auto=BDT; path=/; max-age=31536000";
             return;
         }
 
-        // 4. Fallback Network Geo-IP Check (Checks both ipwho.is and ipapi.co)
+        // 4. Reliable Client-side Geo IP Check with AbortController timeout
         const fetchGeo = async () => {
-            try {
-                // Try ipwho.is first
-                const res = await fetch("https://ipwho.is/");
-                const data = await res.json();
-                const country = (data.country_code || "").toUpperCase();
-                if (country === "BD") {
-                    setCurrency("BDT");
-                    document.cookie = "currency_pref_auto=BDT; path=/; max-age=31536000";
-                    return;
-                } else if ([
-                    "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR",
-                    "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK",
-                    "SI", "ES", "SE"
-                ].includes(country)) {
-                    setCurrency("EUR");
-                    document.cookie = "currency_pref_auto=EUR; path=/; max-age=31536000";
-                    return;
-                }
-            } catch {
-                // Fallback silently without logging
-            }
+            const euCountryCodes = new Set([
+                "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR",
+                "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK",
+                "SI", "ES", "SE"
+            ]);
 
             try {
-                // Fallback to ipapi.co
-                const res = await fetch("https://ipapi.co/json/");
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 4000);
+                const res = await fetch("https://ipwho.is/", { signal: controller.signal });
+                clearTimeout(timeoutId);
                 const data = await res.json();
                 const country = (data.country_code || "").toUpperCase();
+                
                 if (country === "BD") {
                     setCurrency("BDT");
                     document.cookie = "currency_pref_auto=BDT; path=/; max-age=31536000";
-                } else if ([
-                    "AT", "BE", "BG", "HR", "CY", "CZ", "DK", "EE", "FI", "FR", "DE", "GR",
-                    "HU", "IE", "IT", "LV", "LT", "LU", "MT", "NL", "PL", "PT", "RO", "SK",
-                    "SI", "ES", "SE"
-                ].includes(country)) {
+                    return;
+                } else if (euCountryCodes.has(country)) {
                     setCurrency("EUR");
                     document.cookie = "currency_pref_auto=EUR; path=/; max-age=31536000";
-                } else {
+                    return;
+                } else if (country) {
                     setCurrency("USD");
                     document.cookie = "currency_pref_auto=USD; path=/; max-age=31536000";
+                    return;
                 }
             } catch {
-                setCurrency("USD");
+                // Ignore silently without printing
             }
         };
 
         fetchGeo();
     }, []);
+
+    const handleCurrencyChange = (newCurrency: CurrencyCode) => {
+        setCurrency(newCurrency);
+        document.cookie = `currency_pref_auto=${newCurrency}; path=/; max-age=31536000`;
+        if (typeof window !== "undefined") {
+            localStorage.setItem("jantra_currency_pref", newCurrency);
+        }
+    };
 
     const formatCompactPrice = (amount: number, code: CurrencyCode) => {
         if (code === "BDT") {
@@ -285,13 +315,31 @@ export default function PricingClient({ initialServices }: { initialServices: an
                         <p className="text-slate-500 text-xs sm:text-sm font-semibold uppercase tracking-wider">Choose a pricing tier that aligns with your product goals.</p>
                     </div>
 
-                    {/* Currency Indicator (Single currency active based on geolocation) */}
-                    <div className="flex items-center gap-2 bg-white border border-slate-200/60 rounded-xl px-3.5 py-2 shadow-sm shrink-0 self-start lg:self-auto font-mono text-[10px] font-black">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                        <span className="text-slate-400 uppercase tracking-wider text-[9px]">Currency:</span>
-                        <span className="bg-slate-950 text-white px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-xs">
-                            {currency}
-                        </span>
+                    {/* Regional Currency Selector (Auto-detected with instant manual toggle) */}
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2.5 bg-white border border-slate-200/80 rounded-2xl p-1.5 sm:px-3 sm:py-1.5 shadow-xs shrink-0 self-start lg:self-auto font-mono text-[10px] font-bold">
+                        <div className="flex items-center gap-1.5 px-2 py-0.5 text-slate-400">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                            <span className="uppercase tracking-wider text-[9px] font-semibold">Region:</span>
+                        </div>
+                        <div className="flex items-center gap-1 bg-slate-100/80 p-1 rounded-xl">
+                            {(["USD", "EUR", "BDT"] as CurrencyCode[]).map((curr) => {
+                                const active = currency === curr;
+                                return (
+                                    <button
+                                        key={curr}
+                                        type="button"
+                                        onClick={() => handleCurrencyChange(curr)}
+                                        className={`px-3 py-1.5 rounded-lg uppercase tracking-wider text-[9.5px] font-black transition-all cursor-pointer ${
+                                            active
+                                                ? "bg-slate-950 text-white shadow-xs"
+                                                : "text-slate-500 hover:text-slate-900 hover:bg-white/60"
+                                        }`}
+                                    >
+                                        {curr}
+                                    </button>
+                                );
+                            })}
+                        </div>
                     </div>
                 </div>
 
@@ -333,20 +381,21 @@ export default function PricingClient({ initialServices }: { initialServices: an
                                     <div className="flex flex-col text-left relative z-10">
                                         
                                         {/* Banner Image */}
-                                        <div className="relative w-full aspect-[16/9] overflow-hidden rounded-xl mb-5 border border-slate-200/60 bg-[#fcfaf8] flex items-center justify-center shrink-0">
-                                            <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-slate-50 to-orange-500/[0.02] flex items-center justify-center">
-                                                <div className="absolute inset-0 bg-[linear-gradient(to_right,#ea580c_1px,transparent_1px),linear-gradient(to_bottom,#ea580c_1px,transparent_1px)] bg-[size:16px_16px] opacity-[0.015]" />
-                                                <div className="w-10 h-10 rounded-xl bg-white border border-slate-200/60 flex items-center justify-center shadow-sm">
-                                                    <ServiceIcon className="w-4 h-4 text-orange-500" />
+                                        <div className="relative w-full aspect-[16/9] overflow-hidden rounded-xl mb-5 border border-slate-200/60 bg-slate-900 flex items-center justify-center shrink-0 shadow-xs">
+                                            {/* Beautiful dark minimal blueprint background */}
+                                            <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-slate-900 to-slate-950 flex items-center justify-center">
+                                                <div className="absolute inset-0 bg-[linear-gradient(to_right,#f97316_1px,transparent_1px),linear-gradient(to_bottom,#f97316_1px,transparent_1px)] bg-[size:24px_24px] opacity-[0.06]" />
+                                                <div className="w-10 h-10 rounded-xl bg-slate-800/80 border border-slate-700/60 flex items-center justify-center shadow-sm">
+                                                    <ServiceIcon className="w-4 h-4 text-orange-400" />
                                                 </div>
                                             </div>
 
-                                            {hasImage && (
+                                            {visualUrl && (
                                                 <img
-                                                     src={visualUrl}
+                                                     src={failedImages[service.id] ? (DEFAULT_BANNERS[service.slug] || "/banners/custom-software-development.png") : visualUrl}
                                                      alt={service.title || "Service Banner"}
-                                                     className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 group-hover:scale-[1.02] z-10 ${
-                                                         loadedImages[service.id] ? "opacity-100" : "opacity-90"
+                                                     className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 group-hover:scale-[1.03] z-10 ${
+                                                         loadedImages[service.id] ? "opacity-100" : "opacity-95"
                                                      }`}
                                                      onLoad={() => setLoadedImages(prev => ({ ...prev, [service.id]: true }))}
                                                      onError={() => setFailedImages(prev => ({ ...prev, [service.id]: true }))}

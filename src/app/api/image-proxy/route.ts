@@ -10,7 +10,14 @@ export async function GET(request: NextRequest) {
 
     try {
         // Fetch the target image from the internal/external server (e.g. Minio)
-        const response = await fetch(url);
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+        const response = await fetch(url, {
+            signal: controller.signal,
+        });
+        clearTimeout(timeoutId);
+
         if (!response.ok) {
             return new NextResponse("Failed to fetch image from source", { status: response.status });
         }
