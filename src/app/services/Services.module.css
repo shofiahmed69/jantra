@@ -1,0 +1,52 @@
+.page{min-height:100vh;background:#fffdfb;color:#071534;padding:0 0 72px;overflow:hidden}
+.container{width:min(1460px,calc(100% - 112px));margin:auto;padding-top:112px}
+.hero{min-height:330px;display:grid;grid-template-columns:45% 55%;align-items:center;position:relative}
+.heroCopy{position:relative;z-index:2;padding:0 24px 24px 32px}
+.eyebrow{display:flex;align-items:center;gap:11px;color:#f04b0a;font:700 11px/1.2 var(--font-body),sans-serif;letter-spacing:.13em;text-transform:uppercase;margin-bottom:22px}
+.eyebrow span{width:20px;height:2px;background:#f04b0a;display:block}
+.hero h1{font-size:clamp(40px,3.3vw,58px);line-height:1.04;letter-spacing:-.065em;font-weight:800;max-width:640px;margin:0 0 15px}
+.hero h1 span{color:#ff5a14}
+.intro{font-size:16px;line-height:1.55;color:#5d708f;max-width:550px;margin:0 0 23px}
+.primaryButton{display:inline-flex;align-items:center;gap:32px;justify-content:space-between;padding:17px 26px;color:white;background:linear-gradient(115deg,#ff5b16,#ec4200);border-radius:11px;font-size:14px;font-weight:800;text-transform:uppercase;min-width:183px;box-shadow:0 10px 22px rgba(244,75,10,.18);transition:transform .25s,box-shadow .25s}
+.primaryButton:hover,.primaryButton:focus-visible{transform:translateY(-3px);box-shadow:0 14px 30px rgba(244,75,10,.28)}
+.heroVisual{position:relative;height:315px;align-self:end;filter:drop-shadow(0 22px 32px rgba(17,38,85,.06))}
+.heroVisual img{object-fit:contain;object-position:right bottom}
+.servicesGrid{display:grid;grid-template-columns:1.1fr 2.05fr;gap:14px;min-height:524px}
+.otherServices{display:grid;grid-template-rows:1fr 1fr;gap:14px;min-width:0}
+.topRow,.bottomRow{display:grid;gap:14px;min-height:0}
+.topRow{grid-template-columns:1fr 1fr}.bottomRow{grid-template-columns:repeat(3,1fr)}
+.card{--tone:#ff6a22;position:relative;display:block;overflow:hidden;border:1px solid #eceef3;border-radius:17px;background:#fff;box-shadow:0 10px 32px rgba(28,40,74,.035);min-height:245px;padding:22px;color:#071534;isolation:isolate;transition:transform .25s,border-color .25s,box-shadow .25s}
+.card:hover,.card:focus-visible{transform:translateY(-4px);border-color:#ffc5a4;box-shadow:0 20px 36px rgba(28,40,74,.085);outline:none}
+.card:focus-visible{outline:3px solid #fb7033;outline-offset:3px}
+.card:before{content:"";position:absolute;inset:auto -20% -45% 35%;height:80%;background:radial-gradient(circle,rgba(255,136,70,.11),transparent 65%);z-index:-1}
+.number{position:absolute;left:22px;top:21px;font:800 12px/1 var(--font-body),sans-serif;letter-spacing:.1em;color:#b4c1d7}
+.icon{position:absolute;top:18px;right:20px;width:42px;height:42px;border:1px solid #ffe0ce;background:#fffaf6;border-radius:10px;display:grid;place-items:center;color:var(--tone);z-index:2}
+.cardCopy{position:absolute;left:22px;top:60px;width:48%;z-index:2}
+.card h2{font-size:17px;line-height:1.17;letter-spacing:-.035em;font-weight:800;margin:0 0 9px}
+.card p{font-size:12px;line-height:1.5;color:#637592;margin:0 0 14px}
+.tags{display:flex;flex-wrap:wrap;gap:5px}
+.tags span{font-size:9px;line-height:1.15;text-transform:uppercase;letter-spacing:.035em;font-weight:700;color:#637592;border:1px solid #e8edf4;background:#f8faff;padding:4px 6px;border-radius:6px}
+.art{position:absolute;width:42%;height:65%;right:4%;bottom:12%;object-fit:contain;object-position:center;z-index:1;mix-blend-mode:multiply}
+.cardAction{position:absolute;left:22px;bottom:20px;display:inline-flex;align-items:center;gap:9px;text-transform:uppercase;font-size:11px;font-weight:800;letter-spacing:.01em;z-index:3}
+.cardAction svg{color:#f65b1b;transition:transform .25s}.card:hover .cardAction svg{transform:translateX(5px)}
+.featured{min-height:524px;padding:28px}.featured .number{left:28px;top:25px}.featured .icon{top:23px;right:24px}.featured .cardCopy{top:145px;left:28px;width:52%}.featured h2{font-size:29px;max-width:270px;margin-bottom:10px}.featured p{font-size:13px;max-width:280px}.featured .art{width:64%;height:76%;right:-4%;bottom:-3%;object-position:right bottom;mix-blend-mode:normal;mask-image:linear-gradient(to right,transparent 0%,#000 18%)}.featured .cardAction{left:28px;bottom:24px}.featureIcon{position:absolute;top:67px;left:28px;width:55px;height:55px;border-radius:13px;background:#ffeadb;display:grid;place-items:center;color:#f85e18}
+.featuredDesktopArt{display:none}
+@media(min-width:1101px){.featuredDesktopArt{display:block;object-fit:fill;z-index:5;pointer-events:none}}
+.ai{--tone:#8453f5}.ai:before{background:radial-gradient(circle,rgba(145,106,255,.14),transparent 65%)}.ai .icon{border-color:#e9ddff;background:#fbf8ff}.automation{--tone:#ff5287}.automation .icon{border-color:#ffe1ea;background:#fff9fb}.saas{--tone:#1cbf78}.saas .icon{border-color:#d7f5e7;background:#f7fffa}.mobile{--tone:#207dec}.mobile .icon{border-color:#daebff;background:#f8fbff}.cloud{--tone:#784bf3}.cloud .icon{border-color:#e6ddff;background:#fcfaff}
+.topRow .cardCopy{top:55px;width:56%}.topRow .card p{font-size:11px;margin-bottom:8px}.topRow .tags span{font-size:7.5px;padding:3px 5px}
+.bottomRow .card{min-height:258px}.bottomRow .cardCopy{width:62%;top:56px}.bottomRow .art{width:38%;height:57%;right:1%;bottom:14%}.bottomRow .card h2{font-size:16px}.bottomRow .card p{font-size:11px;margin-bottom:8px}.bottomRow .tags span{font-size:7px;padding:3px 4px}
+@media(max-width:1100px){.container{width:min(100% - 56px,940px)}.hero{grid-template-columns:52% 48%}.heroCopy{padding-left:0}.hero h1{font-size:clamp(36px,4vw,49px)}.intro{font-size:14px}.servicesGrid{grid-template-columns:1fr;min-height:0}.featured{min-height:350px}.featured .cardCopy{top:108px}.featured .art{width:45%;height:95%}.topRow,.bottomRow{min-height:260px}}
+@media(max-width:700px){.container{width:calc(100% - 34px);padding-top:100px}.hero{display:flex;flex-direction:column;align-items:stretch;min-height:0}.heroCopy{padding:0 0 18px}.eyebrow{margin-bottom:16px}.hero h1{font-size:clamp(35px,9vw,48px);line-height:1.04}.desktopBreak{display:none}.intro{font-size:14px;margin-bottom:19px}.primaryButton{min-width:160px;padding:14px 19px;font-size:12px}.heroVisual{height:190px;width:100%;align-self:center}.heroVisual img{object-position:center bottom}.servicesGrid{gap:12px}.otherServices{display:flex;flex-direction:column;gap:12px}.topRow,.bottomRow{display:grid;grid-template-columns:1fr;gap:12px;min-height:0}.card,.bottomRow .card{min-height:240px;padding:20px}.cardCopy,.topRow .cardCopy,.bottomRow .cardCopy{left:20px;top:59px;width:60%}.card h2,.bottomRow .card h2{font-size:18px}.card p,.bottomRow .card p{font-size:12px}.art,.bottomRow .art{width:37%;height:58%;right:1%;bottom:16%}.cardAction{left:20px;bottom:18px}.featured{min-height:370px}.featured .cardCopy{left:22px;top:94px;width:57%}.featured h2{font-size:24px}.featured .art{width:56%;height:72%;right:-3%;bottom:-2%}.featureIcon{top:43px;left:22px;width:43px;height:43px}.featured .cardAction{left:22px}.featured .number{left:22px}.tags span{font-size:8px}}
+@media(max-width:390px){.cardCopy,.bottomRow .cardCopy{width:64%}.card h2,.bottomRow .card h2{font-size:16px}.card p,.bottomRow .card p{font-size:11px}.tags{gap:3px}.tags span{font-size:7px;padding:3px 4px}.featured .cardCopy{width:58%}.featured h2{font-size:21px}.featured p{font-size:11px}}
+@media(max-width:700px){
+  .card,.bottomRow .card,.featured{display:flex;flex-direction:column;min-height:0;padding:19px 20px 20px;border-radius:20px}
+  .card .art,.bottomRow .card .art,.featured .art{position:relative;order:1;inset:auto;width:100%;height:145px;object-fit:contain;object-position:center;margin:42px 0 10px;mask-image:none;mix-blend-mode:multiply}
+  .featured .art{width:88%;height:175px;object-fit:cover;object-position:center 52%;margin:42px auto 10px;mix-blend-mode:normal;mask-image:radial-gradient(ellipse 75% 75% at center,#000 62%,transparent 100%)}
+  .card .cardCopy,.topRow .cardCopy,.bottomRow .cardCopy,.featured .cardCopy{position:relative;order:2;inset:auto;width:100%;margin:0}
+  .card h2,.bottomRow .card h2,.featured h2{font-size:22px;line-height:1.15;max-width:none;margin:0 0 8px}
+  .card p,.bottomRow .card p,.featured p{font-size:13px;line-height:1.5;max-width:none;margin:0 0 13px}
+  .card .tags span,.bottomRow .tags span{font-size:9px;padding:5px 7px}
+  .card .cardAction,.featured .cardAction{position:relative;order:3;inset:auto;width:100%;border-top:1px solid #edf0f4;margin-top:19px;padding-top:16px;font-size:11px}
+  .featureIcon{display:none}
+}
+@media(prefers-reduced-motion:reduce){.card,.primaryButton,.cardAction svg{transition:none}}
