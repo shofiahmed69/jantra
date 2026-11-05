@@ -386,16 +386,16 @@ export default function PricingClient({ initialServices }: { initialServices: an
                                         </div>
 
                                         {/* Pricing Header info */}
-                                        <div className="flex items-start justify-between gap-4 border-b border-slate-100 pb-4 mb-4">
+                                        <div className="grid min-w-0 gap-2.5 border-b border-slate-100 pb-4 mb-4">
                                             <div className="min-w-0">
-                                                <h3 className="text-xs font-black uppercase tracking-tight text-slate-900 leading-tight group-hover:text-orange-600 transition-colors" title={service.title}>
+                                                <h3 className="text-sm sm:text-base font-black uppercase tracking-tight text-slate-900 leading-snug break-words group-hover:text-orange-600 transition-colors" title={service.title}>
                                                     {service.title}
                                                 </h3>
-                                                <span className="text-[7.5px] font-black text-slate-400 uppercase tracking-widest block mt-1 font-mono">Estimated Cost</span>
                                             </div>
-                                            <div className="text-right shrink-0 font-mono">
+                                            <div className="flex min-w-0 flex-col items-start gap-1 font-mono">
+                                                <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Estimated cost</span>
                                                 {hasAnyPrice ? (
-                                                    <span className="text-lg sm:text-xl font-black tracking-tight text-emerald-600 leading-none">
+                                                    <span className="min-w-0 max-w-full whitespace-normal break-words text-base sm:text-lg font-black tracking-tight text-emerald-600 leading-tight">
                                                         {range.min !== null ? formatCompactPrice(range.min, currency) : ""}
                                                         {range.min !== null && range.max !== null ? "-" : ""}
                                                         {range.max !== null ? formatCompactPrice(range.max, currency) : ""}
